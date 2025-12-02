@@ -1802,3 +1802,14 @@
 - [ ] Habit Stacking Builder
 - [ ] Micro-Habit Library
 - [ ] Weekly System Review
+
+
+## IDENTITY STATEMENT BUILDER (HIGHEST PRIORITY)
+- [x] Create identity_statements table in database
+- [x] Build tRPC identity router (create, update, get)
+- [x] Build IdentityBuilder.tsx with 5 guided questions
+- [x] Build IdentityView.tsx to display completed identity
+- [x] Integrate with AI Coach context (AI now references identity statement)
+- [x] Add to MasterHub navigation
+- [x] Add routes to App.tsx
+- [x] Test complete flow

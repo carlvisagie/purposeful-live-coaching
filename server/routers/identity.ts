@@ -325,4 +325,80 @@ export const identityRouter = router({
 
       return { microHabits: activeMicroHabits };
     }),
+
+  /**
+   * IDENTITY STATEMENT BUILDER
+   * Core principle: "Who you are determines what you do"
+   */
+  upsertStatement: protectedProcedure
+    .input(z.object({
+      coreValues: z.string().min(10).max(1000),
+      strengthsAndSkills: z.string().min(10).max(1000),
+      idealSelfDescription: z.string().min(10).max(1000),
+      lifePurpose: z.string().min(10).max(1000),
+      identityStatement: z.string().min(20).max(500),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const { sql } = await import("drizzle-orm");
+      
+      // Check if user already has an identity statement
+      const existing = await db.execute(
+        sql`SELECT id FROM identity_statements WHERE userId = ${ctx.user.id} AND isActive = TRUE LIMIT 1`
+      );
+
+      if (existing.rows.length > 0) {
+        // Update existing
+        await db.execute(
+          sql`UPDATE identity_statements 
+              SET coreValues = ${input.coreValues},
+                  strengthsAndSkills = ${input.strengthsAndSkills},
+                  idealSelfDescription = ${input.idealSelfDescription},
+                  lifePurpose = ${input.lifePurpose},
+                  identityStatement = ${input.identityStatement},
+                  updatedAt = NOW()
+              WHERE userId = ${ctx.user.id} AND isActive = TRUE`
+        );
+
+        return { success: true, message: "Identity statement updated", isNew: false };
+      } else {
+        // Create new
+        await db.execute(
+          sql`INSERT INTO identity_statements 
+              (userId, coreValues, strengthsAndSkills, idealSelfDescription, lifePurpose, identityStatement)
+              VALUES (${ctx.user.id}, ${input.coreValues}, ${input.strengthsAndSkills}, ${input.idealSelfDescription}, ${input.lifePurpose}, ${input.identityStatement})`
+        );
+
+        return { success: true, message: "Identity statement created", isNew: true };
+      }
+    }),
+
+  /**
+   * Get current identity statement
+   */
+  getCurrentStatement: protectedProcedure.query(async ({ ctx }) => {
+    const { sql } = await import("drizzle-orm");
+    const result = await db.execute(
+      sql`SELECT * FROM identity_statements 
+          WHERE userId = ${ctx.user.id} AND isActive = TRUE 
+          ORDER BY createdAt DESC 
+          LIMIT 1`
+    );
+
+    return result.rows[0] || null;
+  }),
+
+  /**
+   * Get history of identity statements
+   */
+  getStatementHistory: protectedProcedure.query(async ({ ctx }) => {
+    const { sql } = await import("drizzle-orm");
+    const result = await db.execute(
+      sql`SELECT id, identityStatement, createdAt, updatedAt 
+          FROM identity_statements 
+          WHERE userId = ${ctx.user.id} 
+          ORDER BY createdAt DESC`
+    );
+
+    return result.rows;
+  }),
 });

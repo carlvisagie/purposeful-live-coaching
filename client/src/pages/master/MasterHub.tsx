@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { User, Target, Compass, TrendingUp, Award, Calendar } from "lucide-react";
+import { User, Target, Compass, TrendingUp, Award, Calendar, Sparkles } from "lucide-react";
 import { useLocation } from "wouter";
 
 /**
@@ -18,6 +18,7 @@ import { useLocation } from "wouter";
 export default function MasterHub() {
   const [, navigate] = useLocation();
 
+  const { data: identityStatement } = trpc.identity.getCurrentStatement.useQuery();
   const { data: identityHistory } = trpc.masterSystems.identity.getHistory.useQuery({ limit: 5 });
   const { data: identityEvolution } = trpc.masterSystems.identity.getEvolution.useQuery();
   const { data: milestoneStats } = trpc.masterSystems.accountability.getStats.useQuery();
@@ -39,6 +40,44 @@ export default function MasterHub() {
           Advanced transformation architecture for long-term success
         </p>
       </div>
+
+      {/* Identity Statement Builder */}
+      <Card className="border-purple-300 dark:border-purple-700 bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-950 dark:to-blue-950">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-purple-900 dark:text-purple-100">
+            <Sparkles className="h-5 w-5" />
+            Identity Statement
+          </CardTitle>
+          <CardDescription className="text-purple-700 dark:text-purple-300">
+            Your decision filter and transformation foundation
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {identityStatement ? (
+            <>
+              <div className="p-4 bg-white/50 dark:bg-black/20 rounded-lg">
+                <p className="font-medium text-purple-900 dark:text-purple-100">
+                  "I am someone who {identityStatement.identityStatement}"
+                </p>
+              </div>
+              <Button onClick={() => navigate("/identity/view")} variant="outline" className="w-full">
+                View Full Identity
+              </Button>
+            </>
+          ) : (
+            <>
+              <p className="text-sm text-purple-800 dark:text-purple-200">
+                Build your identity foundation to unlock lasting transformation. 
+                Who you are determines what you do.
+              </p>
+              <Button onClick={() => navigate("/identity/builder")} className="w-full">
+                <Sparkles className="mr-2 h-4 w-4" />
+                Build Your Identity Statement
+              </Button>
+            </>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Overall Alignment Score */}
       {alignment && (

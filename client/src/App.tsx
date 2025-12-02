@@ -43,6 +43,8 @@ import ProgressDashboard from "./pages/analytics/ProgressDashboard";
 import GamificationHub from "./pages/gamification/GamificationHub";
 import CognitiveHub from "./pages/cognitive/CognitiveHub";
 import DecisionHelper from "./pages/cognitive/DecisionHelper";
+import IdentityBuilder from "./pages/identity/IdentityBuilder";
+import IdentityView from "./pages/identity/IdentityView";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -85,6 +87,8 @@ function Router() {
       <Route path="/achievements" component={GamificationHub} />
       <Route path="/cognitive" component={CognitiveHub} />
       <Route path="/cognitive/decision-helper" component={DecisionHelper} />
+      <Route path="/identity/builder" component={IdentityBuilder} />
+      <Route path="/identity/view" component={IdentityView} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

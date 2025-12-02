@@ -41,6 +41,10 @@ export const aiCoachRouter = router({
         sql`SELECT * FROM life_vision WHERE userId = ${ctx.user.id} LIMIT 1`
       );
 
+      const identityStatement = await db.execute(
+        sql`SELECT * FROM identity_statements WHERE userId = ${ctx.user.id} AND isActive = TRUE LIMIT 1`
+      );
+
       // Build context for LLM
       const userContext = {
         name: ctx.user.name,
@@ -49,6 +53,7 @@ export const aiCoachRouter = router({
         identity: identityData.rows.length > 0 ? identityData.rows[0] : "No identity snapshot yet",
         activeMilestones: milestones.rows.length > 0 ? milestones.rows : "No active milestones",
         lifeVision: vision.rows.length > 0 ? vision.rows[0] : "No life vision set",
+        identityStatement: identityStatement.rows.length > 0 ? identityStatement.rows[0] : "No identity statement yet",
       };
 
       // Call LLM with context
@@ -67,12 +72,16 @@ ${JSON.stringify(userContext, null, 2)}
 Your role:
 1. Provide personalized, evidence-based guidance
 2. Reference user's specific data (health, stress, identity, goals)
-3. Suggest actionable next steps
-4. Maintain accountability
-5. Celebrate progress
-6. Challenge limiting beliefs
+3. ALWAYS reference their identity statement when giving advice
+4. Frame suggestions through identity lens: "Someone who [their identity] would..."
+5. Suggest actionable next steps
+6. Maintain accountability
+7. Celebrate progress
+8. Challenge limiting beliefs
 
-Be direct, honest, and supportive. Focus on systems over goals. Identity over outcomes.`;
+Be direct, honest, and supportive. Focus on systems over goals. Identity over outcomes.
+
+IMPORTANT: If user has an identity statement, use it as the foundation for ALL coaching. Ask: "Would someone who [their identity] do this?"`;
 
       const llmResponse = await invokeLLM({
         messages: [
