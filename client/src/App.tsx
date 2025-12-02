@@ -26,6 +26,11 @@ import AICoaching from "./pages/AICoaching";
 import IntroSession from "./pages/IntroSession";
 import AutismDashboard from "./pages/AutismDashboard";
 import CreateAutismProfile from "./pages/CreateAutismProfile";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import SessionRoom from "./pages/SessionRoom";
+import TransformationDashboard from "./pages/transformation/TransformationDashboard";
+import DailyCheckIn from "./pages/transformation/DailyCheckIn";
+import HabitTracker from "./pages/transformation/HabitTracker";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -51,6 +56,11 @@ function Router() {
       <Route path="/coach/dashboard" component={CoachDashboard} />
       <Route path="/autism" component={AutismDashboard} />
       <Route path="/autism/create-profile" component={CreateAutismProfile} />
+      <Route path="/payment-success" component={PaymentSuccess} />
+      <Route path="/session/:id" component={SessionRoom} />
+      <Route path="/transformation/dashboard" component={TransformationDashboard} />
+      <Route path="/transformation/check-in" component={DailyCheckIn} />
+      <Route path="/transformation/habits" component={HabitTracker} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

@@ -112,6 +112,9 @@ importers:
       '@trpc/server':
         specifier: ^11.6.0
         version: 11.6.0(typescript@5.9.3)
+      '@zoom/videosdk':
+        specifier: ^2.3.5
+        version: 2.3.5
       axios:
         specifier: ^1.12.0
         version: 1.12.2
@@ -2370,6 +2373,9 @@ packages:
 
   '@vitest/utils@2.1.9':
     resolution: {integrity: sha512-v0psaMSkNJ3A2NMrUEHFRzJtDPFn+/VWZ5WxImB21T9fjucJRmS7xCS3ppEnARb9y11OAzaD+P2Ps+b+BGX5iQ==}
+
+  '@zoom/videosdk@2.3.5':
+    resolution: {integrity: sha512-Zs/ASdN/n7uNxrHcQ7qsRyoBFMIy0CRCe1R70zbqlNiQJ+N7bwsFpfsxOrjljYBOkbkjzCMEszZPSpB6ZHMVxg==}
 
   abort-controller@3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
@@ -6815,6 +6821,8 @@ snapshots:
       '@vitest/pretty-format': 2.1.9
       loupe: 3.2.1
       tinyrainbow: 1.2.0
+
+  '@zoom/videosdk@2.3.5': {}
 
   abort-controller@3.0.0:
     dependencies:

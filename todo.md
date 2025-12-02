@@ -1545,3 +1545,81 @@
 - [ ] Test payment flow
 - [ ] Final checkpoint
 - [ ] Deploy to Render
+
+
+## CRITICAL REVENUE-GENERATING MODULES
+
+### Payment System
+- [x] Create Stripe checkout session endpoint
+- [x] Build payment confirmation page
+- [x] Implement webhook handler for payment events
+- [ ] Create receipt/invoice generation
+- [ ] Add payment history to user dashboard
+
+### Session Booking System
+- [ ] Build Calendly embed component
+- [ ] Create booking confirmation page
+- [ ] Implement booking database schema
+- [ ] Add session reminders system
+- [ ] Build reschedule/cancel functionality
+
+### Session Delivery
+- [ ] Add video call link generation (Zoom/Google Meet)
+- [ ] Create session preparation page
+- [ ] Build session notes interface for coaches
+- [ ] Implement post-session action items
+- [ ] Add session recording storage
+
+### Coach Admin Panel
+- [ ] Build coach client management dashboard
+- [ ] Create session calendar view
+- [ ] Add payment tracking interface
+- [ ] Implement client notes/records system
+- [ ] Build session scheduling interface
+
+### Transformation Protocol UI
+- [ ] Create daily check-in page
+- [ ] Build habit tracker interface
+- [ ] Implement identity evolution dashboard
+- [ ] Add progress visualization charts
+- [ ] Create micro-habits interface
+
+### Email Automation
+- [ ] Set up email service integration
+- [ ] Create welcome email template
+- [ ] Build booking confirmation email
+- [ ] Implement session reminder emails
+- [ ] Add follow-up sequence automation
+
+
+## ZOOM VIDEO SDK INTEGRATION
+
+- [x] Install @zoom/videosdk package
+- [x] Create Zoom token generation backend (server/zoom.ts)
+- [x] Create Zoom tRPC router (server/routers/zoom.ts)
+- [x] Create ZoomVideoComponent (client/src/components/ZoomVideo.tsx)
+- [x] Update SessionRoom to use Zoom SDK
+- [x] Add Zoom SDK credentials to env.ts
+- [ ] Request ZOOM_SDK_KEY and ZOOM_SDK_SECRET from user
+- [ ] Test Zoom video calls end-to-end
+
+
+## TRANSFORMATION PROTOCOL UI (PHASE 5)
+
+- [x] Create TransformationDashboard.tsx (central hub for protocol)
+- [x] Create DailyCheckIn.tsx (energy, mood, focus, identity alignment tracking)
+- [x] Create HabitTracker.tsx (identity-based habit system)
+- [x] Add transformation routes to App.tsx
+- [x] Integrate with existing identity backend (tRPC procedures)
+- [ ] Test transformation flow end-to-end
+
+
+## EMAIL AUTOMATION SYSTEM (PHASE 6)
+
+- [x] Create email service (server/email.ts)
+- [x] Build email templates (booking, payment, reminder)
+- [x] Integrate with Stripe webhook for payment confirmations
+- [x] Add coach notifications via Manus notification system
+- [ ] Integrate SendGrid/Resend/AWS SES for production client emails
+- [ ] Set up automated session reminders (24 hours before)
+- [ ] Test email flow end-to-end
