@@ -1,9 +1,0 @@
-{
-  "query": "UPDATE sessionTypes SET displayOrder = CASE WHEN name = 'Free Discovery Call' THEN 0 WHEN name = 'Essential Coaching' THEN 1 WHEN name = 'Growth Coaching' THEN 2 WHEN name = 'Transformation Coaching' THEN 3 END WHERE coachId = 1",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3ygUAfurMsr4XGZ.3403564ca969 --database 4hFQX8wGtmvaWpUHVdnfBS --execute UPDATE sessionTypes SET displayOrder = CASE WHEN name = 'Free Discovery Call' THEN 0 WHEN name = 'Essential Coaching' THEN 1 WHEN name = 'Growth Coaching' THEN 2 WHEN name = 'Transformation Coaching' THEN 3 END WHERE coachId = 1",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 158
-}
