@@ -1,1 +1,0 @@
-ALTER TABLE `sessionTypes` ADD `stripePriceId` varchar(255);

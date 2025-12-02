@@ -1,9 +1,0 @@
-{
-  "query": "INSERT INTO sessionTypes (coachId, name, description, duration, price, subscriptionPrice, isActive, displayOrder, createdAt, updatedAt) VALUES (1, 'Free Discovery Call', 'A complimentary 15-minute breakthrough session to explore your emotional challenges, discuss your goals, and determine if our coaching is the right fit for you. No pressure, no commitment—just clarity and next steps.', 15, 0, 0, 'true', 0, NOW(), NOW())",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3ygUAfurMsr4XGZ.3403564ca969 --database 4hFQX8wGtmvaWpUHVdnfBS --execute INSERT INTO sessionTypes (coachId, name, description, duration, price, subscriptionPrice, isActive, displayOrder, createdAt, updatedAt) VALUES (1, 'Free Discovery Call', 'A complimentary 15-minute breakthrough session to explore your emotional challenges, discuss your goals, and determine if our coaching is the right fit for you. No pressure, no commitment—just clarity and next steps.', 15, 0, 0, 'true', 0, NOW(), NOW())",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 909
-}

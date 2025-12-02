@@ -3,19 +3,11 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* ========================================
-   WORLD-CLASS DESIGN SYSTEM
-   Enterprise-grade UI foundation
-   ======================================== */
-
 @theme inline {
-  /* Radius System */
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  
-  /* Color Mappings */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -50,437 +42,136 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-/* ========================================
-   LIGHT THEME (Default)
-   Calming, professional, wellness-focused
-   ======================================== */
 :root {
-  /* Brand Colors - Calming Blue/Green Palette */
-  --primary: oklch(0.55 0.15 240); /* Calm Blue */
-  --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.50 0.12 180); /* Teal */
-  --secondary-foreground: oklch(0.99 0 0);
-  --accent: oklch(0.65 0.10 160); /* Soft Green */
-  --accent-foreground: oklch(0.99 0 0);
-  
-  /* Semantic Colors */
-  --destructive: oklch(0.577 0.245 27.325); /* Warm Red */
-  --destructive-foreground: oklch(0.985 0 0);
-  --success: oklch(0.60 0.15 145); /* Green */
-  --success-foreground: oklch(0.99 0 0);
-  --warning: oklch(0.75 0.15 85); /* Amber */
-  --warning-foreground: oklch(0.15 0 0);
-  --info: oklch(0.60 0.15 240); /* Blue */
-  --info-foreground: oklch(0.99 0 0);
-  
-  /* Neutral Colors */
-  --background: oklch(0.98 0 0); /* Off-white for reduced eye strain */
-  --foreground: oklch(0.20 0.01 240);
+  --primary: var(--color-blue-700);
+  --primary-foreground: var(--color-blue-50);
+  --sidebar-primary: var(--color-blue-600);
+  --sidebar-primary-foreground: var(--color-blue-50);
+  --chart-1: var(--color-blue-300);
+  --chart-2: var(--color-blue-500);
+  --chart-3: var(--color-blue-600);
+  --chart-4: var(--color-blue-700);
+  --chart-5: var(--color-blue-800);
+  --radius: 0.65rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.235 0.015 65);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.20 0.01 240);
+  --card-foreground: oklch(0.235 0.015 65);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.20 0.01 240);
-  --muted: oklch(0.95 0.005 240);
-  --muted-foreground: oklch(0.50 0.01 240);
-  --border: oklch(0.90 0.005 240);
-  --input: oklch(0.90 0.005 240);
-  --ring: oklch(0.55 0.15 240);
-  
-  /* Chart Colors - Harmonious Palette */
-  --chart-1: oklch(0.65 0.15 240); /* Blue */
-  --chart-2: oklch(0.60 0.15 180); /* Teal */
-  --chart-3: oklch(0.65 0.12 160); /* Green */
-  --chart-4: oklch(0.70 0.12 140); /* Yellow-Green */
-  --chart-5: oklch(0.60 0.10 200); /* Cyan */
-  
-  /* Sidebar */
-  --sidebar: oklch(0.99 0 0);
-  --sidebar-foreground: oklch(0.20 0.01 240);
-  --sidebar-primary: oklch(0.55 0.15 240);
-  --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.95 0.005 240);
-  --sidebar-accent-foreground: oklch(0.20 0.01 240);
-  --sidebar-border: oklch(0.90 0.005 240);
-  --sidebar-ring: oklch(0.55 0.15 240);
-  
-  /* Design System Variables */
-  --radius: 12px; /* Softer, more premium feel */
-  --spacing-unit: 8px; /* 8px grid system */
-  
-  /* Typography Scale */
-  --font-size-xs: 0.75rem; /* 12px */
-  --font-size-sm: 0.875rem; /* 14px */
-  --font-size-base: 1rem; /* 16px */
-  --font-size-lg: 1.125rem; /* 18px */
-  --font-size-xl: 1.25rem; /* 20px */
-  --font-size-2xl: 1.5rem; /* 24px */
-  --font-size-3xl: 1.875rem; /* 30px */
-  --font-size-4xl: 2.25rem; /* 36px */
-  --font-size-5xl: 3rem; /* 48px */
-  
-  /* Line Heights */
-  --line-height-tight: 1.25;
-  --line-height-normal: 1.5;
-  --line-height-relaxed: 1.75;
-  
-  /* Shadows - Subtle, professional depth */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-  
-  /* Transitions - Smooth, professional */
-  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+  --popover-foreground: oklch(0.235 0.015 65);
+  --secondary: oklch(0.98 0.001 286.375);
+  --secondary-foreground: oklch(0.4 0.015 65);
+  --muted: oklch(0.967 0.001 286.375);
+  --muted-foreground: oklch(0.552 0.016 285.938);
+  --accent: oklch(0.967 0.001 286.375);
+  --accent-foreground: oklch(0.141 0.005 285.823);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(0.92 0.004 286.32);
+  --input: oklch(0.92 0.004 286.32);
+  --ring: oklch(0.623 0.214 259.815);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.235 0.015 65);
+  --sidebar-accent: oklch(0.967 0.001 286.375);
+  --sidebar-accent-foreground: oklch(0.141 0.005 285.823);
+  --sidebar-border: oklch(0.92 0.004 286.32);
+  --sidebar-ring: oklch(0.623 0.214 259.815);
 }
 
-/* ========================================
-   DARK THEME
-   Reduced eye strain, premium feel
-   ======================================== */
 .dark {
-  --primary: oklch(0.65 0.15 240);
-  --primary-foreground: oklch(0.15 0 0);
-  --secondary: oklch(0.60 0.12 180);
-  --secondary-foreground: oklch(0.15 0 0);
-  --accent: oklch(0.70 0.10 160);
-  --accent-foreground: oklch(0.15 0 0);
-  
-  --destructive: oklch(0.65 0.20 27);
-  --destructive-foreground: oklch(0.15 0 0);
-  --success: oklch(0.65 0.15 145);
-  --success-foreground: oklch(0.15 0 0);
-  --warning: oklch(0.75 0.15 85);
-  --warning-foreground: oklch(0.15 0 0);
-  --info: oklch(0.65 0.15 240);
-  --info-foreground: oklch(0.15 0 0);
-  
-  --background: oklch(0.15 0.01 240); /* True dark, not pure black */
-  --foreground: oklch(0.90 0.01 240);
-  --card: oklch(0.18 0.01 240);
-  --card-foreground: oklch(0.90 0.01 240);
-  --popover: oklch(0.18 0.01 240);
-  --popover-foreground: oklch(0.90 0.01 240);
-  --muted: oklch(0.25 0.01 240);
-  --muted-foreground: oklch(0.60 0.01 240);
-  --border: oklch(0.30 0.01 240);
-  --input: oklch(0.30 0.01 240);
-  --ring: oklch(0.65 0.15 240);
-  
-  --sidebar: oklch(0.17 0.01 240);
-  --sidebar-foreground: oklch(0.90 0.01 240);
-  --sidebar-primary: oklch(0.65 0.15 240);
-  --sidebar-primary-foreground: oklch(0.15 0 0);
-  --sidebar-accent: oklch(0.25 0.01 240);
-  --sidebar-accent-foreground: oklch(0.90 0.01 240);
-  --sidebar-border: oklch(0.30 0.01 240);
-  --sidebar-ring: oklch(0.65 0.15 240);
-  
-  /* Dark mode shadows - more subtle */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.3);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.3);
+  --primary: var(--color-blue-700);
+  --primary-foreground: var(--color-blue-50);
+  --sidebar-primary: var(--color-blue-500);
+  --sidebar-primary-foreground: var(--color-blue-50);
+  --background: oklch(0.141 0.005 285.823);
+  --foreground: oklch(0.85 0.005 65);
+  --card: oklch(0.21 0.006 285.885);
+  --card-foreground: oklch(0.85 0.005 65);
+  --popover: oklch(0.21 0.006 285.885);
+  --popover-foreground: oklch(0.85 0.005 65);
+  --secondary: oklch(0.24 0.006 286.033);
+  --secondary-foreground: oklch(0.7 0.005 65);
+  --muted: oklch(0.274 0.006 286.033);
+  --muted-foreground: oklch(0.705 0.015 286.067);
+  --accent: oklch(0.274 0.006 286.033);
+  --accent-foreground:  oklch(0.92 0.005 65);
+  --destructive: oklch(0.704 0.191 22.216);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.488 0.243 264.376);
+  --chart-1: var(--color-blue-300);
+  --chart-2: var(--color-blue-500);
+  --chart-3: var(--color-blue-600);
+  --chart-4: var(--color-blue-700);
+  --chart-5: var(--color-blue-800);
+  --sidebar: oklch(0.21 0.006 285.885);
+  --sidebar-foreground: oklch(0.85 0.005 65);
+  --sidebar-accent: oklch(0.274 0.006 286.033);
+  --sidebar-accent-foreground:  oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.488 0.243 264.376);
 }
 
-/* ========================================
-   GLOBAL STYLES
-   ======================================== */
-* {
-  @apply border-border;
-}
-
-body {
-  @apply bg-background text-foreground;
-  font-feature-settings: "rlig" 1, "calt" 1;
-  font-synthesis-weight: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* ========================================
-   TYPOGRAPHY SYSTEM
-   ======================================== */
-h1, .text-h1 {
-  font-size: var(--font-size-4xl);
-  font-weight: 700;
-  line-height: var(--line-height-tight);
-  letter-spacing: -0.02em;
-}
-
-h2, .text-h2 {
-  font-size: var(--font-size-3xl);
-  font-weight: 600;
-  line-height: var(--line-height-tight);
-  letter-spacing: -0.01em;
-}
-
-h3, .text-h3 {
-  font-size: var(--font-size-2xl);
-  font-weight: 600;
-  line-height: var(--line-height-normal);
-}
-
-h4, .text-h4 {
-  font-size: var(--font-size-xl);
-  font-weight: 600;
-  line-height: var(--line-height-normal);
-}
-
-h5, .text-h5 {
-  font-size: var(--font-size-lg);
-  font-weight: 600;
-  line-height: var(--line-height-normal);
-}
-
-h6, .text-h6 {
-  font-size: var(--font-size-base);
-  font-weight: 600;
-  line-height: var(--line-height-normal);
-}
-
-.text-body {
-  font-size: var(--font-size-base);
-  line-height: var(--line-height-relaxed);
-}
-
-.text-small {
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-normal);
-}
-
-.text-micro {
-  font-size: var(--font-size-xs);
-  line-height: var(--line-height-normal);
-}
-
-/* ========================================
-   LAYOUT UTILITIES
-   ======================================== */
-.container {
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: calc(var(--spacing-unit) * 2);
-  padding-right: calc(var(--spacing-unit) * 2);
-}
-
-@media (min-width: 640px) {
-  .container {
-    max-width: 640px;
-    padding-left: calc(var(--spacing-unit) * 3);
-    padding-right: calc(var(--spacing-unit) * 3);
-  }
-}
-
-@media (min-width: 768px) {
-  .container {
-    max-width: 768px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .container {
-    max-width: 1024px;
-    padding-left: calc(var(--spacing-unit) * 4);
-    padding-right: calc(var(--spacing-unit) * 4);
-  }
-}
-
-@media (min-width: 1280px) {
-  .container {
-    max-width: 1280px;
-  }
-}
-
-@media (min-width: 1536px) {
-  .container {
-    max-width: 1536px;
-  }
-}
-
-/* ========================================
-   CARD SYSTEM
-   ======================================== */
-.card-premium {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  transition: all var(--transition-base);
-}
-
-.card-premium:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
-}
-
-.card-flat {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-}
-
-.card-elevated {
-  background: var(--card);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-xl);
-}
-
-/* ========================================
-   BUTTON SYSTEM
-   ======================================== */
-.btn-primary {
-  background: var(--primary);
-  color: var(--primary-foreground);
-  padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 3);
-  border-radius: var(--radius-md);
-  font-weight: 600;
-  transition: all var(--transition-fast);
-  box-shadow: var(--shadow-sm);
-}
-
-.btn-primary:hover {
-  opacity: 0.9;
-  box-shadow: var(--shadow-md);
-  transform: translateY(-1px);
-}
-
-.btn-secondary {
-  background: var(--secondary);
-  color: var(--secondary-foreground);
-  padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 3);
-  border-radius: var(--radius-md);
-  font-weight: 600;
-  transition: all var(--transition-fast);
-}
-
-.btn-ghost {
-  background: transparent;
-  color: var(--foreground);
-  padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 3);
-  border-radius: var(--radius-md);
-  font-weight: 600;
-  transition: all var(--transition-fast);
-}
-
-.btn-ghost:hover {
-  background: var(--muted);
-}
-
-/* ========================================
-   ANIMATION UTILITIES
-   ======================================== */
-.fade-in {
-  animation: fadeIn var(--transition-base) ease-in;
-}
-
-.slide-up {
-  animation: slideUp var(--transition-base) ease-out;
-}
-
-.scale-in {
-  animation: scaleIn var(--transition-fast) ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* ========================================
-   SPACING UTILITIES (8px grid)
-   ======================================== */
-.space-1 { padding: calc(var(--spacing-unit) * 1); }
-.space-2 { padding: calc(var(--spacing-unit) * 2); }
-.space-3 { padding: calc(var(--spacing-unit) * 3); }
-.space-4 { padding: calc(var(--spacing-unit) * 4); }
-.space-5 { padding: calc(var(--spacing-unit) * 5); }
-.space-6 { padding: calc(var(--spacing-unit) * 6); }
-.space-8 { padding: calc(var(--spacing-unit) * 8); }
-.space-10 { padding: calc(var(--spacing-unit) * 10); }
-
-.gap-1 { gap: calc(var(--spacing-unit) * 1); }
-.gap-2 { gap: calc(var(--spacing-unit) * 2); }
-.gap-3 { gap: calc(var(--spacing-unit) * 3); }
-.gap-4 { gap: calc(var(--spacing-unit) * 4); }
-.gap-5 { gap: calc(var(--spacing-unit) * 5); }
-.gap-6 { gap: calc(var(--spacing-unit) * 6); }
-.gap-8 { gap: calc(var(--spacing-unit) * 8); }
-
-/* ========================================
-   ACCESSIBILITY ENHANCEMENTS
-   ======================================== */
-.focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: 2px;
-}
-
-.reduced-motion {
-  animation: none !important;
-  transition: none !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
+@layer base {
   * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [type="button"]:not(:disabled),
+  [type="submit"]:not(:disabled),
+  [type="reset"]:not(:disabled),
+  a[href],
+  select:not(:disabled),
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled) {
+    @apply cursor-pointer;
   }
 }
 
-/* ========================================
-   SCROLL BEHAVIOR
-   ======================================== */
-html {
-  scroll-behavior: smooth;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
+@layer components {
+  /**
+   * Custom container utility that centers content and adds responsive padding.
+   *
+   * This overrides Tailwind's default container behavior to:
+   * - Auto-center content (mx-auto)
+   * - Add responsive horizontal padding
+   * - Set max-width for large screens
+   *
+   * Usage: <div className="container">...</div>
+   *
+   * For custom widths, use max-w-* utilities directly:
+   * <div className="max-w-6xl mx-auto px-4">...</div>
+   */
+  .container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem; /* 16px - mobile padding */
+    padding-right: 1rem;
   }
-}
 
-/* Custom scrollbar for webkit browsers */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
+  .flex {
+    min-height: 0;
+    min-width: 0;
+  }
 
-::-webkit-scrollbar-track {
-  background: var(--muted);
-}
+  @media (min-width: 640px) {
+    .container {
+      padding-left: 1.5rem; /* 24px - tablet padding */
+      padding-right: 1.5rem;
+    }
+  }
 
-::-webkit-scrollbar-thumb {
-  background: var(--muted-foreground);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--foreground);
+  @media (min-width: 1024px) {
+    .container {
+      padding-left: 2rem; /* 32px - desktop padding */
+      padding-right: 2rem;
+      max-width: 1280px; /* Standard content width */
+    }
+  }
 }
