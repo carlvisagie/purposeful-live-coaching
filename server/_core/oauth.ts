@@ -3,6 +3,7 @@ import type { Express, Request, Response } from "express";
 import * as db from "../db";
 import { getSessionCookieOptions } from "./cookies";
 import { sdk } from "./sdk";
+import { ENV } from "./env";
 
 function getQueryParam(req: Request, key: string): string | undefined {
   const value = req.query[key];
@@ -10,6 +11,32 @@ function getQueryParam(req: Request, key: string): string | undefined {
 }
 
 export function registerOAuthRoutes(app: Express) {
+  app.get("/api/oauth/login", (req: Request, res: Response) => {
+    const host = req.get("host") || "localhost:3000";
+    const protocol = req.protocol || "https";
+    const redirectUri = `${protocol}://${host}/api/oauth/callback`;
+    const state = btoa(redirectUri);
+    const oauthServerUrl = ENV.oAuthServerUrl;
+    const appId = ENV.appId;
+
+    if (!oauthServerUrl || !appId) {
+      console.error("[OAuth] Missing config");
+      return res.status(500).send("OAuth configuration error");
+    }
+
+    try {
+      const url = new URL(`${oauthServerUrl}/app-auth`);
+      url.searchParams.set("appId", appId);
+      url.searchParams.set("redirectUri", redirectUri);
+      url.searchParams.set("state", state);
+      url.searchParams.set("type", "signIn");
+      res.redirect(url.toString());
+    } catch (error) {
+      console.error("[OAuth] Login error:", error);
+      res.status(500).send("OAuth login error");
+    }
+  });
+
   app.get("/api/oauth/callback", async (req: Request, res: Response) => {
     const code = getQueryParam(req, "code");
     const state = getQueryParam(req, "state");

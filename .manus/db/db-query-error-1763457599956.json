@@ -1,0 +1,8 @@
+{
+  "query": "UPDATE sessionTypes SET price = 100, oneTimePrice = 100, subscriptionPrice = 100 WHERE name = 'Free Discovery Call';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3ygUAfurMsr4XGZ.3403564ca969 --database 4hFQX8wGtmvaWpUHVdnfBS --execute UPDATE sessionTypes SET price = 100, oneTimePrice = 100, subscriptionPrice = 100 WHERE name = 'Free Discovery Call';",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'oneTimePrice' in 'field list'"
+  ]
+}
