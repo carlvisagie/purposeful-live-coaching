@@ -731,3 +731,151 @@ Remove all signup forms. User just enters email/password and immediately starts 
 - [x] Add "Edit Profile" option (manual override)
 - [x] Display profile completeness percentage
 - [ ] Track extraction accuracy over time (future: analytics)
+
+
+---
+
+## 🧪 PRE-LAUNCH QA TESTING
+
+### Complete User Journey Testing
+- [ ] Test signup flow (email/password only, no forms)
+- [ ] Test 7-day free trial activation
+- [ ] Test AI coach first conversation (greeting, context loading)
+- [ ] Test profile extraction (verify fields populate automatically)
+- [ ] Test file upload (audio, video, documents, images)
+- [ ] Test conversation rating and feedback
+- [ ] Test subscription upgrade flow (free trial → paid)
+- [ ] Test payment processing (monthly and yearly)
+- [ ] Test split payment option for yearly plans
+- [ ] Test subscription cancellation
+- [ ] Test subscription reactivation
+- [ ] Test human session booking (for Hybrid/Premium tiers)
+- [ ] Test My Profile page (view and edit)
+- [ ] Test My Files page (upload, view, delete)
+
+### AI Coach Quality Verification
+- [ ] Test 10 real conversations with different scenarios
+- [ ] Verify crisis detection triggers correctly
+- [ ] Verify cross-conversation memory works
+- [ ] Verify file context loading (AI references uploaded files)
+- [ ] Verify response quality (professional, empathetic, actionable)
+- [ ] Verify psychological framework usage (CBT, ACT, DBT, etc.)
+- [ ] Verify response variety (not always same structure)
+- [ ] Test progressive profiling (AI asks profile questions)
+
+### Human Coach Dashboard Testing
+- [ ] Test admin login and authentication
+- [ ] Test AI monitoring dashboard (/admin/ai-monitoring)
+- [ ] Test client history dashboard (/admin/client-history)
+- [ ] Test conversation review (read full transcripts)
+- [ ] Test file access (view client uploaded files)
+- [ ] Test pre-call brief generation
+- [ ] Test admin notes functionality
+
+### Payment & Subscription Testing
+- [ ] Test Stripe checkout (all 3 tiers, monthly and yearly)
+- [ ] Test webhook events (subscription created, updated, canceled)
+- [ ] Test failed payment recovery email
+- [ ] Test usage tracking (AI sessions, human sessions)
+- [ ] Test subscription limits enforcement
+- [ ] Test upgrade/downgrade flows
+- [ ] Test refund processing
+
+### Email Automation Testing
+- [ ] Test welcome email on trial start
+- [ ] Test trial day-5 reminder email
+- [ ] Test monthly usage summary email
+- [ ] Test failed payment notification email
+- [ ] Verify email deliverability (not spam)
+
+### Mobile Responsiveness Testing
+- [ ] Test homepage on mobile
+- [ ] Test AI chat on mobile
+- [ ] Test pricing page on mobile
+- [ ] Test subscription dashboard on mobile
+- [ ] Test file upload on mobile
+- [ ] Test My Profile on mobile
+
+### Performance & Reliability Testing
+- [ ] Test page load speeds (<3 seconds)
+- [ ] Test AI response time (<5 seconds)
+- [ ] Test file upload speed
+- [ ] Test concurrent users (10+ simultaneous chats)
+- [ ] Test database query performance
+
+### Edge Cases & Error Handling
+- [ ] Test with invalid email addresses
+- [ ] Test with expired credit cards
+- [ ] Test with network interruptions
+- [ ] Test with very long conversations (100+ messages)
+- [ ] Test with large file uploads (50MB)
+- [ ] Test with special characters in inputs
+- [ ] Test session timeout behavior
+
+---
+
+## 💾 DISASTER RECOVERY & BACKUP STRATEGY
+
+### Database Backups
+- [ ] Set up automated daily database backups to S3
+- [ ] Test database restore procedure
+- [ ] Document backup retention policy (30 days)
+- [ ] Create manual backup script for emergencies
+
+### Code Repository & Version Control
+- [ ] Push all code to GitHub private repository
+- [ ] Document git workflow
+- [ ] Tag production releases
+- [ ] Create rollback procedures
+
+### Environment Cloning
+- [ ] Document complete setup instructions for backup laptop
+- [ ] List all environment variables needed
+- [ ] Create setup script for quick deployment
+- [ ] Test full deployment on clean machine
+
+### Data Export Procedures
+- [ ] Create user data export script (GDPR compliance)
+- [ ] Create conversation export script
+- [ ] Create file backup script (S3 → local)
+- [ ] Document data migration procedures
+
+### Failover Procedures
+- [ ] Document what to do if Manus platform goes down
+- [ ] List backup hosting options (Render, Railway, Fly.io)
+- [ ] Create emergency deployment script
+- [ ] Test failover to backup hosting
+
+### Business Continuity Plan
+- [ ] Create customer communication templates (downtime, data loss, etc.)
+- [ ] Document manual payment processing (if Stripe fails)
+- [ ] Create offline mode capabilities (if possible)
+- [ ] List emergency contacts (Manus support, Stripe support, etc.)
+
+---
+
+## 📋 LAUNCH READINESS SCORECARD
+
+### Must-Have Before Launch (Blockers)
+- [ ] All payment flows tested and working
+- [ ] Crisis detection tested and working
+- [ ] Database backups configured
+- [ ] Stripe products created with real price IDs
+- [ ] Email automation configured
+- [ ] Mobile responsiveness verified
+- [ ] AI coach quality verified (8/10 or higher)
+
+### Should-Have Before Launch (Important)
+- [ ] Admin dashboards tested
+- [ ] File upload tested
+- [ ] Cross-conversation memory tested
+- [ ] Profile extraction tested
+- [ ] GitHub repository set up
+- [ ] Environment cloning documented
+
+### Nice-to-Have Before Launch (Optional)
+- [ ] Performance optimization
+- [ ] Advanced analytics
+- [ ] A/B testing setup
+- [ ] SEO optimization
+- [ ] Social media integration
