@@ -15,9 +15,13 @@ const stripe = new Stripe(ENV.stripeSecretKey, {
 const TIER_CONFIG = {
   ai_only: {
     name: "AI Coaching",
-    price: 2900, // $29.00
+    monthlyPrice: 2900, // $29.00/month
+    yearlyPrice: 29000, // $290.00/year (save $58 - 2 months free)
     humanSessionsIncluded: 0,
-    stripePriceId: "price_ai_only_placeholder", // TODO: Replace with actual Stripe Price ID
+    stripePriceId: {
+      monthly: "price_ai_only_monthly_placeholder", // TODO: Replace with actual Stripe Price ID
+      yearly: "price_ai_only_yearly_placeholder", // TODO: Replace with actual Stripe Price ID
+    },
     features: [
       "Unlimited 24/7 AI chat sessions",
       "Emotion tracking & insights",
@@ -29,9 +33,13 @@ const TIER_CONFIG = {
   },
   hybrid: {
     name: "Hybrid Coaching",
-    price: 14900, // $149.00
+    monthlyPrice: 14900, // $149.00/month
+    yearlyPrice: 149000, // $1,490.00/year (save $298 - 2 months free)
     humanSessionsIncluded: 1,
-    stripePriceId: "price_hybrid_placeholder", // TODO: Replace with actual Stripe Price ID
+    stripePriceId: {
+      monthly: "price_hybrid_monthly_placeholder", // TODO: Replace with actual Stripe Price ID
+      yearly: "price_hybrid_yearly_placeholder", // TODO: Replace with actual Stripe Price ID
+    },
     features: [
       "Everything in AI Coaching",
       "1 live human coaching session/month",
@@ -43,9 +51,13 @@ const TIER_CONFIG = {
   },
   premium: {
     name: "Premium Coaching",
-    price: 29900, // $299.00
+    monthlyPrice: 29900, // $299.00/month
+    yearlyPrice: 299000, // $2,990.00/year (save $598 - 2 months free)
     humanSessionsIncluded: 4,
-    stripePriceId: "price_premium_placeholder", // TODO: Replace with actual Stripe Price ID
+    stripePriceId: {
+      monthly: "price_premium_monthly_placeholder", // TODO: Replace with actual Stripe Price ID
+      yearly: "price_premium_yearly_placeholder", // TODO: Replace with actual Stripe Price ID
+    },
     features: [
       "Everything in Hybrid Coaching",
       "4 live human coaching sessions/month",
@@ -56,6 +68,15 @@ const TIER_CONFIG = {
     ],
   },
 };
+
+// Helper to get price based on billing frequency
+function getTierPrice(tier: keyof typeof TIER_CONFIG, frequency: "monthly" | "yearly") {
+  return frequency === "monthly" ? TIER_CONFIG[tier].monthlyPrice : TIER_CONFIG[tier].yearlyPrice;
+}
+
+function getTierPriceId(tier: keyof typeof TIER_CONFIG, frequency: "monthly" | "yearly") {
+  return TIER_CONFIG[tier].stripePriceId[frequency];
+}
 
 export const subscriptionsRouter = router({
   /**
@@ -102,12 +123,15 @@ export const subscriptionsRouter = router({
     .input(
       z.object({
         tier: z.enum(["ai_only", "hybrid", "premium"]),
+        billingFrequency: z.enum(["monthly", "yearly"]).default("monthly"),
+        enableSplitPayment: z.boolean().default(false),
         successUrl: z.string(),
         cancelUrl: z.string(),
       })
     )
     .mutation(async ({ input, ctx }) => {
       const tierConfig = TIER_CONFIG[input.tier];
+      const priceId = getTierPriceId(input.tier, input.billingFrequency);
 
       // Check if user already has an active subscription
       const existingSub = await db
@@ -128,14 +152,14 @@ export const subscriptionsRouter = router({
         });
       }
 
-      // Create Stripe checkout session
-      const session = await stripe.checkout.sessions.create({
+      // Create Stripe checkout session config
+      const sessionConfig: any = {
         customer_email: ctx.user.email || undefined,
         mode: "subscription",
         payment_method_types: ["card"],
         line_items: [
           {
-            price: tierConfig.stripePriceId,
+            price: priceId,
             quantity: 1,
           },
         ],
@@ -144,15 +168,35 @@ export const subscriptionsRouter = router({
           metadata: {
             userId: ctx.user.id.toString(),
             tier: input.tier,
+            billingFrequency: input.billingFrequency,
           },
         },
         metadata: {
           userId: ctx.user.id.toString(),
           tier: input.tier,
+          billingFrequency: input.billingFrequency,
         },
         success_url: input.successUrl,
         cancel_url: input.cancelUrl,
-      });
+      };
+
+      // Enable split payment for yearly subscriptions (Stripe Installments)
+      // Note: This requires enabling "Installment plans" in Stripe Dashboard
+      if (input.billingFrequency === "yearly" && input.enableSplitPayment) {
+        sessionConfig.payment_method_options = {
+          card: {
+            installments: {
+              enabled: true,
+              plan: {
+                count: 3, // 3 installments
+                type: "fixed_count" as const,
+              },
+            },
+          },
+        };
+      }
+
+      const session = await stripe.checkout.sessions.create(sessionConfig);
 
       return {
         sessionId: session.id,

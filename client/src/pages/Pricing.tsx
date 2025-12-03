@@ -6,11 +6,16 @@ import { Badge } from "@/components/ui/badge";
 import { Check, Sparkles, Zap, Crown, Loader2 } from "lucide-react";
 import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 export default function Pricing() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
+  const [billingFrequency, setBillingFrequency] = useState<"monthly" | "yearly">("monthly");
+  const [enableSplitPayment, setEnableSplitPayment] = useState(false);
 
   const { data: tiers, isLoading } = trpc.subscriptions.getPricingTiers.useQuery();
   const { data: currentSub } = trpc.subscriptions.getMySubscription.useQuery();
@@ -21,6 +26,8 @@ export default function Pricing() {
     try {
       const result = await createCheckout.mutateAsync({
         tier: tier as "ai_only" | "hybrid" | "premium",
+        billingFrequency,
+        enableSplitPayment: billingFrequency === "yearly" && enableSplitPayment,
         successUrl: `${window.location.origin}/subscription/success`,
         cancelUrl: `${window.location.origin}/pricing`,
       });
@@ -68,6 +75,20 @@ export default function Pricing() {
     return currentSub?.tier === tier && currentSub?.status === "active";
   };
 
+  const getPrice = (tier: any) => {
+    if (billingFrequency === "monthly") {
+      return tier.monthlyPrice / 100;
+    } else {
+      return tier.yearlyPrice / 100;
+    }
+  };
+
+  const getMonthlySavings = (tier: any) => {
+    const monthlyTotal = (tier.monthlyPrice * 12) / 100;
+    const yearlyPrice = tier.yearlyPrice / 100;
+    return monthlyTotal - yearlyPrice;
+  };
+
   if (isLoading) {
     return (
       <div className="container py-12">
@@ -81,11 +102,43 @@ export default function Pricing() {
   return (
     <div className="container py-12">
       {/* Header */}
-      <div className="text-center mb-12">
+      <div className="text-center mb-8">
         <h1 className="text-4xl font-bold mb-4">Choose Your Coaching Plan</h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+        <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
           Start with 24/7 AI coaching or upgrade to include live human sessions. All plans include a 7-day free trial.
         </p>
+
+        {/* Billing Frequency Toggle */}
+        <div className="flex flex-col items-center justify-center gap-4">
+          <Tabs value={billingFrequency} onValueChange={(v) => setBillingFrequency(v as "monthly" | "yearly")}>
+            <TabsList className="grid w-[300px] grid-cols-2">
+              <TabsTrigger value="monthly">Monthly</TabsTrigger>
+              <TabsTrigger value="yearly">
+                Yearly
+                <Badge variant="secondary" className="ml-2 bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-100">
+                  Save 17%
+                </Badge>
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+
+          {/* Split Payment Option for Yearly */}
+          {billingFrequency === "yearly" && (
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="split-payment" 
+                checked={enableSplitPayment}
+                onCheckedChange={(checked) => setEnableSplitPayment(checked as boolean)}
+              />
+              <Label 
+                htmlFor="split-payment" 
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+              >
+                Pay in 3 installments (no fees)
+              </Label>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Current Subscription Alert */}
@@ -140,10 +193,19 @@ export default function Pricing() {
               </div>
               <CardTitle className="text-2xl">{tier.name}</CardTitle>
               <CardDescription>
-                <span className="text-3xl font-bold text-foreground">
-                  ${(tier.price / 100).toFixed(0)}
-                </span>
-                <span className="text-muted-foreground">/month</span>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-3xl font-bold text-foreground">
+                    ${getPrice(tier).toFixed(0)}
+                  </span>
+                  <span className="text-muted-foreground">
+                    /{billingFrequency === "monthly" ? "month" : "year"}
+                  </span>
+                </div>
+                {billingFrequency === "yearly" && (
+                  <p className="text-xs text-green-600 font-semibold mt-1">
+                    Save ${getMonthlySavings(tier).toFixed(0)} per year
+                  </p>
+                )}
               </CardDescription>
             </CardHeader>
 
@@ -181,6 +243,24 @@ export default function Pricing() {
         ))}
       </div>
 
+      {/* Split Payment Info for Yearly */}
+      {billingFrequency === "yearly" && (
+        <div className="mt-8 max-w-3xl mx-auto">
+          <Card className="bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
+            <CardContent className="pt-6">
+              <div className="text-center">
+                <p className="font-semibold text-blue-900 dark:text-blue-100 mb-2">
+                  💳 Split Payment Available
+                </p>
+                <p className="text-sm text-blue-800 dark:text-blue-200">
+                  Pay for your yearly subscription in 3 or 6 interest-free installments. Option available at checkout.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
       {/* FAQ Section */}
       <div className="mt-16 max-w-3xl mx-auto">
         <h2 className="text-2xl font-bold text-center mb-8">Frequently Asked Questions</h2>
@@ -192,9 +272,15 @@ export default function Pricing() {
             </p>
           </div>
           <div>
-            <h3 className="font-semibold mb-2">Can I upgrade or downgrade later?</h3>
+            <h3 className="font-semibold mb-2">Can I switch between monthly and yearly billing?</h3>
             <p className="text-muted-foreground">
-              Yes! You can change your plan anytime from your subscription dashboard. Changes take effect at the next billing cycle.
+              Yes! You can switch billing frequency from your subscription dashboard. Changes take effect at the next billing cycle.
+            </p>
+          </div>
+          <div>
+            <h3 className="font-semibold mb-2">How does split payment work?</h3>
+            <p className="text-muted-foreground">
+              For yearly plans, you can choose to pay in 3 or 6 installments at checkout. No interest, no fees - just spread the cost over time.
             </p>
           </div>
           <div>

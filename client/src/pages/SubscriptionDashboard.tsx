@@ -208,8 +208,14 @@ export default function SubscriptionDashboard() {
                 <div>
                   <p className="text-sm font-medium">Billing Amount</p>
                   <p className="text-2xl font-bold">
-                    ${subscription.tierConfig ? (subscription.tierConfig.price / 100).toFixed(0) : "0"}
-                    <span className="text-sm text-muted-foreground font-normal">/month</span>
+                    ${subscription.tierConfig ? 
+                      (subscription.billingFrequency === "yearly" 
+                        ? (subscription.tierConfig.yearlyPrice / 100).toFixed(0) 
+                        : (subscription.tierConfig.monthlyPrice / 100).toFixed(0)
+                      ) : "0"}
+                    <span className="text-sm text-muted-foreground font-normal">
+                      /{subscription.billingFrequency === "yearly" ? "year" : "month"}
+                    </span>
                   </p>
                 </div>
               </div>

@@ -219,3 +219,34 @@
 - [ ] Subscription Model Documentation (building now)
 - [ ] AI-First Platform Guide (building now)
 
+
+
+---
+
+## 🆕 NEW REQUEST: Yearly Subscriptions + Split Payments
+
+### Backend Updates
+- [x] Add billingFrequency field to subscriptions table (monthly/yearly)
+- [x] Update TIER_CONFIG to include yearly pricing (with 2 months free discount)
+- [x] Add split payment configuration for yearly plans
+- [x] Update createCheckoutSession to handle monthly vs yearly
+- [x] Update webhook handler to track billing frequency
+
+### Frontend Updates
+- [x] Add monthly/yearly toggle to pricing page
+- [x] Update pricing display to show yearly savings
+- [x] Add split payment checkbox for yearly plans
+- [x] Update subscription dashboard to show billing frequency
+- [ ] Add "Switch to Yearly" upgrade option in dashboard (optional)
+
+### Stripe Configuration
+- [ ] Create yearly price IDs for all 3 tiers (MANUAL STEP)
+- [x] Configure split payment in Stripe (using Stripe Installments API)
+- [ ] Update placeholder price IDs in code (MANUAL STEP)
+- [ ] Enable "Installment plans" in Stripe Dashboard settings
+
+### Pricing Structure
+- [x] AI-Only: $29/mo or $290/year (save $58 - 17% discount)
+- [x] Hybrid: $149/mo or $1,490/year (save $298 - 17% discount)
+- [x] Premium: $299/mo or $2,990/year (save $598 - 17% discount)
+- [x] Split payment: 3 installments for yearly plans (configurable)

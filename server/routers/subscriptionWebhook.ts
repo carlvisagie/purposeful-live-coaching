@@ -61,6 +61,7 @@ export const subscriptionWebhookRouter = router({
         if (session.mode === "subscription" && session.subscription) {
           const userId = parseInt(session.metadata?.userId || "0");
           const tier = session.metadata?.tier as "ai_only" | "hybrid" | "premium";
+          const billingFrequency = (session.metadata?.billingFrequency || "monthly") as "monthly" | "yearly";
           
           if (!userId || !tier) {
             console.error("Missing userId or tier in checkout session metadata");
@@ -80,6 +81,7 @@ export const subscriptionWebhookRouter = router({
             stripePriceId: stripeSubscription.items.data[0].price.id,
             productId: tier,
             tier,
+            billingFrequency,
             status: stripeSubscription.status === "trialing" ? "trialing" : "active",
             currentPeriodStart: new Date(stripeSubscription.current_period_start * 1000),
             currentPeriodEnd: new Date(stripeSubscription.current_period_end * 1000),
@@ -92,7 +94,7 @@ export const subscriptionWebhookRouter = router({
             cancelAtPeriodEnd: "false",
           });
 
-          console.log(`✅ Created subscription for user ${userId} (${tier})`);
+          console.log(`✅ Created subscription for user ${userId} (${tier} - ${billingFrequency})`);
         }
         
         // Handle one-time session purchases

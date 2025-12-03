@@ -213,6 +213,7 @@ export const subscriptions = mysqlTable("subscriptions", {
   stripePriceId: varchar("stripePriceId", { length: 255 }),
   productId: varchar("productId", { length: 64 }).notNull(),
   tier: mysqlEnum("tier", ["ai_only", "hybrid", "premium"]),
+  billingFrequency: mysqlEnum("billingFrequency", ["monthly", "yearly"]).default("monthly").notNull(),
   status: mysqlEnum("status", ["active", "cancelled", "past_due", "unpaid", "trialing"]).default("active").notNull(),
   currentPeriodStart: timestamp("currentPeriodStart"),
   currentPeriodEnd: timestamp("currentPeriodEnd"),
