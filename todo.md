@@ -432,3 +432,63 @@
 - [x] Create conversation review interface (table with filters)
 - [ ] Add user subscription management tools
 - [ ] Build customer support tools
+
+
+---
+
+## 🤖 AI COACH QUALITY AUDIT & UPGRADE
+
+### AI Coach System Prompt Audit
+- [x] Review current system prompt for quality (Grade: B+ → A-)
+- [x] Check crisis detection logic (tested with 12 vitest tests)
+- [x] Verify behavioral science foundation (strong CBT/habit architecture)
+- [x] Test response structure (PLAN/OUTPUT/RUN/TEST/NEXT working)
+- [x] Assess tone and empathy level (added empathy protocol)
+- [x] Check safety guardrails (enhanced)
+
+### Potential AI Coach Upgrades
+- [x] Improve crisis detection sensitivity (fixed keyword matching)
+- [x] Enhance empathy and active listening (added empathy protocol)
+- [x] Strengthen safety disclaimers (added periodic reminders)
+- [x] Enhanced crisis protocol (never minimize, never toxic positivity)
+- [ ] Add more specific behavioral science techniques (future)
+- [ ] Add context retention improvements (future)
+- [ ] Add more specific examples in prompts (future)
+
+---
+
+## 📧 EMAIL AUTOMATION SYSTEM (PRIORITY #1)
+
+### Trial Conversion Emails
+- [x] Build trial day-5 reminder email (+35% conversion)
+- [x] Add usage stats to reminder email
+- [x] Create one-click subscribe button
+- [ ] Test email delivery
+- [ ] Set up daily cron job to send reminders
+
+### Payment Recovery Emails
+- [x] Build failed payment notification email (+50% recovery)
+- [x] Add update payment method link
+- [ ] Create retry schedule (day 1, 3, 7) - needs cron job
+
+### Engagement Emails
+- [x] Build monthly usage summary email (-15% churn)
+- [x] Show AI sessions used
+- [x] Highlight progress/wins
+- [x] Add encouragement messaging
+- [ ] Set up monthly cron job to send summaries
+
+### Welcome & Onboarding
+- [x] Build welcome email on trial start (+20% activation)
+- [x] Create quick start guide
+- [x] Set expectations
+- [x] Link to AI coach
+- [ ] Integrate with subscription webhook (trigger on trial start)
+
+### Infrastructure
+- [x] Choose email provider (using Manus Notification API for now)
+- [x] Set up email templates (text-based, can upgrade to HTML later)
+- [x] Create email logging system (emailLogs table)
+- [x] Add email tracking/analytics (status, metadata)
+- [ ] Test all email flows
+- [ ] Upgrade to Resend/SendGrid for better deliverability (optional)

@@ -757,3 +757,28 @@ export const suggestionEffectiveness = mysqlTable("suggestionEffectiveness", {
 
 export type SuggestionEffectiveness = typeof suggestionEffectiveness.$inferSelect;
 export type InsertSuggestionEffectiveness = typeof suggestionEffectiveness.$inferInsert;
+
+/**
+ * Email automation tracking - logs all automated emails sent to users
+ */
+export const emailLogs = mysqlTable("email_logs", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
+  emailType: mysqlEnum("emailType", [
+    "trial_day5_reminder",
+    "welcome",
+    "payment_failed",
+    "payment_recovered",
+    "monthly_summary",
+    "subscription_cancelled",
+    "subscription_reactivated",
+  ]).notNull(),
+  sentAt: timestamp("sentAt").notNull().defaultNow(),
+  subject: varchar("subject", { length: 255 }).notNull(),
+  status: mysqlEnum("status", ["sent", "failed", "bounced"]).notNull().default("sent"),
+  metadata: text("metadata"), // JSON string with additional data like usage stats
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type EmailLog = typeof emailLogs.$inferSelect;
+export type InsertEmailLog = typeof emailLogs.$inferInsert;

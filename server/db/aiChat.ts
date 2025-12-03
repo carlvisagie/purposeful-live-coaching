@@ -136,8 +136,8 @@ export function detectCrisisLevel(message: string): "none" | "low" | "medium" | 
 
   // High risk keywords
   const highKeywords = [
-    "self harm", "cut myself", "hurt myself", "can't go on",
-    "giving up", "hopeless", "worthless"
+    "self harm", "self-harm", "cut myself", "cutting myself", "hurt myself", "hurting myself",
+    "can't go on", "cant go on", "giving up", "hopeless", "worthless", "no hope"
   ];
 
   // Medium risk keywords
