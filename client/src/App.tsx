@@ -25,6 +25,7 @@ import SubscriptionDashboard from "./pages/SubscriptionDashboard";
 import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 import SessionPurchaseSuccess from "./pages/SessionPurchaseSuccess";
 import AdminAIMonitoring from "./pages/AdminAIMonitoring";
+import AdminClientHistory from "./pages/AdminClientHistory";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -52,6 +53,7 @@ function Router() {
       <Route path="/subscription/success" component={SubscriptionSuccess} />
       <Route path="/subscription/session-success" component={SessionPurchaseSuccess} />
       <Route path="/admin/ai-monitoring" component={AdminAIMonitoring} />
+      <Route path="/admin/client-history" component={AdminClientHistory} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

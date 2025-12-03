@@ -232,8 +232,21 @@ export const aiChatRouter = router({
       // Build enhanced system prompt with context
       let enhancedSystemPrompt = SYSTEM_PROMPT;
       
+      // Add cross-conversation memory for first message in new conversation
       if (isFirstMessage) {
-        enhancedSystemPrompt += "\n\n**CURRENT CONTEXT:** This is the user's first message. Use MODE 1 (STRUCTURED PROTOCOL) to establish trust and provide immediate value.";
+        // Load user's previous conversations for context
+        const previousConversations = await getUserConversations(ctx.user.id);
+        const otherConversations = previousConversations.filter(c => c.id !== input.conversationId);
+        
+        if (otherConversations.length > 0) {
+          // Get last 3 conversations for context
+          const recentConversations = otherConversations.slice(0, 3);
+          const conversationTitles = recentConversations.map(c => c.title).filter(Boolean);
+          
+          enhancedSystemPrompt += `\n\n**USER HISTORY:**\nThis user has ${otherConversations.length} previous conversation(s) with you. Recent topics: ${conversationTitles.join(", ")}.\n\n**GREETING PROTOCOL:**\nSince this is a returning user, acknowledge their previous work with you. Reference their recent topics naturally. Show continuity and progress tracking. Example: "Welcome back! Last time we worked on [topic]. How has that been going?"\n\nUse MODE 3 (CONVERSATIONAL COACHING) to show you remember them, then transition to MODE 1 if they present a new problem.`;
+        } else {
+          enhancedSystemPrompt += "\n\n**CURRENT CONTEXT:** This is the user's first conversation with you. Use MODE 1 (STRUCTURED PROTOCOL) to establish trust and provide immediate value.";
+        }
       } else if (isFollowUp) {
         enhancedSystemPrompt += "\n\n**CURRENT CONTEXT:** This is a follow-up message in an ongoing conversation. Consider using MODE 3 (CONVERSATIONAL COACHING) to reference previous messages and show continuity. Only use MODE 1 if they present a new crisis or problem.";
       }

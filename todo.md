@@ -523,3 +523,83 @@
 - [ ] Add meta-cognitive prompts for self-reflection
 - [ ] A/B test different prompt variations
 - [ ] Add specialized modes (career, relationships, health)
+
+
+---
+
+## 👥 CLIENT HISTORY DASHBOARD (Coach Preparation System)
+
+### Problem
+Human coaches have no way to review client's AI conversation history or previous session notes before calls. This creates disconnected experience.
+
+### Solution
+Build coach dashboard showing complete client history for session preparation.
+
+### Database Schema
+- [ ] Add session notes table (coachNotes)
+- [ ] Link AI conversations to users
+- [ ] Add client profile summary table
+- [ ] Track important moments/breakthroughs
+
+### Backend API
+- [x] Get all AI conversations for a client
+- [x] Get all human session notes for a client
+- [x] Get client profile summary
+- [x] Add/update session notes
+- [x] Get pre-call brief with recent topics and crisis flags
+
+### Coach Dashboard UI
+- [x] Client search/selection (by user ID)
+- [x] AI conversation transcript viewer (full messages)
+- [x] Session notes history (all human sessions)
+- [x] Quick summary card ("Pre-Call Brief")
+- [x] Crisis flags and important moments (highlighted)
+- [x] Client overview metrics (AI conversations, messages, sessions, crisis count)
+- [x] Integrated into existing admin dashboard at /admin/client-history
+
+### Features
+- [x] Chronological timeline of all interactions (tabs for AI vs Human)
+- [x] View full conversation transcripts
+- [x] Pre-call brief with recent topics and crisis warnings
+- [ ] Search within client's conversations (future enhancement)
+- [ ] Export client history as PDF (future enhancement)
+- [ ] Mark conversations as "reviewed" (future enhancement)
+
+
+---
+
+## 🧠 CROSS-CONVERSATION MEMORY (AI Coach Continuity)
+
+### Problem
+AI coach treats every new conversation as a blank slate. Doesn't remember previous topics, goals, or progress. Feels impersonal and broken.
+
+### Solution
+Add cross-conversation memory so AI greets returning users with context and references previous conversations naturally.
+
+### Backend Implementation
+- [x] Create function to load user's conversation history summary
+- [x] Extract key topics from last 3-5 conversations
+- [x] Build context summary for AI system prompt
+- [ ] Identify recurring themes and goals (future: deeper analysis)
+- [ ] Track progress markers (what worked, what didn't) (future: sentiment tracking)
+
+### AI Integration
+- [x] Detect if user has previous conversations
+- [x] Load conversation summary before first message
+- [x] Inject summary into system prompt
+- [x] AI greets with context ("Welcome back! Last time we worked on [topic]...")
+- [x] Use MODE 3 (Conversational Coaching) for returning users
+- [ ] AI references previous breakthroughs (future: load specific wins)
+- [ ] AI tracks long-term progress (future: progress visualization)
+
+### Features
+- [x] Personalized greeting for returning users
+- [x] References to previous topics (last 3 conversations)
+- [x] Continuity across sessions
+- [ ] Progress acknowledgment (future: track completion rates)
+- [ ] Long-term goal tracking (future: dedicated goals table)
+
+### Privacy Considerations
+- [ ] User can clear conversation history
+- [ ] Option to start "anonymous" conversation
+- [ ] Clear data retention policy
