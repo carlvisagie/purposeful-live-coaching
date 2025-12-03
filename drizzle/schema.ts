@@ -203,7 +203,7 @@ export type Session = typeof sessions.$inferSelect;
 export type InsertSession = typeof sessions.$inferInsert;
 
 /**
- * Subscriptions table for tracking Stripe subscriptions
+ * Subscriptions table for tracking Stripe subscriptions (AI-First Model)
  */
 export const subscriptions = mysqlTable("subscriptions", {
   id: int("id").autoincrement().primaryKey(),
@@ -212,9 +212,13 @@ export const subscriptions = mysqlTable("subscriptions", {
   stripeCustomerId: varchar("stripeCustomerId", { length: 255 }),
   stripePriceId: varchar("stripePriceId", { length: 255 }),
   productId: varchar("productId", { length: 64 }).notNull(),
-  status: mysqlEnum("status", ["active", "cancelled", "past_due", "unpaid"]).default("active").notNull(),
+  tier: mysqlEnum("tier", ["ai_only", "hybrid", "premium"]),
+  status: mysqlEnum("status", ["active", "cancelled", "past_due", "unpaid", "trialing"]).default("active").notNull(),
   currentPeriodStart: timestamp("currentPeriodStart"),
   currentPeriodEnd: timestamp("currentPeriodEnd"),
+  cancelAtPeriodEnd: mysqlEnum("cancelAtPeriodEnd", ["true", "false"]).default("false"),
+  trialStart: timestamp("trialStart"),
+  trialEnd: timestamp("trialEnd"),
   cancelledAt: timestamp("cancelledAt"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
@@ -222,6 +226,47 @@ export const subscriptions = mysqlTable("subscriptions", {
 
 export type Subscription = typeof subscriptions.$inferSelect;
 export type InsertSubscription = typeof subscriptions.$inferInsert;
+
+/**
+ * Usage tracking for subscription billing periods
+ */
+export const usageTracking = mysqlTable("usage_tracking", {
+  id: int("id").autoincrement().primaryKey(),
+  subscriptionId: int("subscriptionId").notNull().references(() => subscriptions.id, { onDelete: "cascade" }),
+  userId: int("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
+  periodStart: timestamp("periodStart").notNull(),
+  periodEnd: timestamp("periodEnd").notNull(),
+  aiSessionsUsed: int("aiSessionsUsed").default(0).notNull(),
+  humanSessionsUsed: int("humanSessionsUsed").default(0).notNull(),
+  humanSessionsIncluded: int("humanSessionsIncluded").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type UsageTracking = typeof usageTracking.$inferSelect;
+export type InsertUsageTracking = typeof usageTracking.$inferInsert;
+
+/**
+ * Human session bookings for Hybrid and Premium tiers
+ */
+export const humanSessionBookings = mysqlTable("human_session_bookings", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
+  coachId: int("coachId").notNull().references(() => coaches.id, { onDelete: "cascade" }),
+  subscriptionId: int("subscriptionId").notNull().references(() => subscriptions.id, { onDelete: "cascade" }),
+  sessionDate: timestamp("sessionDate").notNull(),
+  duration: int("duration").default(30).notNull(),
+  status: mysqlEnum("status", ["scheduled", "completed", "canceled", "no_show"]).notNull(),
+  zoomLink: text("zoomLink"),
+  aiPreSessionBrief: text("aiPreSessionBrief"),
+  coachNotes: text("coachNotes"),
+  recordingUrl: text("recordingUrl"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type HumanSessionBooking = typeof humanSessionBookings.$inferSelect;
+export type InsertHumanSessionBooking = typeof humanSessionBookings.$inferInsert;
 /**
  * Coach availability - recurring weekly schedule
  */
@@ -309,6 +354,8 @@ export const aiChatConversations = mysqlTable("aiChatConversations", {
   id: int("id").autoincrement().primaryKey(),
   userId: int("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
   clientId: int("clientId").references(() => clients.id, { onDelete: "cascade" }), // Optional link to client profile
+  subscriptionId: int("subscriptionId").references(() => subscriptions.id, { onDelete: "set null" }), // Link to subscription for usage tracking
+  sessionDuration: int("sessionDuration").default(0), // Duration in minutes
   title: varchar("title", { length: 255 }), // Auto-generated conversation title
   lastMessageAt: timestamp("lastMessageAt").defaultNow().notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),

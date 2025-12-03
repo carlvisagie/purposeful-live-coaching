@@ -28,6 +28,8 @@ import { identityRouter } from "./routers/identity";
 // import { adaptiveLearningRouter } from "./routers/adaptiveLearning"; // Temporarily disabled - needs schema migration
 import { autismRouter } from "./routers/autism";
 import { liveSessionRouter } from "./routers/liveSession";
+import { subscriptionsRouter } from "./routers/subscriptions";
+import { subscriptionWebhookRouter } from "./routers/subscriptionWebhook";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -68,6 +70,8 @@ export const appRouter = router({
   identity: identityRouter,
   // adaptiveLearning: adaptiveLearningRouter, // Temporarily disabled - needs schema migration
   autism: autismRouter,
+  subscriptions: subscriptionsRouter,
+  subscriptionWebhook: subscriptionWebhookRouter,
 });
 
 export type AppRouter = typeof appRouter;

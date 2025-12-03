@@ -60,12 +60,23 @@ export default function AICoach() {
       { enabled: !!selectedConversationId }
     );
 
+  // Track usage mutation
+  const trackUsageMutation = trpc.subscriptions.trackAiSession.useMutation();
+
   // Mutations
   const createConversationMutation = trpc.aiChat.createConversation.useMutation({
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       setSelectedConversationId(data.conversationId);
       refetchConversations();
       toast.success("New conversation started");
+      
+      // Track AI session usage for subscription
+      try {
+        await trackUsageMutation.mutateAsync({ conversationId: data.conversationId });
+      } catch (error) {
+        // Silently fail - don't block user if tracking fails
+        console.error("Failed to track usage:", error);
+      }
     },
     onError: (error) => {
       toast.error(error.message || "Failed to create conversation");

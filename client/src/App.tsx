@@ -27,6 +27,10 @@ import IntroSession from "./pages/IntroSession";
 import AutismDashboard from "./pages/AutismDashboard";
 import CreateAutismProfile from "./pages/CreateAutismProfile";
 import LiveSessionAssistant from "./pages/LiveSessionAssistant";
+import Pricing from "./pages/Pricing";
+import SubscriptionDashboard from "./pages/SubscriptionDashboard";
+import SubscriptionSuccess from "./pages/SubscriptionSuccess";
+import SessionPurchaseSuccess from "./pages/SessionPurchaseSuccess";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -53,6 +57,10 @@ function Router() {
       <Route path="/autism" component={AutismDashboard} />
       <Route path="/autism/create-profile" component={CreateAutismProfile} />
       <Route path="/live-session" component={LiveSessionAssistant} />
+      <Route path="/pricing" component={Pricing} />
+      <Route path="/subscription" component={SubscriptionDashboard} />
+      <Route path="/subscription/success" component={SubscriptionSuccess} />
+      <Route path="/subscription/session-success" component={SessionPurchaseSuccess} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
