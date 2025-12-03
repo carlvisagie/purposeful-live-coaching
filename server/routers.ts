@@ -16,6 +16,7 @@ import { schedulingRouter } from "./routers/scheduling";
 import { sessionTypesRouter } from "./routers/sessionTypes";
 import { sessionPaymentsRouter } from "./routers/sessionPayments";
 import { aiChatRouter } from "./routers/aiChat";
+import { aiChatFeedbackRouter } from "./routers/aiChatFeedback";
 import { platformSettingsRouter } from "./routers/platformSettings";
 import { socialProofRouter } from "./routers/socialProof";
 import { aiFeedbackRouter } from "./routers/aiFeedback";
@@ -58,6 +59,7 @@ export const appRouter = router({
   sessionTypes: sessionTypesRouter,
   sessionPayments: sessionPaymentsRouter,
   aiChat: aiChatRouter,
+  aiChatFeedback: aiChatFeedbackRouter,
   liveSession: liveSessionRouter,
   platformSettings: platformSettingsRouter,
   socialProof: socialProofRouter,

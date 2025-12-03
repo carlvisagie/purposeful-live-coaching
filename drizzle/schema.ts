@@ -358,6 +358,15 @@ export const aiChatConversations = mysqlTable("aiChatConversations", {
   subscriptionId: int("subscriptionId").references(() => subscriptions.id, { onDelete: "set null" }), // Link to subscription for usage tracking
   sessionDuration: int("sessionDuration").default(0), // Duration in minutes
   title: varchar("title", { length: 255 }), // Auto-generated conversation title
+  
+  // Quality monitoring fields
+  rating: int("rating"), // 1-5 stars (null = not rated yet)
+  feedbackText: text("feedbackText"), // Optional detailed feedback
+  feedbackCategory: mysqlEnum("feedbackCategory", ["helpful", "unhelpful", "inappropriate", "technical_error", "other"]),
+  wasHelpful: mysqlEnum("wasHelpful", ["yes", "no"]), // Simple thumbs up/down
+  reviewedByAdmin: mysqlEnum("reviewedByAdmin", ["yes", "no"]).default("no"),
+  adminNotes: text("adminNotes"), // Admin review notes
+  
   lastMessageAt: timestamp("lastMessageAt").defaultNow().notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),

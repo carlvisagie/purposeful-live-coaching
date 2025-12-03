@@ -19,6 +19,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
 import { Streamdown } from "streamdown";
 import { useLocation } from "wouter";
+import { ConversationRating } from "@/components/ConversationRating";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -362,6 +363,16 @@ export default function AICoach() {
                   )}
                   <div ref={messagesEndRef} />
                 </CardContent>
+
+                {/* Conversation Rating - Show after messages */}
+                {messages.length > 0 && (
+                  <div className="border-t border-gray-200 p-4">
+                    <ConversationRating 
+                      conversationId={selectedConversationId}
+                      onRatingSubmitted={() => refetchConversations()}
+                    />
+                  </div>
+                )}
 
                 {/* Input Area */}
                 <div className="border-t border-gray-200 p-4">

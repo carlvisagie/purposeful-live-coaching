@@ -351,12 +351,12 @@ export default function IndividualLanding() {
           <div className="space-y-6">
             {[
               {
-                q: "Is this a replacement for therapy?",
-                a: "No. This is a supportive tool for emotional wellness. If you're in crisis, please reach out to a mental health professional or crisis line.",
+                q: "How is my data kept private?",
+                a: "Your conversations are encrypted and stored securely. We never share your data with third parties. Your privacy is our top priority.",
               },
               {
-                q: "How is my data kept private?",
-                a: "Your conversations are encrypted and stored securely. We never share your data with third parties. HIPAA compliant.",
+                q: "Is this a replacement for therapy?",
+                a: "No. PurposefulLive provides AI-powered coaching and emotional support, but is not a substitute for professional mental health treatment. If you're experiencing a mental health crisis, please contact 988 (Suicide & Crisis Lifeline) or your local emergency services.",
               },
               {
                 q: "Can I cancel anytime?",

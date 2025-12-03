@@ -365,3 +365,70 @@
 - [ ] Test cancellation flow
 - [ ] Verify all links work
 - [ ] Check for console errors
+
+
+---
+
+## 🔍 SYSTEM READINESS AUDIT & AI QUALITY MONITORING
+
+### Payment System Readiness
+- [ ] Verify Stripe webhook handlers cover all events
+- [ ] Check subscription creation flow
+- [ ] Check subscription cancellation flow
+- [ ] Check subscription reactivation flow
+- [ ] Verify usage tracking (AI sessions + human sessions)
+- [ ] Check payment failure handling
+- [ ] Verify refund capabilities
+- [ ] Test upgrade/downgrade flows
+
+### Subscription Automation
+- [ ] Verify trial expiration handling
+- [ ] Check automatic billing on trial end
+- [ ] Verify subscription renewal automation
+- [ ] Check failed payment retry logic
+- [ ] Verify dunning management (payment recovery)
+- [ ] Check subscription pause/resume (if needed)
+
+### AI Coaching Quality Monitoring
+- [x] Build conversation rating system (thumbs up/down + 5-star rating)
+- [x] Add detailed feedback collection (category + text feedback)
+- [x] Create AI performance dashboard (admin metrics page)
+- [x] Track conversation metrics (ratings, helpful/unhelpful, categories)
+- [x] Build flagged conversation review system (admin review interface)
+- [x] Add admin notes capability
+- [ ] Monitor AI response quality over time (needs data collection)
+- [ ] Add conversation export for manual review
+- [ ] Create weekly AI quality reports (automated)
+
+### Crisis Detection & Safety
+- [x] Verify crisis detection is working (in AI chat router)
+- [x] Check owner notification system (implemented)
+- [x] Test emergency resource display (988 hotline in disclaimers)
+- [x] Verify conversation flagging (crisisFlag field exists)
+- [x] Create crisis conversation review process (admin dashboard)
+
+### Customer Lifecycle
+- [ ] Trial reminder emails (day 5: "Trial ending soon")
+- [ ] Welcome email on subscription start
+- [ ] Payment confirmation emails
+- [ ] Failed payment notifications
+- [ ] Cancellation confirmation emails
+- [ ] Monthly usage summary emails
+- [ ] Re-engagement campaigns for cancelled users
+
+### Data Privacy & Security
+- [x] Verify conversation encryption (database encrypted at rest)
+- [x] Check HIPAA compliance claims (REMOVED - not compliant)
+- [x] Add proper disclaimers ("Not a replacement for therapy")
+- [x] Add crisis hotline numbers (988 Suicide & Crisis Lifeline)
+- [ ] Verify data retention policies
+- [ ] Check user data export capability
+- [ ] Verify user data deletion capability
+- [ ] Review privacy policy accuracy (needs legal review)
+
+### Admin Tools
+- [x] Build admin dashboard for monitoring (/admin/ai-monitoring)
+- [x] Add AI quality metrics dashboard (metrics overview cards)
+- [x] Create conversation review interface (table with filters)
+- [ ] Add user subscription management tools
+- [ ] Build customer support tools
