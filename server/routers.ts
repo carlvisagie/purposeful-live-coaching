@@ -18,6 +18,7 @@ import { sessionPaymentsRouter } from "./routers/sessionPayments";
 import { aiChatRouter } from "./routers/aiChat";
 import { aiChatFeedbackRouter } from "./routers/aiChatFeedback";
 import { coachClientHistoryRouter } from "./routers/coachClientHistory";
+import { clientFilesRouter } from "./routers/clientFiles";
 import { platformSettingsRouter } from "./routers/platformSettings";
 import { socialProofRouter } from "./routers/socialProof";
 import { aiFeedbackRouter } from "./routers/aiFeedback";
@@ -63,6 +64,7 @@ export const appRouter = router({
   aiChat: aiChatRouter,
   aiChatFeedback: aiChatFeedbackRouter,
   coachClientHistory: coachClientHistoryRouter,
+  clientFiles: clientFilesRouter,
   liveSession: liveSessionRouter,
   platformSettings: platformSettingsRouter,
   socialProof: socialProofRouter,

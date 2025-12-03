@@ -24,6 +24,12 @@ export default function AdminClientHistory() {
     { enabled: !!selectedClientId }
   );
 
+  // Get client files
+  const { data: clientFiles } = trpc.clientFiles.getClientFiles.useQuery(
+    { userId: selectedClientId!, fileType: "all" },
+    { enabled: !!selectedClientId }
+  );
+
   return (
     <div className="container mx-auto py-8">
       <div className="mb-8">
@@ -171,6 +177,9 @@ export default function AdminClientHistory() {
               <TabsTrigger value="human-sessions">
                 Human Sessions ({clientHistory.humanSessions.length})
               </TabsTrigger>
+              <TabsTrigger value="files">
+                Files ({clientFiles?.length || 0})
+              </TabsTrigger>
             </TabsList>
 
             {/* AI Conversations Tab */}
@@ -269,6 +278,63 @@ export default function AdminClientHistory() {
                     </CardContent>
                   </Card>
                 ))
+              )}
+            </TabsContent>
+
+            {/* Files Tab */}
+            <TabsContent value="files" className="space-y-4">
+              {clientFiles && clientFiles.length > 0 ? (
+                clientFiles.map((file) => (
+                  <Card key={file.id}>
+                    <CardContent className="py-4">
+                      <div className="space-y-3">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <div className="font-medium">{file.fileName}</div>
+                            <div className="text-sm text-muted-foreground">
+                              {file.fileCategory} • Uploaded {new Date(file.uploadedAt).toLocaleString()}
+                            </div>
+                          </div>
+                          <Badge>{file.fileType}</Badge>
+                        </div>
+                        
+                        {file.transcriptionText && (
+                          <div className="p-3 bg-muted rounded text-sm">
+                            <div className="font-semibold mb-1">Transcription:</div>
+                            {file.transcriptionText}
+                          </div>
+                        )}
+                        
+                        {(file.fileType === "audio" || file.fileType === "video") && (
+                          <div>
+                            {file.fileType === "audio" ? (
+                              <audio controls src={file.fileUrl} className="w-full" />
+                            ) : (
+                              <video controls src={file.fileUrl} className="w-full max-w-2xl" />
+                            )}
+                          </div>
+                        )}
+                        
+                        {file.fileType === "image" && (
+                          <img src={file.fileUrl} alt={file.fileName} className="max-w-md rounded" />
+                        )}
+                        
+                        {file.coachNotes && (
+                          <div className="p-3 bg-blue-50 dark:bg-blue-950 rounded text-sm">
+                            <div className="font-semibold mb-1">Coach Notes:</div>
+                            {file.coachNotes}
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                <Card>
+                  <CardContent className="py-12 text-center text-muted-foreground">
+                    No files uploaded yet
+                  </CardContent>
+                </Card>
               )}
             </TabsContent>
           </Tabs>

@@ -603,3 +603,68 @@ Add cross-conversation memory so AI greets returning users with context and refe
 - [ ] User can clear conversation history
 - [ ] Option to start "anonymous" conversation
 - [ ] Clear data retention policy
+
+
+---
+
+## 📁 CLIENT FILE MANAGEMENT SYSTEM
+
+### Vision
+Create per-client folders with automatic file organization. AI can read/analyze uploaded files. When client returns, their complete folder (transcripts, audio, video, documents) automatically loads.
+
+### Database Schema
+- [x] Create clientFiles table (id, userId, fileName, fileType, fileUrl, fileKey, uploadedAt, etc.)
+- [x] Add fileCategory field (voice_memo, session_recording, journal_entry, photo, document, ai_transcript, other)
+- [x] Add metadata fields (duration, transcription status, coach notes, tags)
+- [x] Link files to conversations and sessions (conversationId, sessionId)
+
+### S3 Storage Structure
+- [x] Design folder structure: `clients/{userId}/audios/`, `/videos/`, `/documents/`, `/images/`
+- [x] Implement file upload to S3 with proper naming (timestamp + random suffix)
+- [x] Add file type validation and size limits
+- [x] Public URLs generated automatically (no presigning needed)
+
+### File Upload System
+- [x] Build file upload API (tRPC mutation: uploadFile)
+- [x] Add file size limits (audio: 50MB, video: 500MB, docs: 25MB, images: 10MB)
+- [x] Auto-transcribe audio/video files using voice transcription API
+- [x] Store file metadata in database
+- [ ] Implement progress tracking for large files (future: use multipart upload)
+
+### Client UI
+- [x] Create file upload component (file picker)
+- [x] Build "My Files" page at /my-files showing all uploaded files
+- [x] Add file preview (audio player, video player, images)
+- [x] Allow file deletion
+- [x] Organize files by type (tabs: all, audio, video, documents, images)
+- [ ] Add drag & drop upload (future enhancement)
+- [ ] Show upload progress bar (future enhancement)
+
+### Coach Dashboard Integration
+- [x] Add "Files" tab to AdminClientHistory page
+- [x] Display all client files organized by upload date
+- [x] Add file playback/preview (audio, video, images)
+- [x] Show transcriptions for audio/video
+- [x] Display coach notes field
+- [ ] Allow coach to add/edit notes to files (future: add mutation)
+
+### AI Integration
+- [x] Load recent files when client starts new conversation
+- [x] AI reads recent transcripts/documents automatically (last 5 files)
+- [x] AI can reference uploaded content ("I listened to your voice memo...")
+- [x] AI receives file context in system prompt
+- [ ] AI analyzes voice memos emotional tone (future: sentiment analysis)
+- [ ] AI suggests relevant past files during conversation (future enhancement)
+
+### Automatic Loading
+- [x] When client returns, AI loads their recent files automatically
+- [x] AI mentions recent files in greeting if relevant
+- [x] Coach sees all files in AdminClientHistory Files tab
+- [ ] Show recent uploads in AI chat sidebar (future UI enhancement)
+
+### Features
+- [ ] Export conversation as PDF and auto-save to client folder
+- [ ] Auto-save Zoom recordings to client folder
+- [ ] Client can download complete folder as ZIP
+- [ ] Search within client files
+- [ ] Tag files for easy organization

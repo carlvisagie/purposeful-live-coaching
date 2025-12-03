@@ -782,3 +782,45 @@ export const emailLogs = mysqlTable("email_logs", {
 
 export type EmailLog = typeof emailLogs.$inferSelect;
 export type InsertEmailLog = typeof emailLogs.$inferInsert;
+
+/**
+ * Client Files - Store all files uploaded by or generated for clients
+ * Organized in per-client folders in S3
+ */
+export const clientFiles = mysqlTable("client_files", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
+  conversationId: int("conversationId").references(() => aiChatConversations.id, { onDelete: "set null" }), // Link to conversation if applicable
+  sessionId: int("sessionId").references(() => humanSessionBookings.id, { onDelete: "set null" }), // Link to session if applicable
+  
+  fileName: varchar("fileName", { length: 255 }).notNull(),
+  fileType: mysqlEnum("fileType", ["audio", "video", "document", "image", "transcript"]).notNull(),
+  fileCategory: mysqlEnum("fileCategory", [
+    "voice_memo",
+    "session_recording",
+    "journal_entry",
+    "photo",
+    "document",
+    "ai_transcript",
+    "other"
+  ]).notNull().default("other"),
+  
+  fileUrl: text("fileUrl").notNull(), // Public S3 URL
+  fileKey: text("fileKey").notNull(), // S3 key for deletion/management
+  mimeType: varchar("mimeType", { length: 100 }),
+  fileSize: int("fileSize"), // Size in bytes
+  duration: int("duration"), // Duration in seconds for audio/video
+  
+  transcriptionText: text("transcriptionText"), // Auto-generated transcription for audio/video
+  transcriptionStatus: mysqlEnum("transcriptionStatus", ["pending", "completed", "failed"]).default("pending"),
+  
+  coachNotes: text("coachNotes"), // Coach can add notes about this file
+  tags: text("tags"), // JSON array of tags for organization
+  
+  uploadedAt: timestamp("uploadedAt").defaultNow().notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ClientFile = typeof clientFiles.$inferSelect;
+export type InsertClientFile = typeof clientFiles.$inferInsert;

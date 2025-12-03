@@ -6,6 +6,8 @@ import { z } from "zod";
 import { protectedProcedure, router } from "../_core/trpc";
 import { TRPCError } from "@trpc/server";
 import { invokeLLM } from "../_core/llm";
+import { db } from "../db";
+import { eq, desc } from "drizzle-orm";
 import {
   getUserConversations,
   getConversationWithMessages,
@@ -232,6 +234,19 @@ export const aiChatRouter = router({
       // Build enhanced system prompt with context
       let enhancedSystemPrompt = SYSTEM_PROMPT;
       
+      // Load recent files for context
+      const { clientFiles } = await import("../../drizzle/schema");
+      const recentFiles = await db
+        .select()
+        .from(clientFiles)
+        .where(eq(clientFiles.userId, ctx.user.id))
+        .orderBy(desc(clientFiles.uploadedAt))
+        .limit(5);
+      
+      const filesWithContent = recentFiles.filter(f => 
+        f.transcriptionText || f.fileType === "transcript" || f.fileType === "document"
+      );
+
       // Add cross-conversation memory for first message in new conversation
       if (isFirstMessage) {
         // Load user's previous conversations for context
@@ -243,11 +258,30 @@ export const aiChatRouter = router({
           const recentConversations = otherConversations.slice(0, 3);
           const conversationTitles = recentConversations.map(c => c.title).filter(Boolean);
           
-          enhancedSystemPrompt += `\n\n**USER HISTORY:**\nThis user has ${otherConversations.length} previous conversation(s) with you. Recent topics: ${conversationTitles.join(", ")}.\n\n**GREETING PROTOCOL:**\nSince this is a returning user, acknowledge their previous work with you. Reference their recent topics naturally. Show continuity and progress tracking. Example: "Welcome back! Last time we worked on [topic]. How has that been going?"\n\nUse MODE 3 (CONVERSATIONAL COACHING) to show you remember them, then transition to MODE 1 if they present a new problem.`;
+          enhancedSystemPrompt += `\n\n**USER HISTORY:**\nThis user has ${otherConversations.length} previous conversation(s) with you. Recent topics: ${conversationTitles.join(", ")}.`;
+          
+          // Add recent files context
+          if (filesWithContent.length > 0) {
+            enhancedSystemPrompt += `\n\n**RECENT FILES:**\nThe user has uploaded ${filesWithContent.length} file(s) recently:`;
+            filesWithContent.forEach(file => {
+              const uploadDate = new Date(file.uploadedAt).toLocaleDateString();
+              enhancedSystemPrompt += `\n- ${file.fileName} (${file.fileCategory}, uploaded ${uploadDate})`;
+              if (file.transcriptionText) {
+                enhancedSystemPrompt += `\n  Content: "${file.transcriptionText.substring(0, 200)}${file.transcriptionText.length > 200 ? '...' : ''}"`;  
+              }
+            });
+            enhancedSystemPrompt += "\n\nYou can reference these files naturally in your response if relevant. For example: 'I listened to your voice memo from Tuesday. You sounded stressed about the deadline...'";
+          }
+          
+          enhancedSystemPrompt += `\n\n**GREETING PROTOCOL:**\nSince this is a returning user, acknowledge their previous work with you. Reference their recent topics naturally. Show continuity and progress tracking. Example: "Welcome back! Last time we worked on [topic]. How has that been going?"\n\nUse MODE 3 (CONVERSATIONAL COACHING) to show you remember them, then transition to MODE 1 if they present a new problem.`;
         } else {
           enhancedSystemPrompt += "\n\n**CURRENT CONTEXT:** This is the user's first conversation with you. Use MODE 1 (STRUCTURED PROTOCOL) to establish trust and provide immediate value.";
         }
       } else if (isFollowUp) {
+        // Add recent files context for follow-up messages too
+        if (filesWithContent.length > 0) {
+          enhancedSystemPrompt += `\n\n**RECENT FILES:**\nThe user has uploaded ${filesWithContent.length} file(s) recently. You can reference them if relevant to the current conversation.`;
+        }
         enhancedSystemPrompt += "\n\n**CURRENT CONTEXT:** This is a follow-up message in an ongoing conversation. Consider using MODE 3 (CONVERSATIONAL COACHING) to reference previous messages and show continuity. Only use MODE 1 if they present a new crisis or problem.";
       }
 
