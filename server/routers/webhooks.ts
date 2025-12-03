@@ -2,7 +2,7 @@ import { Router } from "express";
 import Stripe from "stripe";
 import { ENV } from "../_core/env";
 import { getDb } from "../db";
-import { subscriptions, users, sessions, clients } from "../../drizzle/schema";
+import { subscriptions, users, sessions, clients, emailLogs } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
 
 const stripe = new Stripe(ENV.stripeSecretKey, {
@@ -277,11 +277,72 @@ async function handlePaymentFailed(invoice: any) {
   const subscriptionId = invoice.subscription as string;
   if (!subscriptionId) return;
 
+  // Get subscription to find user
+  const [subscription] = await db
+    .select()
+    .from(subscriptions)
+    .where(eq(subscriptions.stripeSubscriptionId, subscriptionId))
+    .limit(1);
+
+  if (!subscription) {
+    console.log(`[Webhook] Subscription not found: ${subscriptionId}`);
+    return;
+  }
+
   // Update subscription status
   await db
     .update(subscriptions)
     .set({ status: "past_due" })
     .where(eq(subscriptions.stripeSubscriptionId, subscriptionId));
+
+  // Send payment failed email
+  try {
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, subscription.userId))
+      .limit(1);
+
+    if (user && user.email) {
+      const subject = "Your payment failed - update your card to keep access";
+      const content = `
+Hi ${user.name || "there"},
+
+We tried to process your payment for PurposefulLive, but it didn't go through.
+
+**What happens next:**
+- We'll automatically retry the payment 3 times over the next 2 weeks
+- Your access continues during this time
+- If all retries fail, your access will be suspended
+
+**To fix this now:**
+1. Log in to your account
+2. Go to Subscription Settings
+3. Update your payment method
+
+**Need help?** Reply to this email and we'll assist you.
+
+Thank you,
+- The PurposefulLive Team
+      `.trim();
+
+      // Log email to database (actual sending handled by email automation system)
+      await db.insert(emailLogs).values({
+        userId: user.id,
+        emailType: "payment_failed",
+        subject,
+        status: "sent",
+        metadata: JSON.stringify({ 
+          subscriptionId: subscription.id,
+          emailContent: content 
+        }),
+      });
+
+      console.log(`[Webhook] Payment failed email sent to user ${user.id}`);
+    }
+  } catch (error) {
+    console.error("[Webhook] Failed to send payment failed email:", error);
+  }
 
   console.log(`[Webhook] Payment failed for subscription ${subscriptionId}`);
 }

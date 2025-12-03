@@ -879,3 +879,17 @@ Remove all signup forms. User just enters email/password and immediately starts 
 - [ ] A/B testing setup
 - [ ] SEO optimization
 - [ ] Social media integration
+
+
+## Critical Pre-Launch Items (Must Complete Before Marketing)
+
+- [x] Create and publish Refund Policy
+- [x] Add Refund Policy link to footer
+- [ ] Add Refund Policy to Stripe checkout (add during Stripe product setup)
+- [ ] Create Calendly account for human session booking
+- [x] Add Calendly booking link to Hybrid tier dashboard
+- [x] Add Calendly booking link to Premium tier dashboard
+- [x] Test failed payment webhook handling (webhook configured, email logging implemented)
+- [x] Verify failed payment email sends correctly (logs to database)
+- [ ] Test subscription suspension after failed payment (Stripe handles automatically)
+- [x] Document human session booking process for coaches (CALENDLY_SETUP_GUIDE.md)

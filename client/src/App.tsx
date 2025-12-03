@@ -28,6 +28,7 @@ import AdminAIMonitoring from "./pages/AdminAIMonitoring";
 import AdminClientHistory from "./pages/AdminClientHistory";
 import MyFiles from "./pages/MyFiles";
 import MyProfile from "./pages/MyProfile";
+import RefundPolicy from "./pages/RefundPolicy";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -58,6 +59,7 @@ function Router() {
       <Route path="/admin/client-history" component={AdminClientHistory} />
       <Route path="/my-files" component={MyFiles} />
       <Route path="/my-profile" component={MyProfile} />
+      <Route path="/refund-policy" component={RefundPolicy} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

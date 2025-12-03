@@ -306,11 +306,29 @@ export default function SubscriptionDashboard() {
                 <p className="text-xs text-muted-foreground mt-2">
                   {humanSessionsRemaining} session{humanSessionsRemaining !== 1 ? "s" : ""} remaining this period
                 </p>
+                {humanSessionsRemaining > 0 && (
+                  <div className="mt-4">
+                    <Button
+                      className="w-full"
+                      onClick={() => {
+                        toast({
+                          title: "Booking System Coming Soon",
+                          description: "For now, please email support@purposefullive.com to schedule your human coaching session. We'll have in-app booking ready soon!",
+                        });
+                        // TODO: Replace with Calendly link or in-app booking
+                        // window.open("https://calendly.com/purposefullive/coaching-session", "_blank");
+                      }}
+                    >
+                      <Calendar className="mr-2 h-4 w-4" />
+                      Book Human Session
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
           </CardContent>
           {subscription.tier !== "ai_only" && (
-            <CardFooter>
+            <CardFooter className="flex gap-2">
               <Button
                 variant="outline"
                 onClick={handleBuyExtraSession}
