@@ -4,16 +4,12 @@ import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import Home from "./pages/Home";
-
 import IndividualLanding from "./pages/IndividualLanding";
 import Dashboard from "./pages/Dashboard";
 import Clients from "./pages/Clients";
 import NewClient from "./pages/NewClient";
 import CoachSetup from "./pages/CoachSetup";
 import ClientDetail from "./pages/ClientDetail";
-import Individual from "./pages/Individual";
-import BookSessionNew from "./pages/BookSessionNew";
 import MySessions from "./pages/MySessions";
 import CoachAvailability from "./pages/CoachAvailability";
 import ManageSessionTypes from "./pages/ManageSessionTypes";
@@ -21,9 +17,6 @@ import AICoach from "./pages/AICoach";
 import EmotionTracker from "./pages/EmotionTracker";
 import InsightsDashboard from "./pages/InsightsDashboard";
 import CoachDashboard from "./pages/CoachDashboard";
-import BookingConfirmation from "./pages/BookingConfirmation";
-import AICoaching from "./pages/AICoaching";
-import IntroSession from "./pages/IntroSession";
 import AutismDashboard from "./pages/AutismDashboard";
 import CreateAutismProfile from "./pages/CreateAutismProfile";
 import LiveSessionAssistant from "./pages/LiveSessionAssistant";
@@ -38,15 +31,11 @@ function Router() {
     <Switch>
       <Route path={"/"} component={IndividualLanding} />
       <Route path="/individual-coaching" component={IndividualLanding} />
-      <Route path="/intro" component={IntroSession} />
-      <Route path="/ai-coaching" component={AICoaching} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/clients" component={Clients} />
       <Route path="/clients/new" component={NewClient} />
       <Route path="/clients/:id" component={ClientDetail} />
       <Route path="/coach/setup" component={CoachSetup} />
-      <Route path="/book-session" component={BookSessionNew} />
-      <Route path="/booking-confirmation" component={BookingConfirmation} />
       <Route path="/my-sessions" component={MySessions} />
       <Route path="/coach/availability" component={CoachAvailability} />
       <Route path="/coach/session-types" component={ManageSessionTypes} />

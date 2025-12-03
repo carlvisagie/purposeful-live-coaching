@@ -250,3 +250,118 @@
 - [x] Hybrid: $149/mo or $1,490/year (save $298 - 17% discount)
 - [x] Premium: $299/mo or $2,990/year (save $598 - 17% discount)
 - [x] Split payment: 3 installments for yearly plans (configurable)
+
+
+---
+
+## 🔍 PRE-DEPLOYMENT PLATFORM AUDIT
+
+### Routes & Navigation Audit
+- [x] Check all routes in App.tsx are working
+- [x] Verify all navigation links point to correct pages
+- [ ] Test authentication-protected routes
+- [ ] Check for 404 errors on any pages
+- [x] Verify homepage CTAs link to correct destinations (ISSUE FOUND: Broken payment buttons)
+
+### Database Schema Audit
+- [x] Check for conflicts between old session system and new subscriptions (CONFLICT FOUND)
+- [ ] Verify all foreign keys are correct
+- [ ] Check for unused tables that should be removed
+- [ ] Verify all enum values are consistent
+
+### Subscription Flow Audit
+- [ ] Test monthly subscription signup
+- [ ] Test yearly subscription signup
+- [ ] Test split payment flow
+- [ ] Verify webhook events process correctly
+- [ ] Test subscription cancellation
+- [ ] Test subscription reactivation
+- [ ] Verify usage tracking works
+
+### Payment Integration Audit
+- [ ] Test Stripe checkout for subscriptions
+- [ ] Test extra session purchase
+- [ ] Verify all price IDs are correct
+- [ ] Test webhook signature verification
+- [ ] Check for duplicate payment handling
+
+### AI Chat Functionality Audit
+- [ ] Test AI chat conversation creation
+- [ ] Verify usage tracking on chat start
+- [ ] Test message sending and receiving
+- [ ] Check crisis detection works
+- [ ] Verify conversation history loads
+
+### Authentication Audit
+- [ ] Test login flow
+- [ ] Test logout flow
+- [ ] Verify protected routes redirect to login
+- [ ] Test OAuth callback handling
+
+### Introduction Offer Decision
+- [ ] **WAITING FOR USER DECISION:** Keep 7-day trial, switch to $1 offer, or both?
+- [ ] Remove old $1 session booking system if not needed
+- [ ] Update all marketing copy to match chosen offer
+- [ ] Update pricing page with chosen offer
+
+### CRITICAL ISSUE FOUND
+- [ ] **RESOLVE CONFLICTING BUSINESS MODELS:** Choose between subscription vs session-based
+- [ ] Fix broken homepage payment buttons (calling non-existent product IDs)
+- [ ] Update homepage pricing to match chosen model
+- [ ] Remove contradictory FAQ answers
+- [ ] Delete unused pages (BookSession.tsx, AICoaching.tsx, etc.)
+
+### Code Cleanup
+- [ ] Remove unused imports
+- [ ] Remove commented-out code
+- [ ] Check for console.log statements
+- [ ] Verify all TypeScript errors resolved
+- [ ] Check for any TODO comments in code
+
+
+---
+
+## 🧹 PLATFORM CLEANUP - OPTION A IMPLEMENTATION
+
+### Phase 1: Remove Old Systems
+- [x] Delete IntroSession.tsx ($1 intro page)
+- [x] Delete BookSessionNew.tsx (session booking)
+- [x] Delete BookingConfirmation.tsx (session confirmation)
+- [x] Remove old stripe router methods (createCheckoutSession for old products)
+- [x] Remove products.ts (AI_ESSENTIAL, AI_GROWTH, AI_TRANSFORMATION)
+- [x] Remove routes from App.tsx (/intro, /book-session, /booking-confirmation)
+- [x] Delete unused pages (AICoaching.tsx, Home.tsx, Individual.tsx)
+- [ ] Clean up unused session booking tables (optional - can keep for data)
+
+### Phase 2: Update Homepage
+- [x] Replace pricing section with new subscription tiers
+- [x] Update all CTAs to link to /pricing
+- [x] Change button text to "Start 7-Day Free Trial"
+- [x] Remove references to $49/$99/$149 pricing
+- [x] Update value propositions to match subscription model
+
+### Phase 3: Add Access Control
+- [x] Add subscription gate to /ai-coach page
+- [x] Show pricing page if no active subscription
+- [ ] Add subscription status checks to AI chat router (backend)
+- [ ] Block AI chat creation without active subscription (backend)
+- [ ] Add upgrade prompts for AI-only users trying to book human sessions
+
+### Phase 4: Update Messaging
+- [x] Fix FAQ: "Cancel subscription anytime" instead of "Pay per session"
+- [x] Update all copy to mention subscriptions, not sessions
+- [x] Remove "No subscriptions" messaging
+- [x] Add "7-day free trial" messaging throughout
+- [ ] Update meta descriptions and page titles
+
+### Phase 5: Final Testing
+- [ ] Test homepage → pricing flow
+- [ ] Test subscription signup (monthly)
+- [ ] Test subscription signup (yearly)
+- [ ] Test subscription signup (yearly with split payment)
+- [ ] Test AI chat access with subscription
+- [ ] Test AI chat blocked without subscription
+- [ ] Test subscription dashboard
+- [ ] Test cancellation flow
+- [ ] Verify all links work
+- [ ] Check for console errors

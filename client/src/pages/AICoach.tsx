@@ -18,6 +18,7 @@ import {
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
 import { Streamdown } from "streamdown";
+import { useLocation } from "wouter";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -40,12 +41,19 @@ import {
  */
 export default function AICoach() {
   const { user, loading: authLoading } = useAuth();
+  const [, setLocation] = useLocation();
   const [selectedConversationId, setSelectedConversationId] = useState<number | null>(null);
   const [message, setMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [conversationToDelete, setConversationToDelete] = useState<number | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Check subscription status
+  const { data: subscription, isLoading: subscriptionLoading } = 
+    trpc.subscriptions.getMySubscription.useQuery(undefined, {
+      enabled: !!user,
+    });
 
   // Fetch conversations list
   const { data: conversationsData, refetch: refetchConversations } =
@@ -165,10 +173,50 @@ export default function AICoach() {
     return null;
   }
 
-  if (authLoading) {
+  // Show loading while checking auth or subscription
+  if (authLoading || subscriptionLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-rose-500" />
+      </div>
+    );
+  }
+
+  // Require active subscription
+  if (!subscription || subscription.status !== 'active') {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
+        <Card className="max-w-md w-full mx-4">
+          <CardHeader>
+            <CardTitle className="text-center">Subscription Required</CardTitle>
+          </CardHeader>
+          <CardContent className="text-center space-y-4">
+            <div className="bg-rose-50 p-4 rounded-lg">
+              <Heart className="h-12 w-12 text-rose-500 mx-auto mb-2" />
+              <p className="text-gray-700 font-medium">
+                AI coaching requires an active subscription
+              </p>
+            </div>
+            <p className="text-muted-foreground">
+              Start your 7-day free trial to access 24/7 AI coaching support.
+            </p>
+            <div className="space-y-2">
+              <Button
+                onClick={() => setLocation("/pricing")}
+                className="w-full bg-rose-600 hover:bg-rose-700"
+              >
+                View Pricing & Start Free Trial
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setLocation("/subscription")}
+                className="w-full"
+              >
+                Manage Subscription
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }

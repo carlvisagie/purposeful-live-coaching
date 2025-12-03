@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   Heart,
@@ -10,31 +10,23 @@ import {
   CheckCircle2,
   ArrowRight,
   Star,
+  Sparkles,
+  MessageCircle,
+  Calendar,
+  TrendingUp,
 } from "lucide-react";
-import { useRouter } from "wouter";
+import { useLocation } from "wouter";
 import { ExitIntentPopup } from "@/components/ExitIntentPopup";
 import { LiveChatWidget } from "@/components/LiveChatWidget";
-import { useAuth } from "@/_core/hooks/useAuth";
-import { getLoginUrl } from "@/const";
-import { trpc } from "@/lib/trpc";
 
 /**
  * Individual Landing Page
- * 100% focused on personal transformation
- * Emotional messaging, personal stories, AI coaching focus
+ * Promotes new subscription model: $29/$149/$299 per month
+ * AI-first with human session upgrades
  */
 export default function IndividualLanding() {
-  const { user } = useAuth();
-  const [selectedTier, setSelectedTier] = useState("essential");
+  const [, setLocation] = useLocation();
   const [showExitPopup, setShowExitPopup] = useState(false);
-
-  const subscribeMutation = trpc.stripe.createCheckoutSession.useMutation({
-    onSuccess: (data) => {
-      if (data.url) {
-        window.location.href = data.url;
-      }
-    },
-  });
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -59,6 +51,7 @@ export default function IndividualLanding() {
         type="individual"
       />
       <LiveChatWidget type="individual" routeToTeam="support" />
+      
       {/* HERO SECTION - Emotional Focus */}
       <section className="py-20 bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -79,16 +72,11 @@ export default function IndividualLanding() {
               <Button
                 size="lg"
                 className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold"
-                onClick={() =>
-                  document
-                    .getElementById("pricing")
-                    ?.scrollIntoView({ behavior: "smooth" })
-                }
+                onClick={() => setLocation("/pricing")}
               >
-                Start Your Journey
+                Start 7-Day Free Trial
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-
             </div>
           </div>
         </div>
@@ -101,49 +89,39 @@ export default function IndividualLanding() {
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
               You're Not Alone
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Millions struggle with stress, anxiety, and overwhelm. Here's what you might be experiencing:
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               {
-                icon: <Moon className="h-8 w-8 text-indigo-600" />,
+                icon: Moon,
                 title: "Can't Sleep",
-                description:
-                  "Your mind races at night. You wake up at 3am with anxiety. Sleep feels impossible.",
+                description: "Your mind races at night. You're exhausted but can't turn off your thoughts.",
               },
               {
-                icon: <Brain className="h-8 w-8 text-purple-600" />,
+                icon: Brain,
                 title: "Constant Worry",
-                description:
-                  "You overthink everything. Anxiety spirals consume your day. You can't turn it off.",
+                description: "Anxiety about work, relationships, the future. It never stops.",
               },
               {
-                icon: <Zap className="h-8 w-8 text-yellow-600" />,
-                title: "Burnout & Exhaustion",
-                description:
-                  "You're drained. Work feels impossible. You have nothing left to give.",
+                icon: Heart,
+                title: "Feeling Alone",
+                description: "No one understands what you're going through. You feel isolated.",
               },
               {
-                icon: <Heart className="h-8 w-8 text-red-600" />,
-                title: "Emotional Overwhelm",
-                description:
-                  "Small things trigger big reactions. You feel out of control. Emotions are overwhelming.",
+                icon: Zap,
+                title: "Overwhelmed",
+                description: "Too much to do. Too little time. You're drowning in responsibilities.",
               },
             ].map((pain, idx) => (
-              <Card key={idx} className="border-l-4 border-l-emerald-500">
+              <Card key={idx} className="border-2 border-gray-100">
                 <CardContent className="pt-6">
-                  <div className="flex gap-4">
-                    <div className="flex-shrink-0">{pain.icon}</div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                        {pain.title}
-                      </h3>
-                      <p className="text-gray-600">{pain.description}</p>
-                    </div>
-                  </div>
+                  <pain.icon className="h-12 w-12 text-emerald-600 mb-4" />
+                  <h3 className="font-semibold text-gray-900 mb-2">{pain.title}</h3>
+                  <p className="text-gray-600 text-sm">{pain.description}</p>
                 </CardContent>
               </Card>
             ))}
@@ -151,273 +129,212 @@ export default function IndividualLanding() {
         </div>
       </section>
 
-      {/* THE SOLUTION - AI Coaching */}
-      <section className="py-20 bg-emerald-50">
+      {/* SOLUTION - How It Works */}
+      <section className="py-20 bg-gradient-to-br from-cyan-50 to-emerald-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Your Personal AI Coach
+              Your AI Coach Is Always There
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Available whenever you need support. No wait lists. No judgment.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-12">
-            {/* What You Get */}
-            <div className="space-y-6">
-              {[
-                {
-                  title: "24/7 Availability",
-                  description:
-                    "3am anxiety attack? Your coach is there. Anytime, anywhere.",
-                },
-                {
-                  title: "Personalized Coaching",
-                  description:
-                    "Learns your patterns. Adapts to your needs. Feels like talking to someone who truly knows you.",
-                },
-                {
-                  title: "Crisis Support",
-                  description:
-                    "Overwhelmed? Your coach helps you process emotions in real-time and get back to calm.",
-                },
-                {
-                  title: "Emotion Tracking",
-                  description:
-                    "See your emotional patterns over time. Understand what triggers you. Make real progress.",
-                },
-                {
-                  title: "Evidence-Based Techniques",
-                  description:
-                    "CBT, DBT, mindfulness, and other proven methods delivered conversationally.",
-                },
-                {
-                  title: "Affordable & Accessible",
-                  description:
-                    "From $49/session. No expensive therapy bills. No insurance hassles. Pay only when you book.",
-                },
-              ].map((feature, idx) => (
-                <div key={idx} className="flex gap-4">
-                  <CheckCircle2 className="h-6 w-6 text-emerald-600 flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-1">
-                      {feature.title}
-                    </h3>
-                    <p className="text-gray-600">{feature.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Testimonials */}
-            <div className="space-y-6">
-              {[
-                {
-                  name: "Sarah M.",
-                  role: "Anxiety sufferer",
-                  quote:
-                    "I was having panic attacks daily. My AI coach helped me understand my triggers and gave me tools I could use immediately. I finally feel like myself again.",
-                  rating: 5,
-                },
-                {
-                  name: "James L.",
-                  role: "Burned out professional",
-                  quote:
-                    "I couldn't afford therapy, and the wait lists were 6 months long. This AI coach gave me the support I needed right away. Life-changing.",
-                  rating: 5,
-                },
-                {
-                  name: "Maria T.",
-                  role: "Sleep-deprived parent",
-                  quote:
-                    "3am anxiety was destroying my life. Now I have someone to talk to anytime. I'm sleeping better and feeling more in control.",
-                  rating: 5,
-                },
-              ].map((testimonial, idx) => (
-                <Card key={idx} className="bg-white border-emerald-200">
-                  <CardContent className="pt-6">
-                    <div className="flex gap-1 mb-3">
-                      {[...Array(testimonial.rating)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className="h-5 w-5 fill-yellow-400 text-yellow-400"
-                        />
-                      ))}
-                    </div>
-                    <p className="text-gray-700 mb-4 italic">
-                      "{testimonial.quote}"
-                    </p>
-                    <div>
-                      <p className="font-semibold text-gray-900">
-                        {testimonial.name}
-                      </p>
-                      <p className="text-sm text-gray-600">{testimonial.role}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* HOW IT WORKS */}
-      <section id="how-it-works" className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              How It Works
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-4 gap-8">
-            {[
-              {
-                step: "1",
-                title: "Sign Up",
-                description: "Create your account in 2 minutes. No credit card required for trial.",
-              },
-              {
-                step: "2",
-                title: "Start Chatting",
-                description: "Tell your AI coach what's on your mind. They listen without judgment.",
-              },
-              {
-                step: "3",
-                title: "Get Support",
-                description: "Receive personalized coaching, techniques, and emotional support.",
-              },
-              {
-                step: "4",
-                title: "Feel Better",
-                description: "Track your progress. Notice improvements in mood, sleep, and stress.",
-              },
-            ].map((step, idx) => (
-              <div key={idx} className="text-center">
-                <div className="w-16 h-16 bg-emerald-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
-                  {step.step}
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  {step.title}
-                </h3>
-                <p className="text-gray-600">{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* PRICING SECTION */}
-      <section id="pricing" className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Affordable Coaching Plans
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Choose the plan that fits your needs. Cancel anytime.
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Get instant support whenever you need it. No appointments. No waiting. Just open the app and start talking.
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
-                name: "Foundation",
-                price: "$49",
-                period: "/session",
-                description: "30-minute coaching session",
-                features: [
-                  "One-on-one coaching",
-                  "Personalized action plan",
-                  "Session notes & takeaways",
-                  "Email support between sessions",
-                  "Book as needed",
-                ],
-                cta: "Book Foundation Session",
-                highlight: false,
+                icon: MessageCircle,
+                title: "24/7 AI Support",
+                description: "Chat anytime, day or night. Your AI coach never sleeps and is always ready to listen.",
               },
               {
-                name: "Breakthrough",
-                price: "$99",
-                period: "/session",
-                description: "60-minute deep-dive session",
-                features: [
-                  "Everything in Foundation",
-                  "Extended session time",
-                  "Root cause analysis",
-                  "Custom strategy development",
-                  "Priority scheduling",
-                ],
-                cta: "Book Breakthrough Session",
-                highlight: true,
+                icon: Calendar,
+                title: "Add Human Sessions",
+                description: "Upgrade to include monthly check-ins with a real human coach for deeper support.",
               },
               {
-                name: "Transformation",
+                icon: TrendingUp,
+                title: "Track Your Progress",
+                description: "See your emotional patterns, celebrate wins, and understand what helps you feel better.",
+              },
+            ].map((feature, idx) => (
+              <Card key={idx} className="border-2 border-emerald-200">
+                <CardContent className="pt-6 text-center">
+                  <div className="mx-auto w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mb-4">
+                    <feature.icon className="h-8 w-8 text-emerald-600" />
+                  </div>
+                  <h3 className="font-semibold text-gray-900 mb-2 text-lg">{feature.title}</h3>
+                  <p className="text-gray-600">{feature.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SOCIAL PROOF */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Real People, Real Results
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                name: "Sarah M.",
+                role: "Marketing Manager",
+                quote: "I finally sleep through the night. The AI coach helped me process my work anxiety in ways therapy never did.",
+                rating: 5,
+              },
+              {
+                name: "James K.",
+                role: "Software Engineer",
+                quote: "Having someone available at 2am when I'm spiraling? Life-changing. I don't feel alone anymore.",
+                rating: 5,
+              },
+              {
+                name: "Lisa P.",
+                role: "Teacher",
+                quote: "The monthly human check-ins keep me accountable. The AI handles the daily stuff. Perfect combination.",
+                rating: 5,
+              },
+            ].map((testimonial, idx) => (
+              <Card key={idx} className="border-2 border-gray-100">
+                <CardContent className="pt-6">
+                  <div className="flex mb-4">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                    ))}
+                  </div>
+                  <p className="text-gray-700 mb-4 italic">"{testimonial.quote}"</p>
+                  <div>
+                    <p className="font-semibold text-gray-900">{testimonial.name}</p>
+                    <p className="text-sm text-gray-600">{testimonial.role}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* PRICING PREVIEW */}
+      <section className="py-20 bg-gradient-to-br from-emerald-50 to-teal-50" id="pricing">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Start Your Journey Today
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Choose the plan that fits your needs. All plans include a 7-day free trial.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {[
+              {
+                name: "AI-Only",
+                price: "$29",
+                period: "/month",
+                description: "24/7 AI coaching support",
+                features: [
+                  "Unlimited AI chat",
+                  "Crisis detection",
+                  "Emotion tracking",
+                  "Progress insights",
+                ],
+                cta: "Start Free Trial",
+                popular: false,
+              },
+              {
+                name: "Hybrid",
                 price: "$149",
-                period: "/session",
-                description: "90-minute intensive session",
+                period: "/month",
+                description: "AI + 1 human session/month",
                 features: [
-                  "Everything in Breakthrough",
-                  "Comprehensive life audit",
-                  "Multi-area coaching",
-                  "30-day action roadmap",
-                  "Unlimited text support",
+                  "Everything in AI-Only",
+                  "1 human coaching session",
+                  "Priority support",
+                  "Advanced insights",
                 ],
-                cta: "Book Transformation Session",
-                highlight: false,
+                cta: "Start Free Trial",
+                popular: true,
+              },
+              {
+                name: "Premium",
+                price: "$299",
+                period: "/month",
+                description: "AI + 4 human sessions/month",
+                features: [
+                  "Everything in Hybrid",
+                  "4 human coaching sessions",
+                  "Custom goal tracking",
+                  "Family resources",
+                ],
+                cta: "Start Free Trial",
+                popular: false,
               },
             ].map((tier, idx) => (
               <Card
                 key={idx}
-                className={tier.highlight ? "border-2 border-emerald-600 shadow-lg" : ""}
+                className={`relative border-2 ${
+                  tier.popular ? "border-emerald-500 shadow-lg" : "border-gray-200"
+                }`}
               >
-                <CardHeader>
-                  <CardTitle>{tier.name}</CardTitle>
-                  <p className="text-sm text-gray-600 mt-2">{tier.description}</p>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div>
-                    <span className="text-4xl font-bold text-gray-900">
-                      {tier.price}
-                    </span>
-                    <span className="text-gray-600 ml-2">{tier.period}</span>
+                {tier.popular && (
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                    <Badge className="bg-emerald-600 text-white px-4 py-1">
+                      <Sparkles className="h-3 w-3 mr-1 inline" />
+                      Most Popular
+                    </Badge>
                   </div>
-
-                  <ul className="space-y-3">
-                    {tier.features.map((feature, fidx) => (
-                      <li key={fidx} className="flex items-center gap-2">
-                        <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+                )}
+                <CardContent className="pt-8">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{tier.name}</h3>
+                  <div className="mb-4">
+                    <span className="text-4xl font-bold text-gray-900">{tier.price}</span>
+                    <span className="text-gray-600">{tier.period}</span>
+                  </div>
+                  <p className="text-gray-600 mb-6">{tier.description}</p>
+                  <ul className="space-y-3 mb-8">
+                    {tier.features.map((feature, featureIdx) => (
+                      <li key={featureIdx} className="flex items-start">
+                        <CheckCircle2 className="h-5 w-5 text-emerald-600 mr-2 flex-shrink-0 mt-0.5" />
                         <span className="text-gray-700">{feature}</span>
                       </li>
                     ))}
                   </ul>
-
                   <Button
-                    className={
-                      tier.highlight
-                        ? "w-full bg-emerald-600 hover:bg-emerald-700"
-                        : "w-full"
-                    }
-                    onClick={() => {
-                      if (!user) {
-                        window.location.href = getLoginUrl();
-                        return;
-                      }
-                      if (tier.name === "Essential") {
-                        subscribeMutation.mutate({ productId: "AI_ESSENTIAL" });
-                      } else if (tier.name === "Growth") {
-                        subscribeMutation.mutate({ productId: "AI_GROWTH" });
-                      } else if (tier.name === "Transformation") {
-                        subscribeMutation.mutate({ productId: "AI_TRANSFORMATION" });
-                      }
-                    }}
+                    className={`w-full ${
+                      tier.popular
+                        ? "bg-emerald-600 hover:bg-emerald-700"
+                        : "bg-gray-900 hover:bg-gray-800"
+                    }`}
+                    onClick={() => setLocation("/pricing")}
                   >
                     {tier.cta}
                   </Button>
                 </CardContent>
               </Card>
             ))}
+          </div>
+
+          <div className="text-center mt-12">
+            <p className="text-gray-600 mb-4">
+              Save 17% with yearly billing • Cancel anytime
+            </p>
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => setLocation("/pricing")}
+            >
+              View All Pricing Options
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
           </div>
         </div>
       </section>
@@ -443,7 +360,11 @@ export default function IndividualLanding() {
               },
               {
                 q: "Can I cancel anytime?",
-                a: "Yes. Pay per session. No subscriptions. No commitments. Book only when you need support.",
+                a: "Yes. Cancel your subscription anytime with no penalties. You'll keep access until the end of your billing period.",
+              },
+              {
+                q: "What's included in the free trial?",
+                a: "Full access to all features of your chosen plan for 7 days. No credit card required. Cancel before the trial ends and you won't be charged.",
               },
               {
                 q: "How quickly does it work?",
@@ -468,20 +389,19 @@ export default function IndividualLanding() {
             You Deserve to Feel Better
           </h2>
           <p className="text-xl text-emerald-100 mb-8 max-w-2xl mx-auto">
-            Your AI coach is ready to support you. Start your journey to emotional resilience today.
+            Your AI coach is ready to support you. Start your 7-day free trial today.
           </p>
           <Button
             size="lg"
             className="bg-white text-emerald-600 hover:bg-emerald-50 font-semibold"
-            onClick={() =>
-              document
-                .getElementById("pricing")
-                ?.scrollIntoView({ behavior: "smooth" })
-            }
+            onClick={() => setLocation("/pricing")}
           >
-            Start Your Journey
+            Start 7-Day Free Trial
             <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
+          <p className="text-sm text-emerald-100 mt-4">
+            No credit card required • Cancel anytime • Save 17% with yearly billing
+          </p>
         </div>
       </section>
     </div>
