@@ -27,6 +27,7 @@ import SessionPurchaseSuccess from "./pages/SessionPurchaseSuccess";
 import AdminAIMonitoring from "./pages/AdminAIMonitoring";
 import AdminClientHistory from "./pages/AdminClientHistory";
 import MyFiles from "./pages/MyFiles";
+import MyProfile from "./pages/MyProfile";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -56,6 +57,7 @@ function Router() {
       <Route path="/admin/ai-monitoring" component={AdminAIMonitoring} />
       <Route path="/admin/client-history" component={AdminClientHistory} />
       <Route path="/my-files" component={MyFiles} />
+      <Route path="/my-profile" component={MyProfile} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

@@ -19,6 +19,7 @@ import { aiChatRouter } from "./routers/aiChat";
 import { aiChatFeedbackRouter } from "./routers/aiChatFeedback";
 import { coachClientHistoryRouter } from "./routers/coachClientHistory";
 import { clientFilesRouter } from "./routers/clientFiles";
+import { profileExtractionRouter } from "./routers/profileExtraction";
 import { platformSettingsRouter } from "./routers/platformSettings";
 import { socialProofRouter } from "./routers/socialProof";
 import { aiFeedbackRouter } from "./routers/aiFeedback";
@@ -65,6 +66,7 @@ export const appRouter = router({
   aiChatFeedback: aiChatFeedbackRouter,
   coachClientHistory: coachClientHistoryRouter,
   clientFiles: clientFilesRouter,
+  profileExtraction: profileExtractionRouter,
   liveSession: liveSessionRouter,
   platformSettings: platformSettingsRouter,
   socialProof: socialProofRouter,

@@ -26,6 +26,18 @@ export const users = mysqlTable("users", {
   email: varchar("email", { length: 320 }),
   loginMethod: varchar("loginMethod", { length: 64 }),
   role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
+  
+  // Profile fields extracted from AI conversations
+  primaryGoal: text("primaryGoal"), // e.g., "stress management", "career transition"
+  secondaryGoal: text("secondaryGoal"),
+  mainChallenges: text("mainChallenges"), // JSON array of challenges
+  preferredFrequency: mysqlEnum("preferredFrequency", ["daily", "weekly", "as_needed"]),
+  timezone: varchar("timezone", { length: 64 }), // e.g., "America/Los_Angeles"
+  availability: text("availability"), // e.g., "evenings", "weekends", "flexible"
+  communicationStyle: mysqlEnum("communicationStyle", ["concise", "detailed", "balanced"]).default("balanced"),
+  triggers: text("triggers"), // JSON array of triggers to watch for
+  profileCompleteness: int("profileCompleteness").default(0), // 0-100%
+  
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),

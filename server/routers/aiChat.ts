@@ -7,6 +7,7 @@ import { protectedProcedure, router } from "../_core/trpc";
 import { TRPCError } from "@trpc/server";
 import { invokeLLM } from "../_core/llm";
 import { db } from "../db";
+import { users } from "../../drizzle/schema";
 import { eq, desc } from "drizzle-orm";
 import {
   getUserConversations,
@@ -247,6 +248,13 @@ export const aiChatRouter = router({
         f.transcriptionText || f.fileType === "transcript" || f.fileType === "document"
       );
 
+      // Load user profile for progressive profiling
+      const [userProfile] = await db
+        .select()
+        .from(users)
+        .where(eq(users.id, ctx.user.id))
+        .limit(1);
+
       // Add cross-conversation memory for first message in new conversation
       if (isFirstMessage) {
         // Load user's previous conversations for context
@@ -274,6 +282,19 @@ export const aiChatRouter = router({
           }
           
           enhancedSystemPrompt += `\n\n**GREETING PROTOCOL:**\nSince this is a returning user, acknowledge their previous work with you. Reference their recent topics naturally. Show continuity and progress tracking. Example: "Welcome back! Last time we worked on [topic]. How has that been going?"\n\nUse MODE 3 (CONVERSATIONAL COACHING) to show you remember them, then transition to MODE 1 if they present a new problem.`;
+          
+          // Add progressive profiling if profile incomplete
+          if (userProfile && userProfile.profileCompleteness && userProfile.profileCompleteness < 80) {
+            const missingFields = [];
+            if (!userProfile.primaryGoal) missingFields.push("primary goal");
+            if (!userProfile.preferredFrequency) missingFields.push("preferred frequency");
+            if (!userProfile.availability) missingFields.push("availability");
+            if (!userProfile.timezone) missingFields.push("timezone");
+            
+            if (missingFields.length > 0) {
+              enhancedSystemPrompt += `\n\n**PROGRESSIVE PROFILING:**\nThe user's profile is ${userProfile.profileCompleteness}% complete. Missing: ${missingFields.join(", ")}. \n\nNaturally ask 1-2 questions to fill in gaps during this conversation. Don't interrogate - weave questions into natural dialogue. Examples:\n- "By the way, what time of day works best for you?" (availability)\n- "How often would you like to check in - daily or weekly?" (frequency)\n- "What's your main focus right now?" (primary goal)\n\nOnly ask if relevant to the current conversation flow.`;
+            }
+          }
         } else {
           enhancedSystemPrompt += "\n\n**CURRENT CONTEXT:** This is the user's first conversation with you. Use MODE 1 (STRUCTURED PROTOCOL) to establish trust and provide immediate value.";
         }
@@ -283,6 +304,11 @@ export const aiChatRouter = router({
           enhancedSystemPrompt += `\n\n**RECENT FILES:**\nThe user has uploaded ${filesWithContent.length} file(s) recently. You can reference them if relevant to the current conversation.`;
         }
         enhancedSystemPrompt += "\n\n**CURRENT CONTEXT:** This is a follow-up message in an ongoing conversation. Consider using MODE 3 (CONVERSATIONAL COACHING) to reference previous messages and show continuity. Only use MODE 1 if they present a new crisis or problem.";
+        
+        // Add progressive profiling for follow-up messages too
+        if (userProfile && userProfile.profileCompleteness && userProfile.profileCompleteness < 80 && messageCount < 10) {
+          enhancedSystemPrompt += "\n\nIf natural, ask 1 question to learn more about their preferences (availability, frequency, goals). Don't force it.";
+        }
       }
 
       // Add system prompt
@@ -325,6 +351,26 @@ export const aiChatRouter = router({
         content: aiResponse,
         crisisFlag: "none",
       });
+
+      // Extract profile data from user message (background, non-blocking)
+      // Only extract from first 5 messages to avoid overhead
+      if (data.messages.length < 10) {
+        try {
+          const { profileExtractionRouter } = await import("./profileExtraction");
+          const extractionContext = data.messages.slice(-3).map(m => `${m.role}: ${m.content}`).join("\n");
+          
+          // Call extraction in background (don't await)
+          profileExtractionRouter.createCaller({ user: ctx.user, req: ctx.req, res: ctx.res })
+            .extractFromMessage({
+              message: input.message,
+              conversationContext: extractionContext,
+            })
+            .catch(err => console.error("[Profile Extraction] Background extraction failed:", err));
+        } catch (err) {
+          // Silently fail - profile extraction is non-critical
+          console.error("[Profile Extraction] Import failed:", err);
+        }
+      }
 
       // Auto-generate title from first exchange
       if (data.messages.length === 0 && !data.conversation.title) {
