@@ -89,7 +89,7 @@ export const adaptiveLearningRouter = router({
         .from(techniqueEffectiveness)
         .where(eq(techniqueEffectiveness.problemType, input.problemType))
         .orderBy(
-          desc(sql`(${techniqueEffectiveness.successCount} * 1.0 / GREATEST(${techniqueEffectiveness.timesUsed}, 1)) * (${techniqueEffectiveness.confidenceScore} / 100.0)`)
+          desc(sql`(${techniqueEffectiveness.successCount} * 1.0 / GREATEST(${techniqueEffectiveness.totalUsage}, 1))`)
         )
         .limit(input.limit);
 
@@ -127,8 +127,8 @@ export const adaptiveLearningRouter = router({
     const patterns = await db
       .select()
       .from(clientPatterns)
-      .where(eq(clientPatterns.isValidated, "true"))
-      .orderBy(desc(clientPatterns.occurrenceCount))
+        .where(gte(clientPatterns.confidence, 70))
+        .orderBy(desc(clientPatterns.frequency))
       .limit(10);
 
     return { patterns };

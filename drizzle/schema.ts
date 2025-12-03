@@ -482,3 +482,221 @@ export const coachGuidance = mysqlTable("coachGuidance", {
   timestamp: timestamp("timestamp").notNull(),
   wasFollowed: mysqlEnum("wasFollowed", ["true", "false"]).default("false"),
 });
+
+
+/**
+ * Session Recordings - Store video/audio recordings with 2-tier access
+ */
+export const sessionRecordings = mysqlTable("sessionRecordings", {
+  id: int("id").autoincrement().primaryKey(),
+  sessionId: int("sessionId").notNull().references(() => sessions.id, { onDelete: "cascade" }),
+  clientId: int("clientId").notNull().references(() => clients.id),
+  coachId: int("coachId").notNull().references(() => coaches.id),
+  videoUrl: text("videoUrl"), // S3 URL to video recording
+  videoKey: varchar("videoKey", { length: 500 }), // S3 key for video
+  audioUrl: text("audioUrl"), // S3 URL to audio recording
+  audioKey: varchar("audioKey", { length: 500 }), // S3 key for audio
+  transcriptUrl: text("transcriptUrl"), // S3 URL to transcript file
+  transcriptKey: varchar("transcriptKey", { length: 500 }), // S3 key for transcript
+  duration: int("duration"), // Duration in seconds
+  fileSize: int("fileSize"), // Total file size in bytes
+  status: mysqlEnum("status", ["processing", "ready", "failed", "deleted"]).default("processing").notNull(),
+  clientCanAccess: mysqlEnum("clientCanAccess", ["true", "false"]).default("true").notNull(), // Client access control
+  consentGiven: mysqlEnum("consentGiven", ["true", "false"]).default("false").notNull(), // Recording consent
+  recordedAt: timestamp("recordedAt").notNull(),
+  expiresAt: timestamp("expiresAt"), // Retention policy
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type SessionRecording = typeof sessionRecordings.$inferSelect;
+export type InsertSessionRecording = typeof sessionRecordings.$inferInsert;
+
+/**
+ * Session Summaries - AI-generated summaries (client-accessible)
+ */
+export const sessionSummaries = mysqlTable("sessionSummaries", {
+  id: int("id").autoincrement().primaryKey(),
+  sessionId: int("sessionId").notNull().references(() => sessions.id, { onDelete: "cascade" }),
+  recordingId: int("recordingId").references(() => sessionRecordings.id),
+  summary: text("summary").notNull(), // AI-generated summary
+  goals: text("goals"), // JSON array of goals discussed
+  homework: text("homework"), // JSON array of homework assigned
+  keyMoments: text("keyMoments"), // JSON array of breakthrough moments
+  emotionTimeline: text("emotionTimeline"), // JSON of emotion changes during session
+  techniquesUsed: text("techniquesUsed"), // JSON array of coaching techniques
+  nextSteps: text("nextSteps"), // Recommended next steps
+  clientProgress: text("clientProgress"), // Progress assessment
+  generatedAt: timestamp("generatedAt").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type SessionSummary = typeof sessionSummaries.$inferSelect;
+export type InsertSessionSummary = typeof sessionSummaries.$inferInsert;
+
+/**
+ * Coach Private Notes - Coach-only notes (NOT client-accessible)
+ */
+export const coachPrivateNotes = mysqlTable("coachPrivateNotes", {
+  id: int("id").autoincrement().primaryKey(),
+  sessionId: int("sessionId").notNull().references(() => sessions.id, { onDelete: "cascade" }),
+  coachId: int("coachId").notNull().references(() => coaches.id),
+  notes: text("notes").notNull(), // Private coach impressions
+  aiPromptsReceived: text("aiPromptsReceived"), // JSON of AI prompts during session
+  supervisionQuestions: text("supervisionQuestions"), // Questions for supervision
+  clinicalObservations: text("clinicalObservations"), // Private clinical notes
+  reminders: text("reminders"), // Reminders for next session
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type CoachPrivateNote = typeof coachPrivateNotes.$inferSelect;
+export type InsertCoachPrivateNote = typeof coachPrivateNotes.$inferInsert;
+
+/**
+ * Platform Analytics - Bird's eye view across all clients
+ */
+export const platformAnalytics = mysqlTable("platformAnalytics", {
+  id: int("id").autoincrement().primaryKey(),
+  metricType: mysqlEnum("metricType", ["technique_effectiveness", "common_trigger", "demographic_insight", "seasonal_pattern", "trend"]).notNull(),
+  metricName: varchar("metricName", { length: 255 }).notNull(),
+  metricValue: text("metricValue").notNull(), // JSON with metric data
+  sampleSize: int("sampleSize").notNull(), // Number of clients/sessions analyzed
+  confidence: int("confidence").notNull(), // Confidence score 0-100
+  timeframe: varchar("timeframe", { length: 100 }).notNull(), // e.g., "2025-Q1", "2025-11"
+  demographics: text("demographics"), // JSON of demographic breakdown
+  insights: text("insights"), // Human-readable insights
+  actionable: mysqlEnum("actionable", ["true", "false"]).default("true").notNull(),
+  implemented: mysqlEnum("implemented", ["true", "false"]).default("false").notNull(),
+  calculatedAt: timestamp("calculatedAt").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type PlatformAnalytic = typeof platformAnalytics.$inferSelect;
+export type InsertPlatformAnalytic = typeof platformAnalytics.$inferInsert;
+
+/**
+ * Technique Effectiveness - Track success rates of coaching techniques
+ */
+export const techniqueEffectiveness = mysqlTable("techniqueEffectiveness", {
+  id: int("id").autoincrement().primaryKey(),
+  techniqueName: varchar("techniqueName", { length: 255 }).notNull(),
+  techniqueCategory: varchar("techniqueCategory", { length: 100 }).notNull(), // e.g., "CBT", "mindfulness", "somatic"
+  totalUsage: int("totalUsage").notNull(), // Times used
+  successCount: int("successCount").notNull(), // Times it worked
+  successRate: int("successRate").notNull(), // Percentage 0-100
+  avgTimeToResults: int("avgTimeToResults"), // Average days to see results
+  bestForIssues: text("bestForIssues"), // JSON array of issues it works best for
+  bestForDemographics: text("bestForDemographics"), // JSON of demographics
+  clientFeedback: text("clientFeedback"), // JSON array of feedback quotes
+  coachNotes: text("coachNotes"), // Coach observations
+  lastUpdated: timestamp("lastUpdated").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type TechniqueEffectiveness = typeof techniqueEffectiveness.$inferSelect;
+export type InsertTechniqueEffectiveness = typeof techniqueEffectiveness.$inferInsert;
+
+/**
+ * Client Patterns - Individual client intelligence
+ */
+export const clientPatterns = mysqlTable("clientPatterns", {
+  id: int("id").autoincrement().primaryKey(),
+  clientId: int("clientId").notNull().references(() => clients.id, { onDelete: "cascade" }),
+  patternType: mysqlEnum("patternType", ["trigger", "breakthrough", "resistance", "engagement", "communication_style", "optimal_timing"]).notNull(),
+  patternName: varchar("patternName", { length: 255 }).notNull(),
+  description: text("description").notNull(),
+  frequency: int("frequency").notNull(), // How often this pattern occurs
+  confidence: int("confidence").notNull(), // Confidence score 0-100
+  firstDetected: timestamp("firstDetected").notNull(),
+  lastOccurred: timestamp("lastOccurred").notNull(),
+  relatedSessions: text("relatedSessions"), // JSON array of session IDs
+  actionable: text("actionable"), // What coach should do about this pattern
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ClientPattern = typeof clientPatterns.$inferSelect;
+export type InsertClientPattern = typeof clientPatterns.$inferInsert;
+
+/**
+ * Client Preferences - What works best for each client
+ */
+export const clientPreferences = mysqlTable("clientPreferences", {
+  id: int("id").autoincrement().primaryKey(),
+  clientId: int("clientId").notNull().references(() => clients.id, { onDelete: "cascade" }),
+  preferenceType: mysqlEnum("preferenceType", ["technique", "communication", "timing", "homework_format", "session_structure"]).notNull(),
+  preferenceName: varchar("preferenceName", { length: 255 }).notNull(),
+  preferenceValue: text("preferenceValue").notNull(), // What they prefer
+  effectiveness: int("effectiveness").notNull(), // How well it works 0-100
+  timesUsed: int("timesUsed").notNull(),
+  lastUsed: timestamp("lastUsed").notNull(),
+  notes: text("notes"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ClientPreference = typeof clientPreferences.$inferSelect;
+export type InsertClientPreference = typeof clientPreferences.$inferInsert;
+
+/**
+ * Client Predictions - AI predictions about client needs
+ */
+export const clientPredictions = mysqlTable("clientPredictions", {
+  id: int("id").autoincrement().primaryKey(),
+  clientId: int("clientId").notNull().references(() => clients.id, { onDelete: "cascade" }),
+  predictionType: mysqlEnum("predictionType", ["next_breakthrough", "dropout_risk", "recommended_focus", "technique_suggestion", "optimal_session_time"]).notNull(),
+  prediction: text("prediction").notNull(),
+  confidence: int("confidence").notNull(), // 0-100
+  reasoning: text("reasoning").notNull(), // Why AI made this prediction
+  basedOnData: text("basedOnData"), // JSON of data points used
+  validUntil: timestamp("validUntil").notNull(),
+  wasAccurate: mysqlEnum("wasAccurate", ["true", "false", "unknown"]).default("unknown").notNull(),
+  actualOutcome: text("actualOutcome"), // What actually happened
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ClientPrediction = typeof clientPredictions.$inferSelect;
+export type InsertClientPrediction = typeof clientPredictions.$inferInsert;
+
+/**
+ * Coach Feedback - Feedback on AI suggestions for adaptive learning
+ */
+export const coachFeedback = mysqlTable("coachFeedback", {
+  id: int("id").autoincrement().primaryKey(),
+  coachId: int("coachId").notNull().references(() => coaches.id),
+  sessionId: int("sessionId").references(() => sessions.id),
+  suggestionType: varchar("suggestionType", { length: 100 }).notNull(), // What type of AI suggestion
+  suggestionContent: text("suggestionContent").notNull(), // What AI suggested
+  feedbackType: mysqlEnum("feedbackType", ["helpful", "not_helpful", "partially_helpful", "used", "ignored"]).notNull(),
+  rating: int("rating"), // 1-5 stars
+  notes: text("notes"), // Coach's explanation
+  wasUsed: mysqlEnum("wasUsed", ["true", "false"]).notNull(),
+  outcome: text("outcome"), // What happened after using/ignoring suggestion
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type CoachFeedback = typeof coachFeedback.$inferSelect;
+export type InsertCoachFeedback = typeof coachFeedback.$inferInsert;
+
+/**
+ * Suggestion Effectiveness - Track how well AI suggestions work
+ */
+export const suggestionEffectiveness = mysqlTable("suggestionEffectiveness", {
+  id: int("id").autoincrement().primaryKey(),
+  suggestionType: varchar("suggestionType", { length: 100 }).notNull(),
+  totalSuggestions: int("totalSuggestions").notNull(),
+  timesUsed: int("timesUsed").notNull(),
+  timesHelpful: int("timesHelpful").notNull(),
+  usageRate: int("usageRate").notNull(), // Percentage 0-100
+  helpfulnessRate: int("helpfulnessRate").notNull(), // Percentage 0-100
+  avgRating: int("avgRating"), // Average rating 1-5
+  bestContext: text("bestContext"), // JSON of when it works best
+  improvements: text("improvements"), // Suggested improvements
+  lastUpdated: timestamp("lastUpdated").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type SuggestionEffectiveness = typeof suggestionEffectiveness.$inferSelect;
+export type InsertSuggestionEffectiveness = typeof suggestionEffectiveness.$inferInsert;

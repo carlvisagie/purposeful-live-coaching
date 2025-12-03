@@ -25,8 +25,9 @@ import { chatRouter } from "./routers/chat";
 import { analyticsRouter } from "./routers/analytics";
 import { videoTestimonialsRouter } from "./routers/videoTestimonials";
 import { identityRouter } from "./routers/identity";
-import { adaptiveLearningRouter } from "./routers/adaptiveLearning";
+// import { adaptiveLearningRouter } from "./routers/adaptiveLearning"; // Temporarily disabled - needs schema migration
 import { autismRouter } from "./routers/autism";
+import { liveSessionRouter } from "./routers/liveSession";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -55,6 +56,7 @@ export const appRouter = router({
   sessionTypes: sessionTypesRouter,
   sessionPayments: sessionPaymentsRouter,
   aiChat: aiChatRouter,
+  liveSession: liveSessionRouter,
   platformSettings: platformSettingsRouter,
   socialProof: socialProofRouter,
   aiFeedback: aiFeedbackRouter,
@@ -64,7 +66,7 @@ export const appRouter = router({
   analytics: analyticsRouter,
   videoTestimonials: videoTestimonialsRouter,
   identity: identityRouter,
-  adaptiveLearning: adaptiveLearningRouter,
+  // adaptiveLearning: adaptiveLearningRouter, // Temporarily disabled - needs schema migration
   autism: autismRouter,
 });
 

@@ -26,6 +26,7 @@ import AICoaching from "./pages/AICoaching";
 import IntroSession from "./pages/IntroSession";
 import AutismDashboard from "./pages/AutismDashboard";
 import CreateAutismProfile from "./pages/CreateAutismProfile";
+import LiveSessionAssistant from "./pages/LiveSessionAssistant";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -51,6 +52,7 @@ function Router() {
       <Route path="/coach/dashboard" component={CoachDashboard} />
       <Route path="/autism" component={AutismDashboard} />
       <Route path="/autism/create-profile" component={CreateAutismProfile} />
+      <Route path="/live-session" component={LiveSessionAssistant} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
