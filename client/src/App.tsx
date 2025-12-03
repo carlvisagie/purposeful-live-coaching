@@ -29,6 +29,8 @@ import AdminClientHistory from "./pages/AdminClientHistory";
 import MyFiles from "./pages/MyFiles";
 import MyProfile from "./pages/MyProfile";
 import RefundPolicy from "./pages/RefundPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -60,6 +62,8 @@ function Router() {
       <Route path="/my-files" component={MyFiles} />
       <Route path="/my-profile" component={MyProfile} />
       <Route path="/refund-policy" component={RefundPolicy} />
+      <Route path="/terms-of-service" component={TermsOfService} />
+      <Route path="/privacy-policy-v2" component={PrivacyPolicy} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

@@ -20,6 +20,7 @@ import { getLoginUrl } from "@/const";
 import { Streamdown } from "streamdown";
 import { useLocation } from "wouter";
 import { ConversationRating } from "@/components/ConversationRating";
+import { AIDisclosureDialog, useAIDisclosureReminder } from "@/components/AIDisclosureDialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -42,6 +43,9 @@ import {
  */
 export default function AICoach() {
   const { user, loading: authLoading } = useAuth();
+  
+  // Show AI disclosure dialog (CA/NY law compliance)
+  useAIDisclosureReminder();
   const [, setLocation] = useLocation();
   const [selectedConversationId, setSelectedConversationId] = useState<number | null>(null);
   const [message, setMessage] = useState("");
@@ -226,23 +230,25 @@ export default function AICoach() {
   const messages = conversationData?.messages || [];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-purple-50 to-blue-50">
-      {/* Header */}
-      <header className="border-b border-gray-200 bg-white/95 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-2">
-              <Heart className="h-8 w-8 text-rose-500" />
-              <span className="text-xl font-bold text-gray-900">AI Coach</span>
+    <>
+      <AIDisclosureDialog />
+      <div className="min-h-screen bg-gradient-to-br from-rose-50 via-purple-50 to-blue-50">
+        {/* Header */}
+        <header className="border-b border-gray-200 bg-white/95 backdrop-blur-sm sticky top-0 z-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-16">
+              <div className="flex items-center gap-2">
+                <Heart className="h-8 w-8 text-rose-500" />
+                <span className="text-xl font-bold text-gray-900">AI Coach</span>
+              </div>
+              <Button variant="ghost" onClick={() => (window.location.href = "/dashboard")}>
+                Back to Dashboard
+              </Button>
             </div>
-            <Button variant="ghost" onClick={() => (window.location.href = "/dashboard")}>
-              Back to Dashboard
-            </Button>
           </div>
-        </div>
-      </header>
+        </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[calc(100vh-12rem)]">
           {/* Conversations Sidebar */}
           <Card className="lg:col-span-1 flex flex-col">
@@ -436,6 +442,7 @@ export default function AICoach() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+      </div>
+    </>
   );
 }

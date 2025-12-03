@@ -1,4 +1,4 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { date, int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
 
 // Export identity schema tables
 export * from "./identitySchema";
@@ -25,6 +25,7 @@ export const users = mysqlTable("users", {
   name: text("name"),
   email: varchar("email", { length: 320 }),
   loginMethod: varchar("loginMethod", { length: 64 }),
+  birthdate: date("birthdate"), // For age verification (18+ requirement)
   role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
   
   // Profile fields extracted from AI conversations

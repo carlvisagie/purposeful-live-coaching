@@ -420,13 +420,13 @@ export default function IndividualLanding() {
                 Refund Policy
               </a>
               <a
-                href="#"
+                href="/terms-of-service"
                 className="hover:text-white transition-colors"
               >
                 Terms of Service
               </a>
               <a
-                href="#"
+                href="/privacy-policy-v2"
                 className="hover:text-white transition-colors"
               >
                 Privacy Policy
