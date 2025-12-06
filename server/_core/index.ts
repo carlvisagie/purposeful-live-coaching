@@ -38,6 +38,10 @@ async function startServer() {
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
+  
+  // Serve uploaded files
+  const uploadDir = process.env.UPLOAD_DIR || "/opt/render/project/src/uploads";
+  app.use("/uploads", express.static(uploadDir));
   // OAuth callback under /api/oauth/callback (skip if not configured)
   if (process.env.OAUTH_SERVER_URL) {
     registerOAuthRoutes(app);

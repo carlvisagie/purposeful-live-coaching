@@ -9,7 +9,7 @@ import {
   getAllVideoTestimonials,
 } from "../db/videoTestimonials";
 import { TRPCError } from "@trpc/server";
-import { storagePut, storageGet } from "../storage";
+import { storagePut, storageGet } from "../storage-local";
 
 export const videoTestimonialsRouter = router({
   // Get published testimonials for display
