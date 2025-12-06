@@ -16,8 +16,14 @@ export async function createContext(
   try {
     user = await sdk.authenticateRequest(opts.req);
   } catch (error) {
-    // Authentication is optional for public procedures.
-    user = null;
+    // Authentication disabled - inject mock admin user for demo/development
+    user = {
+      id: 1,
+      email: 'demo@purposefullive.com',
+      name: 'Demo Coach',
+      role: 'admin',
+      createdAt: new Date(),
+    } as User;
   }
 
   return {

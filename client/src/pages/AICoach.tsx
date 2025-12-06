@@ -178,17 +178,17 @@ export default function AICoach() {
     return null;
   }
 
-  // Show loading while checking auth or subscription
-  if (authLoading || subscriptionLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-rose-500" />
-      </div>
-    );
-  }
+  // Auth and subscription checks disabled for demo/development
+  // if (authLoading || subscriptionLoading) {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center">
+  //       <Loader2 className="h-8 w-8 animate-spin text-rose-500" />
+  //     </div>
+  //   );
+  // }
 
-  // Require active subscription
-  if (!subscription || subscription.status !== 'active') {
+  // Subscription requirement disabled for demo
+  if (false && (!subscription || subscription?.status !== 'active')) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
         <Card className="max-w-md w-full mx-4">

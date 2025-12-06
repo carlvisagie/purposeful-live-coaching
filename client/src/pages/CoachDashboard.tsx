@@ -9,29 +9,30 @@ import { APP_TITLE } from "@/const";
 export default function CoachDashboard() {
   const { user, loading } = useAuth();
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading...</p>
-        </div>
-      </div>
-    );
-  }
+  // Auth disabled for demo/development - useAuth() now returns mock admin user
+  // if (loading) {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center">
+  //       <div className="text-center">
+  //         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+  //         <p className="text-muted-foreground">Loading...</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
-  if (!user || user.role !== "admin") {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Card className="p-8 max-w-md text-center">
-          <h2 className="text-2xl font-bold mb-4">Access Denied</h2>
-          <p className="text-muted-foreground">
-            This page is only accessible to coaches.
-          </p>
-        </Card>
-      </div>
-    );
-  }
+  // if (!user || user.role !== "admin") {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center">
+  //       <Card className="p-8 max-w-md text-center">
+  //         <h2 className="text-2xl font-bold mb-4">Access Denied</h2>
+  //         <p className="text-muted-foreground">
+  //           This page is only accessible to coaches.
+  //         </p>
+  //       </Card>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
