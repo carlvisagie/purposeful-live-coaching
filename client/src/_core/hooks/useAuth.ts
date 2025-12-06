@@ -42,15 +42,24 @@ export function useAuth(options?: UseAuthOptions) {
   }, [logoutMutation, utils]);
 
   const state = useMemo(() => {
+    // Mock user for demo/development when auth is disabled
+    const mockUser = meQuery.data || {
+      id: 1,
+      email: 'demo@purposefullive.com',
+      name: 'Demo Coach',
+      role: 'admin' as const,
+      createdAt: new Date(),
+    };
+    
     localStorage.setItem(
       "manus-runtime-user-info",
-      JSON.stringify(meQuery.data)
+      JSON.stringify(mockUser)
     );
     return {
-      user: meQuery.data ?? null,
+      user: mockUser,
       loading: meQuery.isLoading || logoutMutation.isPending,
       error: meQuery.error ?? logoutMutation.error ?? null,
-      isAuthenticated: Boolean(meQuery.data),
+      isAuthenticated: true, // Always authenticated for demo
     };
   }, [
     meQuery.data,

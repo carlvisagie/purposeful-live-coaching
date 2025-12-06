@@ -81,23 +81,24 @@ export default function Dashboard() {
     }
   }, [upcomingSessions]);
 
-  if (!user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
-        <Card className="w-96">
-          <CardHeader>
-            <CardTitle>Authentication Required</CardTitle>
-            <CardDescription>Please sign in to access your dashboard</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button className="w-full" onClick={() => window.location.href = getLoginUrl()}>
-              Sign In
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  // Auth disabled for demo/development
+  // if (!user) {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+  //       <Card className="w-96">
+  //         <CardHeader>
+  //           <CardTitle>Authentication Required</CardTitle>
+  //           <CardDescription>Please sign in to access your dashboard</CardDescription>
+  //         </CardHeader>
+  //         <CardContent>
+  //           <Button className="w-full" onClick={() => window.location.href = getLoginUrl()}>
+  //             Sign In
+  //           </Button>
+  //         </CardContent>
+  //       </Card>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
@@ -120,12 +121,14 @@ export default function Dashboard() {
                 Start Video Session
               </Button>
               <div className="text-right">
-                <p className="text-sm font-medium text-gray-900">{user.name || user.email}</p>
+                <p className="text-sm font-medium text-gray-900">{user?.name || user?.email || 'Coach'}</p>
                 <p className="text-xs text-gray-500">Coach</p>
               </div>
-              <Button variant="outline" size="sm" onClick={() => window.location.href = "/api/oauth/logout"}>
-                Sign Out
-              </Button>
+              {user && (
+                <Button variant="outline" size="sm" onClick={() => window.location.href = "/api/oauth/logout"}>
+                  Sign Out
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -267,7 +270,7 @@ export default function Dashboard() {
             )}
 
             {/* AI Tier Control - Admin Only */}
-            {user.role === 'admin' && (
+            {user?.role === 'admin' && (
               <AITierToggle />
             )}
 
