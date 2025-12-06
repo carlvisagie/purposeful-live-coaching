@@ -6,7 +6,7 @@ import { eq } from "drizzle-orm";
 import Stripe from "stripe";
 import { ENV } from "../_core/env";
 
-const stripe = new Stripe(ENV.stripeSecretKey, {
+const stripe = new Stripe(ENV.stripeSecretKey || process.env.STRIPE_SECRET_KEY || "sk_test_placeholder", {
   apiVersion: "2025-10-29.clover",
 });
 

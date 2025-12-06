@@ -5,7 +5,7 @@ import { getDb } from "../db";
 import { subscriptions, users, sessions, clients, emailLogs } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
 
-const stripe = new Stripe(ENV.stripeSecretKey, {
+const stripe = new Stripe(ENV.stripeSecretKey || process.env.STRIPE_SECRET_KEY || "sk_test_placeholder", {
   apiVersion: "2025-10-29.clover",
 });
 

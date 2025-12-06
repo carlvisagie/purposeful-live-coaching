@@ -82,11 +82,12 @@ export async function transcribeAudio(
         details: "BUILT_IN_FORGE_API_URL is not set"
       };
     }
-    if (!ENV.forgeApiKey) {
+    const apiKey = ENV.forgeApiKey || process.env.OPENAI_API_KEY;
+    if (!apiKey) {
       return {
         error: "Voice transcription service authentication is missing",
         code: "SERVICE_ERROR",
-        details: "BUILT_IN_FORGE_API_KEY is not set"
+        details: "OPENAI_API_KEY is not set"
       };
     }
 
@@ -155,7 +156,7 @@ export async function transcribeAudio(
     const response = await fetch(fullUrl, {
       method: "POST",
       headers: {
-        authorization: `Bearer ${ENV.forgeApiKey}`,
+        authorization: `Bearer ${apiKey}`,
         "Accept-Encoding": "identity",
       },
       body: formData,

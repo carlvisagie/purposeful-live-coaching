@@ -893,3 +893,14 @@ Remove all signup forms. User just enters email/password and immediately starts 
 - [x] Verify failed payment email sends correctly (logs to database)
 - [ ] Test subscription suspension after failed payment (Stripe handles automatically)
 - [x] Document human session booking process for coaches (CALENDLY_SETUP_GUIDE.md)
+
+
+---
+
+## 🔧 RENDER DEPLOYMENT FIX (URGENT)
+
+- [ ] Make OAuth optional in backend startup code
+- [ ] Allow server to start without OAUTH_SERVER_URL
+- [ ] Test backend starts successfully without Manus env vars
+- [ ] Push changes to GitHub
+- [ ] Verify Render deployment works without 502 errors

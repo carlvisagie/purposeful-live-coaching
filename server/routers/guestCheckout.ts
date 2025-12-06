@@ -13,7 +13,9 @@ import { validateEmail, validatePhoneNumber } from "../services/validation";
 import { getDb } from "../db";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_placeholder", {
+  apiVersion: "2025-10-29.clover",
+});
 
 const guestCheckoutSchema = z.object({
   sessionTypeId: z.number().positive(),
