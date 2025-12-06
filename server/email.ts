@@ -2,35 +2,13 @@
  * Email Notification Service
  * 
  * Production-ready email system for booking confirmations, payment receipts,
- * and session reminders using Mailgun SMTP.
+ * and session reminders using Resend API.
+ * 
+ * Resend Free Tier: 100 emails/day, 3,000/month
+ * Setup: Get API key from https://resend.com/api-keys
  */
 
 import { ENV as env } from "./_core/env";
-import * as nodemailer from 'nodemailer';
-
-// SMTP Configuration
-const SMTP_CONFIG = {
-  host: process.env.SMTP_SERVER || 'smtp.mailgun.org',
-  port: parseInt(process.env.SMTP_PORT || '587'),
-  secure: false, // true for 465, false for other ports
-  auth: {
-    user: process.env.SMTP_USERNAME || '',
-    pass: process.env.SMTP_PASSWORD || '',
-  },
-};
-
-const CRISIS_ALERT_EMAIL = process.env.CRISIS_ALERT_EMAIL || 'carlhvisagie@yahoo.com';
-const EMERGENCY_CONTACT_PHONE = process.env.EMERGENCY_CONTACT_PHONE || '+18507252089';
-
-// Create reusable transporter
-let transporter: nodemailer.Transporter | null = null;
-
-function getTransporter() {
-  if (!transporter) {
-    transporter = nodemailer.createTransport(SMTP_CONFIG);
-  }
-  return transporter;
-}
 
 interface EmailOptions {
   to: string;
@@ -70,13 +48,15 @@ interface SessionReminderData {
 }
 
 /**
- * Send email using Mailgun SMTP
- * Falls back to console logging if SMTP is not configured
+ * Send email using Resend API
+ * Falls back to console logging if RESEND_API_KEY is not configured
  */
 async function sendEmail(options: EmailOptions): Promise<boolean> {
-  // Check if SMTP is configured
-  if (!SMTP_CONFIG.auth.user || !SMTP_CONFIG.auth.pass) {
-    console.warn('[Email] SMTP not configured. Email would have been sent:');
+  const apiKey = env.resendApiKey;
+  
+  // Fallback: Log to console if API key not configured
+  if (!apiKey) {
+    console.warn('[Email] RESEND_API_KEY not configured. Email would have been sent:');
     console.log({
       to: options.to,
       subject: options.subject,
@@ -86,75 +66,33 @@ async function sendEmail(options: EmailOptions): Promise<boolean> {
   }
 
   try {
-    const transport = getTransporter();
-    
-    const info = await transport.sendMail({
-      from: options.from || 'Purposeful Live Coaching <noreply@purposefullive.com>',
-      to: options.to,
-      subject: options.subject,
-      html: options.html,
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: options.from || 'Purposeful Live Coaching <noreply@purposefullive.com>',
+        to: options.to,
+        subject: options.subject,
+        html: options.html,
+      }),
     });
 
-    console.log('[Email] Sent successfully:', info.messageId);
+    if (!response.ok) {
+      const error = await response.text();
+      console.error('[Email] Failed to send:', error);
+      return false;
+    }
+
+    const data = await response.json();
+    console.log('[Email] Sent successfully:', data.id);
     return true;
   } catch (error) {
     console.error('[Email] Error sending email:', error);
     return false;
   }
-}
-
-/**
- * Send crisis alert email to emergency contact
- */
-export async function sendCrisisAlert(data: {
-  clientName: string;
-  clientEmail: string;
-  conversationId: number;
-  crisisType: string;
-  message: string;
-}): Promise<boolean> {
-  const html = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <style>
-        body { font-family: sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .alert { background: #fee2e2; border-left: 4px solid #dc2626; padding: 20px; margin: 20px 0; }
-        .details { background: #f9fafb; padding: 15px; margin: 15px 0; border-radius: 4px; }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <div class="alert">
-          <h2 style="color: #dc2626; margin-top: 0;">🚨 CRISIS ALERT</h2>
-          <p><strong>Immediate attention required</strong></p>
-        </div>
-        
-        <div class="details">
-          <p><strong>Client:</strong> ${data.clientName} (${data.clientEmail})</p>
-          <p><strong>Crisis Type:</strong> ${data.crisisType}</p>
-          <p><strong>Conversation ID:</strong> ${data.conversationId}</p>
-          <p><strong>Message:</strong></p>
-          <p style="background: white; padding: 10px; border-radius: 4px;">${data.message}</p>
-        </div>
-
-        <p><strong>Emergency Contact:</strong> ${EMERGENCY_CONTACT_PHONE}</p>
-        <p><strong>Action Required:</strong> Contact client immediately and assess situation.</p>
-        
-        <p style="margin-top: 30px; font-size: 12px; color: #6b7280;">
-          This is an automated crisis alert from Purposeful Live Coaching platform.
-        </p>
-      </div>
-    </body>
-    </html>
-  `;
-
-  return sendEmail({
-    to: CRISIS_ALERT_EMAIL,
-    subject: `🚨 CRISIS ALERT: ${data.clientName} - ${data.crisisType}`,
-    html,
-  });
 }
 
 /**
