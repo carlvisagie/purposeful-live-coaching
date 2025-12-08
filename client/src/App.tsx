@@ -26,6 +26,7 @@ import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 import SessionPurchaseSuccess from "./pages/SessionPurchaseSuccess";
 import AdminAIMonitoring from "./pages/AdminAIMonitoring";
 import AdminClientHistory from "./pages/AdminClientHistory";
+import AdminDashboard from "./pages/AdminDashboard";
 import MyFiles from "./pages/MyFiles";
 import MyProfile from "./pages/MyProfile";
 import RefundPolicy from "./pages/RefundPolicy";
@@ -57,6 +58,7 @@ function Router() {
       <Route path="/subscription" component={SubscriptionDashboard} />
       <Route path="/subscription/success" component={SubscriptionSuccess} />
       <Route path="/subscription/session-success" component={SessionPurchaseSuccess} />
+      <Route path="/admin" component={AdminDashboard} />
       <Route path="/admin/ai-monitoring" component={AdminAIMonitoring} />
       <Route path="/admin/client-history" component={AdminClientHistory} />
       <Route path="/my-files" component={MyFiles} />
