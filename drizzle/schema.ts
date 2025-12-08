@@ -9,6 +9,13 @@ export * from "./adaptiveLearningSchema";
 // Export autism transformation module schema tables
 export * from "./autismSchema";
 
+// Export core transformation engine schemas
+export * from "./emotionalEngineSchema";
+export * from "./mentalEngineSchema";
+export * from "./physicalEngineSchema";
+export * from "./nutritionEngineSchema";
+export * from "./spiritualEngineSchema";
+
 /**
  * Core user table backing auth flow.
  * Extend this file with additional tables as your product grows.
