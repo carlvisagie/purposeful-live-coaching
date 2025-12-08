@@ -1,6 +1,5 @@
 import type { CreateExpressContextOptions } from "@trpc/server/adapters/express";
 import type { User } from "../../drizzle/schema";
-import { sdk } from "./sdk";
 
 export type TrpcContext = {
   req: CreateExpressContextOptions["req"];
@@ -11,20 +10,8 @@ export type TrpcContext = {
 export async function createContext(
   opts: CreateExpressContextOptions
 ): Promise<TrpcContext> {
-  let user: User | null = null;
-
-  try {
-    user = await sdk.authenticateRequest(opts.req);
-  } catch (error) {
-    // Authentication disabled - inject mock admin user for demo/development
-    user = {
-      id: 1,
-      email: 'demo@purposefullive.com',
-      name: 'Demo Coach',
-      role: 'admin',
-      createdAt: new Date(),
-    } as User;
-  }
+  // Guest mode - no authentication required
+  const user: User | null = null;
 
   return {
     req: opts.req,
