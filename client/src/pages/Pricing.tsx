@@ -147,8 +147,9 @@ export default function Pricing() {
       features: [
         "8 live sessions per month (60 min each)",
         "24/7 AI coaching",
-        "Direct coach access (text/email)",
-        "Emergency session availability",
+        "Text, email & phone support",
+        "Direct coach access (personal number)",
+        "Priority & emergency scheduling",
         "Comprehensive life planning",
         "Spouse/partner sessions included",
       ],
