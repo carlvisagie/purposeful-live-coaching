@@ -3,7 +3,7 @@ import express from "express";
 import { createServer } from "http";
 import net from "net";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
-import { registerOAuthRoutes } from "./oauth";
+
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
@@ -42,12 +42,7 @@ async function startServer() {
   // Serve uploaded files
   const uploadDir = process.env.UPLOAD_DIR || "/opt/render/project/src/uploads";
   app.use("/uploads", express.static(uploadDir));
-  // OAuth callback under /api/oauth/callback (skip if not configured)
-  if (process.env.OAUTH_SERVER_URL) {
-    registerOAuthRoutes(app);
-  } else {
-    console.warn("[OAuth] OAUTH_SERVER_URL not configured - OAuth routes disabled");
-  }
+  // OAuth removed - using guest checkout for Stripe
   // tRPC API
   app.use(
     "/api/trpc",

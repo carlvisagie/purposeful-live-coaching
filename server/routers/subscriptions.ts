@@ -149,40 +149,22 @@ export const subscriptionsRouter = router({
   /**
    * Create Stripe checkout session for new subscription
    */
-  createCheckoutSession: protectedProcedure
+  createCheckoutSession: publicProcedure
     .input(
       z.object({
         tier: z.enum(["ai_basic", "ai_premium", "ai_elite", "human_basic", "human_premium", "human_elite"]),
+        email: z.string().email().optional(),
         successUrl: z.string(),
         cancelUrl: z.string(),
       })
     )
-    .mutation(async ({ input, ctx }) => {
+    .mutation(async ({ input }) => {
       const tierConfig = TIER_CONFIG[input.tier];
       const priceId = tierConfig.stripePriceId;
 
-      // Check if user already has an active subscription
-      const existingSub = await db
-        .select()
-        .from(subscriptions)
-        .where(
-          and(
-            eq(subscriptions.userId, ctx.user.id),
-            eq(subscriptions.status, "active")
-          )
-        )
-        .limit(1);
-
-      if (existingSub.length > 0) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "You already have an active subscription. Please cancel it first or upgrade instead.",
-        });
-      }
-
-      // Create Stripe checkout session
+      // Create Stripe checkout session (guest checkout - no login required)
       const session = await stripe.checkout.sessions.create({
-        customer_email: ctx.user.email || undefined,
+        customer_email: input.email || undefined,
         mode: "subscription",
         payment_method_types: ["card"],
         line_items: [
@@ -194,12 +176,10 @@ export const subscriptionsRouter = router({
         subscription_data: {
           trial_period_days: 7, // 7-day free trial
           metadata: {
-            userId: ctx.user.id.toString(),
             tier: input.tier,
           },
         },
         metadata: {
-          userId: ctx.user.id.toString(),
           tier: input.tier,
         },
         success_url: input.successUrl,
