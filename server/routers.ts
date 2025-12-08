@@ -35,6 +35,7 @@ import { liveSessionRouter } from "./routers/liveSession";
 import { subscriptionsRouter } from "./routers/subscriptions";
 import { subscriptionWebhookRouter } from "./routers/subscriptionWebhook";
 import { emailAutomationRouter } from "./routers/emailAutomation";
+import { coachDashboardRouter } from "./routers/coachDashboard";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -82,6 +83,7 @@ export const appRouter = router({
   subscriptions: subscriptionsRouter,
   subscriptionWebhook: subscriptionWebhookRouter,
   emailAutomation: emailAutomationRouter,
+  coachDashboard: coachDashboardRouter,
 });
 
 export type AppRouter = typeof appRouter;

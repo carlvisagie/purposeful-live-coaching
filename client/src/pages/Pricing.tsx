@@ -3,31 +3,32 @@ import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, Sparkles, Zap, Crown, Loader2 } from "lucide-react";
+import { Check, Sparkles, Zap, Crown, Loader2, Bot, Users } from "lucide-react";
 import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
+/**
+ * Dual Pricing Page
+ * Toggle between AI Coaching and Human Coaching
+ * Individual/family focused (not enterprise)
+ */
 export default function Pricing() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
-  const [billingFrequency, setBillingFrequency] = useState<"monthly" | "yearly">("monthly");
-  const [enableSplitPayment, setEnableSplitPayment] = useState(false);
+  const [coachingType, setCoachingType] = useState<"ai" | "human">("ai");
 
-  const { data: tiers, isLoading } = trpc.subscriptions.getPricingTiers.useQuery();
   const { data: currentSub } = trpc.subscriptions.getMySubscription.useQuery();
   const createCheckout = trpc.subscriptions.createCheckoutSession.useMutation();
 
-  const handleSubscribe = async (tier: string) => {
+  const handleSubscribe = async (tier: string, price: number) => {
     setLoadingTier(tier);
     try {
       const result = await createCheckout.mutateAsync({
         tier: tier as "ai_only" | "hybrid" | "premium",
-        billingFrequency,
-        enableSplitPayment: billingFrequency === "yearly" && enableSplitPayment,
+        billingFrequency: "monthly",
+        enableSplitPayment: false,
         successUrl: `${window.location.origin}/subscription/success`,
         cancelUrl: `${window.location.origin}/pricing`,
       });
@@ -45,256 +46,230 @@ export default function Pricing() {
     }
   };
 
-  const getTierIcon = (tier: string) => {
-    switch (tier) {
-      case "ai_only":
-        return <Sparkles className="h-6 w-6" />;
-      case "hybrid":
-        return <Zap className="h-6 w-6" />;
-      case "premium":
-        return <Crown className="h-6 w-6" />;
-      default:
-        return null;
-    }
-  };
-
-  const getTierColor = (tier: string) => {
-    switch (tier) {
-      case "ai_only":
-        return "border-blue-500";
-      case "hybrid":
-        return "border-purple-500";
-      case "premium":
-        return "border-amber-500";
-      default:
-        return "";
-    }
-  };
-
   const isCurrentTier = (tier: string) => {
     return currentSub?.tier === tier && currentSub?.status === "active";
   };
 
-  const getPrice = (tier: any) => {
-    if (billingFrequency === "monthly") {
-      return tier.monthlyPrice / 100;
-    } else {
-      return tier.yearlyPrice / 100;
-    }
-  };
+  // AI Coaching Tiers
+  const aiTiers = [
+    {
+      id: "ai_only",
+      name: "AI Chat",
+      price: 29,
+      description: "Start your journey 24/7",
+      icon: <Sparkles className="h-6 w-6" />,
+      color: "border-blue-500",
+      popular: false,
+      features: [
+        "24/7 AI coaching via text",
+        "Unlimited conversations",
+        "Crisis detection & alerts",
+        "Progress tracking",
+        "Mobile & desktop access",
+      ],
+    },
+    {
+      id: "hybrid",
+      name: "AI + Monthly Check-in",
+      price: 149,
+      description: "AI + 1 human session",
+      icon: <Zap className="h-6 w-6" />,
+      color: "border-purple-500",
+      popular: true,
+      features: [
+        "Everything in AI Chat",
+        "1 live session per month (30 min)",
+        "Priority email support",
+        "Personalized action plans",
+        "Session recordings",
+      ],
+    },
+    {
+      id: "premium",
+      name: "AI + Weekly Support",
+      price: 299,
+      description: "AI + 4 human sessions",
+      icon: <Crown className="h-6 w-6" />,
+      color: "border-amber-500",
+      popular: false,
+      features: [
+        "Everything in Hybrid",
+        "4 live sessions per month (30 min each)",
+        "Priority scheduling",
+        "Text & email support",
+        "Custom coaching plans",
+        "Family support resources",
+      ],
+    },
+  ];
 
-  const getMonthlySavings = (tier: any) => {
-    const monthlyTotal = (tier.monthlyPrice * 12) / 100;
-    const yearlyPrice = tier.yearlyPrice / 100;
-    return monthlyTotal - yearlyPrice;
-  };
+  // Human Coaching Tiers
+  const humanTiers = [
+    {
+      id: "starter",
+      name: "Starter",
+      price: 800,
+      description: "2 personal sessions + AI access",
+      icon: <Users className="h-6 w-6" />,
+      color: "border-emerald-500",
+      popular: false,
+      features: [
+        "2 live sessions per month (60 min each)",
+        "24/7 AI coaching between sessions",
+        "Email support",
+        "Progress tracking",
+        "Session recordings",
+      ],
+    },
+    {
+      id: "professional",
+      name: "Professional",
+      price: 1200,
+      description: "4 sessions + priority support",
+      icon: <Zap className="h-6 w-6" />,
+      color: "border-purple-500",
+      popular: true,
+      features: [
+        "4 live sessions per month (60 min each)",
+        "24/7 AI coaching",
+        "Priority scheduling",
+        "Text, email & phone support",
+        "Custom action plans",
+        "Family resources",
+      ],
+    },
+    {
+      id: "elite",
+      name: "Elite",
+      price: 2000,
+      description: "8 sessions + 24/7 access to your coach",
+      icon: <Crown className="h-6 w-6" />,
+      color: "border-amber-500",
+      popular: false,
+      features: [
+        "8 live sessions per month (60 min each)",
+        "24/7 AI coaching",
+        "Direct coach access (text/email)",
+        "Emergency session availability",
+        "Comprehensive life planning",
+        "Spouse/partner sessions included",
+      ],
+    },
+  ];
 
-  if (isLoading) {
-    return (
-      <div className="container py-12">
-        <div className="flex items-center justify-center min-h-[400px]">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-        </div>
-      </div>
-    );
-  }
+  const activeTiers = coachingType === "ai" ? aiTiers : humanTiers;
 
   return (
-    <div className="container py-12">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       {/* Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold mb-4">Choose Your Coaching Plan</h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
-          Start with 24/7 AI coaching or upgrade to include live human sessions. All plans include a 7-day free trial.
-        </p>
-
-        {/* Billing Frequency Toggle */}
-        <div className="flex flex-col items-center justify-center gap-4">
-          <Tabs value={billingFrequency} onValueChange={(v) => setBillingFrequency(v as "monthly" | "yearly")}>
-            <TabsList className="grid w-[300px] grid-cols-2">
-              <TabsTrigger value="monthly">Monthly</TabsTrigger>
-              <TabsTrigger value="yearly">
-                Yearly
-                <Badge variant="secondary" className="ml-2 bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-100">
-                  Save 17%
-                </Badge>
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-
-          {/* Split Payment Option for Yearly */}
-          {billingFrequency === "yearly" && (
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="split-payment" 
-                checked={enableSplitPayment}
-                onCheckedChange={(checked) => setEnableSplitPayment(checked as boolean)}
-              />
-              <Label 
-                htmlFor="split-payment" 
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-              >
-                Pay in 3 installments (no fees)
-              </Label>
-            </div>
-          )}
+      <div className="container py-12">
+        <div className="text-center mb-12">
+          <Badge className="mb-4 bg-blue-100 text-blue-900">
+            Flexible Pricing for Your Journey
+          </Badge>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">
+            Choose Your Path to Freedom
+          </h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Whether you prefer AI-powered coaching or personal human guidance, we're here to help you quit your day job and find your purpose.
+          </p>
         </div>
-      </div>
 
-      {/* Current Subscription Alert */}
-      {currentSub && currentSub.status === "active" && (
-        <div className="max-w-4xl mx-auto mb-8">
-          <Card className="border-green-500 bg-green-50 dark:bg-green-950">
-            <CardContent className="pt-6">
-              <p className="text-center text-sm">
-                You're currently on the <strong>{currentSub.tierConfig?.name}</strong> plan.{" "}
-                <Button
-                  variant="link"
-                  className="p-0 h-auto"
-                  onClick={() => setLocation("/subscription")}
-                >
-                  Manage subscription →
-                </Button>
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+        {/* Toggle: AI vs Human Coaching */}
+        <Tabs value={coachingType} onValueChange={(v) => setCoachingType(v as "ai" | "human")} className="mb-12">
+          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 h-14">
+            <TabsTrigger value="ai" className="text-base">
+              <Bot className="h-5 w-5 mr-2" />
+              AI Coaching
+            </TabsTrigger>
+            <TabsTrigger value="human" className="text-base">
+              <Users className="h-5 w-5 mr-2" />
+              Human Coaching
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
 
-      {/* Pricing Cards */}
-      <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-        {tiers?.map((tier) => (
-          <Card
-            key={tier.tier}
-            className={`relative ${getTierColor(tier.tier)} ${
-              tier.tier === "hybrid" ? "border-2 shadow-lg scale-105" : ""
-            }`}
-          >
-            {tier.tier === "hybrid" && (
-              <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-purple-500">
-                Most Popular
-              </Badge>
-            )}
-
-            <CardHeader>
-              <div className="flex items-center justify-between mb-2">
-                <div className={`p-2 rounded-lg ${
-                  tier.tier === "ai_only" ? "bg-blue-100 text-blue-600" :
-                  tier.tier === "hybrid" ? "bg-purple-100 text-purple-600" :
-                  "bg-amber-100 text-amber-600"
-                }`}>
-                  {getTierIcon(tier.tier)}
-                </div>
-                {isCurrentTier(tier.tier) && (
-                  <Badge variant="outline" className="text-green-600 border-green-600">
-                    Current Plan
+        {/* Pricing Cards */}
+        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {activeTiers.map((tier) => (
+            <Card
+              key={tier.id}
+              className={`relative ${tier.color} border-2 ${
+                tier.popular ? "shadow-2xl scale-105" : "shadow-lg"
+              } transition-all hover:shadow-xl`}
+            >
+              {tier.popular && (
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                  <Badge className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-1">
+                    Most Popular
                   </Badge>
-                )}
-              </div>
-              <CardTitle className="text-2xl">{tier.name}</CardTitle>
-              <CardDescription>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-3xl font-bold text-foreground">
-                    ${getPrice(tier).toFixed(0)}
-                  </span>
-                  <span className="text-muted-foreground">
-                    /{billingFrequency === "monthly" ? "month" : "year"}
-                  </span>
                 </div>
-                {billingFrequency === "yearly" && (
-                  <p className="text-xs text-green-600 font-semibold mt-1">
-                    Save ${getMonthlySavings(tier).toFixed(0)} per year
-                  </p>
-                )}
-              </CardDescription>
-            </CardHeader>
+              )}
 
-            <CardContent>
-              <ul className="space-y-3">
-                {tier.features.map((feature: string, idx: number) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <Check className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                    <span className="text-sm">{feature}</span>
-                  </li>
+              <CardHeader className="text-center pb-8 pt-6">
+                <div className="mx-auto mb-4 p-3 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full w-fit">
+                  {tier.icon}
+                </div>
+                <CardTitle className="text-2xl mb-2">{tier.name}</CardTitle>
+                <CardDescription className="text-base">{tier.description}</CardDescription>
+                <div className="mt-4">
+                  <span className="text-4xl font-bold text-gray-900">${tier.price}</span>
+                  <span className="text-gray-600">/month</span>
+                </div>
+              </CardHeader>
+
+              <CardContent className="space-y-4">
+                {tier.features.map((feature, idx) => (
+                  <div key={idx} className="flex items-start gap-3">
+                    <Check className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span className="text-gray-700">{feature}</span>
+                  </div>
                 ))}
-              </ul>
-            </CardContent>
+              </CardContent>
 
-            <CardFooter>
-              <Button
-                className="w-full"
-                variant={tier.tier === "hybrid" ? "default" : "outline"}
-                disabled={isCurrentTier(tier.tier) || loadingTier !== null}
-                onClick={() => handleSubscribe(tier.tier)}
-              >
-                {loadingTier === tier.tier ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Processing...
-                  </>
-                ) : isCurrentTier(tier.tier) ? (
-                  "Current Plan"
-                ) : (
-                  "Start Free Trial"
-                )}
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
-
-      {/* Split Payment Info for Yearly */}
-      {billingFrequency === "yearly" && (
-        <div className="mt-8 max-w-3xl mx-auto">
-          <Card className="bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <p className="font-semibold text-blue-900 dark:text-blue-100 mb-2">
-                  💳 Split Payment Available
-                </p>
-                <p className="text-sm text-blue-800 dark:text-blue-200">
-                  Pay for your yearly subscription in 3 or 6 interest-free installments. Option available at checkout.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+              <CardFooter>
+                <Button
+                  className="w-full"
+                  size="lg"
+                  variant={tier.popular ? "default" : "outline"}
+                  onClick={() => handleSubscribe(tier.id, tier.price)}
+                  disabled={loadingTier === tier.id || isCurrentTier(tier.id)}
+                >
+                  {loadingTier === tier.id ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Processing...
+                    </>
+                  ) : isCurrentTier(tier.id) ? (
+                    "Current Plan"
+                  ) : (
+                    "Get Started"
+                  )}
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
         </div>
-      )}
 
-      {/* FAQ Section */}
-      <div className="mt-16 max-w-3xl mx-auto">
-        <h2 className="text-2xl font-bold text-center mb-8">Frequently Asked Questions</h2>
-        <div className="space-y-6">
-          <div>
-            <h3 className="font-semibold mb-2">What happens after the 7-day trial?</h3>
-            <p className="text-muted-foreground">
-              Your card will be charged on day 8. You can cancel anytime during the trial with no charge.
-            </p>
-          </div>
-          <div>
-            <h3 className="font-semibold mb-2">Can I switch between monthly and yearly billing?</h3>
-            <p className="text-muted-foreground">
-              Yes! You can switch billing frequency from your subscription dashboard. Changes take effect at the next billing cycle.
-            </p>
-          </div>
-          <div>
-            <h3 className="font-semibold mb-2">How does split payment work?</h3>
-            <p className="text-muted-foreground">
-              For yearly plans, you can choose to pay in 3 or 6 installments at checkout. No interest, no fees - just spread the cost over time.
-            </p>
-          </div>
-          <div>
-            <h3 className="font-semibold mb-2">What if I need more human sessions?</h3>
-            <p className="text-muted-foreground">
-              Hybrid and Premium subscribers can purchase additional sessions for $99 each from their dashboard.
-            </p>
-          </div>
-          <div>
-            <h3 className="font-semibold mb-2">Is my data secure?</h3>
-            <p className="text-muted-foreground">
-              Absolutely. All conversations are encrypted and HIPAA-compliant. We never share your data with third parties.
-            </p>
-          </div>
+        {/* Trust Signals */}
+        <div className="mt-16 text-center">
+          <p className="text-sm text-gray-600 mb-4">
+            ✓ Cancel anytime • ✓ No long-term contracts • ✓ 7-day money-back guarantee
+          </p>
+          <p className="text-xs text-gray-500">
+            Join 500+ individuals who found freedom through purposeful coaching
+          </p>
+        </div>
+
+        {/* FAQ Teaser */}
+        <div className="mt-12 max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
+          <h3 className="text-lg font-semibold mb-3 text-gray-900">Questions?</h3>
+          <p className="text-gray-600 mb-4">
+            All plans include crisis detection, progress tracking, and mobile access. Human coaching plans include AI support between sessions for perfect continuity.
+          </p>
+          <Button variant="link" onClick={() => setLocation("/")}>
+            Learn more about our approach →
+          </Button>
         </div>
       </div>
     </div>

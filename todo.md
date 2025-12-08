@@ -46,6 +46,16 @@
 - [ ] Add SMS/email alerts for escalations
 - [ ] Build human session booking (premium tier only)
 
+### Phase 5.5: Rich Client Profile System (CRITICAL FOR CONTINUITY) ✅ COMPLETE
+- [x] Copy rich client profile schema from purposeful-individual (50+ fields)
+- [x] Copy AI extraction engine (lib/ai/extraction.ts)
+- [x] Copy coachDashboard router (real-time profiles)
+- [x] Update CoachDashboard.tsx with real client data
+- [x] Fix all TypeScript errors (zero errors)
+- [x] Create deployment guide (DEPLOYMENT-GUIDE.md)
+- [ ] Deploy to Render and run database migrations
+- [ ] Test profile auto-population from conversations
+
 ### Phase 6: Testing & Launch ⏳ IN PROGRESS
 - [ ] **RUN DATABASE MIGRATION** (pnpm db:push) - CRITICAL FIRST STEP
 - [ ] Create Stripe products & prices in Stripe Dashboard
@@ -904,3 +914,18 @@ Remove all signup forms. User just enters email/password and immediately starts 
 - [ ] Test backend starts successfully without Manus env vars
 - [ ] Push changes to GitHub
 - [ ] Verify Render deployment works without 502 errors
+
+### CRITICAL FIX: Texting Interaction
+- [x] Fix texting - currently runs scripted pitch, ignores user input
+- [x] Make texting truly conversational (AI responds to what user actually says)
+- [x] Added conversation memory (remembers context)
+- [x] Added profile extraction from chat
+- [x] Added crisis detection and escalation
+- [ ] Test texting interaction feels natural and engaging
+- [x] Build dual pricing page (AI vs Human coaching toggle)
+- [x] Individual/family focused copy (not enterprise)
+- [x] AI tiers: $29/$149/$299
+- [x] Human tiers: $800/$1,200/$2,000
+- [x] Trust signals and FAQ teaser
+- [ ] Keep simple homepage with instant "Start Texting" / "Call Now" buttons
+- [ ] Add "See Pricing" link on homepage

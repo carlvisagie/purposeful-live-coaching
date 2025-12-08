@@ -41,6 +41,7 @@ export function LiveChatWidget({
   ]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [conversationId, setConversationId] = useState<string | undefined>(undefined);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const chatMutation = trpc.chat.sendMessage.useMutation();
@@ -71,12 +72,18 @@ export function LiveChatWidget({
     setIsLoading(true);
 
     try {
-      // Send to backend
+      // Send to backend with conversation continuity
       const response = await chatMutation.mutateAsync({
         message: inputValue,
         type,
         routeToTeam,
+        sessionId: conversationId,
       });
+
+      // Save conversation ID for continuity
+      if (response.conversationId && !conversationId) {
+        setConversationId(response.conversationId);
+      }
 
       // Add support response
       const supportMessage: ChatMessage = {

@@ -1,4 +1,4 @@
-import { date, int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { date, decimal, int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
 
 // Export identity schema tables
 export * from "./identitySchema";
@@ -80,6 +80,64 @@ export const clients = mysqlTable("clients", {
   status: mysqlEnum("status", ["active", "inactive", "completed"]).default("active").notNull(),
   startDate: timestamp("startDate").defaultNow().notNull(),
   endDate: timestamp("endDate"),
+  
+  // Professional Info (auto-extracted from conversations)
+  jobTitle: varchar("jobTitle", { length: 200 }),
+  company: varchar("company", { length: 200 }),
+  industry: varchar("industry", { length: 100 }),
+  careerGoals: text("careerGoals"),
+  
+  // Personal Info (auto-extracted)
+  age: int("age"),
+  locationCity: varchar("locationCity", { length: 100 }),
+  locationState: varchar("locationState", { length: 100 }),
+  locationCountry: varchar("locationCountry", { length: 100 }),
+  relationshipStatus: varchar("relationshipStatus", { length: 50 }),
+  hasChildren: mysqlEnum("hasChildren", ["true", "false"]),
+  
+  // Goals & Motivation (auto-extracted)
+  primaryGoal: text("primaryGoal"),
+  goalTimeline: varchar("goalTimeline", { length: 100 }),
+  motivation: text("motivation"),
+  
+  // Identity Architecture (auto-extracted)
+  currentIdentity: text("currentIdentity"), // JSON array
+  targetIdentity: text("targetIdentity"), // JSON array
+  identityGap: text("identityGap"),
+  coreValues: text("coreValues"), // JSON array
+  lifeMission: text("lifeMission"),
+  
+  // Behavioral Patterns (auto-extracted)
+  procrastinationTriggers: text("procrastinationTriggers"), // JSON array
+  energyPattern: varchar("energyPattern", { length: 50 }),
+  stressResponses: text("stressResponses"), // JSON array
+  
+  // Health & Wellness (auto-extracted)
+  sleepHours: decimal("sleepHours", { precision: 3, scale: 1 }),
+  exerciseFrequency: varchar("exerciseFrequency", { length: 50 }),
+  dietPattern: varchar("dietPattern", { length: 100 }),
+  mentalHealthNotes: text("mentalHealthNotes"),
+  
+  // Financial (auto-extracted)
+  savingsLevel: varchar("savingsLevel", { length: 50 }),
+  hasDebt: mysqlEnum("hasDebt", ["true", "false"]),
+  monthlyExpensesEstimate: int("monthlyExpensesEstimate"),
+  
+  // Communication Preferences (auto-extracted)
+  preferredContact: varchar("preferredContact", { length: 50 }),
+  bestTimeToReach: varchar("bestTimeToReach", { length: 50 }),
+  communicationStyle: varchar("communicationStyle", { length: 50 }),
+  
+  // Crisis Indicators (auto-detected)
+  suicideRiskLevel: varchar("suicideRiskLevel", { length: 20 }),
+  crisisFlags: text("crisisFlags"), // JSON array
+  lastCrisisCheck: timestamp("lastCrisisCheck"),
+  
+  // Extraction Metadata
+  profileCompleteness: int("profileCompleteness").default(0),
+  confidenceScores: text("confidenceScores"), // JSON object
+  lastProfileUpdate: timestamp("lastProfileUpdate"),
+  
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
