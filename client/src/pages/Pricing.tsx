@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Check, Sparkles, Zap, Crown, Loader2, Bot, Users } from "lucide-react";
 import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 /**
  * Dual Pricing Page
@@ -26,9 +26,7 @@ export default function Pricing() {
     setLoadingTier(tier);
     try {
       const result = await createCheckout.mutateAsync({
-        tier: tier as "ai_only" | "hybrid" | "premium",
-        billingFrequency: "monthly",
-        enableSplitPayment: false,
+        tier: tier as "ai_basic" | "ai_premium" | "ai_elite" | "human_basic" | "human_premium" | "human_elite",
         successUrl: `${window.location.origin}/subscription/success`,
         cancelUrl: `${window.location.origin}/pricing`,
       });
@@ -53,7 +51,7 @@ export default function Pricing() {
   // AI Coaching Tiers
   const aiTiers = [
     {
-      id: "ai_only",
+      id: "ai_basic",
       name: "AI Chat",
       price: 29,
       description: "Start your journey 24/7",
@@ -69,7 +67,7 @@ export default function Pricing() {
       ],
     },
     {
-      id: "hybrid",
+      id: "ai_premium",
       name: "AI + Monthly Check-in",
       price: 149,
       description: "AI + 1 human session",
@@ -85,7 +83,7 @@ export default function Pricing() {
       ],
     },
     {
-      id: "premium",
+      id: "ai_elite",
       name: "AI + Weekly Support",
       price: 299,
       description: "AI + 4 human sessions",
@@ -93,7 +91,7 @@ export default function Pricing() {
       color: "border-amber-500",
       popular: false,
       features: [
-        "Everything in Hybrid",
+        "Everything in AI Premium",
         "4 live sessions per month (30 min each)",
         "Priority scheduling",
         "Text & email support",
@@ -106,7 +104,7 @@ export default function Pricing() {
   // Human Coaching Tiers
   const humanTiers = [
     {
-      id: "starter",
+      id: "human_basic",
       name: "Starter",
       price: 800,
       description: "2 personal sessions + AI access",
@@ -122,7 +120,7 @@ export default function Pricing() {
       ],
     },
     {
-      id: "professional",
+      id: "human_premium",
       name: "Professional",
       price: 1200,
       description: "4 sessions + priority support",
@@ -139,7 +137,7 @@ export default function Pricing() {
       ],
     },
     {
-      id: "elite",
+      id: "human_elite",
       name: "Elite",
       price: 2000,
       description: "8 sessions + 24/7 access to your coach",
@@ -168,10 +166,10 @@ export default function Pricing() {
             Flexible Pricing for Your Journey
           </Badge>
           <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">
-            Choose Your Path to Freedom
+            Choose Your Path to Wellness
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Whether you prefer AI-powered coaching or personal human guidance, we're here to help you quit your day job and find your purpose.
+            Whether you prefer AI-powered coaching or personal human guidance, we're here to help you achieve emotional, mental, physical, nutritional, and spiritual wellness.
           </p>
         </div>
 
@@ -254,10 +252,10 @@ export default function Pricing() {
         {/* Trust Signals */}
         <div className="mt-16 text-center">
           <p className="text-sm text-gray-600 mb-4">
-            ✓ Cancel anytime • ✓ No long-term contracts • ✓ 7-day money-back guarantee
+            ✓ 7-day free trial • ✓ Cancel anytime • ✓ No long-term contracts
           </p>
           <p className="text-xs text-gray-500">
-            Join 500+ individuals who found freedom through purposeful coaching
+            Join hundreds of individuals on their wellness journey
           </p>
         </div>
 

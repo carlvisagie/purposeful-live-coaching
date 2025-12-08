@@ -929,3 +929,29 @@ Remove all signup forms. User just enters email/password and immediately starts 
 - [x] Trust signals and FAQ teaser
 - [ ] Keep simple homepage with instant "Start Texting" / "Call Now" buttons
 - [ ] Add "See Pricing" link on homepage
+
+
+---
+
+## 🏠 HOMEPAGE REBUILD (Instant Access + Pricing Combined)
+- [ ] Create new homepage layout (instant CTA + pricing on one page)
+- [ ] Add hero section with big purple "Start Talking Now" button
+- [ ] Add Call 24/7 option with phone number
+- [ ] Add "No signup. No credit card. Just start talking." trust line
+- [ ] Add wellness modules preview (4 cards: Emotional, Mental, Physical, Spiritual)
+- [ ] Add "Explore All 31 Modules →" link
+- [ ] Integrate pricing section below modules
+- [ ] Add AI vs Human coaching toggle to pricing
+- [ ] Connect "Start Now" button to /ai-coach
+- [ ] Test instant access flow end-to-end
+
+## 🤖 DATA GATHERING MACHINE ACTIVATION
+- [ ] Run database migration for 5 core engines (emotional, mental, physical, nutrition, spiritual)
+- [ ] Run database migration for intelligence tables (11 tables)
+- [ ] Verify AI extraction runs on every conversation
+- [ ] Verify coach dashboard displays real-time client data
+- [ ] Test profile auto-population from AI chat
+- [ ] Verify compliance engine is active (blocking bad advice)
+- [ ] Verify research engine is collecting cross-client patterns
+- [ ] Check crisis detection and escalation system
+- [ ] Monitor data quality and confidence scores
