@@ -52,7 +52,7 @@ export default function Pricing() {
   const aiTiers = [
     {
       id: "ai_basic",
-      name: "AI Chat",
+      name: "Basic",
       price: 29,
       description: "Start your journey 24/7",
       icon: <Sparkles className="h-6 w-6" />,
@@ -68,7 +68,7 @@ export default function Pricing() {
     },
     {
       id: "ai_premium",
-      name: "AI + Monthly Check-in",
+      name: "Premium",
       price: 149,
       description: "AI + 1 human session",
       icon: <Zap className="h-6 w-6" />,
@@ -84,7 +84,7 @@ export default function Pricing() {
     },
     {
       id: "ai_elite",
-      name: "AI + Weekly Support",
+      name: "Elite",
       price: 299,
       description: "AI + 4 human sessions",
       icon: <Crown className="h-6 w-6" />,
