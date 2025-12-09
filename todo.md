@@ -955,3 +955,87 @@ Remove all signup forms. User just enters email/password and immediately starts 
 - [ ] Verify research engine is collecting cross-client patterns
 - [ ] Check crisis detection and escalation system
 - [ ] Monitor data quality and confidence scores
+
+
+---
+
+## 🔧 COMPLETE PLATFORM AUDIT (Dec 9, 2025)
+
+### Critical Navigation Fixes
+- [x] Fix purple "Start Talking to Your AI Coach Now" button - change from /chat to /ai-coach (line 212 in IndividualLanding.tsx)
+- [ ] Test all 29 routes to ensure pages load correctly
+- [ ] Check for any other broken links throughout the site
+
+### Video/Audio Interface Testing
+- [ ] Test /ai-coach page - verify video/audio recording works
+- [ ] Test /live-session page - verify live session assistant works
+- [ ] Verify microphone permissions prompt
+- [ ] Test audio recording functionality
+- [ ] Test AI voice response playback
+- [ ] Check WebRTC connections
+- [ ] Verify transcription service integration
+
+### Admin Dashboard Completion
+- [ ] Connect admin dashboard to real Stripe data (currently showing zeros)
+- [ ] Set up Stripe webhooks for subscription event tracking
+- [ ] Build backend API endpoints for revenue metrics
+- [ ] Build backend API endpoints for user data
+- [ ] Test Export Data functionality
+- [ ] Test System Settings functionality
+
+### All Pages Functionality Test
+- [ ] Test / (IndividualLanding) - homepage
+- [ ] Test /ai-coach - AI coaching interface
+- [ ] Test /live-session - live session assistant
+- [ ] Test /pricing - pricing page
+- [ ] Test /subscription - subscription dashboard
+- [ ] Test /subscription/success - success page
+- [ ] Test /admin - admin dashboard
+- [ ] Test /admin/ai-monitoring - AI monitoring
+- [ ] Test /admin/client-history - client history
+- [ ] Test /dashboard - main dashboard
+- [ ] Test /clients - clients list
+- [ ] Test /clients/new - new client form
+- [ ] Test /my-sessions - sessions list
+- [ ] Test /my-profile - user profile
+- [ ] Test /my-files - file management
+- [ ] Test /emotions - emotion tracker
+- [ ] Test /insights - insights dashboard
+- [ ] Test /coach/dashboard - coach dashboard
+- [ ] Test /coach/setup - coach setup
+- [ ] Test /coach/availability - availability settings
+- [ ] Test /coach/session-types - session type management
+- [ ] Test /autism - autism dashboard
+- [ ] Test /autism/create-profile - autism profile creation
+
+### Button & Link Testing
+- [ ] Test all homepage buttons
+- [ ] Test all navigation menu links
+- [ ] Test all pricing page buttons
+- [ ] Test all dashboard navigation
+- [ ] Test all form submit buttons
+- [ ] Test all "Learn More" links
+- [ ] Test all social proof elements
+
+### Backend API Testing
+- [ ] Test all tRPC endpoints for errors
+- [ ] Verify database connections
+- [ ] Test authentication flows
+- [ ] Test subscription creation
+- [ ] Test webhook processing
+- [ ] Test AI chat endpoints
+- [ ] Test file upload endpoints
+
+### Mobile Responsiveness
+- [ ] Test homepage on mobile
+- [ ] Test pricing page on mobile
+- [ ] Test AI coach on mobile
+- [ ] Test admin dashboard on mobile
+- [ ] Test all forms on mobile
+
+### Performance & Errors
+- [ ] Check browser console for JavaScript errors
+- [ ] Check network tab for failed requests
+- [ ] Test page load times
+- [ ] Check for memory leaks
+- [ ] Verify all images load correctly
