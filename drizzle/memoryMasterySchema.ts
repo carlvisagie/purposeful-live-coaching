@@ -28,7 +28,7 @@
  * - Learns which content types benefit from which techniques
  */
 
-import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Memory Mastery Profiles
 export const memoryMasteryProfiles = pgTable("memory_mastery_profiles", {
@@ -39,22 +39,13 @@ export const memoryMasteryProfiles = pgTable("memory_mastery_profiles", {
   selfAssessedMemory: integer("self_assessed_memory"), // 1-10
   
   // Goals
-  primaryGoal: pgEnum("primary_goal", [
-    "improve_retention",
-    "learn_faster",
-    "remember_names",
-    "study_efficiency",
-    "professional_knowledge",
-    "language_learning",
-    "prevent_decline",
-    "peak_performance"
-  ]),
+  primaryGoal: varchar("primary_goal", { length: 50 }),
   
   // Preferred Techniques
   preferredTechniques: text("preferred_techniques"), // JSON array
   
   // Learning Style
-  learningStyle: pgEnum("learning_style", ["visual", "auditory", "kinesthetic", "reading_writing", "mixed"]),
+  learningStyle: varchar("learning_style", { length: 50 }),
   
   // Practice Schedule
   dailyReviewTime: varchar("daily_review_time", { length: 10 }), // HH:MM
@@ -77,19 +68,7 @@ export const memoryItems = pgTable("memory_items", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Content
-  itemType: pgEnum("item_type", [
-    "fact",
-    "concept",
-    "name_face",
-    "vocabulary", // Foreign language
-    "number",
-    "date",
-    "formula",
-    "procedure", // How to do something
-    "quote",
-    "list",
-    "other"
-  ]),
+  itemType: varchar("item_type", { length: 50 }),
   
   title: varchar("title", { length: 255 }).notNull(),
   content: text("content"), // What to remember
@@ -99,19 +78,7 @@ export const memoryItems = pgTable("memory_items", {
   tags: text("tags"), // JSON array
   
   // Encoding Technique Used
-  encodingTechnique: pgEnum("encoding_technique", [
-    "rote_repetition",
-    "spaced_repetition",
-    "memory_palace",
-    "chunking",
-    "elaboration", // Connect to existing knowledge
-    "dual_coding", // Visual + verbal
-    "mnemonic",
-    "story",
-    "acronym",
-    "rhyme",
-    "visualization"
-  ]),
+  encodingTechnique: varchar("encoding_technique", { length: 50 }),
   
   // Memory Palace Location (if using method of loci)
   palaceLocation: varchar("palace_location", { length: 255 }),
@@ -155,25 +122,15 @@ export const memoryReviews = pgTable("memory_reviews", {
   reviewDate: timestamp("review_date").notNull(),
   
   // Review Type
-  reviewType: pgEnum("review_type", [
-    "scheduled", // Spaced repetition
-    "cramming", // Last-minute review
-    "reinforcement", // Extra practice
-    "test" // Self-testing
-  ]),
+  reviewType: varchar("review_type", { length: 50 }),
   
   // Performance
   recalled: boolean("recalled").notNull(), // Did you remember it?
-  recallSpeed: pgEnum("recall_speed", ["instant", "quick", "slow", "failed"]),
+  recallSpeed: varchar("recall_speed", { length: 50 }),
   confidence: integer("confidence"), // 1-10: How confident in your recall?
   
   // Difficulty Rating (for spaced repetition algorithm)
-  difficultyRating: pgEnum("difficulty_rating", [
-    "again", // Didn't remember (0)
-    "hard", // Remembered with difficulty (3)
-    "good", // Remembered (4)
-    "easy" // Remembered easily (5)
-  ]).notNull(),
+  difficultyRating: varchar("difficulty_rating", { length: 50 }).notNull(),
   
   // Time
   timeToRecall: integer("time_to_recall"), // seconds
@@ -225,12 +182,7 @@ export const learningSessions = pgTable("learning_sessions", {
   
   // Session Details
   topic: varchar("topic", { length: 255 }).notNull(),
-  sessionType: pgEnum("session_type", [
-    "new_learning", // Learning new material
-    "review", // Reviewing old material
-    "practice", // Active practice
-    "testing" // Self-testing
-  ]),
+  sessionType: varchar("session_type", { length: 50 }),
   
   // Duration
   duration: integer("duration"), // minutes
@@ -271,18 +223,7 @@ export const memoryTechniquePractice = pgTable("memory_technique_practice", {
   practiceDate: timestamp("practice_date").notNull(),
   
   // Technique
-  technique: pgEnum("technique", [
-    "memory_palace",
-    "chunking",
-    "peg_system",
-    "major_system", // Number memory
-    "link_method", // Linking items in a story
-    "acronym",
-    "visualization",
-    "dual_coding",
-    "elaboration",
-    "active_recall"
-  ]),
+  technique: varchar("technique", { length: 50 }),
   
   // Practice Details
   practiceType: varchar("practice_type", { length: 255 }), // What were you practicing?
@@ -315,15 +256,7 @@ export const memoryChallenges = pgTable("memory_challenges", {
   challengeName: varchar("challenge_name", { length: 255 }).notNull(),
   
   // Challenge Type
-  challengeType: pgEnum("challenge_type", [
-    "number_memorization", // Memorize long numbers
-    "name_recall", // Remember names
-    "card_memorization", // Deck of cards
-    "word_list", // List of words
-    "dates_events", // Historical dates
-    "vocabulary", // Foreign language
-    "custom"
-  ]),
+  challengeType: varchar("challenge_type", { length: 50 }),
   
   // Challenge Details
   itemCount: integer("item_count"), // How many items to memorize
@@ -349,15 +282,7 @@ export const memoryMilestones = pgTable("memory_milestones", {
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  milestoneType: pgEnum("milestone_type", [
-    "items_mastered", // Mastered X items
-    "retention_rate", // Achieved X% retention
-    "streak", // X day streak
-    "technique_mastered", // Mastered a technique
-    "challenge_completed", // Completed a challenge
-    "palace_created", // Built a memory palace
-    "personal_record"
-  ]),
+  milestoneType: varchar("milestone_type", { length: 50 }),
   
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
@@ -482,16 +407,11 @@ export const nameRecallPractice = pgTable("name_recall_practice", {
   practiceDate: timestamp("practice_date").notNull(),
   
   // Practice Type
-  practiceType: pgEnum("practice_type", [
-    "face_to_name", // See face, recall name
-    "name_to_face", // Hear name, visualize face
-    "feature_identification", // Identify outstanding feature
-    "association_review" // Review mental associations
-  ]),
+  practiceType: varchar("practice_type", { length: 50 }),
   
   // Performance
   recalled: boolean("recalled"),
-  recallSpeed: pgEnum("recall_speed", ["instant", "quick", "slow", "failed"]),
+  recallSpeed: varchar("recall_speed", { length: 50 }),
   confidence: integer("confidence"), // 1-10
   
   // Time
@@ -508,16 +428,7 @@ export const numberMemory = pgTable("number_memory", {
   
   // Number to Remember
   number: varchar("number", { length: 255 }).notNull(),
-  numberType: pgEnum("number_type", [
-    "phone",
-    "pin",
-    "date",
-    "address",
-    "credit_card",
-    "id_number",
-    "mathematical_constant",
-    "other"
-  ]),
+  numberType: varchar("number_type", { length: 50 }),
   
   label: varchar("label", { length: 255 }), // What is this number?
   

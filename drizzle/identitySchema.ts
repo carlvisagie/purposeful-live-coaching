@@ -1,4 +1,4 @@
-import { int, integer, pgEnum, pgTable, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { int, integer, pgTable, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { clients } from "./schema";
 
 /**
@@ -39,19 +39,19 @@ export const dailyCheckins = pgTable("dailyCheckins", {
   checkinDate: timestamp("checkinDate").defaultNow().notNull(),
   
   // Physical health (minimal questions)
-  sleptWell: pgEnum("sleptWell", ["yes", "no"]),
-  ateWell: pgEnum("ateWell", ["yes", "no"]),
-  movedBody: pgEnum("movedBody", ["yes", "no"]),
+  sleptWell: varchar("sleptWell", { length: 50 }),
+  ateWell: varchar("ateWell", { length: 50 }),
+  movedBody: varchar("movedBody", { length: 50 }),
   
   // Emotional state (single rating)
   emotionalState: integer("emotionalState").notNull(), // 1-10 scale
   
   // Discipline tracking
-  followedPlan: pgEnum("followedPlan", ["yes", "no"]),
-  controlledImpulses: pgEnum("controlledImpulses", ["yes", "no"]),
+  followedPlan: varchar("followedPlan", { length: 50 }),
+  controlledImpulses: varchar("controlledImpulses", { length: 50 }),
   
   // Identity reinforcement
-  actedLikeTargetIdentity: pgEnum("actedLikeTargetIdentity", ["yes", "no"]),
+  actedLikeTargetIdentity: varchar("actedLikeTargetIdentity", { length: 50 }),
   
   // Optional notes (not required)
   notes: text("notes"),
@@ -71,7 +71,7 @@ export const habitCompletions = pgTable("habitCompletions", {
   id: serial("id").primaryKey(),
   habitId: integer("habitId").notNull().references(() => habits.id),
   completionDate: timestamp("completionDate").defaultNow().notNull(),
-  completed: pgEnum("completed", ["yes", "no"]),
+  completed: varchar("completed", { length: 50 }),
   notes: text("notes"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
@@ -88,13 +88,13 @@ export const disciplineEvents = pgTable("disciplineEvents", {
   eventDate: timestamp("eventDate").defaultNow().notNull(),
   
   // Event details
-  eventType: pgEnum("eventType", ["impulse_controlled", "impulse_failed", "discipline_win", "discipline_fail"]),
+  eventType: varchar("eventType", { length: 50 }),
   situation: text("situation"), // What happened
   response: text("response"), // How they responded
   outcome: text("outcome"), // Result
   
   // Identity impact
-  reinforcedIdentity: pgEnum("reinforcedIdentity", ["yes", "no"]),
+  reinforcedIdentity: varchar("reinforcedIdentity", { length: 50 }),
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
@@ -118,7 +118,7 @@ export const microHabits = pgTable("microHabits", {
   identityReinforcement: text("identityReinforcement"), // "This makes me [identity]"
   
   // Status
-  isActive: pgEnum("isActive", ["true", "false"]),
+  isActive: varchar("isActive", { length: 50 }),
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),

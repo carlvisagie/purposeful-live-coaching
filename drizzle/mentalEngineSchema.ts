@@ -10,7 +10,7 @@
  * - Learns best learning strategies for individual
  */
 
-import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Mental Profiles
 export const mentalProfiles = pgTable("mental_profiles", {
@@ -27,16 +27,7 @@ export const mentalProfiles = pgTable("mental_profiles", {
   primaryChallenges: text("primary_challenges"), // JSON: brain_fog, poor_focus, memory_issues, overwhelm, etc.
   
   // Goals
-  primaryGoal: pgEnum("primary_goal", [
-    "improve_focus",
-    "enhance_memory",
-    "increase_clarity",
-    "learn_faster",
-    "reduce_brain_fog",
-    "boost_creativity",
-    "improve_decision_making",
-    "mental_performance"
-  ]),
+  primaryGoal: varchar("primary_goal", { length: 50 }),
   
   // Learning Style (evidence-based)
   learningStyle: text("learning_style"), // JSON: visual, auditory, kinesthetic, reading/writing
@@ -44,7 +35,7 @@ export const mentalProfiles = pgTable("mental_profiles", {
   
   // Current Habits
   sleepQuality: integer("sleep_quality"), // 1-10 (affects cognition)
-  exerciseFrequency: pgEnum("exercise_frequency", ["none", "1-2x_week", "3-4x_week", "5+x_week"]),
+  exerciseFrequency: varchar("exercise_frequency", { length: 50 }),
   screenTimeHours: integer("screen_time_hours"), // daily
   
   // Medications/Supplements affecting cognition
@@ -68,18 +59,10 @@ export const focusSessions = pgTable("focus_sessions", {
   sessionDate: timestamp("session_date").notNull(),
   
   // Session Details
-  sessionType: pgEnum("session_type", [
-    "deep_work", // Cal Newport
-    "pomodoro", // 25/5 technique
-    "flow_session", // Extended focus
-    "time_blocking",
-    "focused_learning",
-    "creative_work",
-    "problem_solving"
-  ]),
+  sessionType: varchar("session_type", { length: 50 }),
   
   task: varchar("task", { length: 255 }).notNull(),
-  taskType: pgEnum("task_type", ["learning", "creating", "analyzing", "writing", "coding", "planning"]),
+  taskType: varchar("task_type", { length: 50 }),
   
   // Duration
   plannedDuration: integer("planned_duration"), // minutes
@@ -87,7 +70,7 @@ export const focusSessions = pgTable("focus_sessions", {
   
   // Environment
   location: varchar("location", { length: 255 }),
-  noiseLevel: pgEnum("noise_level", ["silent", "quiet", "moderate", "noisy"]),
+  noiseLevel: varchar("noise_level", { length: 50 }),
   usedNoiseBlocking: boolean("used_noise_blocking"), // Headphones, white noise, etc.
   
   // Pre-Session State
@@ -128,20 +111,10 @@ export const memoryPractices = pgTable("memory_practices", {
   practiceDate: timestamp("practice_date").notNull(),
   
   // Practice Type (evidence-based memory techniques)
-  practiceType: pgEnum("practice_type", [
-    "spaced_repetition", // Anki, flashcards
-    "memory_palace", // Method of loci
-    "chunking", // Breaking info into chunks
-    "mnemonics", // Memory aids
-    "visualization", // Mental imagery
-    "association", // Linking new to known
-    "active_recall", // Testing yourself
-    "elaboration", // Explaining in your own words
-    "interleaving" // Mixing topics
-  ]),
+  practiceType: varchar("practice_type", { length: 50 }),
   
   // What You're Memorizing
-  contentType: pgEnum("content_type", ["facts", "concepts", "skills", "names", "numbers", "language", "other"]),
+  contentType: varchar("content_type", { length: 50 }),
   topic: varchar("topic", { length: 255 }),
   
   // Practice Details
@@ -154,7 +127,7 @@ export const memoryPractices = pgTable("memory_practices", {
   confidenceLevel: integer("confidence_level"), // 1-10
   
   // Difficulty
-  difficulty: pgEnum("difficulty", ["easy", "moderate", "hard"]),
+  difficulty: varchar("difficulty", { length: 50 }),
   
   // Next Review (spaced repetition)
   nextReviewDate: timestamp("next_review_date"),
@@ -174,16 +147,7 @@ export const learningSessions = pgTable("learning_sessions", {
   subject: varchar("subject", { length: 255 }),
   
   // Learning Method
-  learningMethod: pgEnum("learning_method", [
-    "reading",
-    "video",
-    "course",
-    "practice",
-    "teaching_others", // Feynman technique
-    "project_based",
-    "discussion",
-    "experimentation"
-  ]),
+  learningMethod: varchar("learning_method", { length: 50 }),
   
   // Duration
   duration: integer("duration"), // minutes
@@ -234,8 +198,8 @@ export const cognitivePerformance = pgTable("cognitive_performance", {
   sleepHours: decimal("sleep_hours", { precision: 3, scale: 1 }),
   exerciseToday: boolean("exercise_today"),
   stressLevel: integer("stress_level"), // 1-10
-  hydration: pgEnum("hydration", ["poor", "moderate", "good"]),
-  nutrition: pgEnum("nutrition", ["poor", "moderate", "good"]),
+  hydration: varchar("hydration", { length: 50 }),
+  nutrition: varchar("nutrition", { length: 50 }),
   
   // Substances
   caffeineIntake: integer("caffeine_intake"), // mg
@@ -255,16 +219,7 @@ export const brainTrainingExercises = pgTable("brain_training_exercises", {
   exerciseDate: timestamp("exercise_date").notNull(),
   
   // Exercise Type
-  exerciseType: pgEnum("exercise_type", [
-    "working_memory", // N-back tasks
-    "attention", // Focus exercises
-    "processing_speed", // Reaction time
-    "cognitive_flexibility", // Task switching
-    "problem_solving", // Puzzles
-    "pattern_recognition",
-    "spatial_reasoning",
-    "verbal_fluency"
-  ]),
+  exerciseType: varchar("exercise_type", { length: 50 }),
   
   exerciseName: varchar("exercise_name", { length: 255 }),
   
@@ -294,7 +249,7 @@ export const readingSessions = pgTable("reading_sessions", {
   sessionDate: timestamp("session_date").notNull(),
   
   // What You Read
-  contentType: pgEnum("content_type", ["book", "article", "research_paper", "documentation", "news"]),
+  contentType: varchar("content_type", { length: 50 }),
   title: varchar("title", { length: 255 }),
   author: varchar("author", { length: 255 }),
   
@@ -332,16 +287,7 @@ export const mentalBreaks = pgTable("mental_breaks", {
   breakDate: timestamp("break_date").notNull(),
   
   // Break Type
-  breakType: pgEnum("break_type", [
-    "micro_break", // 1-5 min
-    "short_break", // 5-15 min
-    "long_break", // 15-30 min
-    "walk_break",
-    "meditation_break",
-    "nap", // Power nap
-    "nature_break",
-    "social_break"
-  ]),
+  breakType: varchar("break_type", { length: 50 }),
   
   duration: integer("duration"), // minutes
   

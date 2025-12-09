@@ -28,7 +28,7 @@
  * - Personalizes achievement timing
  */
 
-import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // User Gamification Profiles
 export const gamificationProfiles = pgTable("gamification_profiles", {
@@ -51,12 +51,7 @@ export const gamificationProfiles = pgTable("gamification_profiles", {
   totalMilestones: integer("total_milestones").default(0),
   
   // Motivation Type (Self-Determination Theory)
-  motivationType: pgEnum("motivation_type", [
-    "autonomy_driven", // Wants control & choice
-    "competence_driven", // Wants mastery & skill
-    "relatedness_driven", // Wants connection & belonging
-    "mixed"
-  ]),
+  motivationType: varchar("motivation_type", { length: 50 }),
   
   // Gamification Preferences
   likesCompetition: boolean("likes_competition").default(false),
@@ -80,16 +75,7 @@ export const experiencePointsLog = pgTable("experience_points_log", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Source
-  source: pgEnum("source", [
-    "habit_completion",
-    "daily_check_in",
-    "goal_achievement",
-    "milestone_reached",
-    "challenge_completed",
-    "helping_others",
-    "consistency_bonus",
-    "level_up"
-  ]),
+  source: varchar("source", { length: 50 }),
   
   sourceId: varchar("source_id", { length: 255 }), // ID of the habit, goal, etc.
   
@@ -112,18 +98,10 @@ export const achievements = pgTable("achievements", {
   icon: varchar("icon", { length: 255 }),
   
   // Category
-  category: pgEnum("category", [
-    "habits",
-    "goals",
-    "streaks",
-    "community",
-    "learning",
-    "health",
-    "transformation"
-  ]),
+  category: varchar("category", { length: 50 }),
   
   // Difficulty
-  difficulty: pgEnum("difficulty", ["bronze", "silver", "gold", "platinum", "legendary"]),
+  difficulty: varchar("difficulty", { length: 50 }),
   
   // Requirements
   requirements: text("requirements"), // JSON: what needs to be done
@@ -132,7 +110,7 @@ export const achievements = pgTable("achievements", {
   experiencePoints: integer("experience_points").notNull(),
   
   // Rarity
-  rarity: pgEnum("rarity", ["common", "uncommon", "rare", "epic", "legendary"]),
+  rarity: varchar("rarity", { length: 50 }),
   
   // Stats
   totalUnlocked: integer("total_unlocked").default(0), // How many users have this?
@@ -169,12 +147,7 @@ export const challenges = pgTable("challenges", {
   description: text("description"),
   
   // Type
-  challengeType: pgEnum("challenge_type", [
-    "daily", // Complete today
-    "weekly", // Complete this week
-    "one_time", // Complete once
-    "recurring" // Repeats
-  ]),
+  challengeType: varchar("challenge_type", { length: 50 }),
   
   // Difficulty
   difficulty: integer("difficulty"), // 1-10
@@ -236,7 +209,7 @@ export const badges = pgTable("badges", {
   category: varchar("category", { length: 100 }),
   
   // Rarity
-  rarity: pgEnum("rarity", ["common", "uncommon", "rare", "epic", "legendary"]),
+  rarity: varchar("rarity", { length: 50 }),
   
   // How to Earn
   howToEarn: text("how_to_earn"),
@@ -270,18 +243,7 @@ export const milestones = pgTable("milestones", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Milestone Details
-  milestoneType: pgEnum("milestone_type", [
-    "first_day",
-    "first_week",
-    "first_month",
-    "100_days",
-    "1_year",
-    "first_goal",
-    "10_goals",
-    "first_habit_mastered",
-    "level_milestone",
-    "transformation_milestone"
-  ]),
+  milestoneType: varchar("milestone_type", { length: 50 }),
   
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
@@ -304,17 +266,10 @@ export const leaderboards = pgTable("leaderboards", {
   description: text("description"),
   
   // Type
-  leaderboardType: pgEnum("leaderboard_type", [
-    "overall_xp", // Total experience points
-    "current_streak", // Longest current streak
-    "goals_achieved", // Most goals completed
-    "habits_mastered", // Most habits mastered
-    "community_support", // Most helpful to others
-    "transformation" // Biggest transformation
-  ]),
+  leaderboardType: varchar("leaderboard_type", { length: 50 }),
   
   // Time Period
-  timePeriod: pgEnum("time_period", ["all_time", "monthly", "weekly"]),
+  timePeriod: varchar("time_period", { length: 50 }),
   
   // Privacy
   optInOnly: boolean("opt_in_only").default(true), // Users must opt-in to appear
@@ -376,22 +331,10 @@ export const motivationBoosts = pgTable("motivation_boosts", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Trigger
-  triggerType: pgEnum("trigger_type", [
-    "streak_at_risk", // About to lose streak
-    "low_engagement", // Haven't logged in for days
-    "goal_stalled", // No progress on goal
-    "achievement_close", // Almost unlocked achievement
-    "milestone_approaching" // Close to milestone
-  ]),
+  triggerType: varchar("trigger_type", { length: 50 }),
   
   // Boost Type
-  boostType: pgEnum("boost_type", [
-    "encouragement", // Motivational message
-    "reminder", // Gentle nudge
-    "challenge", // New challenge offered
-    "reward_preview", // Show what they're close to earning
-    "social_proof" // Others are succeeding
-  ]),
+  boostType: varchar("boost_type", { length: 50 }),
   
   // Content
   message: text("message"),

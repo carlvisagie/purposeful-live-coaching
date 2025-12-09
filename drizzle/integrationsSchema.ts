@@ -35,7 +35,7 @@
  * - Suggests new integrations based on goals
  */
 
-import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Integration Profiles
 export const integrationProfiles = pgTable("integration_profiles", {
@@ -44,10 +44,10 @@ export const integrationProfiles = pgTable("integration_profiles", {
   
   // Integration Preferences
   autoSyncEnabled: boolean("auto_sync_enabled").default(true),
-  syncFrequency: pgEnum("sync_frequency", ["realtime", "hourly", "daily", "manual"]),
+  syncFrequency: varchar("sync_frequency", { length: 50 }),
   
   // Privacy
-  dataSharing: pgEnum("data_sharing", ["minimal", "standard", "full"]),
+  dataSharing: varchar("data_sharing", { length: 50 }),
   
   // Stats
   totalIntegrations: integer("total_integrations").default(0),
@@ -69,22 +69,10 @@ export const availableIntegrations = pgTable("available_integrations", {
   provider: varchar("provider", { length: 255 }).notNull(), // Oura, Whoop, etc.
   
   // Category
-  category: pgEnum("category", [
-    "wearable",
-    "sleep_tracking",
-    "fitness",
-    "meditation",
-    "productivity",
-    "health",
-    "nutrition",
-    "mental_health",
-    "finance",
-    "communication",
-    "other"
-  ]),
+  category: varchar("category", { length: 50 }),
   
   // Authentication
-  authType: pgEnum("auth_type", ["oauth2", "api_key", "webhook", "manual"]),
+  authType: varchar("auth_type", { length: 50 }),
   
   // Capabilities
   capabilities: text("capabilities"), // JSON: what data can be imported/exported
@@ -121,13 +109,7 @@ export const userIntegrations = pgTable("user_integrations", {
   integrationId: varchar("integration_id", { length: 255 }).notNull(),
   
   // Connection Status
-  status: pgEnum("status", [
-    "connected",
-    "disconnected",
-    "error",
-    "pending_auth",
-    "expired"
-  ]),
+  status: varchar("status", { length: 50 }),
   
   // Authentication
   accessToken: varchar("access_token", { length: 500 }), // Encrypted
@@ -139,7 +121,7 @@ export const userIntegrations = pgTable("user_integrations", {
   
   // Sync Settings
   syncEnabled: boolean("sync_enabled").default(true),
-  syncFrequency: pgEnum("sync_frequency", ["realtime", "hourly", "daily", "manual"]),
+  syncFrequency: varchar("sync_frequency", { length: 50 }),
   lastSyncAt: timestamp("last_sync_at"),
   nextSyncAt: timestamp("next_sync_at"),
   
@@ -172,10 +154,10 @@ export const syncLogs = pgTable("sync_logs", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Sync Details
-  syncType: pgEnum("sync_type", ["import", "export", "bidirectional"]),
+  syncType: varchar("sync_type", { length: 50 }),
   
   // Status
-  status: pgEnum("status", ["started", "in_progress", "completed", "failed"]),
+  status: varchar("status", { length: 50 }),
   
   // Data
   recordsProcessed: integer("records_processed").default(0),
@@ -201,23 +183,7 @@ export const importedData = pgTable("imported_data", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Data Type
-  dataType: pgEnum("data_type", [
-    "sleep",
-    "hrv",
-    "heart_rate",
-    "activity",
-    "steps",
-    "calories",
-    "workout",
-    "nutrition",
-    "weight",
-    "mood",
-    "meditation",
-    "task",
-    "calendar_event",
-    "transaction",
-    "other"
-  ]),
+  dataType: varchar("data_type", { length: 50 }),
   
   // Source
   sourceId: varchar("source_id", { length: 255 }), // ID in source system
@@ -233,7 +199,7 @@ export const importedData = pgTable("imported_data", {
   mappedToType: varchar("mapped_to_type", { length: 100 }), // Which table?
   
   // Quality
-  dataQuality: pgEnum("data_quality", ["high", "medium", "low"]),
+  dataQuality: varchar("data_quality", { length: 50 }),
   validationErrors: text("validation_errors"), // JSON: any validation issues
   
   importedAt: timestamp("imported_at").defaultNow(),
@@ -259,7 +225,7 @@ export const exportedData = pgTable("exported_data", {
   destinationId: varchar("destination_id", { length: 255 }), // ID in destination system
   
   // Status
-  status: pgEnum("status", ["pending", "sent", "confirmed", "failed"]),
+  status: varchar("status", { length: 50 }),
   
   // Error
   errorMessage: text("error_message"),
@@ -414,7 +380,7 @@ export const integrationRecommendations = pgTable("integration_recommendations",
   confidence: decimal("confidence", { precision: 5, scale: 2 }), // %
   
   // Status
-  status: pgEnum("status", ["pending", "accepted", "declined", "deferred"]),
+  status: varchar("status", { length: 50 }),
   
   // User Response
   userFeedback: text("user_feedback"),
@@ -429,21 +395,16 @@ export const exportRequests = pgTable("export_requests", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Export Type
-  exportType: pgEnum("export_type", [
-    "full_data_export", // All user data
-    "module_export", // Specific module data
-    "date_range_export", // Data from date range
-    "custom_export" // Custom query
-  ]),
+  exportType: varchar("export_type", { length: 50 }),
   
   // Format
-  exportFormat: pgEnum("export_format", ["json", "csv", "pdf", "xlsx"]),
+  exportFormat: varchar("export_format", { length: 50 }),
   
   // Filters
   filters: text("filters"), // JSON: what to include
   
   // Status
-  status: pgEnum("status", ["pending", "processing", "completed", "failed"]),
+  status: varchar("status", { length: 50 }),
   
   // File
   filePath: varchar("file_path", { length: 500 }),

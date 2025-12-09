@@ -19,7 +19,7 @@
  * - Predicts recovery based on sleep patterns
  */
 
-import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Sleep Profiles
 export const sleepProfiles = pgTable("sleep_profiles", {
@@ -32,13 +32,13 @@ export const sleepProfiles = pgTable("sleep_profiles", {
   targetWakeTime: varchar("target_wake_time", { length: 10 }), // HH:MM
   
   // Chronotype (circadian preference)
-  chronotype: pgEnum("chronotype", ["early_bird", "night_owl", "intermediate", "unknown"]),
+  chronotype: varchar("chronotype", { length: 50 }),
   
   // Current Issues
   sleepIssues: text("sleep_issues"), // JSON array: insomnia, apnea, restless, etc.
   
   // Tracking Method
-  trackingMethod: pgEnum("tracking_method", ["manual", "wearable", "app"]),
+  trackingMethod: varchar("tracking_method", { length: 50 }),
   wearableDevice: varchar("wearable_device", { length: 100 }), // Oura, WHOOP, Apple Watch, etc.
   
   // Self-Learning Data
@@ -135,15 +135,7 @@ export const sleepHygienePractices = pgTable("sleep_hygiene_practices", {
   noNapsAfter3pm: boolean("no_naps_after_3pm"),
   
   // Relaxation
-  relaxationPractice: pgEnum("relaxation_practice", [
-    "none",
-    "meditation",
-    "breathing",
-    "reading",
-    "stretching",
-    "warm_bath",
-    "journaling"
-  ]),
+  relaxationPractice: varchar("relaxation_practice", { length: 50 }),
   
   // Supplements (if any)
   supplements: text("supplements"), // JSON array: magnesium, glycine, etc.
@@ -184,7 +176,7 @@ export const sleepExperiments = pgTable("sleep_experiments", {
   keepPractice: boolean("keep_practice"), // Will you continue this?
   
   // Status
-  status: pgEnum("status", ["planning", "active", "completed"]),
+  status: varchar("status", { length: 50 }),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -197,14 +189,7 @@ export const sleepPerformanceCorrelations = pgTable("sleep_performance_correlati
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Performance Area
-  performanceArea: pgEnum("performance_area", [
-    "cognitive",
-    "physical",
-    "emotional",
-    "productivity",
-    "creativity",
-    "social"
-  ]),
+  performanceArea: varchar("performance_area", { length: 50 }),
   
   // Correlation Strength
   correlationCoefficient: decimal("correlation_coefficient", { precision: 4, scale: 3 }), // -1 to 1
@@ -228,13 +213,7 @@ export const sleepInsights = pgTable("sleep_insights", {
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  insightType: pgEnum("insight_type", [
-    "pattern_detected",
-    "recommendation",
-    "warning",
-    "achievement",
-    "correlation_found"
-  ]),
+  insightType: varchar("insight_type", { length: 50 }),
   
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
@@ -246,7 +225,7 @@ export const sleepInsights = pgTable("sleep_insights", {
   actionRecommended: text("action_recommended"),
   
   // Priority
-  priority: pgEnum("priority", ["low", "medium", "high"]),
+  priority: varchar("priority", { length: 50 }),
   
   // User Response
   acknowledged: boolean("acknowledged").default(false),

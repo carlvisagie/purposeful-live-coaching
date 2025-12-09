@@ -10,7 +10,7 @@
  * - Predicts health outcomes based on current trajectory
  */
 
-import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Health Optimization Profiles
 export const healthOptimizationProfiles = pgTable("health_optimization_profiles", {
@@ -25,15 +25,7 @@ export const healthOptimizationProfiles = pgTable("health_optimization_profiles"
   estimatedBiologicalAge: integer("estimated_biological_age"), // Based on biomarkers
   
   // Health Goals
-  primaryGoal: pgEnum("primary_goal", [
-    "longevity",
-    "disease_prevention",
-    "optimize_biomarkers",
-    "increase_healthspan",
-    "reverse_aging",
-    "peak_performance",
-    "disease_management"
-  ]),
+  primaryGoal: varchar("primary_goal", { length: 50 }),
   
   // Risk Factors
   familyHistory: text("family_history"), // JSON: diseases in family
@@ -44,8 +36,8 @@ export const healthOptimizationProfiles = pgTable("health_optimization_profiles"
   currentMedications: text("current_medications"), // JSON array
   
   // Lifestyle
-  smokingStatus: pgEnum("smoking_status", ["never", "former", "current"]),
-  alcoholConsumption: pgEnum("alcohol_consumption", ["none", "light", "moderate", "heavy"]),
+  smokingStatus: varchar("smoking_status", { length: 50 }),
+  alcoholConsumption: varchar("alcohol_consumption", { length: 50 }),
   
   // Health Optimization Protocols
   activeProtocols: text("active_protocols"), // JSON: protocols currently following
@@ -53,7 +45,7 @@ export const healthOptimizationProfiles = pgTable("health_optimization_profiles"
   // Self-Learning Data
   mostEffectiveInterventions: text("most_effective_interventions"), // JSON
   biomarkerTrends: text("biomarker_trends"), // JSON: improving, stable, declining
-  healthTrajectory: pgEnum("health_trajectory", ["improving", "stable", "declining"]),
+  healthTrajectory: varchar("health_trajectory", { length: 50 }),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -141,19 +133,7 @@ export const healthProtocols = pgTable("health_protocols", {
   protocolName: varchar("protocol_name", { length: 255 }).notNull(),
   
   // Protocol Type
-  protocolType: pgEnum("protocol_type", [
-    "supplement_stack",
-    "dietary_intervention",
-    "exercise_protocol",
-    "sleep_optimization",
-    "stress_management",
-    "cold_exposure",
-    "heat_exposure", // Sauna
-    "fasting",
-    "red_light_therapy",
-    "breathwork",
-    "other"
-  ]),
+  protocolType: varchar("protocol_type", { length: 50 }),
   
   // Details
   description: text("description"),
@@ -182,7 +162,7 @@ export const healthProtocols = pgTable("health_protocols", {
   willContinue: boolean("will_continue"),
   
   // Status
-  status: pgEnum("status", ["active", "completed", "discontinued"]),
+  status: varchar("status", { length: 50 }),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -262,8 +242,8 @@ export const sleepSessions = pgTable("sleep_sessions", {
   
   // Environment
   roomTemperature: integer("room_temperature"), // °C
-  noiseLevel: pgEnum("noise_level", ["silent", "quiet", "moderate", "loud"]),
-  lightLevel: pgEnum("light_level", ["dark", "dim", "moderate", "bright"]),
+  noiseLevel: varchar("noise_level", { length: 50 }),
+  lightLevel: varchar("light_level", { length: 50 }),
   
   // Morning Metrics
   morningEnergy: integer("morning_energy"), // 1-10
@@ -310,20 +290,7 @@ export const healthScreenings = pgTable("health_screenings", {
   screeningDate: timestamp("screening_date").notNull(),
   
   // Screening Type
-  screeningType: pgEnum("screening_type", [
-    "blood_work",
-    "DEXA_scan", // Body composition
-    "VO2_max", // Cardio fitness
-    "coronary_calcium_score", // Heart disease risk
-    "colonoscopy",
-    "mammogram",
-    "skin_check",
-    "eye_exam",
-    "dental_checkup",
-    "genetic_testing",
-    "microbiome_test",
-    "other"
-  ]),
+  screeningType: varchar("screening_type", { length: 50 }),
   
   screeningName: varchar("screening_name", { length: 255 }),
   
@@ -352,24 +319,11 @@ export const longevityPractices = pgTable("longevity_practices", {
   practiceDate: timestamp("practice_date").notNull(),
   
   // Practice Type (evidence-based longevity interventions)
-  practiceType: pgEnum("practice_type", [
-    "time_restricted_eating", // Intermittent fasting
-    "caloric_restriction",
-    "cold_exposure", // Cold showers, ice baths
-    "heat_exposure", // Sauna
-    "zone_2_cardio", // Low-intensity cardio for mitochondrial health
-    "strength_training", // Muscle mass = longevity
-    "VO2_max_training", // High-intensity intervals
-    "red_light_therapy",
-    "breathwork",
-    "meditation",
-    "social_connection",
-    "purpose_work"
-  ]),
+  practiceType: varchar("practice_type", { length: 50 }),
   
   // Details
   duration: integer("duration"), // minutes
-  intensity: pgEnum("intensity", ["low", "moderate", "high"]),
+  intensity: varchar("intensity", { length: 50 }),
   
   // Specific Metrics
   specificMetrics: text("specific_metrics"), // JSON: temperature, heart rate, etc.
@@ -386,14 +340,7 @@ export const healthMilestones = pgTable("health_milestones", {
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  milestoneType: pgEnum("milestone_type", [
-    "biomarker_optimized",
-    "disease_reversed",
-    "medication_reduced",
-    "biological_age_decreased",
-    "fitness_milestone",
-    "health_goal_achieved"
-  ]),
+  milestoneType: varchar("milestone_type", { length: 50 }),
   
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),

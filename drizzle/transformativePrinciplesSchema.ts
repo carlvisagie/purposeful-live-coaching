@@ -27,7 +27,7 @@
  * - Adapts reminders and prompts based on engagement
  */
 
-import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Transformative Principles Profiles
 export const transformativePrinciplesProfiles = pgTable("transformative_principles_profiles", {
@@ -38,24 +38,11 @@ export const transformativePrinciplesProfiles = pgTable("transformative_principl
   overallGrowth: integer("overall_growth"), // 1-10 self-assessment
   
   // Primary Focus
-  primaryPrinciple: pgEnum("primary_principle", [
-    "discipline",
-    "resilience",
-    "purpose",
-    "presence",
-    "gratitude",
-    "persistence",
-    "compassion",
-    "courage",
-    "growth",
-    "authenticity",
-    "connection",
-    "wholeness"
-  ]),
+  primaryPrinciple: varchar("primary_principle", { length: 50 }),
   
   // Practice Preferences
-  preferredPracticeTime: pgEnum("preferred_practice_time", ["morning", "midday", "evening", "night"]),
-  practiceFrequency: pgEnum("practice_frequency", ["daily", "weekdays", "custom"]),
+  preferredPracticeTime: varchar("preferred_practice_time", { length: 50 }),
+  practiceFrequency: varchar("practice_frequency", { length: 50 }),
   
   // Reminders
   remindersEnabled: boolean("reminders_enabled").default(true),
@@ -110,14 +97,7 @@ export const principlePractices = pgTable("principle_practices", {
   principleNumber: integer("principle_number").notNull(), // 1-12
   
   // Practice Type
-  practiceType: pgEnum("practice_type", [
-    "reading", // Read the principle
-    "reflection", // Journal on prompts
-    "action", // Take specific action
-    "meditation", // Meditate on principle
-    "affirmation", // Repeat identity statement
-    "habit_practice" // Practice key habit
-  ]),
+  practiceType: varchar("practice_type", { length: 50 }),
   
   // Engagement
   timeSpent: integer("time_spent"), // minutes
@@ -206,7 +186,7 @@ export const identityTransformations = pgTable("identity_transformations", {
   targetDate: timestamp("target_date"),
   
   // Status
-  status: pgEnum("status", ["in_progress", "achieved", "evolving"]),
+  status: varchar("status", { length: 50 }),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -273,7 +253,7 @@ export const principleGoals = pgTable("principle_goals", {
   whyItMatters: text("why_it_matters"),
   
   // Status
-  status: pgEnum("status", ["active", "achieved", "abandoned"]),
+  status: varchar("status", { length: 50 }),
   
   achievedDate: timestamp("achieved_date"),
   
@@ -292,13 +272,7 @@ export const dailyAffirmations = pgTable("daily_affirmations", {
   affirmations: text("affirmations"), // JSON array: "I am disciplined", "I am resilient", etc.
   
   // How Practiced
-  practiceMethod: pgEnum("practice_method", [
-    "spoken_aloud",
-    "written",
-    "visualization",
-    "mirror_work",
-    "meditation"
-  ]),
+  practiceMethod: varchar("practice_method", { length: 50 }),
   
   // Repetitions
   repetitions: integer("repetitions"),
@@ -328,15 +302,7 @@ export const transformativeMoments = pgTable("transformative_moments", {
   relatedPrinciple: varchar("related_principle", { length: 255 }),
   
   // Type of Moment
-  momentType: pgEnum("moment_type", [
-    "breakthrough", // Major insight or realization
-    "embodiment", // Fully embodied a principle
-    "identity_shift", // Felt a shift in who you are
-    "challenge_overcome", // Overcame significant obstacle
-    "pattern_broken", // Broke old pattern
-    "new_behavior", // Established new behavior
-    "peak_experience" // Transcendent moment
-  ]),
+  momentType: varchar("moment_type", { length: 50 }),
   
   // Impact
   significance: integer("significance"), // 1-10

@@ -10,7 +10,7 @@
  * - Integrates with latest meditation & mindfulness research
  */
 
-import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Spiritual Profiles
 export const spiritualProfiles = pgTable("spiritual_profiles", {
@@ -18,34 +18,17 @@ export const spiritualProfiles = pgTable("spiritual_profiles", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Spiritual Background
-  spiritualBackground: pgEnum("spiritual_background", [
-    "religious",
-    "spiritual_not_religious",
-    "secular",
-    "agnostic",
-    "atheist",
-    "exploring",
-    "prefer_not_to_say"
-  ]),
+  spiritualBackground: varchar("spiritual_background", { length: 50 }),
   
   religiousTradition: varchar("religious_tradition", { length: 255 }), // Optional: Buddhism, Christianity, Islam, etc.
   
   // Current Practice
   hasMeditationPractice: boolean("has_meditation_practice").default(false),
-  meditationExperience: pgEnum("meditation_experience", ["none", "beginner", "intermediate", "advanced"]),
+  meditationExperience: varchar("meditation_experience", { length: 50 }),
   currentPractices: text("current_practices"), // JSON array
   
   // Spiritual Goals
-  primaryGoal: pgEnum("primary_goal", [
-    "reduce_stress",
-    "find_peace",
-    "discover_purpose",
-    "connect_with_something_greater",
-    "develop_compassion",
-    "increase_awareness",
-    "heal_spiritually",
-    "deepen_practice"
-  ]),
+  primaryGoal: varchar("primary_goal", { length: 50 }),
   
   specificGoals: text("specific_goals"), // JSON array
   
@@ -53,7 +36,7 @@ export const spiritualProfiles = pgTable("spiritual_profiles", {
   barriers: text("barriers"), // JSON array: time, skepticism, don't know how, etc.
   
   // Preferences
-  preferredPracticeTime: pgEnum("preferred_practice_time", ["morning", "afternoon", "evening", "night", "flexible"]),
+  preferredPracticeTime: varchar("preferred_practice_time", { length: 50 }),
   preferredDuration: integer("preferred_duration"), // minutes
   preferredStyle: text("preferred_style"), // JSON array: guided, silent, movement, etc.
   
@@ -75,22 +58,9 @@ export const meditationSessions = pgTable("meditation_sessions", {
   sessionDate: timestamp("session_date").notNull(),
   
   // Practice Details
-  practiceType: pgEnum("practice_type", [
-    "mindfulness", // MBSR-based
-    "loving_kindness", // Metta meditation
-    "body_scan", // Body awareness
-    "breath_awareness", // Anapanasati
-    "walking_meditation",
-    "transcendental", // TM
-    "visualization",
-    "mantra",
-    "open_awareness",
-    "compassion", // Tonglen
-    "gratitude",
-    "prayer"
-  ]),
+  practiceType: varchar("practice_type", { length: 50 }),
   
-  guidedOrSilent: pgEnum("guided_or_silent", ["guided", "silent", "hybrid"]),
+  guidedOrSilent: varchar("guided_or_silent", { length: 50 }),
   guideSource: varchar("guide_source", { length: 255 }), // App, teacher, self, etc.
   
   // Duration
@@ -131,19 +101,7 @@ export const mindfulnessPractices = pgTable("mindfulness_practices", {
   practiceDate: timestamp("practice_date").notNull(),
   
   // Practice Type (informal mindfulness)
-  practiceType: pgEnum("practice_type", [
-    "mindful_eating",
-    "mindful_walking",
-    "mindful_listening",
-    "mindful_breathing",
-    "mindful_observation",
-    "mindful_movement",
-    "mindful_work",
-    "mindful_conversation",
-    "pause_practice", // Stop and breathe
-    "gratitude_practice",
-    "loving_kindness_moment"
-  ]),
+  practiceType: varchar("practice_type", { length: 50 }),
   
   duration: integer("duration"), // minutes
   
@@ -170,18 +128,7 @@ export const purposeExplorations = pgTable("purpose_explorations", {
   explorationDate: timestamp("exploration_date").notNull(),
   
   // Exploration Type (evidence-based purpose discovery)
-  explorationType: pgEnum("exploration_type", [
-    "ikigai_reflection", // Japanese concept: reason for being
-    "values_clarification", // ACT-based
-    "life_review", // Narrative therapy
-    "peak_experiences", // Maslow
-    "legacy_reflection", // What do you want to leave behind?
-    "suffering_meaning", // Frankl's logotherapy
-    "contribution_mapping", // How do you want to serve?
-    "death_meditation", // Memento mori
-    "gratitude_reflection",
-    "awe_experience" // Keltner's awe research
-  ]),
+  explorationType: varchar("exploration_type", { length: 50 }),
   
   // Reflection
   prompt: text("prompt"),
@@ -218,7 +165,7 @@ export const gratitudeEntries = pgTable("gratitude_entries", {
   gratitude5: text("gratitude_5"),
   
   // Depth
-  gratitudeDepth: pgEnum("gratitude_depth", ["surface", "moderate", "deep"]), // Surface = "coffee", Deep = "my health that allows me to enjoy coffee"
+  gratitudeDepth: varchar("gratitude_depth", { length: 50 }), // Surface = "coffee", Deep = "my health that allows me to enjoy coffee"
   
   // Emotional Impact
   emotionalImpact: integer("emotional_impact"), // 1-10
@@ -236,17 +183,7 @@ export const compassionPractices = pgTable("compassion_practices", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   practiceDate: timestamp("practice_date").notNull(),
   
-  practiceType: pgEnum("practice_type", [
-    "loving_kindness_self", // Metta for self
-    "loving_kindness_loved_one",
-    "loving_kindness_neutral",
-    "loving_kindness_difficult", // For someone you have conflict with
-    "loving_kindness_all_beings",
-    "compassion_for_suffering", // Tonglen
-    "self_compassion", // Kristin Neff's research
-    "forgiveness_practice",
-    "acts_of_kindness" // Behavioral compassion
-  ]),
+  practiceType: varchar("practice_type", { length: 50 }),
   
   duration: integer("duration"), // minutes
   
@@ -276,18 +213,7 @@ export const spiritualExperiences = pgTable("spiritual_experiences", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   experienceDate: timestamp("experience_date").notNull(),
   
-  experienceType: pgEnum("experience_type", [
-    "peak_experience", // Maslow
-    "flow_state", // Csikszentmihalyi
-    "awe_experience", // Keltner
-    "mystical_experience",
-    "synchronicity",
-    "insight",
-    "connection",
-    "transcendence",
-    "presence",
-    "oneness"
-  ]),
+  experienceType: varchar("experience_type", { length: 50 }),
   
   // Context
   context: text("context"), // What were you doing when this happened?
@@ -319,17 +245,7 @@ export const spiritualMilestones = pgTable("spiritual_milestones", {
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  milestoneType: pgEnum("milestone_type", [
-    "meditation_streak",
-    "retreat_completed",
-    "practice_deepened",
-    "purpose_discovered",
-    "forgiveness_achieved",
-    "peace_found",
-    "compassion_breakthrough",
-    "spiritual_awakening",
-    "habit_established"
-  ]),
+  milestoneType: varchar("milestone_type", { length: 50 }),
   
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),

@@ -19,7 +19,7 @@
  * 5. Auditable: Complete trail for legal protection
  */
 
-import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // ============================================================================
 // FORBIDDEN CONTENT DICTIONARY (Self-Learning)
@@ -29,66 +29,22 @@ export const forbiddenContentDictionary = pgTable("forbidden_content_dictionary"
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Content Details
-  contentType: pgEnum("content_type", [
-    "word",
-    "phrase",
-    "pattern",
-    "domain",
-    "topic",
-    "context"
-  ]),
+  contentType: varchar("content_type", { length: 50 }),
   
   content: text("content").notNull(), // The actual forbidden content
   pattern: text("pattern"), // Regex pattern for matching
   
   // Risk Category
-  riskCategory: pgEnum("risk_category", [
-    "legal_liability",
-    "medical_advice",
-    "psychiatric_advice",
-    "financial_advice",
-    "crisis_intervention",
-    "sexual_content",
-    "violence",
-    "hate_speech",
-    "criminal_activity",
-    "brand_damage",
-    "professional_boundary",
-    "insurance_violation",
-    "hipaa_violation",
-    "gdpr_violation",
-    "emotional_dependency",
-    "manipulation",
-    "misinformation",
-    "spam",
-    "harassment"
-  ]),
+  riskCategory: varchar("risk_category", { length: 50 }),
   
   // Severity
-  severityLevel: pgEnum("severity_level", [
-    "critical", // Immediate block, legal risk
-    "high", // Block, professional risk
-    "medium", // Flag for review
-    "low" // Log only
-  ]),
+  severityLevel: varchar("severity_level", { length: 50 }),
   
   // Action
-  action: pgEnum("action", [
-    "hard_block", // Prevent message entirely
-    "soft_block", // Warn and redirect
-    "flag_review", // Allow but flag for human review
-    "log_only" // Track but allow
-  ]),
+  action: varchar("action", { length: 50 }),
   
   // Source
-  source: pgEnum("source", [
-    "manual", // Added by admin
-    "ai_detected", // Detected by AI
-    "user_report", // Reported by user
-    "pattern_learning", // Learned from patterns
-    "regulatory_update", // From legal/compliance update
-    "incident_response" // Added after incident
-  ]),
+  source: varchar("source", { length: 50 }),
   
   // Learning Data
   detectionCount: integer("detection_count").default(0), // How many times detected
@@ -135,16 +91,10 @@ export const contentModerationLogs = pgTable("content_moderation_logs", {
   // Risk Assessment
   riskScore: integer("risk_score"), // 0-100
   riskCategory: varchar("risk_category", { length: 100 }),
-  severityLevel: pgEnum("severity_level", ["critical", "high", "medium", "low"]),
+  severityLevel: varchar("severity_level", { length: 50 }),
   
   // Action Taken
-  actionTaken: pgEnum("action_taken", [
-    "blocked",
-    "redirected",
-    "flagged",
-    "allowed",
-    "escalated"
-  ]),
+  actionTaken: varchar("action_taken", { length: 50 }),
   
   // Response
   userResponse: text("user_response"), // What we told the user
@@ -157,12 +107,7 @@ export const contentModerationLogs = pgTable("content_moderation_logs", {
   requiresHumanReview: boolean("requires_human_review").default(false),
   reviewedBy: varchar("reviewed_by", { length: 255 }),
   reviewedAt: timestamp("reviewed_at"),
-  reviewDecision: pgEnum("review_decision", [
-    "confirmed_violation",
-    "false_positive",
-    "needs_escalation",
-    "user_educated"
-  ]),
+  reviewDecision: varchar("review_decision", { length: 50 }),
   reviewNotes: text("review_notes"),
   
   // Learning
@@ -181,28 +126,14 @@ export const aiSafetyRules = pgTable("ai_safety_rules", {
   
   // Rule Details
   ruleName: varchar("rule_name", { length: 255 }).notNull(),
-  ruleType: pgEnum("rule_type", [
-    "boundary_enforcement",
-    "crisis_detection",
-    "compliance_check",
-    "ethical_guideline",
-    "brand_protection",
-    "professional_standard"
-  ]),
+  ruleType: varchar("rule_type", { length: 50 }),
   
   // Rule Content
   systemPromptAddition: text("system_prompt_addition"), // Added to AI system prompt
   validationLogic: text("validation_logic"), // How to validate
   
   // Scope
-  appliesTo: pgEnum("applies_to", [
-    "all_ai_interactions",
-    "coaching_sessions",
-    "ai_coach_only",
-    "community_posts",
-    "journal_entries",
-    "chat_messages"
-  ]),
+  appliesTo: varchar("applies_to", { length: 50 }),
   
   // Priority
   priority: integer("priority").default(100), // Higher = more important
@@ -227,19 +158,10 @@ export const brandSafetyKeywords = pgTable("brand_safety_keywords", {
   
   // Keyword
   keyword: varchar("keyword", { length: 500 }).notNull(),
-  keywordType: pgEnum("keyword_type", [
-    "brand_damaging",
-    "competitor_mention",
-    "negative_sentiment",
-    "lawsuit_risk",
-    "pr_crisis",
-    "customer_complaint",
-    "refund_request",
-    "cancellation_intent"
-  ]),
+  keywordType: varchar("keyword_type", { length: 50 }),
   
   // Risk
-  riskLevel: pgEnum("risk_level", ["critical", "high", "medium", "low"]),
+  riskLevel: varchar("risk_level", { length: 50 }),
   
   // Action
   alertTeam: boolean("alert_team").default(false),
@@ -262,14 +184,7 @@ export const complianceCheckpoints = pgTable("compliance_checkpoints", {
   
   // Checkpoint Details
   checkpointName: varchar("checkpoint_name", { length: 255 }).notNull(),
-  complianceFramework: pgEnum("compliance_framework", [
-    "hipaa",
-    "gdpr",
-    "professional_liability",
-    "insurance_requirements",
-    "state_regulations",
-    "industry_standards"
-  ]),
+  complianceFramework: varchar("compliance_framework", { length: 50 }),
   
   // Requirement
   requirement: text("requirement").notNull(),
@@ -279,7 +194,7 @@ export const complianceCheckpoints = pgTable("compliance_checkpoints", {
   mandatory: boolean("mandatory").default(true),
   
   // Violation Handling
-  violationSeverity: pgEnum("violation_severity", ["critical", "high", "medium", "low"]),
+  violationSeverity: varchar("violation_severity", { length: 50 }),
   violationAction: text("violation_action"), // What to do if violated
   
   // Documentation
@@ -289,7 +204,7 @@ export const complianceCheckpoints = pgTable("compliance_checkpoints", {
   // Audit
   lastAuditDate: timestamp("last_audit_date"),
   nextAuditDate: timestamp("next_audit_date"),
-  auditFrequency: pgEnum("audit_frequency", ["daily", "weekly", "monthly", "quarterly", "annually"]),
+  auditFrequency: varchar("audit_frequency", { length: 50 }),
   
   active: boolean("active").default(true),
   
@@ -305,13 +220,7 @@ export const patternLearning = pgTable("pattern_learning", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Pattern Details
-  patternType: pgEnum("pattern_type", [
-    "violation_pattern",
-    "user_behavior_pattern",
-    "crisis_indicator_pattern",
-    "manipulation_pattern",
-    "spam_pattern"
-  ]),
+  patternType: varchar("pattern_type", { length: 50 }),
   
   // Pattern Data
   patternSignature: text("pattern_signature"), // What the pattern looks like
@@ -345,19 +254,12 @@ export const crisisInterventionLogs = pgTable("crisis_intervention_logs", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Crisis Details
-  crisisType: pgEnum("crisis_type", [
-    "suicide_ideation",
-    "self_harm",
-    "violence_threat",
-    "severe_distress",
-    "psychotic_episode",
-    "substance_abuse_crisis"
-  ]),
+  crisisType: varchar("crisis_type", { length: 50 }),
   
   // Detection
   detectedContent: text("detected_content"),
   crisisIndicators: text("crisis_indicators"), // JSON: what triggered
-  riskLevel: pgEnum("risk_level", ["imminent", "high", "moderate", "low"]),
+  riskLevel: varchar("risk_level", { length: 50 }),
   
   // Response
   responseProvided: text("response_provided"),
@@ -374,13 +276,7 @@ export const crisisInterventionLogs = pgTable("crisis_intervention_logs", {
   followUpNotes: text("follow_up_notes"),
   
   // Outcome
-  outcome: pgEnum("outcome", [
-    "user_safe",
-    "emergency_services_contacted",
-    "referred_to_professional",
-    "user_unresponsive",
-    "false_alarm"
-  ]),
+  outcome: varchar("outcome", { length: 50 }),
   
   detectedAt: timestamp("detected_at").defaultNow(),
   resolvedAt: timestamp("resolved_at"),
@@ -394,16 +290,7 @@ export const professionalBoundaryViolations = pgTable("professional_boundary_vio
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Violation Details
-  violationType: pgEnum("violation_type", [
-    "therapy_vs_coaching",
-    "medical_advice",
-    "legal_advice",
-    "financial_advice",
-    "dual_relationship",
-    "emotional_dependency",
-    "inappropriate_disclosure",
-    "scope_of_practice"
-  ]),
+  violationType: varchar("violation_type", { length: 50 }),
   
   // Context
   conversationId: varchar("conversation_id", { length: 255 }),
@@ -415,10 +302,10 @@ export const professionalBoundaryViolations = pgTable("professional_boundary_vio
   context: text("context"),
   
   // Detection
-  detectedBy: pgEnum("detected_by", ["ai", "human_review", "user_report", "compliance_audit"]),
+  detectedBy: varchar("detected_by", { length: 50 }),
   
   // Severity
-  severity: pgEnum("severity", ["critical", "high", "medium", "low"]),
+  severity: varchar("severity", { length: 50 }),
   
   // Response
   correctionProvided: text("correction_provided"),

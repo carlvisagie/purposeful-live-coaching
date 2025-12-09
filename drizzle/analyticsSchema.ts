@@ -27,7 +27,7 @@
  * - Personalizes dashboard priorities
  */
 
-import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Analytics Profiles
 export const analyticsProfiles = pgTable("analytics_profiles", {
@@ -35,14 +35,14 @@ export const analyticsProfiles = pgTable("analytics_profiles", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Dashboard Preferences
-  preferredView: pgEnum("preferred_view", ["overview", "detailed", "minimal"]),
-  preferredChartType: pgEnum("preferred_chart_type", ["line", "bar", "area", "mixed"]),
+  preferredView: varchar("preferred_view", { length: 50 }),
+  preferredChartType: varchar("preferred_chart_type", { length: 50 }),
   
   // Tracking Preferences
-  trackingFrequency: pgEnum("tracking_frequency", ["daily", "weekly", "monthly"]),
+  trackingFrequency: varchar("tracking_frequency", { length: 50 }),
   
   // Insights Preferences
-  insightFrequency: pgEnum("insight_frequency", ["daily", "weekly", "monthly"]),
+  insightFrequency: varchar("insight_frequency", { length: 50 }),
   insightTypes: text("insight_types"), // JSON: which types of insights to show
   
   // Self-Learning Data
@@ -158,10 +158,10 @@ export const monthlyReports = pgTable("monthly_reports", {
   goalAchievementRate: decimal("goal_achievement_rate", { precision: 5, scale: 2 }),
   
   // Wellness Trends
-  physicalTrend: pgEnum("physical_trend", ["improving", "stable", "declining"]),
-  mentalTrend: pgEnum("mental_trend", ["improving", "stable", "declining"]),
-  emotionalTrend: pgEnum("emotional_trend", ["improving", "stable", "declining"]),
-  spiritualTrend: pgEnum("spiritual_trend", ["improving", "stable", "declining"]),
+  physicalTrend: varchar("physical_trend", { length: 50 }),
+  mentalTrend: varchar("mental_trend", { length: 50 }),
+  emotionalTrend: varchar("emotional_trend", { length: 50 }),
+  spiritualTrend: varchar("spiritual_trend", { length: 50 }),
   
   // Community
   communityEngagement: integer("community_engagement"), // 0-100
@@ -196,15 +196,7 @@ export const correlations = pgTable("correlations", {
   pValue: decimal("p_value", { precision: 6, scale: 5 }), // Statistical significance
   
   // Interpretation
-  relationship: pgEnum("relationship", [
-    "strong_positive",
-    "moderate_positive",
-    "weak_positive",
-    "no_correlation",
-    "weak_negative",
-    "moderate_negative",
-    "strong_negative"
-  ]),
+  relationship: varchar("relationship", { length: 50 }),
   
   // Insight
   insight: text("insight"), // Human-readable explanation
@@ -229,13 +221,7 @@ export const predictions = pgTable("predictions", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Prediction Type
-  predictionType: pgEnum("prediction_type", [
-    "goal_achievement", // Will you achieve this goal?
-    "habit_sustainability", // Will this habit stick?
-    "wellness_trajectory", // Where are you headed?
-    "risk_assessment", // Risk of burnout, relapse, etc.
-    "optimal_intervention" // What should you do next?
-  ]),
+  predictionType: varchar("prediction_type", { length: 50 }),
   
   // Target
   targetId: varchar("target_id", { length: 255 }), // Goal ID, habit ID, etc.
@@ -269,15 +255,7 @@ export const insights = pgTable("insights", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Insight Type
-  insightType: pgEnum("insight_type", [
-    "pattern_detected", // "You always sleep better after exercise"
-    "correlation_found", // "Sleep affects your mood"
-    "trend_alert", // "Your stress is increasing"
-    "achievement_close", // "You're 90% to your goal"
-    "recommendation", // "Try this intervention"
-    "warning", // "You're at risk of burnout"
-    "celebration" // "You've improved 50%!"
-  ]),
+  insightType: varchar("insight_type", { length: 50 }),
   
   // Content
   title: varchar("title", { length: 255 }).notNull(),
@@ -291,7 +269,7 @@ export const insights = pgTable("insights", {
   suggestedAction: text("suggested_action"),
   
   // Priority
-  priority: pgEnum("priority", ["low", "medium", "high", "urgent"]),
+  priority: varchar("priority", { length: 50 }),
   
   // User Response
   viewed: boolean("viewed").default(false),
@@ -313,17 +291,7 @@ export const progressMilestones = pgTable("progress_milestones", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Milestone Type
-  milestoneType: pgEnum("milestone_type", [
-    "first_improvement",
-    "10_percent_improvement",
-    "50_percent_improvement",
-    "100_percent_improvement",
-    "goal_halfway",
-    "goal_75_percent",
-    "goal_achieved",
-    "consistency_milestone",
-    "transformation_milestone"
-  ]),
+  milestoneType: varchar("milestone_type", { length: 50 }),
   
   // Details
   title: varchar("title", { length: 255 }).notNull(),
@@ -348,14 +316,7 @@ export const comparativeAnalytics = pgTable("comparative_analytics", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Comparison Type
-  comparisonType: pgEnum("comparison_type", [
-    "week_over_week",
-    "month_over_month",
-    "quarter_over_quarter",
-    "year_over_year",
-    "best_week_vs_current",
-    "worst_week_vs_current"
-  ]),
+  comparisonType: varchar("comparison_type", { length: 50 }),
   
   // Metric
   metric: varchar("metric", { length: 255 }).notNull(),
@@ -369,7 +330,7 @@ export const comparativeAnalytics = pgTable("comparative_analytics", {
   percentChange: decimal("percent_change", { precision: 6, scale: 2 }),
   
   // Interpretation
-  trend: pgEnum("trend", ["improving", "stable", "declining"]),
+  trend: varchar("trend", { length: 50 }),
   
   lastCalculated: timestamp("last_calculated").defaultNow(),
   

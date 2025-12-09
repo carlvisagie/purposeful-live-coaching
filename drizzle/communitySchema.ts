@@ -25,7 +25,7 @@
  * - Predicts when users need extra support
  */
 
-import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // User Community Profiles
 export const communityProfiles = pgTable("community_profiles", {
@@ -47,7 +47,7 @@ export const communityProfiles = pgTable("community_profiles", {
   primaryGoals: text("primary_goals"), // JSON array
   
   // Community Role
-  role: pgEnum("role", ["member", "mentor", "moderator", "admin"]),
+  role: varchar("role", { length: 50 }),
   
   // Mentor Availability (if mentor)
   availableAsMentor: boolean("available_as_mentor").default(false),
@@ -79,20 +79,10 @@ export const communities = pgTable("communities", {
   coverImage: varchar("cover_image", { length: 500 }),
   
   // Type
-  communityType: pgEnum("community_type", [
-    "mental_health_recovery",
-    "addiction_recovery",
-    "autism_parents",
-    "young_men",
-    "relationships",
-    "career_growth",
-    "fitness",
-    "spiritual_growth",
-    "general_support"
-  ]),
+  communityType: varchar("community_type", { length: 50 }),
   
   // Privacy
-  privacy: pgEnum("privacy", ["public", "private", "invite_only"]),
+  privacy: varchar("privacy", { length: 50 }),
   
   // Moderation
   moderatorIds: text("moderator_ids"), // JSON array of user IDs
@@ -119,7 +109,7 @@ export const communityMemberships = pgTable("community_memberships", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Role in Community
-  role: pgEnum("role", ["member", "moderator", "admin"]),
+  role: varchar("role", { length: 50 }),
   
   // Engagement
   lastActiveAt: timestamp("last_active_at"),
@@ -139,16 +129,7 @@ export const communityPosts = pgTable("community_posts", {
   authorId: varchar("author_id", { length: 255 }).notNull(),
   
   // Post Type
-  postType: pgEnum("post_type", [
-    "win", // Celebrating a victory
-    "struggle", // Asking for support
-    "question", // Seeking advice
-    "check_in", // Daily check-in
-    "milestone", // Achievement
-    "gratitude", // Expressing thanks
-    "resource", // Sharing helpful content
-    "discussion" // General discussion
-  ]),
+  postType: varchar("post_type", { length: 50 }),
   
   // Content
   title: varchar("title", { length: 255 }),
@@ -204,7 +185,7 @@ export const accountabilityPartnerships = pgTable("accountability_partnerships",
   
   // Partnership Details
   sharedGoals: text("shared_goals"), // JSON array: what are they working on together?
-  checkInFrequency: pgEnum("check_in_frequency", ["daily", "weekly", "biweekly", "monthly"]),
+  checkInFrequency: varchar("check_in_frequency", { length: 50 }),
   
   // Communication
   lastCheckIn: timestamp("last_check_in"),
@@ -215,7 +196,7 @@ export const accountabilityPartnerships = pgTable("accountability_partnerships",
   helpfulnessRating: integer("helpfulness_rating"), // 1-10
   
   // Status
-  status: pgEnum("status", ["active", "paused", "ended"]),
+  status: varchar("status", { length: 50 }),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -259,7 +240,7 @@ export const mentorships = pgTable("mentorships", {
   focusArea: varchar("focus_area", { length: 255 }).notNull(), // What is the mentorship about?
   
   // Frequency
-  meetingFrequency: pgEnum("meeting_frequency", ["weekly", "biweekly", "monthly"]),
+  meetingFrequency: varchar("meeting_frequency", { length: 50 }),
   
   // Progress
   totalSessions: integer("total_sessions").default(0),
@@ -270,7 +251,7 @@ export const mentorships = pgTable("mentorships", {
   menteeSatisfaction: integer("mentee_satisfaction"), // 1-10
   
   // Status
-  status: pgEnum("status", ["active", "paused", "completed"]),
+  status: varchar("status", { length: 50 }),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -319,12 +300,7 @@ export const communityChallenges = pgTable("community_challenges", {
   description: text("description"),
   
   // Type
-  challengeType: pgEnum("challenge_type", [
-    "habit_building", // 30-day habit challenge
-    "goal_achievement", // Specific goal
-    "streak", // Longest streak wins
-    "transformation" // Before/after
-  ]),
+  challengeType: varchar("challenge_type", { length: 50 }),
   
   // Duration
   startDate: timestamp("start_date"),
@@ -335,7 +311,7 @@ export const communityChallenges = pgTable("community_challenges", {
   participantCount: integer("participant_count").default(0),
   
   // Status
-  status: pgEnum("status", ["upcoming", "active", "completed"]),
+  status: varchar("status", { length: 50 }),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),

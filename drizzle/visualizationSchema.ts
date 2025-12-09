@@ -39,7 +39,7 @@
  * - Suggests relevant comparisons
  */
 
-import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Visualization Profiles
 export const visualizationProfiles = pgTable("visualization_profiles", {
@@ -47,26 +47,13 @@ export const visualizationProfiles = pgTable("visualization_profiles", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Dashboard Preferences
-  defaultDashboard: pgEnum("default_dashboard", [
-    "overview", // All areas at a glance
-    "wellness", // Physical, mental, emotional, spiritual
-    "goals", // Goal progress
-    "habits", // Habit tracking
-    "trends", // Long-term trends
-    "custom" // User-defined
-  ]),
+  defaultDashboard: varchar("default_dashboard", { length: 50 }),
   
   // Chart Preferences
   preferredChartTypes: text("preferred_chart_types"), // JSON: line, bar, heatmap, etc.
   
   // Time Range Preferences
-  defaultTimeRange: pgEnum("default_time_range", [
-    "week",
-    "month",
-    "quarter",
-    "year",
-    "all_time"
-  ]),
+  defaultTimeRange: varchar("default_time_range", { length: 50 }),
   
   // Comparison Preferences
   showComparisons: boolean("show_comparisons").default(true), // Compare to previous periods
@@ -116,21 +103,7 @@ export const visualizationWidgets = pgTable("visualization_widgets", {
   description: text("description"),
   
   // Widget Type
-  widgetType: pgEnum("widget_type", [
-    "line_chart",
-    "bar_chart",
-    "area_chart",
-    "pie_chart",
-    "donut_chart",
-    "heatmap",
-    "calendar_view",
-    "progress_bar",
-    "radial_chart",
-    "timeline",
-    "scorecard",
-    "table",
-    "custom"
-  ]),
+  widgetType: varchar("widget_type", { length: 50 }),
   
   // Data Source
   dataSource: varchar("data_source", { length: 255 }).notNull(), // habits, goals, sleep, etc.
@@ -207,7 +180,7 @@ export const trendData = pgTable("trend_data", {
   metricCategory: varchar("metric_category", { length: 100 }), // habits, sleep, stress, etc.
   
   // Time Period
-  periodType: pgEnum("period_type", ["daily", "weekly", "monthly"]),
+  periodType: varchar("period_type", { length: 50 }),
   periodStart: timestamp("period_start").notNull(),
   periodEnd: timestamp("period_end").notNull(),
   
@@ -215,7 +188,7 @@ export const trendData = pgTable("trend_data", {
   value: decimal("value", { precision: 10, scale: 2 }),
   
   // Trend
-  trendDirection: pgEnum("trend_direction", ["up", "down", "stable"]),
+  trendDirection: varchar("trend_direction", { length: 50 }),
   changePercent: decimal("change_percent", { precision: 6, scale: 2 }), // % vs previous period
   
   createdAt: timestamp("created_at").defaultNow(),
@@ -228,13 +201,7 @@ export const heatmapData = pgTable("heatmap_data", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Heatmap Type
-  heatmapType: pgEnum("heatmap_type", [
-    "habit_consistency", // Calendar view of habit completion
-    "mood_patterns", // Mood by day of week / time of day
-    "energy_patterns", // Energy by day of week / time of day
-    "stress_patterns", // Stress by day of week / time of day
-    "productivity_patterns" // Productivity by day of week / time of day
-  ]),
+  heatmapType: varchar("heatmap_type", { length: 50 }),
   
   // Date
   date: timestamp("date").notNull(),
@@ -256,12 +223,7 @@ export const milestoneVisualizations = pgTable("milestone_visualizations", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Timeline Type
-  timelineType: pgEnum("timeline_type", [
-    "goal_journey", // Path to a specific goal
-    "transformation_journey", // Overall transformation
-    "habit_mastery", // Journey to habit mastery
-    "wellness_journey" // Wellness improvement
-  ]),
+  timelineType: varchar("timeline_type", { length: 50 }),
   
   // Related Entity
   relatedId: varchar("related_id", { length: 255 }), // Goal ID, habit ID, etc.
@@ -283,14 +245,7 @@ export const comparisonViews = pgTable("comparison_views", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Comparison Type
-  comparisonType: pgEnum("comparison_type", [
-    "week_over_week",
-    "month_over_month",
-    "quarter_over_quarter",
-    "year_over_year",
-    "best_vs_current",
-    "baseline_vs_current"
-  ]),
+  comparisonType: varchar("comparison_type", { length: 50 }),
   
   // Metric
   metric: varchar("metric", { length: 255 }).notNull(),
@@ -310,7 +265,7 @@ export const comparisonViews = pgTable("comparison_views", {
   percentChange: decimal("percent_change", { precision: 6, scale: 2 }),
   
   // Interpretation
-  interpretation: pgEnum("interpretation", ["improved", "stable", "declined"]),
+  interpretation: varchar("interpretation", { length: 50 }),
   
   createdAt: timestamp("created_at").defaultNow(),
 });
@@ -322,15 +277,7 @@ export const progressCelebrations = pgTable("progress_celebrations", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Celebration Type
-  celebrationType: pgEnum("celebration_type", [
-    "goal_achieved",
-    "milestone_reached",
-    "streak_milestone",
-    "level_up",
-    "achievement_unlocked",
-    "personal_best",
-    "transformation_marker"
-  ]),
+  celebrationType: varchar("celebration_type", { length: 50 }),
   
   // Details
   title: varchar("title", { length: 255 }).notNull(),
@@ -359,14 +306,7 @@ export const chartInteractions = pgTable("chart_interactions", {
   widgetId: varchar("widget_id", { length: 255 }),
   
   // Interaction Type
-  interactionType: pgEnum("interaction_type", [
-    "viewed",
-    "clicked",
-    "filtered",
-    "exported",
-    "shared",
-    "customized"
-  ]),
+  interactionType: varchar("interaction_type", { length: 50 }),
   
   // Duration
   viewDuration: integer("view_duration"), // seconds
@@ -422,14 +362,7 @@ export const customReports = pgTable("custom_reports", {
   description: text("description"),
   
   // Report Type
-  reportType: pgEnum("report_type", [
-    "progress_summary",
-    "goal_review",
-    "wellness_assessment",
-    "habit_analysis",
-    "correlation_report",
-    "custom"
-  ]),
+  reportType: varchar("report_type", { length: 50 }),
   
   // Configuration
   metrics: text("metrics"), // JSON: which metrics to include
@@ -438,10 +371,10 @@ export const customReports = pgTable("custom_reports", {
   
   // Schedule
   scheduled: boolean("scheduled").default(false),
-  scheduleFrequency: pgEnum("schedule_frequency", ["daily", "weekly", "monthly"]),
+  scheduleFrequency: varchar("schedule_frequency", { length: 50 }),
   
   // Export
-  exportFormat: pgEnum("export_format", ["pdf", "csv", "json"]),
+  exportFormat: varchar("export_format", { length: 50 }),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -463,7 +396,7 @@ export const reportGenerations = pgTable("report_generations", {
   filePath: varchar("file_path", { length: 500 }), // If exported
   
   // Status
-  status: pgEnum("status", ["generating", "completed", "failed"]),
+  status: varchar("status", { length: 50 }),
   
   createdAt: timestamp("created_at").defaultNow(),
 });

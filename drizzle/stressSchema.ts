@@ -38,7 +38,7 @@
  * - Optimizes recovery protocols
  */
 
-import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Stress Profiles
 export const stressProfiles = pgTable("stress_profiles", {
@@ -55,19 +55,10 @@ export const stressProfiles = pgTable("stress_profiles", {
   recoveryCapacity: integer("recovery_capacity"), // 0-100 (how quickly you bounce back)
   
   // Stress Mindset (Kelly McGonigal research)
-  stressMindset: pgEnum("stress_mindset", [
-    "stress_is_harmful", // Sees stress as purely negative
-    "stress_is_enhancing", // Sees stress as growth opportunity
-    "mixed"
-  ]),
+  stressMindset: varchar("stress_mindset", { length: 50 }),
   
   // Dominant Stress Response
-  dominantResponse: pgEnum("dominant_response", [
-    "fight", // Anger, aggression
-    "flight", // Avoidance, escape
-    "freeze", // Shutdown, dissociation
-    "fawn" // People-pleasing, appeasement
-  ]),
+  dominantResponse: varchar("dominant_response", { length: 50 }),
   
   // Common Triggers
   commonTriggers: text("common_triggers"), // JSON array
@@ -100,16 +91,16 @@ export const dailyStressLogs = pgTable("daily_stress_logs", {
   // HRV Data (if available)
   morningHRV: decimal("morning_hrv", { precision: 6, scale: 2 }),
   avgHRV: decimal("avg_hrv", { precision: 6, scale: 2 }),
-  hrvTrend: pgEnum("hrv_trend", ["improving", "stable", "declining"]),
+  hrvTrend: varchar("hrv_trend", { length: 50 }),
   
   // Heart Rate
   avgRestingHR: integer("avg_resting_hr"),
   peakHR: integer("peak_hr"),
   
   // Cortisol Pattern (subjective or measured)
-  morningCortisol: pgEnum("morning_cortisol", ["low", "normal", "high"]),
-  eveningCortisol: pgEnum("evening_cortisol", ["low", "normal", "high"]),
-  cortisolRhythm: pgEnum("cortisol_rhythm", ["healthy", "disrupted"]),
+  morningCortisol: varchar("morning_cortisol", { length: 50 }),
+  eveningCortisol: varchar("evening_cortisol", { length: 50 }),
+  cortisolRhythm: varchar("cortisol_rhythm", { length: 50 }),
   
   // Physical Symptoms
   symptoms: text("symptoms"), // JSON: headache, tension, etc.
@@ -122,7 +113,7 @@ export const dailyStressLogs = pgTable("daily_stress_logs", {
   // Behavioral Indicators
   irritability: integer("irritability"), // 1-10
   concentration: integer("concentration"), // 1-10
-  appetite: pgEnum("appetite", ["low", "normal", "high", "stress_eating"]),
+  appetite: varchar("appetite", { length: 50 }),
   
   // Interventions Used
   interventionsUsed: text("interventions_used"), // JSON array
@@ -149,46 +140,26 @@ export const stressEvents = pgTable("stress_events", {
   
   // Trigger
   trigger: varchar("trigger", { length: 255 }), // What caused this?
-  triggerCategory: pgEnum("trigger_category", [
-    "work",
-    "relationships",
-    "financial",
-    "health",
-    "family",
-    "traffic",
-    "technology",
-    "uncertainty",
-    "time_pressure",
-    "conflict",
-    "other"
-  ]),
+  triggerCategory: varchar("trigger_category", { length: 50 }),
   
   // Context
   location: varchar("location", { length: 255 }),
   activity: varchar("activity", { length: 255 }),
-  socialContext: pgEnum("social_context", ["alone", "with_others", "crowd"]),
+  socialContext: varchar("social_context", { length: 50 }),
   
   // Physical Response
   heartRate: integer("heart_rate"), // if measured
   physicalSymptoms: text("physical_symptoms"), // JSON
   
   // Emotional Response
-  primaryEmotion: pgEnum("primary_emotion", [
-    "anxiety",
-    "anger",
-    "frustration",
-    "overwhelm",
-    "fear",
-    "sadness",
-    "irritation"
-  ]),
+  primaryEmotion: varchar("primary_emotion", { length: 50 }),
   
   // Cognitive Response
   thoughts: text("thoughts"), // What were you thinking?
   cognitiveDistortions: text("cognitive_distortions"), // JSON: catastrophizing, etc.
   
   // Response Type
-  responseType: pgEnum("response_type", ["fight", "flight", "freeze", "fawn"]),
+  responseType: varchar("response_type", { length: 50 }),
   
   // Intervention Taken
   interventionUsed: varchar("intervention_used", { length: 255 }),
@@ -241,17 +212,7 @@ export const stressInterventions = pgTable("stress_interventions", {
   description: text("description"),
   
   // Category
-  category: pgEnum("category", [
-    "breathing", // Physiological sigh, box breathing, etc.
-    "movement", // Exercise, stretching, shaking
-    "mindfulness", // Meditation, body scan
-    "cognitive", // Reframing, CBT techniques
-    "social", // Talk to friend, hug
-    "sensory", // Cold water, music, nature
-    "rest", // NSDR, nap, relaxation
-    "creative", // Art, journaling, music
-    "other"
-  ]),
+  category: varchar("category", { length: 50 }),
   
   // Evidence Base
   researchBacked: boolean("research_backed").default(false),
@@ -310,7 +271,7 @@ export const hrvMeasurements = pgTable("hrv_measurements", {
   
   // Measurement Details
   measurementTime: timestamp("measurement_time").notNull(),
-  measurementType: pgEnum("measurement_type", ["morning", "pre_workout", "post_workout", "evening", "random"]),
+  measurementType: varchar("measurement_type", { length: 50 }),
   
   // HRV Metrics
   rmssd: decimal("rmssd", { precision: 6, scale: 2 }), // Root Mean Square of Successive Differences (gold standard)
@@ -322,12 +283,12 @@ export const hrvMeasurements = pgTable("hrv_measurements", {
   
   // Interpretation
   hrvScore: integer("hrv_score"), // 0-100 (normalized for age/sex)
-  recoveryStatus: pgEnum("recovery_status", ["recovered", "recovering", "not_recovered"]),
+  recoveryStatus: varchar("recovery_status", { length: 50 }),
   
   // Context
   sleepQualityPriorNight: integer("sleep_quality_prior_night"), // 1-10
   stressLevelPriorDay: integer("stress_level_prior_day"), // 1-10
-  exerciseIntensityPriorDay: pgEnum("exercise_intensity_prior_day", ["none", "light", "moderate", "intense"]),
+  exerciseIntensityPriorDay: varchar("exercise_intensity_prior_day", { length: 50 }),
   
   // Device
   measurementDevice: varchar("measurement_device", { length: 100 }),
@@ -342,18 +303,7 @@ export const stressRecoverySessions = pgTable("stress_recovery_sessions", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Session Details
-  sessionType: pgEnum("session_type", [
-    "nsdr", // Non-Sleep Deep Rest
-    "yoga_nidra",
-    "progressive_relaxation",
-    "meditation",
-    "breathwork",
-    "cold_exposure",
-    "sauna",
-    "massage",
-    "nature_walk",
-    "creative_activity"
-  ]),
+  sessionType: varchar("session_type", { length: 50 }),
   
   // Duration
   durationMinutes: integer("duration_minutes"),
@@ -382,12 +332,7 @@ export const stressPredictions = pgTable("stress_predictions", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Prediction Type
-  predictionType: pgEnum("prediction_type", [
-    "stress_spike_risk", // You're likely to experience high stress soon
-    "burnout_risk", // You're at risk of burnout
-    "recovery_needed", // You need recovery time
-    "optimal_intervention" // This intervention will work best
-  ]),
+  predictionType: varchar("prediction_type", { length: 50 }),
   
   // Prediction
   prediction: text("prediction"),

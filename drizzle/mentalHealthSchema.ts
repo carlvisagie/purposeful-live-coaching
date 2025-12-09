@@ -4,7 +4,7 @@
  * Research sources: NIMH, APA, SAMHSA guidelines
  */
 
-import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Mental Health Profiles - Core user mental health data
 export const mentalHealthProfiles = pgTable("mental_health_profiles", {
@@ -18,19 +18,19 @@ export const mentalHealthProfiles = pgTable("mental_health_profiles", {
   treatmentHistory: text("treatment_history"), // JSON array of past treatments
   
   // Current Status
-  currentSeverity: pgEnum("current_severity", ["mild", "moderate", "severe", "crisis"]),
+  currentSeverity: varchar("current_severity", { length: 50 }),
   inTreatment: boolean("in_treatment").default(false),
   medicationList: text("medication_list"), // JSON array
   therapyType: varchar("therapy_type", { length: 255 }), // CBT, DBT, EMDR, etc.
   
   // Risk Assessment
   suicidalIdeation: boolean("suicidal_ideation").default(false),
-  selfHarmRisk: pgEnum("self_harm_risk", ["none", "low", "moderate", "high"]),
+  selfHarmRisk: varchar("self_harm_risk", { length: 50 }),
   crisisContactInfo: text("crisis_contact_info"), // JSON
   
   // Goals & Progress
   recoveryGoals: text("recovery_goals"), // JSON array
-  currentPhase: pgEnum("current_phase", ["crisis_stabilization", "active_treatment", "maintenance", "recovery"]),
+  currentPhase: varchar("current_phase", { length: 50 }),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -109,7 +109,7 @@ export const dbtSkillsPractice = pgTable("dbt_skills_practice", {
   practiceDate: timestamp("practice_date").notNull(),
   
   // DBT Module
-  module: pgEnum("module", ["mindfulness", "distress_tolerance", "emotion_regulation", "interpersonal_effectiveness"]),
+  module: varchar("module", { length: 50 }),
   
   // Specific Skill
   skillName: varchar("skill_name", { length: 255 }).notNull(), // e.g., "TIPP", "DEAR MAN", "Opposite Action"
@@ -172,16 +172,7 @@ export const recoveryMilestones = pgTable("recovery_milestones", {
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  milestoneType: pgEnum("milestone_type", [
-    "symptom_free_days",
-    "therapy_completion",
-    "medication_stabilization",
-    "return_to_work",
-    "social_reconnection",
-    "self_care_consistency",
-    "crisis_management",
-    "skill_mastery"
-  ]),
+  milestoneType: varchar("milestone_type", { length: 50 }),
   
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
@@ -189,7 +180,7 @@ export const recoveryMilestones = pgTable("recovery_milestones", {
   achievedDate: timestamp("achieved_date"),
   
   progress: integer("progress"), // 0-100%
-  status: pgEnum("status", ["not_started", "in_progress", "achieved", "on_hold"]),
+  status: varchar("status", { length: 50 }),
   
   notes: text("notes"),
   

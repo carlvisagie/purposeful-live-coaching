@@ -10,7 +10,7 @@
  * - Adapts interventions based on effectiveness
  */
 
-import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Emotional Profiles
 export const emotionalProfiles = pgTable("emotional_profiles", {
@@ -19,8 +19,8 @@ export const emotionalProfiles = pgTable("emotional_profiles", {
   
   // Baseline Emotional State
   baselineEmotionalState: varchar("baseline_emotional_state", { length: 100 }),
-  emotionalRange: pgEnum("emotional_range", ["narrow", "moderate", "wide"]), // How much do emotions fluctuate?
-  emotionalIntensity: pgEnum("emotional_intensity", ["low", "moderate", "high"]),
+  emotionalRange: varchar("emotional_range", { length: 50 }), // How much do emotions fluctuate?
+  emotionalIntensity: varchar("emotional_intensity", { length: 50 }),
   
   // Regulation Ability
   regulationSkillLevel: integer("regulation_skill_level"), // 1-10
@@ -30,16 +30,7 @@ export const emotionalProfiles = pgTable("emotional_profiles", {
   primaryChallenges: text("primary_challenges"), // JSON: overwhelm, numbness, mood_swings, anger, anxiety, etc.
   
   // Goals
-  primaryGoal: pgEnum("primary_goal", [
-    "regulate_emotions",
-    "reduce_reactivity",
-    "increase_awareness",
-    "process_trauma",
-    "build_resilience",
-    "feel_more",
-    "feel_less_overwhelmed",
-    "emotional_stability"
-  ]),
+  primaryGoal: varchar("primary_goal", { length: 50 }),
   
   // Emotional Patterns (self-learning)
   commonTriggers: text("common_triggers"), // JSON: learned from tracking
@@ -103,44 +94,10 @@ export const dbtSkillsPractice = pgTable("dbt_skills_practice", {
   practiceDate: timestamp("practice_date").notNull(),
   
   // DBT Module
-  dbtModule: pgEnum("dbt_module", [
-    "mindfulness",
-    "distress_tolerance",
-    "emotion_regulation",
-    "interpersonal_effectiveness"
-  ]),
+  dbtModule: varchar("dbt_module", { length: 50 }),
   
   // Specific Skill
-  skillUsed: pgEnum("skill_used", [
-    // Mindfulness
-    "observe",
-    "describe",
-    "participate",
-    "non_judgmental_stance",
-    "one_mindfully",
-    "effectively",
-    
-    // Distress Tolerance
-    "STOP", // Stop, Take a step back, Observe, Proceed mindfully
-    "TIPP", // Temperature, Intense exercise, Paced breathing, Paired muscle relaxation
-    "distract",
-    "self_soothe",
-    "IMPROVE", // Imagery, Meaning, Prayer, Relaxation, One thing, Vacation, Encouragement
-    "pros_and_cons",
-    "radical_acceptance",
-    
-    // Emotion Regulation
-    "check_the_facts",
-    "opposite_action",
-    "problem_solving",
-    "ABC_PLEASE", // Accumulate positives, Build mastery, Cope ahead, Physical illness, Eating, Avoid drugs, Sleep, Exercise
-    "build_positive_experiences",
-    
-    // Interpersonal Effectiveness
-    "DEAR_MAN", // Describe, Express, Assert, Reinforce, Mindful, Appear confident, Negotiate
-    "GIVE", // Gentle, Interested, Validate, Easy manner
-    "FAST" // Fair, Apologies (no excessive), Stick to values, Truthful
-  ]).notNull(),
+  skillUsed: varchar("skill_used", { length: 50 }).notNull(),
   
   // Context
   situation: text("situation"),
@@ -172,14 +129,7 @@ export const actPractices = pgTable("act_practices", {
   practiceDate: timestamp("practice_date").notNull(),
   
   // ACT Process
-  actProcess: pgEnum("act_process", [
-    "acceptance", // Willingness to have difficult emotions
-    "cognitive_defusion", // Separating from thoughts
-    "present_moment", // Mindfulness
-    "self_as_context", // Observer self
-    "values", // What matters to you
-    "committed_action" // Values-based action
-  ]),
+  actProcess: varchar("act_process", { length: 50 }),
   
   // Specific Technique
   technique: varchar("technique", { length: 255 }),
@@ -212,19 +162,7 @@ export const emotionRegulationStrategies = pgTable("emotion_regulation_strategie
   useDate: timestamp("use_date").notNull(),
   
   // Strategy Type (evidence-based)
-  strategyType: pgEnum("strategy_type", [
-    "reappraisal", // Cognitive reframing
-    "suppression", // Inhibiting emotion (generally unhelpful)
-    "distraction", // Shifting attention
-    "acceptance", // Allowing the emotion
-    "problem_solving", // Changing the situation
-    "social_support", // Talking to someone
-    "expressive_writing", // Journaling
-    "physical_release", // Exercise, crying, etc.
-    "relaxation", // Deep breathing, PMR
-    "mindfulness", // Present moment awareness
-    "opposite_action" // DBT: act opposite to emotion urge
-  ]).notNull(),
+  strategyType: varchar("strategy_type", { length: 50 }).notNull(),
   
   // Context
   emotion: varchar("emotion", { length: 100 }).notNull(),
@@ -258,19 +196,7 @@ export const resilienceActivities = pgTable("resilience_activities", {
   activityDate: timestamp("activity_date").notNull(),
   
   // Activity Type (evidence-based resilience factors)
-  activityType: pgEnum("activity_type", [
-    "social_connection", // Building relationships
-    "meaning_making", // Finding purpose in adversity
-    "optimism_practice", // Realistic optimism
-    "self_efficacy", // Building confidence
-    "emotion_regulation", // Managing emotions
-    "cognitive_flexibility", // Adaptive thinking
-    "physical_health", // Exercise, sleep, nutrition
-    "spirituality", // Connection to something greater
-    "growth_mindset", // Learning from challenges
-    "gratitude", // Appreciating what you have
-    "self_compassion" // Being kind to yourself
-  ]),
+  activityType: varchar("activity_type", { length: 50 }),
   
   activity: varchar("activity", { length: 255 }).notNull(),
   description: text("description"),
@@ -296,25 +222,14 @@ export const emotionalProcessing = pgTable("emotional_processing", {
   relatedEvent: text("related_event"),
   
   // Processing Method
-  processingMethod: pgEnum("processing_method", [
-    "journaling",
-    "talking_to_someone",
-    "therapy_session",
-    "somatic_experiencing", // Body-based processing
-    "EMDR", // Eye Movement Desensitization
-    "expressive_art",
-    "movement",
-    "crying",
-    "meditation",
-    "ritual"
-  ]),
+  processingMethod: varchar("processing_method", { length: 50 }),
   
   // Process
   whatCameUp: text("what_came_up"), // Insights, memories, realizations
   physicalSensations: text("physical_sensations"),
   
   // Depth
-  processingDepth: pgEnum("processing_depth", ["surface", "moderate", "deep"]),
+  processingDepth: varchar("processing_depth", { length: 50 }),
   
   // Outcome
   feelingAfter: varchar("feeling_after", { length: 100 }),
@@ -334,16 +249,7 @@ export const emotionalWins = pgTable("emotional_wins", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   winDate: timestamp("win_date").notNull(),
   
-  winType: pgEnum("win_type", [
-    "regulated_successfully",
-    "felt_emotion_fully",
-    "set_boundary",
-    "expressed_emotion_healthily",
-    "processed_trauma",
-    "resilience_moment",
-    "emotional_breakthrough",
-    "pattern_broken"
-  ]),
+  winType: varchar("win_type", { length: 50 }),
   
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),

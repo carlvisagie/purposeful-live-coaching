@@ -4,7 +4,7 @@
  * Research sources: Dan Ariely (behavioral economics), Financial Therapy Association, Dave Ramsey's debt snowball research
  */
 
-import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Financial Profiles
 export const financialProfiles = pgTable("financial_profiles", {
@@ -12,9 +12,9 @@ export const financialProfiles = pgTable("financial_profiles", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Current Financial Situation
-  employmentStatus: pgEnum("employment_status", ["employed", "self_employed", "unemployed", "underemployed", "student", "retired"]),
+  employmentStatus: varchar("employment_status", { length: 50 }),
   monthlyIncome: decimal("monthly_income", { precision: 10, scale: 2 }),
-  incomeStability: pgEnum("income_stability", ["stable", "variable", "unstable"]),
+  incomeStability: varchar("income_stability", { length: 50 }),
   
   // Debt Situation
   totalDebt: decimal("total_debt", { precision: 10, scale: 2 }),
@@ -30,16 +30,7 @@ export const financialProfiles = pgTable("financial_profiles", {
   financialStressLevel: integer("financial_stress_level"), // 1-10
   
   // Primary Financial Goal
-  primaryGoal: pgEnum("primary_goal", [
-    "get_out_of_debt",
-    "build_emergency_fund",
-    "increase_income",
-    "stop_overspending",
-    "save_for_goal",
-    "invest_for_future",
-    "improve_credit_score",
-    "financial_literacy"
-  ]),
+  primaryGoal: varchar("primary_goal", { length: 50 }),
   
   specificGoals: text("specific_goals"), // JSON array
   
@@ -61,16 +52,7 @@ export const debtAccounts = pgTable("debt_accounts", {
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  debtType: pgEnum("debt_type", [
-    "credit_card",
-    "student_loan",
-    "car_loan",
-    "personal_loan",
-    "medical_debt",
-    "payday_loan",
-    "mortgage",
-    "other"
-  ]),
+  debtType: varchar("debt_type", { length: 50 }),
   
   creditorName: varchar("creditor_name", { length: 255 }).notNull(),
   
@@ -81,7 +63,7 @@ export const debtAccounts = pgTable("debt_accounts", {
   minimumPayment: decimal("minimum_payment", { precision: 10, scale: 2 }),
   
   // Payoff Strategy
-  payoffMethod: pgEnum("payoff_method", ["snowball", "avalanche", "custom"]), // Snowball = smallest first, Avalanche = highest interest first
+  payoffMethod: varchar("payoff_method", { length: 50 }), // Snowball = smallest first, Avalanche = highest interest first
   payoffPriority: integer("payoff_priority"), // 1 = pay off first
   
   // Tracking
@@ -93,7 +75,7 @@ export const debtAccounts = pgTable("debt_accounts", {
   totalInterestPaid: decimal("total_interest_paid", { precision: 10, scale: 2 }).default("0"),
   
   // Status
-  status: pgEnum("status", ["active", "in_collections", "paid_off", "settled"]),
+  status: varchar("status", { length: 50 }),
   paidOffDate: timestamp("paid_off_date"),
   
   createdAt: timestamp("created_at").defaultNow(),
@@ -130,19 +112,7 @@ export const budgetCategories = pgTable("budget_categories", {
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  categoryType: pgEnum("category_type", [
-    "housing",
-    "utilities",
-    "food",
-    "transportation",
-    "insurance",
-    "debt_payments",
-    "savings",
-    "personal",
-    "entertainment",
-    "giving",
-    "other"
-  ]),
+  categoryType: varchar("category_type", { length: 50 }),
   
   categoryName: varchar("category_name", { length: 255 }).notNull(),
   
@@ -202,17 +172,7 @@ export const incomeEntries = pgTable("income_entries", {
   incomeDate: timestamp("income_date").notNull(),
   amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
   
-  incomeType: pgEnum("income_type", [
-    "salary",
-    "hourly_wages",
-    "freelance",
-    "side_hustle",
-    "passive_income",
-    "bonus",
-    "gift",
-    "refund",
-    "other"
-  ]),
+  incomeType: varchar("income_type", { length: 50 }),
   
   source: varchar("source", { length: 255 }),
   description: text("description"),
@@ -228,16 +188,7 @@ export const savingsGoals = pgTable("savings_goals", {
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  goalType: pgEnum("goal_type", [
-    "emergency_fund",
-    "down_payment",
-    "vacation",
-    "car",
-    "education",
-    "retirement",
-    "wedding",
-    "other"
-  ]),
+  goalType: varchar("goal_type", { length: 50 }),
   
   goalName: varchar("goal_name", { length: 255 }).notNull(),
   description: text("description"),
@@ -260,7 +211,7 @@ export const savingsGoals = pgTable("savings_goals", {
   whyItMatters: text("why_it_matters"),
   visualReminder: varchar("visual_reminder", { length: 255 }), // Image URL
   
-  status: pgEnum("status", ["active", "paused", "completed", "abandoned"]),
+  status: varchar("status", { length: 50 }),
   completedDate: timestamp("completed_date"),
   
   createdAt: timestamp("created_at").defaultNow(),
@@ -275,16 +226,7 @@ export const financialWins = pgTable("financial_wins", {
   
   winDate: timestamp("win_date").notNull(),
   
-  winType: pgEnum("win_type", [
-    "debt_paid_off",
-    "emergency_fund_milestone",
-    "savings_goal_reached",
-    "budget_followed",
-    "no_impulse_buys",
-    "income_increased",
-    "credit_score_improved",
-    "financial_habit_built"
-  ]),
+  winType: varchar("win_type", { length: 50 }),
   
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
@@ -308,15 +250,7 @@ export const moneyMindsetReflections = pgTable("money_mindset_reflections", {
   reflectionDate: timestamp("reflection_date").notNull(),
   
   // Reflection Prompts
-  promptType: pgEnum("prompt_type", [
-    "money_scripts", // What did you learn about money growing up?
-    "scarcity_vs_abundance", // Do you operate from scarcity or abundance?
-    "self_worth", // How is your self-worth tied to money?
-    "comparison", // How does comparing yourself to others affect your spending?
-    "emotional_spending", // What emotions trigger spending?
-    "financial_fears", // What are you afraid of financially?
-    "financial_dreams" // What would financial freedom look like?
-  ]),
+  promptType: varchar("prompt_type", { length: 50 }),
   
   reflection: text("reflection").notNull(),
   
@@ -336,20 +270,9 @@ export const financialEducation = pgTable("financial_education", {
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  topic: pgEnum("topic", [
-    "budgeting_basics",
-    "debt_payoff_strategies",
-    "emergency_fund",
-    "investing_101",
-    "retirement_planning",
-    "credit_scores",
-    "tax_basics",
-    "insurance",
-    "real_estate",
-    "behavioral_finance"
-  ]),
+  topic: varchar("topic", { length: 50 }),
   
-  resourceType: pgEnum("resource_type", ["article", "video", "course", "book", "podcast"]),
+  resourceType: varchar("resource_type", { length: 50 }),
   resourceName: varchar("resource_name", { length: 255 }),
   resourceUrl: text("resource_url"),
   
@@ -359,7 +282,7 @@ export const financialEducation = pgTable("financial_education", {
   keyTakeaways: text("key_takeaways"), // JSON array
   appliedLearning: text("applied_learning"), // How did you use this?
   
-  status: pgEnum("status", ["not_started", "in_progress", "completed"]),
+  status: varchar("status", { length: 50 }),
   
   createdAt: timestamp("created_at").defaultNow(),
 });

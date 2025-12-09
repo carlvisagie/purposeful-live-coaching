@@ -10,7 +10,7 @@
  * - Adapts programming based on progress and recovery
  */
 
-import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Physical Profiles
 export const physicalProfiles = pgTable("physical_profiles", {
@@ -18,7 +18,7 @@ export const physicalProfiles = pgTable("physical_profiles", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Current State
-  fitnessLevel: pgEnum("fitness_level", ["sedentary", "beginner", "intermediate", "advanced", "athlete"]),
+  fitnessLevel: varchar("fitness_level", { length: 50 }),
   
   // Measurements
   height: integer("height"), // cm
@@ -26,17 +26,7 @@ export const physicalProfiles = pgTable("physical_profiles", {
   bodyFatPercentage: decimal("body_fat_percentage", { precision: 4, scale: 1 }),
   
   // Goals
-  primaryGoal: pgEnum("primary_goal", [
-    "lose_weight",
-    "build_muscle",
-    "increase_strength",
-    "improve_endurance",
-    "enhance_mobility",
-    "athletic_performance",
-    "general_health",
-    "injury_recovery",
-    "longevity"
-  ]),
+  primaryGoal: varchar("primary_goal", { length: 50 }),
   
   specificGoals: text("specific_goals"), // JSON array
   
@@ -71,39 +61,14 @@ export const workouts = pgTable("workouts", {
   workoutDate: timestamp("workout_date").notNull(),
   
   // Workout Type
-  workoutType: pgEnum("workout_type", [
-    "strength_training",
-    "cardio",
-    "HIIT",
-    "yoga",
-    "mobility",
-    "sports",
-    "walking",
-    "running",
-    "cycling",
-    "swimming",
-    "martial_arts",
-    "dance",
-    "other"
-  ]),
+  workoutType: varchar("workout_type", { length: 50 }),
   
   // Focus
-  primaryFocus: pgEnum("primary_focus", [
-    "upper_body",
-    "lower_body",
-    "full_body",
-    "core",
-    "push",
-    "pull",
-    "legs",
-    "cardio",
-    "flexibility",
-    "balance"
-  ]),
+  primaryFocus: varchar("primary_focus", { length: 50 }),
   
   // Duration & Intensity
   duration: integer("duration"), // minutes
-  intensity: pgEnum("intensity", ["low", "moderate", "high", "max"]),
+  intensity: varchar("intensity", { length: 50 }),
   perceivedExertion: integer("perceived_exertion"), // 1-10 (RPE)
   
   // State Before
@@ -142,15 +107,7 @@ export const exercises = pgTable("exercises", {
   
   // Exercise Details
   exerciseName: varchar("exercise_name", { length: 255 }).notNull(),
-  exerciseType: pgEnum("exercise_type", [
-    "compound", // Multi-joint (squat, deadlift, bench)
-    "isolation", // Single-joint (bicep curl, leg extension)
-    "cardio",
-    "plyometric",
-    "isometric",
-    "mobility",
-    "balance"
-  ]),
+  exerciseType: varchar("exercise_type", { length: 50 }),
   
   muscleGroup: varchar("muscle_group", { length: 255 }), // Primary muscle worked
   
@@ -166,7 +123,7 @@ export const exercises = pgTable("exercises", {
   tempo: varchar("tempo", { length: 50 }), // e.g., "3-1-2-0" (eccentric-pause-concentric-pause)
   
   // Range of Motion
-  rangeOfMotion: pgEnum("range_of_motion", ["full", "partial", "limited"]),
+  rangeOfMotion: varchar("range_of_motion", { length: 50 }),
   
   // Quality
   formQuality: integer("form_quality"), // 1-10
@@ -192,18 +149,7 @@ export const cardioSessions = pgTable("cardio_sessions", {
   sessionDate: timestamp("session_date").notNull(),
   
   // Activity
-  activityType: pgEnum("activity_type", [
-    "running",
-    "cycling",
-    "swimming",
-    "rowing",
-    "walking",
-    "hiking",
-    "elliptical",
-    "stair_climbing",
-    "jump_rope",
-    "other"
-  ]),
+  activityType: varchar("activity_type", { length: 50 }),
   
   // Duration & Distance
   duration: integer("duration"), // minutes
@@ -240,14 +186,7 @@ export const mobilityWork = pgTable("mobility_work", {
   sessionDate: timestamp("session_date").notNull(),
   
   // Session Type
-  sessionType: pgEnum("session_type", [
-    "stretching",
-    "foam_rolling",
-    "yoga",
-    "dynamic_warmup",
-    "mobility_drills",
-    "joint_prep"
-  ]),
+  sessionType: varchar("session_type", { length: 50 }),
   
   // Focus Areas
   areasWorked: text("areas_worked"), // JSON: hips, shoulders, ankles, etc.
@@ -303,13 +242,7 @@ export const recoveryTracking = pgTable("recovery_tracking", {
   recoveryStrategies: text("recovery_strategies"), // JSON: sleep, nutrition, massage, ice bath, etc.
   
   // Recommendations (self-learning)
-  recommendedAction: pgEnum("recommended_action", [
-    "full_training",
-    "light_training",
-    "active_recovery",
-    "rest_day",
-    "deload"
-  ]),
+  recommendedAction: varchar("recommended_action", { length: 50 }),
   
   createdAt: timestamp("created_at").defaultNow(),
 });
@@ -362,13 +295,7 @@ export const strengthBenchmarks = pgTable("strength_benchmarks", {
   exercise: varchar("exercise", { length: 255 }).notNull(),
   
   // Test Type
-  testType: pgEnum("test_type", [
-    "1RM", // One rep max
-    "3RM",
-    "5RM",
-    "max_reps", // Max reps at bodyweight or specific weight
-    "time_to_failure"
-  ]),
+  testType: varchar("test_type", { length: 50 }),
   
   // Result
   weight: decimal("weight", { precision: 6, scale: 2 }), // kg

@@ -1,4 +1,4 @@
-import { int, integer, pgEnum, pgTable, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { int, integer, pgTable, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { users } from "./schema";
 
 /**
@@ -15,12 +15,12 @@ export const autismProfiles = pgTable("autismProfiles", {
   childName: varchar("childName", { length: 255 }).notNull(),
   dateOfBirth: timestamp("dateOfBirth").notNull(),
   diagnosisDate: timestamp("diagnosisDate"),
-  severity: pgEnum("severity", ["mild", "moderate", "severe"]),
+  severity: varchar("severity", { length: 50 }),
   
   // Assessment Data
   atecScore: integer("atecScore"), // Autism Treatment Evaluation Checklist
   carsScore: integer("carsScore"), // Childhood Autism Rating Scale
-  communicationLevel: pgEnum("communicationLevel", ["nonverbal", "minimally_verbal", "verbal"]),
+  communicationLevel: varchar("communicationLevel", { length: 50 }),
   
   // Symptoms & Challenges (stored as JSON text)
   giSymptoms: text("giSymptoms"), // JSON: ["constipation", "diarrhea", "pain"]
@@ -51,7 +51,7 @@ export const interventionPlans = pgTable("interventionPlans", {
   tier4Interventions: text("tier4Interventions"), // JSON: ["neurofeedback", "TMS_trial"]
   
   // Timeline & Providers
-  currentPhase: pgEnum("currentPhase", ["foundation", "biomedical", "behavioral", "advanced"]),
+  currentPhase: varchar("currentPhase", { length: 50 }),
   startDate: timestamp("startDate").notNull(),
   providerDirectory: text("providerDirectory"), // JSON: {"ABA": "provider_name", "OT": "provider_name"}
   
@@ -69,7 +69,7 @@ export const supplementTracking = pgTable("supplementTracking", {
   
   supplementName: varchar("supplementName", { length: 255 }).notNull(), // "Omega-3", "Vitamin D", "Methylcobalamin"
   dosage: varchar("dosage", { length: 255 }).notNull(), // "1000mg EPA+DHA", "300 IU/kg/day"
-  frequency: pgEnum("frequency", ["daily", "twice_daily", "every_3_days"]),
+  frequency: varchar("frequency", { length: 50 }),
   
   startDate: timestamp("startDate").notNull(),
   endDate: timestamp("endDate"),
@@ -91,7 +91,7 @@ export const dietaryInterventions = pgTable("dietaryInterventions", {
   id: serial("id").primaryKey(),
   profileId: integer("profileId").notNull().references(() => autismProfiles.id),
   
-  dietType: pgEnum("dietType", ["GFCF", "ketogenic", "SCD"]),
+  dietType: varchar("dietType", { length: 50 }),
   startDate: timestamp("startDate").notNull(),
   endDate: timestamp("endDate"),
   
@@ -112,7 +112,7 @@ export const therapySessions = pgTable("therapySessions", {
   id: serial("id").primaryKey(),
   profileId: integer("profileId").notNull().references(() => autismProfiles.id),
   
-  therapyType: pgEnum("therapyType", ["ABA", "OT", "speech", "Floortime", "neurofeedback"]),
+  therapyType: varchar("therapyType", { length: 50 }),
   sessionDate: timestamp("sessionDate").notNull(),
   duration: integer("duration").notNull(), // Minutes
   
@@ -137,7 +137,7 @@ export const autismOutcomeTracking = pgTable("autismOutcomeTracking", {
   // Core Autism Symptoms
   atecScore: integer("atecScore"),
   carsScore: integer("carsScore"),
-  communicationLevel: pgEnum("communicationLevel", ["nonverbal", "minimally_verbal", "verbal"]),
+  communicationLevel: varchar("communicationLevel", { length: 50 }),
   
   // Behavior & Function
   behaviorScore: integer("behaviorScore"), // 1-10 scale (parent-reported)
@@ -171,7 +171,7 @@ export const autismPatternDetection = pgTable("autismPatternDetection", {
   outcomeData: text("outcomeData").notNull(), // JSON: {"atec_improvement": 40, "behavior_improvement": 60}
   
   // Pattern Insights
-  patternType: pgEnum("patternType", ["high_responder", "moderate_responder", "non_responder"]),
+  patternType: varchar("patternType", { length: 50 }),
   confidence: integer("confidence"), // 0-100
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -184,7 +184,7 @@ export type InsertAutismPatternDetection = typeof autismPatternDetection.$inferI
 export const autismProviders = pgTable("autismProviders", {
   id: serial("id").primaryKey(),
   
-  providerType: pgEnum("providerType", ["ABA", "OT", "speech", "FMT_clinic", "neurofeedback"]),
+  providerType: varchar("providerType", { length: 50 }),
   name: varchar("name", { length: 255 }).notNull(),
   location: varchar("location", { length: 255 }).notNull(), // City, State
   
@@ -198,7 +198,7 @@ export const autismProviders = pgTable("autismProviders", {
   reviewCount: integer("reviewCount"),
   
   // Insurance & Cost
-  acceptsInsurance: pgEnum("acceptsInsurance", ["true", "false"]),
+  acceptsInsurance: varchar("acceptsInsurance", { length: 50 }),
   costRange: varchar("costRange", { length: 100 }), // "$100-$200/session"
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),

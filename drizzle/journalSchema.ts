@@ -37,7 +37,7 @@
  * - Predicts when journaling would be most helpful
  */
 
-import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Journal Profiles
 export const journalProfiles = pgTable("journal_profiles", {
@@ -50,19 +50,12 @@ export const journalProfiles = pgTable("journal_profiles", {
   longestStreak: integer("longest_streak").default(0),
   
   // Preferences
-  preferredJournalType: pgEnum("preferred_journal_type", [
-    "free_form",
-    "gratitude",
-    "reflective",
-    "expressive",
-    "goal_focused",
-    "mixed"
-  ]),
+  preferredJournalType: varchar("preferred_journal_type", { length: 50 }),
   
-  preferredTime: pgEnum("preferred_time", ["morning", "afternoon", "evening", "night", "flexible"]),
+  preferredTime: varchar("preferred_time", { length: 50 }),
   
   // Privacy
-  defaultPrivacy: pgEnum("default_privacy", ["private", "shared_with_coach", "shared_with_community"]),
+  defaultPrivacy: varchar("default_privacy", { length: 50 }),
   
   // AI Features
   enableAIInsights: boolean("enable_ai_insights").default(true),
@@ -89,16 +82,7 @@ export const journalEntries = pgTable("journal_entries", {
   content: text("content").notNull(),
   
   // Entry Type
-  entryType: pgEnum("entry_type", [
-    "free_form",
-    "gratitude",
-    "reflective",
-    "expressive",
-    "goal_reflection",
-    "best_possible_self",
-    "daily_review",
-    "crisis_processing"
-  ]),
+  entryType: varchar("entry_type", { length: 50 }),
   
   // Prompt (if used)
   promptId: varchar("prompt_id", { length: 255 }),
@@ -109,21 +93,7 @@ export const journalEntries = pgTable("journal_entries", {
   moodAfter: integer("mood_after"), // 1-10
   
   // Emotions (AI-Detected)
-  primaryEmotion: pgEnum("primary_emotion", [
-    "joy",
-    "gratitude",
-    "peace",
-    "excitement",
-    "hope",
-    "sadness",
-    "anxiety",
-    "anger",
-    "frustration",
-    "fear",
-    "shame",
-    "guilt",
-    "neutral"
-  ]),
+  primaryEmotion: varchar("primary_emotion", { length: 50 }),
   
   emotionIntensity: integer("emotion_intensity"), // 1-10
   secondaryEmotions: text("secondary_emotions"), // JSON array
@@ -144,7 +114,7 @@ export const journalEntries = pgTable("journal_entries", {
   writingDurationMinutes: integer("writing_duration_minutes"),
   
   // Privacy
-  privacy: pgEnum("privacy", ["private", "shared_with_coach", "shared_with_community"]),
+  privacy: varchar("privacy", { length: 50 }),
   
   // Favorite
   isFavorite: boolean("is_favorite").default(false),
@@ -171,19 +141,7 @@ export const journalPrompts = pgTable("journal_prompts", {
   description: text("description"),
   
   // Category
-  category: pgEnum("category", [
-    "gratitude",
-    "reflection",
-    "goal_setting",
-    "emotional_processing",
-    "relationships",
-    "career",
-    "health",
-    "personal_growth",
-    "creativity",
-    "spirituality",
-    "crisis_support"
-  ]),
+  category: varchar("category", { length: 50 }),
   
   // Research-Backed
   researchBacked: boolean("research_backed").default(false),
@@ -193,7 +151,7 @@ export const journalPrompts = pgTable("journal_prompts", {
   bestFor: text("best_for"), // JSON: situations, emotions, goals
   
   // Difficulty
-  difficulty: pgEnum("difficulty", ["beginner", "intermediate", "advanced"]),
+  difficulty: varchar("difficulty", { length: 50 }),
   
   // Effectiveness
   avgHelpfulnessRating: decimal("avg_helpfulness_rating", { precision: 4, scale: 2 }), // 1-10
@@ -237,7 +195,7 @@ export const bestPossibleSelfEntries = pgTable("best_possible_self_entries", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Timeframe
-  timeframe: pgEnum("timeframe", ["1_year", "5_years", "10_years", "end_of_life"]),
+  timeframe: varchar("timeframe", { length: 50 }),
   
   // Life Areas
   personalLife: text("personal_life"), // What does your personal life look like?
@@ -290,13 +248,7 @@ export const emotionalPatterns = pgTable("emotional_patterns", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Pattern Type
-  patternType: pgEnum("pattern_type", [
-    "recurring_emotion", // Same emotion keeps appearing
-    "trigger_pattern", // Specific triggers → specific emotions
-    "time_pattern", // Emotions vary by time of day/week
-    "context_pattern", // Emotions vary by context (work, home, etc.)
-    "cycle_pattern" // Emotional cycles
-  ]).notNull(),
+  patternType: varchar("pattern_type", { length: 50 }).notNull(),
   
   // Pattern Details
   patternName: varchar("pattern_name", { length: 255 }).notNull(),
@@ -328,15 +280,7 @@ export const journalInsights = pgTable("journal_insights", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Insight Type
-  insightType: pgEnum("insight_type", [
-    "emotional_trend", // Your emotions are improving/declining
-    "growth_detected", // You're making progress in X area
-    "pattern_identified", // Recurring theme detected
-    "cognitive_distortion", // You're engaging in X thinking pattern
-    "strength_recognized", // You demonstrated X strength
-    "value_clarified", // X seems important to you
-    "goal_alignment" // Your entries align/misalign with your goals
-  ]),
+  insightType: varchar("insight_type", { length: 50 }),
   
   // Content
   title: varchar("title", { length: 255 }).notNull(),
@@ -383,7 +327,7 @@ export const journalReflections = pgTable("journal_reflections", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Reflection Period
-  periodType: pgEnum("period_type", ["weekly", "monthly", "quarterly", "yearly"]),
+  periodType: varchar("period_type", { length: 50 }),
   periodStart: timestamp("period_start").notNull(),
   periodEnd: timestamp("period_end").notNull(),
   

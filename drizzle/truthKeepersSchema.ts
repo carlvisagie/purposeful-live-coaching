@@ -26,7 +26,7 @@
  * 8. Independent verification
  */
 
-import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // ============================================================================
 // VALIDATED RESEARCH DATABASE
@@ -45,24 +45,10 @@ export const validatedResearch = pgTable("validated_research", {
   url: varchar("url", { length: 500 }),
   
   // Study Type
-  studyType: pgEnum("study_type", [
-    "meta_analysis",
-    "systematic_review",
-    "randomized_controlled_trial",
-    "cohort_study",
-    "case_control_study",
-    "cross_sectional_study",
-    "case_series",
-    "expert_opinion"
-  ]),
+  studyType: varchar("study_type", { length: 50 }),
   
   // Evidence Level (Oxford CEBM)
-  evidenceLevel: pgEnum("evidence_level", [
-    "level_a_high",      // Systematic reviews, meta-analyses, multiple RCTs
-    "level_b_moderate",  // Individual RCTs, cohort studies
-    "level_c_low",       // Case-control, expert consensus
-    "level_d_reject"     // Insufficient evidence - REJECTED
-  ]),
+  evidenceLevel: varchar("evidence_level", { length: 50 }),
   
   // Quality Metrics
   sampleSize: integer("sample_size"),
@@ -85,24 +71,7 @@ export const validatedResearch = pgTable("validated_research", {
   industrySponsored: boolean("industry_sponsored"),
   
   // Research Domain
-  domain: pgEnum("domain", [
-    "nutrition",
-    "exercise",
-    "sleep",
-    "mental_health",
-    "behavioral_psychology",
-    "neuroscience",
-    "metabolism",
-    "gut_health",
-    "stress_management",
-    "habit_formation",
-    "cognitive_performance",
-    "longevity",
-    "relationships",
-    "spirituality",
-    "career_development",
-    "financial_psychology"
-  ]),
+  domain: varchar("domain", { length: 50 }),
   
   // Key Findings
   keyFindings: text("key_findings").notNull(), // Summary of main results
@@ -115,13 +84,7 @@ export const validatedResearch = pgTable("validated_research", {
   contraindications: text("contraindications"), // When NOT to apply this
   
   // Validation Status
-  validationStatus: pgEnum("validation_status", [
-    "pending_review",
-    "approved",
-    "rejected",
-    "needs_replication",
-    "superseded" // Newer research contradicts this
-  ]),
+  validationStatus: varchar("validation_status", { length: 50 }),
   
   // Reviewer Info
   reviewedBy: varchar("reviewed_by", { length: 255 }), // Who validated this?
@@ -144,16 +107,7 @@ export const platformRecommendations = pgTable("platform_recommendations", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Recommendation Details
-  recommendationType: pgEnum("recommendation_type", [
-    "intervention",      // "Try 4-7-8 breathing for anxiety"
-    "protocol",          // "Huberman sleep protocol"
-    "habit",             // "Exercise 3x per week"
-    "nutrition_advice",  // "Eat 1g protein per lb bodyweight"
-    "supplement",        // "Consider magnesium for sleep"
-    "behavior_change",   // "Use implementation intentions"
-    "mindset_shift",     // "Adopt growth mindset"
-    "lifestyle_change"   // "Prioritize sleep over work"
-  ]),
+  recommendationType: varchar("recommendation_type", { length: 50 }),
   
   // Content
   title: varchar("title", { length: 255 }).notNull(),
@@ -161,11 +115,7 @@ export const platformRecommendations = pgTable("platform_recommendations", {
   howToImplement: text("how_to_implement"), // Step-by-step instructions
   
   // Evidence Backing
-  evidenceLevel: pgEnum("evidence_level", [
-    "level_a_high",
-    "level_b_moderate",
-    "level_c_low"
-  ]),
+  evidenceLevel: varchar("evidence_level", { length: 50 }),
   
   // Research Citations (Links to validatedResearch table)
   primaryResearchId: varchar("primary_research_id", { length: 255 }).notNull(), // Main supporting study
@@ -187,12 +137,7 @@ export const platformRecommendations = pgTable("platform_recommendations", {
   avgEffectivenessRating: decimal("avg_effectiveness_rating", { precision: 4, scale: 2 }), // 1-10
   
   // Status
-  status: pgEnum("status", [
-    "active",
-    "under_review",
-    "deprecated",      // No longer recommended
-    "superseded"       // Replaced by better recommendation
-  ]),
+  status: varchar("status", { length: 50 }),
   
   // Superseded Info
   supersededBy: varchar("superseded_by", { length: 255 }), // ID of newer recommendation
@@ -216,11 +161,7 @@ export const researchMonitoring = pgTable("research_monitoring", {
   domain: varchar("domain", { length: 100 }),
   
   // Monitoring Config
-  monitoringFrequency: pgEnum("monitoring_frequency", [
-    "daily",
-    "weekly",
-    "monthly"
-  ]),
+  monitoringFrequency: varchar("monitoring_frequency", { length: 50 }),
   
   // Alert Thresholds
   alertOnHighQuality: boolean("alert_on_high_quality").default(true), // Alert when Level A research found
@@ -246,34 +187,17 @@ export const pseudoscienceBlocklist = pgTable("pseudoscience_blocklist", {
   
   // Blocked Claim
   claim: text("claim").notNull(),
-  category: pgEnum("category", [
-    "unproven_supplement",
-    "debunked_theory",
-    "dangerous_practice",
-    "misleading_claim",
-    "anecdotal_only",
-    "conflict_of_interest",
-    "cherry_picked_data",
-    "correlation_not_causation"
-  ]),
+  category: varchar("category", { length: 50 }),
   
   // Why Blocked
   reason: text("reason").notNull(),
   evidenceAgainst: text("evidence_against"), // Research that debunks this
   
   // Severity
-  severity: pgEnum("severity", [
-    "dangerous",   // Could cause harm
-    "misleading",  // False but not harmful
-    "unproven"     // Just lacks evidence
-  ]),
+  severity: varchar("severity", { length: 50 }),
   
   // Action
-  action: pgEnum("action", [
-    "hard_block",  // Never allow
-    "flag_review", // Flag for human review
-    "show_warning" // Allow but warn user
-  ]),
+  action: varchar("action", { length: 50 }),
   
   // Detection
   detectionCount: integer("detection_count").default(0), // How many times detected
@@ -301,12 +225,7 @@ export const researchQualityReviews = pgTable("research_quality_reviews", {
   sampleSizeAdequate: boolean("sample_size_adequate"),
   statisticalRigor: integer("statistical_rigor"), // 1-10
   clinicalRelevance: integer("clinical_relevance"), // 1-10
-  replicationStatus: pgEnum("replication_status", [
-    "replicated",
-    "not_replicated",
-    "needs_replication",
-    "unknown"
-  ]),
+  replicationStatus: varchar("replication_status", { length: 50 }),
   
   // Bias Assessment
   selectionBias: boolean("selection_bias"),
@@ -314,21 +233,11 @@ export const researchQualityReviews = pgTable("research_quality_reviews", {
   confirmationBias: boolean("confirmation_bias"),
   
   // Overall Assessment
-  overallQuality: pgEnum("overall_quality", [
-    "excellent",
-    "good",
-    "fair",
-    "poor"
-  ]),
+  overallQuality: varchar("overall_quality", { length: 50 }),
   
   // Recommendation
   recommendForPlatform: boolean("recommend_for_platform").notNull(),
-  recommendedEvidenceLevel: pgEnum("recommended_evidence_level", [
-    "level_a_high",
-    "level_b_moderate",
-    "level_c_low",
-    "level_d_reject"
-  ]),
+  recommendedEvidenceLevel: varchar("recommended_evidence_level", { length: 50 }),
   
   // Notes
   reviewNotes: text("review_notes"),

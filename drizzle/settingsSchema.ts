@@ -21,7 +21,7 @@
  * - AI & Automation (AI features, automation)
  */
 
-import { boolean, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, int, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // User Settings
 export const userSettings = pgTable("user_settings", {
@@ -43,12 +43,12 @@ export const userSettings = pgTable("user_settings", {
   language: varchar("language", { length: 10 }).default("en"),
   
   // Units
-  measurementSystem: pgEnum("measurement_system", ["metric", "imperial"]),
-  temperatureUnit: pgEnum("temperature_unit", ["celsius", "fahrenheit"]),
+  measurementSystem: varchar("measurement_system", { length: 50 }),
+  temperatureUnit: varchar("temperature_unit", { length: 50 }),
   
   // Date & Time Format
   dateFormat: varchar("date_format", { length: 50 }).default("YYYY-MM-DD"),
-  timeFormat: pgEnum("time_format", ["12h", "24h"]),
+  timeFormat: varchar("time_format", { length: 50 }),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -60,7 +60,7 @@ export const privacySettings = pgTable("privacy_settings", {
   userId: varchar("user_id", { length: 255 }).notNull().unique(),
   
   // Profile Visibility
-  profileVisibility: pgEnum("profile_visibility", ["private", "friends", "public"]),
+  profileVisibility: varchar("profile_visibility", { length: 50 }),
   
   // Data Sharing
   shareDataForResearch: boolean("share_data_for_research").default(false),
@@ -93,15 +93,15 @@ export const appearanceSettings = pgTable("appearance_settings", {
   userId: varchar("user_id", { length: 255 }).notNull().unique(),
   
   // Theme
-  theme: pgEnum("theme", ["light", "dark", "auto"]),
+  theme: varchar("theme", { length: 50 }),
   accentColor: varchar("accent_color", { length: 50 }).default("#3B82F6"),
   
   // Layout
-  sidebarPosition: pgEnum("sidebar_position", ["left", "right"]),
+  sidebarPosition: varchar("sidebar_position", { length: 50 }),
   compactMode: boolean("compact_mode").default(false),
   
   // Typography
-  fontSize: pgEnum("font_size", ["small", "medium", "large", "extra_large"]),
+  fontSize: varchar("font_size", { length: 50 }),
   fontFamily: varchar("font_family", { length: 100 }).default("system"),
   
   // Accessibility
@@ -137,8 +137,8 @@ export const aiSettings = pgTable("ai_settings", {
   proactiveInterventions: boolean("proactive_interventions").default(true),
   
   // AI Personality
-  aiTone: pgEnum("ai_tone", ["supportive", "challenging", "balanced"]),
-  aiVerbosity: pgEnum("ai_verbosity", ["concise", "moderate", "detailed"]),
+  aiTone: varchar("ai_tone", { length: 50 }),
+  aiVerbosity: varchar("ai_verbosity", { length: 50 }),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -151,19 +151,14 @@ export const dataSettings = pgTable("data_settings", {
   
   // Backup
   autoBackupEnabled: boolean("auto_backup_enabled").default(true),
-  backupFrequency: pgEnum("backup_frequency", ["daily", "weekly", "monthly"]),
+  backupFrequency: varchar("backup_frequency", { length: 50 }),
   lastBackupAt: timestamp("last_backup_at"),
   
   // Data Retention
-  dataRetentionPeriod: pgEnum("data_retention_period", [
-    "30_days",
-    "90_days",
-    "1_year",
-    "forever"
-  ]),
+  dataRetentionPeriod: varchar("data_retention_period", { length: 50 }),
   
   // Export
-  exportFormat: pgEnum("export_format", ["json", "csv", "pdf"]),
+  exportFormat: varchar("export_format", { length: 50 }),
   
   // Storage
   storageUsed: integer("storage_used").default(0), // bytes
@@ -219,14 +214,7 @@ export const consentRecords = pgTable("consent_records", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Consent Type
-  consentType: pgEnum("consent_type", [
-    "terms_of_service",
-    "privacy_policy",
-    "data_processing",
-    "marketing_emails",
-    "research_participation",
-    "ai_features"
-  ]),
+  consentType: varchar("consent_type", { length: 50 }),
   
   // Consent
   consented: boolean("consented").notNull(),
@@ -279,7 +267,7 @@ export const accountDeletionRequests = pgTable("account_deletion_requests", {
   feedback: text("feedback"),
   
   // Status
-  status: pgEnum("status", ["pending", "processing", "completed", "cancelled"]),
+  status: varchar("status", { length: 50 }),
   
   // Scheduled Deletion
   scheduledFor: timestamp("scheduled_for"), // Grace period (e.g., 30 days)
@@ -319,12 +307,7 @@ export const accessibilityProfiles = pgTable("accessibility_profiles", {
   screenReaderEnabled: boolean("screen_reader_enabled").default(false),
   highContrast: boolean("high_contrast").default(false),
   largeText: boolean("large_text").default(false),
-  colorBlindMode: pgEnum("color_blind_mode", [
-    "none",
-    "protanopia",
-    "deuteranopia",
-    "tritanopia"
-  ]),
+  colorBlindMode: varchar("color_blind_mode", { length: 50 }),
   
   // Motor
   reduceMotion: boolean("reduce_motion").default(false),
@@ -352,7 +335,7 @@ export const betaFeatures = pgTable("beta_features", {
   description: text("description"),
   
   // Status
-  status: pgEnum("status", ["development", "beta", "stable", "deprecated"]),
+  status: varchar("status", { length: 50 }),
   
   // Availability
   availableToAll: boolean("available_to_all").default(false),

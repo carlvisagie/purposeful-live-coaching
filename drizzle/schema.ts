@@ -1,4 +1,4 @@
-import { date, decimal, int, integer, pgEnum, pgTable, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { date, decimal, int, integer, pgTable, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Export identity schema tables
 export * from "./identitySchema";
@@ -64,16 +64,16 @@ export const users = pgTable("users", {
   email: varchar("email", { length: 320 }),
   loginMethod: varchar("loginMethod", { length: 64 }),
   birthdate: date("birthdate"), // For age verification (18+ requirement)
-  role: pgEnum("role", ["user", "admin"]),
+  role: varchar("role", { length: 50 }),
   
   // Profile fields extracted from AI conversations
   primaryGoal: text("primaryGoal"), // e.g., "stress management", "career transition"
   secondaryGoal: text("secondaryGoal"),
   mainChallenges: text("mainChallenges"), // JSON array of challenges
-  preferredFrequency: pgEnum("preferredFrequency", ["daily", "weekly", "as_needed"]),
+  preferredFrequency: varchar("preferredFrequency", { length: 50 }),
   timezone: varchar("timezone", { length: 64 }), // e.g., "America/Los_Angeles"
   availability: text("availability"), // e.g., "evenings", "weekends", "flexible"
-  communicationStyle: pgEnum("communicationStyle", ["concise", "detailed", "balanced"]),
+  communicationStyle: varchar("communicationStyle", { length: 50 }),
   triggers: text("triggers"), // JSON array of triggers to watch for
   profileCompleteness: integer("profileCompleteness").default(0), // 0-100%
   
@@ -95,7 +95,7 @@ export const coaches = pgTable("coaches", {
   bio: text("bio"),
   certifications: text("certifications"),
   yearsExperience: integer("yearsExperience"),
-  isActive: pgEnum("isActive", ["true", "false"]),
+  isActive: varchar("isActive", { length: 50 }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
@@ -115,7 +115,7 @@ export const clients = pgTable("clients", {
   dateOfBirth: timestamp("dateOfBirth"),
   goals: text("goals"),
   notes: text("notes"),
-  status: pgEnum("status", ["active", "inactive", "completed"]),
+  status: varchar("status", { length: 50 }),
   startDate: timestamp("startDate").defaultNow().notNull(),
   endDate: timestamp("endDate"),
   
@@ -131,7 +131,7 @@ export const clients = pgTable("clients", {
   locationState: varchar("locationState", { length: 100 }),
   locationCountry: varchar("locationCountry", { length: 100 }),
   relationshipStatus: varchar("relationshipStatus", { length: 50 }),
-  hasChildren: pgEnum("hasChildren", ["true", "false"]),
+  hasChildren: varchar("hasChildren", { length: 50 }),
   
   // Goals & Motivation (auto-extracted)
   primaryGoal: text("primaryGoal"),
@@ -158,7 +158,7 @@ export const clients = pgTable("clients", {
   
   // Financial (auto-extracted)
   savingsLevel: varchar("savingsLevel", { length: 50 }),
-  hasDebt: pgEnum("hasDebt", ["true", "false"]),
+  hasDebt: varchar("hasDebt", { length: 50 }),
   monthlyExpensesEstimate: integer("monthlyExpensesEstimate"),
   
   // Communication Preferences (auto-extracted)
@@ -198,7 +198,7 @@ export const journalEntries = pgTable("journalEntries", {
   copingStrategies: text("copingStrategies"), // What they did to cope
   copingEffectiveness: integer("copingEffectiveness"), // 1-10 scale
   resilienceScore: integer("resilienceScore"), // Calculated resilience score
-  isPrivate: pgEnum("isPrivate", ["true", "false"]),
+  isPrivate: varchar("isPrivate", { length: 50 }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
@@ -238,7 +238,7 @@ export const copingStrategies = pgTable("copingStrategies", {
   timesUsed: integer("timesUsed").default(0).notNull(),
   averageEffectiveness: integer("averageEffectiveness"), // Average rating 1-10
   lastUsed: timestamp("lastUsed"),
-  isRecommended: pgEnum("isRecommended", ["true", "false"]),
+  isRecommended: varchar("isRecommended", { length: 50 }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
@@ -256,9 +256,9 @@ export const aiInsights = pgTable("aiInsights", {
   insightType: varchar("insightType", { length: 100 }).notNull(), // pattern, trend, recommendation, alert
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description").notNull(),
-  severity: pgEnum("severity", ["low", "medium", "high", "critical"]),
+  severity: varchar("severity", { length: 50 }),
   actionable: text("actionable"), // Suggested actions
-  isRead: pgEnum("isRead", ["true", "false"]),
+  isRead: varchar("isRead", { length: 50 }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
@@ -278,7 +278,7 @@ export const sessionTypes = pgTable("sessionTypes", {
   stripePriceId: varchar("stripePriceId", { length: 255 }), // Stripe recurring price ID for subscriptions
   oneTimePriceId: varchar("oneTimePriceId", { length: 255 }), // Stripe one-time price ID for single sessions
   subscriptionPrice: integer("subscriptionPrice"), // Monthly subscription price in cents (optional, defaults to price)
-  isActive: pgEnum("isActive", ["true", "false"]),
+  isActive: varchar("isActive", { length: 50 }),
   displayOrder: integer("displayOrder").default(0).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
@@ -300,8 +300,8 @@ export const sessions = pgTable("sessions", {
   price: integer("price"), // in cents - captured at booking time
   sessionType: varchar("sessionType", { length: 100 }), // legacy field, kept for backward compatibility
   notes: text("notes"),
-  status: pgEnum("status", ["scheduled", "completed", "cancelled", "no-show"]),
-  paymentStatus: pgEnum("paymentStatus", ["pending", "paid", "refunded", "failed"]),
+  status: varchar("status", { length: 50 }),
+  paymentStatus: varchar("paymentStatus", { length: 50 }),
   stripePaymentIntentId: varchar("stripePaymentIntentId", { length: 255 }),
   stripeSessionId: varchar("stripeSessionId", { length: 255 }), // Stripe checkout session ID
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -321,12 +321,12 @@ export const subscriptions = pgTable("subscriptions", {
   stripeCustomerId: varchar("stripeCustomerId", { length: 255 }),
   stripePriceId: varchar("stripePriceId", { length: 255 }),
   productId: varchar("productId", { length: 64 }).notNull(),
-  tier: pgEnum("tier", ["ai_only", "hybrid", "premium"]),
-  billingFrequency: pgEnum("billingFrequency", ["monthly", "yearly"]),
-  status: pgEnum("status", ["active", "cancelled", "past_due", "unpaid", "trialing"]),
+  tier: varchar("tier", { length: 50 }),
+  billingFrequency: varchar("billingFrequency", { length: 50 }),
+  status: varchar("status", { length: 50 }),
   currentPeriodStart: timestamp("currentPeriodStart"),
   currentPeriodEnd: timestamp("currentPeriodEnd"),
-  cancelAtPeriodEnd: pgEnum("cancelAtPeriodEnd", ["true", "false"]),
+  cancelAtPeriodEnd: varchar("cancelAtPeriodEnd", { length: 50 }),
   trialStart: timestamp("trialStart"),
   trialEnd: timestamp("trialEnd"),
   cancelledAt: timestamp("cancelledAt"),
@@ -366,7 +366,7 @@ export const humanSessionBookings = pgTable("human_session_bookings", {
   subscriptionId: integer("subscriptionId").notNull().references(() => subscriptions.id, { onDelete: "cascade" }),
   sessionDate: timestamp("sessionDate").notNull(),
   duration: integer("duration").default(30).notNull(),
-  status: pgEnum("status", ["scheduled", "completed", "canceled", "no_show"]),
+  status: varchar("status", { length: 50 }),
   zoomLink: text("zoomLink"),
   aiPreSessionBrief: text("aiPreSessionBrief"),
   coachNotes: text("coachNotes"),
@@ -386,7 +386,7 @@ export const coachAvailability = pgTable("coachAvailability", {
   dayOfWeek: integer("dayOfWeek").notNull(), // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
   startTime: varchar("startTime", { length: 5 }).notNull(), // HH:MM format (e.g., "09:00")
   endTime: varchar("endTime", { length: 5 }).notNull(), // HH:MM format (e.g., "17:00")
-  isActive: pgEnum("isActive", ["true", "false"]),
+  isActive: varchar("isActive", { length: 50 }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
@@ -416,7 +416,7 @@ export type InsertAvailabilityException = typeof availabilityExceptions.$inferIn
 export const sessionReminders = pgTable("sessionReminders", {
   id: serial("id").primaryKey(),
   sessionId: integer("sessionId").notNull().references(() => sessions.id, { onDelete: "cascade" }),
-  reminderType: pgEnum("reminderType", ["24_hour", "1_hour"]),
+  reminderType: varchar("reminderType", { length: 50 }),
   sentAt: timestamp("sentAt").defaultNow().notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
@@ -435,7 +435,7 @@ export const discountCodes = pgTable("discountCodes", {
   maxUses: integer("maxUses"), // null = unlimited
   usedCount: integer("usedCount").default(0).notNull(),
   expiresAt: timestamp("expiresAt"),
-  isActive: pgEnum("isActive", ["true", "false"]),
+  isActive: varchar("isActive", { length: 50 }),
   createdBy: integer("createdBy").references(() => users.id),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
@@ -471,9 +471,9 @@ export const aiChatConversations = pgTable("aiChatConversations", {
   // Quality monitoring fields
   rating: integer("rating"), // 1-5 stars (null = not rated yet)
   feedbackText: text("feedbackText"), // Optional detailed feedback
-  feedbackCategory: pgEnum("feedbackCategory", ["helpful", "unhelpful", "inappropriate", "technical_error", "other"]),
-  wasHelpful: pgEnum("wasHelpful", ["yes", "no"]), // Simple thumbs up/down
-  reviewedByAdmin: pgEnum("reviewedByAdmin", ["yes", "no"]),
+  feedbackCategory: varchar("feedbackCategory", { length: 50 }),
+  wasHelpful: varchar("wasHelpful", { length: 50 }), // Simple thumbs up/down
+  reviewedByAdmin: varchar("reviewedByAdmin", { length: 50 }),
   adminNotes: text("adminNotes"), // Admin review notes
   
   lastMessageAt: timestamp("lastMessageAt").defaultNow().notNull(),
@@ -490,10 +490,10 @@ export type InsertAiChatConversation = typeof aiChatConversations.$inferInsert;
 export const aiChatMessages = pgTable("aiChatMessages", {
   id: serial("id").primaryKey(),
   conversationId: integer("conversationId").notNull().references(() => aiChatConversations.id, { onDelete: "cascade" }),
-  role: pgEnum("role", ["user", "assistant", "system"]),
+  role: varchar("role", { length: 50 }),
   content: text("content").notNull(),
   emotionDetected: varchar("emotionDetected", { length: 100 }), // AI-detected emotion from user message
-  crisisFlag: pgEnum("crisisFlag", ["none", "low", "medium", "high", "critical"]),
+  crisisFlag: varchar("crisisFlag", { length: 50 }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
@@ -505,7 +505,7 @@ export type InsertAiChatMessage = typeof aiChatMessages.$inferInsert;
  */
 export const platformSettings = pgTable("platformSettings", {
   id: serial("id").primaryKey(),
-  aiCoachingEnabled: pgEnum("aiCoachingEnabled", ["true", "false"]),
+  aiCoachingEnabled: varchar("aiCoachingEnabled", { length: 50 }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
@@ -530,7 +530,7 @@ export const videoTestimonials = pgTable("videoTestimonials", {
   thumbnailUrl: text("thumbnailUrl"), // S3 URL to thumbnail image
   thumbnailKey: varchar("thumbnailKey", { length: 500 }), // S3 key for thumbnail
   duration: integer("duration"), // Video duration in seconds
-  isPublished: pgEnum("isPublished", ["true", "false"]),
+  isPublished: varchar("isPublished", { length: 50 }),
   displayOrder: integer("displayOrder").default(0).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
@@ -546,11 +546,11 @@ export const complianceFlags = pgTable("complianceFlags", {
   id: serial("id").primaryKey(),
   conversationId: integer("conversationId").notNull().references(() => aiChatConversations.id, { onDelete: "cascade" }),
   messageId: integer("messageId").notNull().references(() => aiChatMessages.id, { onDelete: "cascade" }),
-  flagType: pgEnum("flagType", ["medical_advice", "diagnosis", "prescription", "legal_advice", "financial_advice", "harmful_content"]),
-  severity: pgEnum("severity", ["low", "medium", "high", "critical"]),
+  flagType: varchar("flagType", { length: 50 }),
+  severity: varchar("severity", { length: 50 }),
   flaggedContent: text("flaggedContent").notNull(), // The specific content that triggered the flag
   aiResponse: text("aiResponse"), // How the AI responded to the flagged content
-  reviewStatus: pgEnum("reviewStatus", ["pending", "reviewed", "dismissed", "escalated"]),
+  reviewStatus: varchar("reviewStatus", { length: 50 }),
   reviewedBy: integer("reviewedBy").references(() => users.id), // Coach who reviewed
   reviewNotes: text("reviewNotes"),
   reviewedAt: timestamp("reviewedAt"),
@@ -568,16 +568,16 @@ export const escalationQueue = pgTable("escalationQueue", {
   conversationId: integer("conversationId").notNull().references(() => aiChatConversations.id, { onDelete: "cascade" }),
   userId: integer("userId").notNull().references(() => users.id),
   clientId: integer("clientId").references(() => clients.id),
-  escalationType: pgEnum("escalationType", ["crisis", "client_request", "ai_uncertainty", "compliance_flag", "complex_issue"]),
-  priority: pgEnum("priority", ["low", "medium", "high", "urgent"]),
+  escalationType: varchar("escalationType", { length: 50 }),
+  priority: varchar("priority", { length: 50 }),
   reason: text("reason").notNull(), // Why escalation was triggered
   context: text("context"), // Recent conversation context
-  status: pgEnum("status", ["pending", "assigned", "in_progress", "resolved", "closed"]),
+  status: varchar("status", { length: 50 }),
   assignedTo: integer("assignedTo").references(() => coaches.id), // Which coach is handling it
   assignedAt: timestamp("assignedAt"),
   resolvedAt: timestamp("resolvedAt"),
   resolutionNotes: text("resolutionNotes"),
-  notificationSent: pgEnum("notificationSent", ["true", "false"]),
+  notificationSent: varchar("notificationSent", { length: 50 }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
@@ -599,7 +599,7 @@ export const similarCases = pgTable("similarCases", {
   timeToResolution: integer("timeToResolution"), // Days to resolution
   coachNotes: text("coachNotes"), // Coach insights and recommendations
   tags: text("tags"), // JSON array of searchable tags
-  isPublic: pgEnum("isPublic", ["true", "false"]), // Share with other coaches
+  isPublic: varchar("isPublic", { length: 50 }), // Share with other coaches
   createdBy: integer("createdBy").notNull().references(() => coaches.id),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
@@ -614,12 +614,12 @@ export type InsertSimilarCase = typeof similarCases.$inferInsert;
 export const coachNotifications = pgTable("coachNotifications", {
   id: serial("id").primaryKey(),
   coachId: integer("coachId").notNull().references(() => coaches.id, { onDelete: "cascade" }),
-  notificationType: pgEnum("notificationType", ["escalation", "compliance_flag", "crisis_alert", "new_client", "session_reminder"]),
+  notificationType: varchar("notificationType", { length: 50 }),
   title: varchar("title", { length: 255 }).notNull(),
   message: text("message").notNull(),
-  priority: pgEnum("priority", ["low", "medium", "high", "urgent"]),
+  priority: varchar("priority", { length: 50 }),
   relatedId: integer("relatedId"), // ID of related escalation, flag, etc.
-  isRead: pgEnum("isRead", ["true", "false"]),
+  isRead: varchar("isRead", { length: 50 }),
   readAt: timestamp("readAt"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
@@ -632,7 +632,7 @@ export type InsertCoachNotification = typeof coachNotifications.$inferInsert;
 export const liveSessionTranscripts = pgTable("liveSessionTranscripts", {
   id: serial("id").primaryKey(),
   sessionId: integer("sessionId").notNull(),
-  speaker: pgEnum("speaker", ["client", "coach"]),
+  speaker: varchar("speaker", { length: 50 }),
   text: text("text").notNull(),
   timestamp: timestamp("timestamp").notNull(),
 });
@@ -641,12 +641,12 @@ export const liveSessionTranscripts = pgTable("liveSessionTranscripts", {
 export const coachGuidance = pgTable("coachGuidance", {
   id: serial("id").primaryKey(),
   sessionId: integer("sessionId").notNull(),
-  guidanceType: pgEnum("guidanceType", ["suggest", "alert", "reference", "technique", "crisis"]),
-  priority: pgEnum("priority", ["low", "medium", "high", "urgent"]),
+  guidanceType: varchar("guidanceType", { length: 50 }),
+  priority: varchar("priority", { length: 50 }),
   message: text("message").notNull(),
   context: text("context"),
   timestamp: timestamp("timestamp").notNull(),
-  wasFollowed: pgEnum("wasFollowed", ["true", "false"]),
+  wasFollowed: varchar("wasFollowed", { length: 50 }),
 });
 
 
@@ -666,9 +666,9 @@ export const sessionRecordings = pgTable("sessionRecordings", {
   transcriptKey: varchar("transcriptKey", { length: 500 }), // S3 key for transcript
   duration: integer("duration"), // Duration in seconds
   fileSize: integer("fileSize"), // Total file size in bytes
-  status: pgEnum("status", ["processing", "ready", "failed", "deleted"]),
-  clientCanAccess: pgEnum("clientCanAccess", ["true", "false"]), // Client access control
-  consentGiven: pgEnum("consentGiven", ["true", "false"]), // Recording consent
+  status: varchar("status", { length: 50 }),
+  clientCanAccess: varchar("clientCanAccess", { length: 50 }), // Client access control
+  consentGiven: varchar("consentGiven", { length: 50 }), // Recording consent
   recordedAt: timestamp("recordedAt").notNull(),
   expiresAt: timestamp("expiresAt"), // Retention policy
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -724,7 +724,7 @@ export type InsertCoachPrivateNote = typeof coachPrivateNotes.$inferInsert;
  */
 export const platformAnalytics = pgTable("platformAnalytics", {
   id: serial("id").primaryKey(),
-  metricType: pgEnum("metricType", ["technique_effectiveness", "common_trigger", "demographic_insight", "seasonal_pattern", "trend"]),
+  metricType: varchar("metricType", { length: 50 }),
   metricName: varchar("metricName", { length: 255 }).notNull(),
   metricValue: text("metricValue").notNull(), // JSON with metric data
   sampleSize: integer("sampleSize").notNull(), // Number of clients/sessions analyzed
@@ -732,8 +732,8 @@ export const platformAnalytics = pgTable("platformAnalytics", {
   timeframe: varchar("timeframe", { length: 100 }).notNull(), // e.g., "2025-Q1", "2025-11"
   demographics: text("demographics"), // JSON of demographic breakdown
   insights: text("insights"), // Human-readable insights
-  actionable: pgEnum("actionable", ["true", "false"]),
-  implemented: pgEnum("implemented", ["true", "false"]),
+  actionable: varchar("actionable", { length: 50 }),
+  implemented: varchar("implemented", { length: 50 }),
   calculatedAt: timestamp("calculatedAt").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
@@ -769,7 +769,7 @@ export type InsertTechniqueEffectiveness = typeof techniqueEffectiveness.$inferI
 export const clientPatterns = pgTable("clientPatterns", {
   id: serial("id").primaryKey(),
   clientId: integer("clientId").notNull().references(() => clients.id, { onDelete: "cascade" }),
-  patternType: pgEnum("patternType", ["trigger", "breakthrough", "resistance", "engagement", "communication_style", "optimal_timing"]),
+  patternType: varchar("patternType", { length: 50 }),
   patternName: varchar("patternName", { length: 255 }).notNull(),
   description: text("description").notNull(),
   frequency: integer("frequency").notNull(), // How often this pattern occurs
@@ -791,7 +791,7 @@ export type InsertClientPattern = typeof clientPatterns.$inferInsert;
 export const clientPreferences = pgTable("clientPreferences", {
   id: serial("id").primaryKey(),
   clientId: integer("clientId").notNull().references(() => clients.id, { onDelete: "cascade" }),
-  preferenceType: pgEnum("preferenceType", ["technique", "communication", "timing", "homework_format", "session_structure"]),
+  preferenceType: varchar("preferenceType", { length: 50 }),
   preferenceName: varchar("preferenceName", { length: 255 }).notNull(),
   preferenceValue: text("preferenceValue").notNull(), // What they prefer
   effectiveness: integer("effectiveness").notNull(), // How well it works 0-100
@@ -811,13 +811,13 @@ export type InsertClientPreference = typeof clientPreferences.$inferInsert;
 export const clientPredictions = pgTable("clientPredictions", {
   id: serial("id").primaryKey(),
   clientId: integer("clientId").notNull().references(() => clients.id, { onDelete: "cascade" }),
-  predictionType: pgEnum("predictionType", ["next_breakthrough", "dropout_risk", "recommended_focus", "technique_suggestion", "optimal_session_time"]),
+  predictionType: varchar("predictionType", { length: 50 }),
   prediction: text("prediction").notNull(),
   confidence: integer("confidence").notNull(), // 0-100
   reasoning: text("reasoning").notNull(), // Why AI made this prediction
   basedOnData: text("basedOnData"), // JSON of data points used
   validUntil: timestamp("validUntil").notNull(),
-  wasAccurate: pgEnum("wasAccurate", ["true", "false", "unknown"]),
+  wasAccurate: varchar("wasAccurate", { length: 50 }),
   actualOutcome: text("actualOutcome"), // What actually happened
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
@@ -835,10 +835,10 @@ export const coachFeedback = pgTable("coachFeedback", {
   sessionId: integer("sessionId").references(() => sessions.id),
   suggestionType: varchar("suggestionType", { length: 100 }).notNull(), // What type of AI suggestion
   suggestionContent: text("suggestionContent").notNull(), // What AI suggested
-  feedbackType: pgEnum("feedbackType", ["helpful", "not_helpful", "partially_helpful", "used", "ignored"]),
+  feedbackType: varchar("feedbackType", { length: 50 }),
   rating: integer("rating"), // 1-5 stars
   notes: text("notes"), // Coach's explanation
-  wasUsed: pgEnum("wasUsed", ["true", "false"]),
+  wasUsed: varchar("wasUsed", { length: 50 }),
   outcome: text("outcome"), // What happened after using/ignoring suggestion
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
@@ -873,18 +873,10 @@ export type InsertSuggestionEffectiveness = typeof suggestionEffectiveness.$infe
 export const emailLogs = pgTable("email_logs", {
   id: serial("id").primaryKey(),
   userId: integer("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
-  emailType: pgEnum("emailType", [
-    "trial_day5_reminder",
-    "welcome",
-    "payment_failed",
-    "payment_recovered",
-    "monthly_summary",
-    "subscription_cancelled",
-    "subscription_reactivated",
-  ]),
+  emailType: varchar("emailType", { length: 50 }),
   sentAt: timestamp("sentAt").notNull().defaultNow(),
   subject: varchar("subject", { length: 255 }).notNull(),
-  status: pgEnum("status", ["sent", "failed", "bounced"]),
+  status: varchar("status", { length: 50 }),
   metadata: text("metadata"), // JSON string with additional data like usage stats
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
@@ -903,16 +895,8 @@ export const clientFiles = pgTable("client_files", {
   sessionId: integer("sessionId").references(() => humanSessionBookings.id, { onDelete: "set null" }), // Link to session if applicable
   
   fileName: varchar("fileName", { length: 255 }).notNull(),
-  fileType: pgEnum("fileType", ["audio", "video", "document", "image", "transcript"]),
-  fileCategory: pgEnum("fileCategory", [
-    "voice_memo",
-    "session_recording",
-    "journal_entry",
-    "photo",
-    "document",
-    "ai_transcript",
-    "other"
-  ]),
+  fileType: varchar("fileType", { length: 50 }),
+  fileCategory: varchar("fileCategory", { length: 50 }),
   
   fileUrl: text("fileUrl").notNull(), // Public S3 URL
   fileKey: text("fileKey").notNull(), // S3 key for deletion/management
@@ -921,7 +905,7 @@ export const clientFiles = pgTable("client_files", {
   duration: integer("duration"), // Duration in seconds for audio/video
   
   transcriptionText: text("transcriptionText"), // Auto-generated transcription for audio/video
-  transcriptionStatus: pgEnum("transcriptionStatus", ["pending", "completed", "failed"]),
+  transcriptionStatus: varchar("transcriptionStatus", { length: 50 }),
   
   coachNotes: text("coachNotes"), // Coach can add notes about this file
   tags: text("tags"), // JSON array of tags for organization

@@ -26,7 +26,7 @@
  * - ISO 27001 (Information Security Management)
  */
 
-import { boolean, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, int, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Security Profiles
 export const securityProfiles = pgTable("security_profiles", {
@@ -35,7 +35,7 @@ export const securityProfiles = pgTable("security_profiles", {
   
   // Multi-Factor Authentication
   mfaEnabled: boolean("mfa_enabled").default(false),
-  mfaMethod: pgEnum("mfa_method", ["totp", "sms", "email", "authenticator_app"]),
+  mfaMethod: varchar("mfa_method", { length: 50 }),
   mfaSecret: varchar("mfa_secret", { length: 500 }), // Encrypted
   mfaBackupCodes: text("mfa_backup_codes"), // Encrypted JSON array
   
@@ -87,7 +87,7 @@ export const activeSessions = pgTable("active_sessions", {
   // Device Info
   deviceId: varchar("device_id", { length: 255 }),
   deviceName: varchar("device_name", { length: 255 }),
-  deviceType: pgEnum("device_type", ["desktop", "mobile", "tablet", "other"]),
+  deviceType: varchar("device_type", { length: 50 }),
   
   // Location
   ipAddress: varchar("ip_address", { length: 50 }),
@@ -121,7 +121,7 @@ export const loginHistory = pgTable("login_history", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Login Details
-  loginMethod: pgEnum("login_method", ["password", "oauth", "magic_link", "sso"]),
+  loginMethod: varchar("login_method", { length: 50 }),
   
   // Status
   success: boolean("success").notNull(),
@@ -151,16 +151,7 @@ export const auditLogs = pgTable("audit_logs", {
   
   // Event Details
   eventType: varchar("event_type", { length: 100 }).notNull(),
-  eventCategory: pgEnum("event_category", [
-    "authentication",
-    "authorization",
-    "data_access",
-    "data_modification",
-    "settings_change",
-    "security_event",
-    "system_event",
-    "compliance_event"
-  ]),
+  eventCategory: varchar("event_category", { length: 50 }),
   
   // Action
   action: varchar("action", { length: 255 }).notNull(),
@@ -180,7 +171,7 @@ export const auditLogs = pgTable("audit_logs", {
   sessionId: varchar("session_id", { length: 255 }),
   
   // Severity
-  severity: pgEnum("severity", ["info", "warning", "error", "critical"]),
+  severity: varchar("severity", { length: 50 }),
   
   eventTimestamp: timestamp("event_timestamp").defaultNow(),
 });
@@ -191,19 +182,10 @@ export const securityIncidents = pgTable("security_incidents", {
   userId: varchar("user_id", { length: 255 }), // Null for system-wide incidents
   
   // Incident Details
-  incidentType: pgEnum("incident_type", [
-    "unauthorized_access",
-    "data_breach",
-    "account_takeover",
-    "brute_force_attack",
-    "suspicious_activity",
-    "malware_detected",
-    "dos_attack",
-    "other"
-  ]),
+  incidentType: varchar("incident_type", { length: 50 }),
   
   // Severity
-  severity: pgEnum("severity", ["low", "medium", "high", "critical"]),
+  severity: varchar("severity", { length: 50 }),
   
   // Description
   description: text("description"),
@@ -213,13 +195,7 @@ export const securityIncidents = pgTable("security_incidents", {
   detectionMethod: varchar("detection_method", { length: 255 }),
   
   // Status
-  status: pgEnum("status", [
-    "detected",
-    "investigating",
-    "contained",
-    "resolved",
-    "false_positive"
-  ]),
+  status: varchar("status", { length: 50 }),
   
   // Response
   responseActions: text("response_actions"), // JSON: actions taken
@@ -301,7 +277,7 @@ export const rateLimits = pgTable("rate_limits", {
   
   // Identifier (user ID, IP, API key)
   identifier: varchar("identifier", { length: 255 }).notNull(),
-  identifierType: pgEnum("identifier_type", ["user_id", "ip_address", "api_key"]),
+  identifierType: varchar("identifier_type", { length: 50 }),
   
   // Endpoint
   endpoint: varchar("endpoint", { length: 500 }),
@@ -334,7 +310,7 @@ export const dataAccessLogs = pgTable("data_access_logs", {
   
   // Who accessed
   accessedBy: varchar("accessed_by", { length: 255 }).notNull(),
-  accessedByType: pgEnum("accessed_by_type", ["user", "admin", "system", "api"]),
+  accessedByType: varchar("accessed_by_type", { length: 50 }),
   
   // What was accessed
   dataType: varchar("data_type", { length: 100 }).notNull(),
@@ -359,14 +335,14 @@ export const encryptionKeys = pgTable("encryption_keys", {
   
   // Key Details
   keyId: varchar("key_id", { length: 255 }).notNull().unique(),
-  keyType: pgEnum("key_type", ["master", "data", "session"]),
+  keyType: varchar("key_type", { length: 50 }),
   algorithm: varchar("algorithm", { length: 100 }).notNull(),
   
   // Status
   active: boolean("active").default(true),
   
   // Rotation
-  rotationSchedule: pgEnum("rotation_schedule", ["never", "monthly", "quarterly", "yearly"]),
+  rotationSchedule: varchar("rotation_schedule", { length: 50 }),
   lastRotatedAt: timestamp("last_rotated_at"),
   nextRotationAt: timestamp("next_rotation_at"),
   
@@ -379,12 +355,12 @@ export const complianceReports = pgTable("compliance_reports", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Report Details
-  reportType: pgEnum("report_type", ["gdpr", "hipaa", "soc2", "iso27001", "custom"]),
+  reportType: varchar("report_type", { length: 50 }),
   reportPeriodStart: timestamp("report_period_start").notNull(),
   reportPeriodEnd: timestamp("report_period_end").notNull(),
   
   // Status
-  status: pgEnum("status", ["generating", "completed", "failed"]),
+  status: varchar("status", { length: 50 }),
   
   // Findings
   findings: text("findings"), // JSON: compliance findings
@@ -404,18 +380,10 @@ export const securityAlerts = pgTable("security_alerts", {
   userId: varchar("user_id", { length: 255 }),
   
   // Alert Details
-  alertType: pgEnum("alert_type", [
-    "new_login",
-    "new_device",
-    "password_changed",
-    "mfa_disabled",
-    "suspicious_activity",
-    "data_export",
-    "settings_changed"
-  ]),
+  alertType: varchar("alert_type", { length: 50 }),
   
   // Severity
-  severity: pgEnum("severity", ["info", "warning", "critical"]),
+  severity: varchar("severity", { length: 50 }),
   
   // Message
   message: text("message"),
@@ -439,7 +407,7 @@ export const trustedDevices = pgTable("trusted_devices", {
   // Device Details
   deviceId: varchar("device_id", { length: 255 }).notNull(),
   deviceName: varchar("device_name", { length: 255 }),
-  deviceType: pgEnum("device_type", ["desktop", "mobile", "tablet"]),
+  deviceType: varchar("device_type", { length: 50 }),
   
   // Fingerprint
   deviceFingerprint: varchar("device_fingerprint", { length: 500 }),

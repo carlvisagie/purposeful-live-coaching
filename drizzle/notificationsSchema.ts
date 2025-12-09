@@ -35,7 +35,7 @@
  * - Personalizes frequency & channels
  */
 
-import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Notification Profiles
 export const notificationProfiles = pgTable("notification_profiles", {
@@ -79,17 +79,7 @@ export const notificationPreferences = pgTable("notification_preferences", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Notification Type
-  notificationType: pgEnum("notification_type", [
-    "habit_reminder",
-    "goal_reminder",
-    "task_reminder",
-    "encouragement",
-    "celebration",
-    "insight",
-    "alert",
-    "social",
-    "system"
-  ]),
+  notificationType: varchar("notification_type", { length: 50 }),
   
   // Enabled
   enabled: boolean("enabled").default(true),
@@ -101,7 +91,7 @@ export const notificationPreferences = pgTable("notification_preferences", {
   inAppEnabled: boolean("in_app_enabled").default(true),
   
   // Frequency
-  frequency: pgEnum("frequency", ["realtime", "daily_digest", "weekly_digest", "never"]),
+  frequency: varchar("frequency", { length: 50 }),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -114,17 +104,7 @@ export const notifications = pgTable("notifications", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Notification Details
-  notificationType: pgEnum("notification_type", [
-    "habit_reminder",
-    "goal_reminder",
-    "task_reminder",
-    "encouragement",
-    "celebration",
-    "insight",
-    "alert",
-    "social",
-    "system"
-  ]),
+  notificationType: varchar("notification_type", { length: 50 }),
   
   // Content
   title: varchar("title", { length: 255 }).notNull(),
@@ -135,7 +115,7 @@ export const notifications = pgTable("notifications", {
   actionText: varchar("action_text", { length: 100 }), // Button text
   
   // Priority
-  priority: pgEnum("priority", ["low", "medium", "high", "urgent"]),
+  priority: varchar("priority", { length: 50 }),
   
   // Delivery
   channels: text("channels"), // JSON: which channels to use
@@ -144,14 +124,7 @@ export const notifications = pgTable("notifications", {
   scheduledFor: timestamp("scheduled_for"),
   
   // Status
-  status: pgEnum("status", [
-    "pending",
-    "scheduled",
-    "sent",
-    "delivered",
-    "failed",
-    "cancelled"
-  ]),
+  status: varchar("status", { length: 50 }),
   
   // Delivery Tracking
   sentAt: timestamp("sent_at"),
@@ -186,14 +159,7 @@ export const reminders = pgTable("reminders", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Reminder Details
-  reminderType: pgEnum("reminder_type", [
-    "habit",
-    "goal",
-    "task",
-    "medication",
-    "appointment",
-    "custom"
-  ]),
+  reminderType: varchar("reminder_type", { length: 50 }),
   
   // Content
   title: varchar("title", { length: 255 }).notNull(),
@@ -204,13 +170,7 @@ export const reminders = pgTable("reminders", {
   relatedType: varchar("related_type", { length: 100 }),
   
   // Schedule
-  scheduleType: pgEnum("schedule_type", [
-    "once", // One-time reminder
-    "daily", // Every day
-    "weekly", // Specific days of week
-    "monthly", // Specific day of month
-    "custom" // Custom recurrence
-  ]),
+  scheduleType: varchar("schedule_type", { length: 50 }),
   
   // Timing
   reminderTime: varchar("reminder_time", { length: 10 }), // "14:30"
@@ -253,14 +213,7 @@ export const reminderOccurrences = pgTable("reminder_occurrences", {
   scheduledFor: timestamp("scheduled_for").notNull(),
   
   // Status
-  status: pgEnum("status", [
-    "pending",
-    "sent",
-    "completed",
-    "snoozed",
-    "missed",
-    "cancelled"
-  ]),
+  status: varchar("status", { length: 50 }),
   
   // Snooze
   snoozedUntil: timestamp("snoozed_until"),
@@ -283,7 +236,7 @@ export const notificationBatches = pgTable("notification_batches", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Batch Details
-  batchType: pgEnum("batch_type", ["daily_digest", "weekly_digest", "smart_batch"]),
+  batchType: varchar("batch_type", { length: 50 }),
   
   // Content
   title: varchar("title", { length: 255 }).notNull(),
@@ -297,7 +250,7 @@ export const notificationBatches = pgTable("notification_batches", {
   sentAt: timestamp("sent_at"),
   
   // Status
-  status: pgEnum("status", ["pending", "sent", "failed"]),
+  status: varchar("status", { length: 50 }),
   
   createdAt: timestamp("created_at").defaultNow(),
 });
@@ -309,7 +262,7 @@ export const pushTokens = pgTable("push_tokens", {
   
   // Token Details
   token: varchar("token", { length: 500 }).notNull(),
-  platform: pgEnum("platform", ["ios", "android", "web"]),
+  platform: varchar("platform", { length: 50 }),
   
   // Device Info
   deviceId: varchar("device_id", { length: 255 }),
@@ -340,10 +293,10 @@ export const emailQueue = pgTable("email_queue", {
   bodyHtml: text("body_html"),
   
   // Priority
-  priority: pgEnum("priority", ["low", "medium", "high"]),
+  priority: varchar("priority", { length: 50 }),
   
   // Status
-  status: pgEnum("status", ["pending", "sending", "sent", "failed"]),
+  status: varchar("status", { length: 50 }),
   
   // Delivery
   sentAt: timestamp("sent_at"),
@@ -374,7 +327,7 @@ export const smsQueue = pgTable("sms_queue", {
   message: text("message").notNull(),
   
   // Status
-  status: pgEnum("status", ["pending", "sending", "sent", "failed"]),
+  status: varchar("status", { length: 50 }),
   
   // Delivery
   sentAt: timestamp("sent_at"),
@@ -432,14 +385,7 @@ export const userNotificationFeedback = pgTable("user_notification_feedback", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Feedback Type
-  feedbackType: pgEnum("feedback_type", [
-    "helpful",
-    "not_helpful",
-    "too_frequent",
-    "wrong_time",
-    "irrelevant",
-    "perfect"
-  ]),
+  feedbackType: varchar("feedback_type", { length: 50 }),
   
   // Details
   feedbackText: text("feedback_text"),

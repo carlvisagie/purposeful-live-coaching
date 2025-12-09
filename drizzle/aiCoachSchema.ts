@@ -36,7 +36,7 @@
  * - Personalizes recommendation types
  */
 
-import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // AI Coach Profiles
 export const aiCoachProfiles = pgTable("ai_coach_profiles", {
@@ -44,23 +44,12 @@ export const aiCoachProfiles = pgTable("ai_coach_profiles", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Coaching Preferences
-  preferredCoachingStyle: pgEnum("preferred_coaching_style", [
-    "motivational", // Motivational Interviewing
-    "socratic", // Questioning approach
-    "solution_focused", // Build on strengths
-    "cognitive_behavioral", // Challenge thinking
-    "directive", // Clear instructions
-    "mixed" // Adaptive
-  ]),
+  preferredCoachingStyle: varchar("preferred_coaching_style", { length: 50 }),
   
   // Communication Preferences
-  preferredTone: pgEnum("preferred_tone", [
-    "supportive",
-    "challenging",
-    "balanced"
-  ]),
+  preferredTone: varchar("preferred_tone", { length: 50 }),
   
-  verbosity: pgEnum("verbosity", ["concise", "moderate", "detailed"]),
+  verbosity: varchar("verbosity", { length: 50 }),
   
   // Interaction Preferences
   proactiveCheckins: boolean("proactive_checkins").default(true),
@@ -93,19 +82,10 @@ export const coachingConversations = pgTable("coaching_conversations", {
   conversationTitle: varchar("conversation_title", { length: 255 }),
   
   // Conversation Type
-  conversationType: pgEnum("conversation_type", [
-    "check_in", // Daily/weekly check-in
-    "goal_setting", // Setting new goals
-    "obstacle_solving", // Working through challenges
-    "reflection", // Reflecting on progress
-    "crisis_support", // Immediate support needed
-    "celebration", // Celebrating wins
-    "exploration", // Exploring options
-    "accountability" // Accountability conversation
-  ]),
+  conversationType: varchar("conversation_type", { length: 50 }),
   
   // Status
-  status: pgEnum("status", ["active", "paused", "completed"]),
+  status: varchar("status", { length: 50 }),
   
   // Outcomes
   insightsGenerated: integer("insights_generated").default(0),
@@ -128,33 +108,14 @@ export const conversationMessages = pgTable("conversation_messages", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Message Details
-  sender: pgEnum("sender", ["user", "ai_coach"]),
+  sender: varchar("sender", { length: 50 }),
   messageText: text("message_text").notNull(),
   
   // Message Type (for AI messages)
-  messageType: pgEnum("message_type", [
-    "question", // Asking a question
-    "reflection", // Reflecting back what user said
-    "insight", // Offering an insight
-    "suggestion", // Making a suggestion
-    "encouragement", // Providing encouragement
-    "challenge", // Challenging user's thinking
-    "information", // Providing information
-    "summary" // Summarizing conversation
-  ]),
+  messageType: varchar("message_type", { length: 50 }),
   
   // Coaching Technique Used
-  coachingTechnique: pgEnum("coaching_technique", [
-    "open_question",
-    "scaling_question",
-    "miracle_question",
-    "exception_finding",
-    "reframing",
-    "socratic_questioning",
-    "motivational_interviewing",
-    "cognitive_restructuring",
-    "strengths_identification"
-  ]),
+  coachingTechnique: varchar("coaching_technique", { length: 50 }),
   
   // Context
   contextData: text("context_data"), // JSON: relevant user data that informed this message
@@ -175,18 +136,7 @@ export const coachingQuestions = pgTable("coaching_questions", {
   questionText: text("question_text").notNull(),
   
   // Question Type
-  questionType: pgEnum("question_type", [
-    "open_ended", // "What do you think about...?"
-    "scaling", // "On a scale of 1-10..."
-    "miracle", // "If a miracle happened..."
-    "exception", // "When has this NOT been a problem?"
-    "coping", // "How have you managed so far?"
-    "values", // "What matters most to you?"
-    "strengths", // "What are you good at?"
-    "future_focused", // "Where do you want to be?"
-    "clarifying", // "Can you tell me more about...?"
-    "challenging" // "Is that really true?"
-  ]),
+  questionType: varchar("question_type", { length: 50 }),
   
   // Category
   category: varchar("category", { length: 100 }),
@@ -215,15 +165,7 @@ export const aiRecommendations = pgTable("ai_recommendations", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Recommendation Type
-  recommendationType: pgEnum("recommendation_type", [
-    "habit_suggestion", // Try this habit
-    "goal_suggestion", // Consider this goal
-    "intervention_suggestion", // Use this technique
-    "resource_suggestion", // Check out this resource
-    "adjustment_suggestion", // Adjust your approach
-    "timing_suggestion", // Change when you do X
-    "connection_suggestion" // Connect with someone
-  ]),
+  recommendationType: varchar("recommendation_type", { length: 50 }),
   
   // Content
   title: varchar("title", { length: 255 }).notNull(),
@@ -237,10 +179,10 @@ export const aiRecommendations = pgTable("ai_recommendations", {
   confidence: decimal("confidence", { precision: 5, scale: 2 }), // %
   
   // Priority
-  priority: pgEnum("priority", ["low", "medium", "high", "urgent"]),
+  priority: varchar("priority", { length: 50 }),
   
   // Status
-  status: pgEnum("status", ["pending", "accepted", "declined", "deferred"]),
+  status: varchar("status", { length: 50 }),
   
   // User Response
   userFeedback: text("user_feedback"),
@@ -262,27 +204,10 @@ export const proactiveCheckIns = pgTable("proactive_check_ins", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Check-In Type
-  checkInType: pgEnum("check_in_type", [
-    "daily_check_in", // How's your day?
-    "weekly_review", // How was your week?
-    "goal_progress", // How's goal X going?
-    "habit_check", // Still doing habit X?
-    "wellness_check", // How are you feeling?
-    "obstacle_check", // Still struggling with X?
-    "celebration", // Congrats on X!
-    "motivation_boost" // Need a boost?
-  ]),
+  checkInType: varchar("check_in_type", { length: 50 }),
   
   // Trigger
-  triggerType: pgEnum("trigger_type", [
-    "scheduled", // Regular schedule
-    "pattern_detected", // AI noticed something
-    "goal_milestone", // Close to goal
-    "streak_at_risk", // About to lose streak
-    "low_engagement", // Haven't logged in
-    "stress_spike", // High stress detected
-    "achievement" // Something to celebrate
-  ]),
+  triggerType: varchar("trigger_type", { length: 50 }),
   
   // Message
   message: text("message"),
@@ -290,7 +215,7 @@ export const proactiveCheckIns = pgTable("proactive_check_ins", {
   // Response
   responded: boolean("responded").default(false),
   respondedAt: timestamp("responded_at"),
-  responseQuality: pgEnum("response_quality", ["brief", "engaged", "insightful"]),
+  responseQuality: varchar("response_quality", { length: 50 }),
   
   // Effectiveness
   helpful: boolean("helpful"),
@@ -305,16 +230,7 @@ export const coachingInsights = pgTable("coaching_insights", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Insight Type
-  insightType: pgEnum("insight_type", [
-    "pattern_recognition", // "I notice you always..."
-    "strength_identification", // "You're really good at..."
-    "blind_spot", // "You might not realize..."
-    "opportunity", // "Have you considered..."
-    "risk_alert", // "I'm concerned about..."
-    "progress_highlight", // "Look how far you've come..."
-    "connection", // "X seems related to Y..."
-    "discrepancy" // "You say X but do Y..."
-  ]),
+  insightType: varchar("insight_type", { length: 50 }),
   
   // Content
   title: varchar("title", { length: 255 }).notNull(),
@@ -398,16 +314,7 @@ export const aiCoachFeedback = pgTable("ai_coach_feedback", {
   messageId: varchar("message_id", { length: 255 }),
   
   // Feedback Type
-  feedbackType: pgEnum("feedback_type", [
-    "helpful",
-    "not_helpful",
-    "too_pushy",
-    "too_passive",
-    "off_topic",
-    "insightful",
-    "generic",
-    "perfect"
-  ]),
+  feedbackType: varchar("feedback_type", { length: 50 }),
   
   // Details
   feedbackText: text("feedback_text"),
@@ -427,16 +334,7 @@ export const coachingResources = pgTable("coaching_resources", {
   description: text("description"),
   
   // Resource Type
-  resourceType: pgEnum("resource_type", [
-    "article",
-    "video",
-    "exercise",
-    "worksheet",
-    "book",
-    "podcast",
-    "course",
-    "tool"
-  ]),
+  resourceType: varchar("resource_type", { length: 50 }),
   
   // URL
   url: varchar("url", { length: 500 }),

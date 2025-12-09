@@ -4,7 +4,7 @@
  * Research sources: Stanford Career Development, Positive Psychology, Purpose Research (Damon, Bronk)
  */
 
-import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Career Profiles
 export const careerProfiles = pgTable("career_profiles", {
@@ -12,31 +12,14 @@ export const careerProfiles = pgTable("career_profiles", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Current Status
-  employmentStatus: pgEnum("employment_status", [
-    "employed_full_time",
-    "employed_part_time",
-    "self_employed",
-    "unemployed",
-    "student",
-    "career_transition",
-    "retired"
-  ]),
+  employmentStatus: varchar("employment_status", { length: 50 }),
   
   currentRole: varchar("current_role", { length: 255 }),
   currentIndustry: varchar("current_industry", { length: 255 }),
   yearsExperience: integer("years_experience"),
   
   // Career Goals
-  primaryGoal: pgEnum("primary_goal", [
-    "find_first_job",
-    "career_change",
-    "advancement",
-    "entrepreneurship",
-    "find_purpose",
-    "work_life_balance",
-    "skill_development",
-    "leadership_role"
-  ]),
+  primaryGoal: varchar("primary_goal", { length: 50 }),
   
   targetRole: varchar("target_role", { length: 255 }),
   targetIndustry: varchar("target_industry", { length: 255 }),
@@ -71,16 +54,7 @@ export const jobSearchActivities = pgTable("job_search_activities", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   activityDate: timestamp("activity_date").notNull(),
   
-  activityType: pgEnum("activity_type", [
-    "application_submitted",
-    "networking_event",
-    "informational_interview",
-    "phone_screen",
-    "interview",
-    "follow_up",
-    "offer_received",
-    "rejection"
-  ]),
+  activityType: varchar("activity_type", { length: 50 }),
   
   // Job Details
   companyName: varchar("company_name", { length: 255 }),
@@ -92,12 +66,12 @@ export const jobSearchActivities = pgTable("job_search_activities", {
   referralSource: varchar("referral_source", { length: 255 }),
   
   // Interview Details
-  interviewType: pgEnum("interview_type", ["phone", "video", "in_person", "panel", "technical"]),
+  interviewType: varchar("interview_type", { length: 50 }),
   interviewRound: integer("interview_round"),
   interviewNotes: text("interview_notes"),
   
   // Outcome
-  status: pgEnum("status", ["pending", "interviewing", "offered", "rejected", "accepted", "declined"]),
+  status: varchar("status", { length: 50 }),
   
   // Follow-up
   nextSteps: text("next_steps"),
@@ -120,7 +94,7 @@ export const networkingContacts = pgTable("networking_contacts", {
   
   // Connection
   howMet: text("how_met"),
-  connectionStrength: pgEnum("connection_strength", ["weak", "moderate", "strong"]),
+  connectionStrength: varchar("connection_strength", { length: 50 }),
   
   // Contact Details
   email: varchar("email", { length: 255 }),
@@ -129,7 +103,7 @@ export const networkingContacts = pgTable("networking_contacts", {
   
   // Relationship
   lastContact: timestamp("last_contact"),
-  contactFrequency: pgEnum("contact_frequency", ["monthly", "quarterly", "yearly", "as_needed"]),
+  contactFrequency: varchar("contact_frequency", { length: 50 }),
   
   // Value Exchange
   howTheyCanHelp: text("how_they_can_help"),
@@ -149,11 +123,11 @@ export const skillDevelopment = pgTable("skill_development", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   skillName: varchar("skill_name", { length: 255 }).notNull(),
-  skillCategory: pgEnum("skill_category", ["technical", "soft_skill", "leadership", "industry_specific"]),
+  skillCategory: varchar("skill_category", { length: 50 }),
   
   // Current Level
-  currentLevel: pgEnum("current_level", ["beginner", "intermediate", "advanced", "expert"]),
-  targetLevel: pgEnum("target_level", ["beginner", "intermediate", "advanced", "expert"]),
+  currentLevel: varchar("current_level", { length: 50 }),
+  targetLevel: varchar("target_level", { length: 50 }),
   
   // Learning Plan
   learningResources: text("learning_resources"), // JSON array: [{type, name, url, cost}]
@@ -172,7 +146,7 @@ export const skillDevelopment = pgTable("skill_development", {
   targetCompletionDate: timestamp("target_completion_date"),
   completionDate: timestamp("completion_date"),
   
-  status: pgEnum("status", ["not_started", "in_progress", "completed", "on_hold"]),
+  status: varchar("status", { length: 50 }),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -186,15 +160,7 @@ export const purposeActivities = pgTable("purpose_activities", {
   activityDate: timestamp("activity_date").notNull(),
   
   // Activity Type (evidence-based purpose discovery methods)
-  activityType: pgEnum("activity_type", [
-    "values_clarification",
-    "life_review",
-    "peak_experiences",
-    "ideal_day_visualization",
-    "legacy_reflection",
-    "contribution_mapping",
-    "meaning_making"
-  ]),
+  activityType: varchar("activity_type", { length: 50 }),
   
   // Reflections
   insights: text("insights"),
@@ -219,15 +185,7 @@ export const careerExperiments = pgTable("career_experiments", {
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  experimentType: pgEnum("experiment_type", [
-    "informational_interview",
-    "job_shadowing",
-    "freelance_project",
-    "volunteer_work",
-    "side_project",
-    "online_course",
-    "industry_event"
-  ]),
+  experimentType: varchar("experiment_type", { length: 50 }),
   
   experimentName: varchar("experiment_name", { length: 255 }).notNull(),
   description: text("description"),
@@ -249,7 +207,7 @@ export const careerExperiments = pgTable("career_experiments", {
   conclusion: text("conclusion"),
   nextSteps: text("next_steps"),
   
-  status: pgEnum("status", ["planned", "in_progress", "completed"]),
+  status: varchar("status", { length: 50 }),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -261,16 +219,7 @@ export const careerMilestones = pgTable("career_milestones", {
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  milestoneType: pgEnum("milestone_type", [
-    "job_offer",
-    "promotion",
-    "skill_mastery",
-    "certification",
-    "project_completion",
-    "network_milestone",
-    "business_launch",
-    "revenue_milestone"
-  ]),
+  milestoneType: varchar("milestone_type", { length: 50 }),
   
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
@@ -279,7 +228,7 @@ export const careerMilestones = pgTable("career_milestones", {
   achievedDate: timestamp("achieved_date"),
   
   progress: integer("progress"), // 0-100%
-  status: pgEnum("status", ["not_started", "in_progress", "achieved"]),
+  status: varchar("status", { length: 50 }),
   
   impact: text("impact"), // How did this move you toward your purpose?
   

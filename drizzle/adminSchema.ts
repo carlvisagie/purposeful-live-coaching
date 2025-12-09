@@ -26,7 +26,7 @@
  * - Bug reporting
  */
 
-import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Admin Users
 export const adminUsers = pgTable("admin_users", {
@@ -34,14 +34,7 @@ export const adminUsers = pgTable("admin_users", {
   userId: varchar("user_id", { length: 255 }).notNull().unique(),
   
   // Role
-  role: pgEnum("role", [
-    "super_admin",
-    "admin",
-    "moderator",
-    "support_agent",
-    "analyst",
-    "developer"
-  ]),
+  role: varchar("role", { length: 50 }),
   
   // Permissions
   permissions: text("permissions"), // JSON: specific permissions
@@ -63,14 +56,7 @@ export const adminActions = pgTable("admin_actions", {
   
   // Action Details
   actionType: varchar("action_type", { length: 100 }).notNull(),
-  actionCategory: pgEnum("action_category", [
-    "user_management",
-    "content_moderation",
-    "system_configuration",
-    "data_access",
-    "support",
-    "security"
-  ]),
+  actionCategory: varchar("action_category", { length: 50 }),
   
   // Target
   targetType: varchar("target_type", { length: 100 }),
@@ -97,30 +83,13 @@ export const supportTickets = pgTable("support_tickets", {
   description: text("description"),
   
   // Category
-  category: pgEnum("category", [
-    "technical_issue",
-    "billing",
-    "feature_request",
-    "bug_report",
-    "account_issue",
-    "data_privacy",
-    "general_inquiry",
-    "other"
-  ]),
+  category: varchar("category", { length: 50 }),
   
   // Priority
-  priority: pgEnum("priority", ["low", "medium", "high", "urgent"]),
+  priority: varchar("priority", { length: 50 }),
   
   // Status
-  status: pgEnum("status", [
-    "new",
-    "open",
-    "in_progress",
-    "waiting_on_user",
-    "waiting_on_team",
-    "resolved",
-    "closed"
-  ]),
+  status: varchar("status", { length: 50 }),
   
   // Assignment
   assignedTo: varchar("assigned_to", { length: 255 }),
@@ -153,7 +122,7 @@ export const ticketMessages = pgTable("ticket_messages", {
   
   // Sender
   senderId: varchar("sender_id", { length: 255 }).notNull(),
-  senderType: pgEnum("sender_type", ["user", "admin", "system"]),
+  senderType: varchar("sender_type", { length: 50 }),
   
   // Message
   message: text("message").notNull(),
@@ -185,7 +154,7 @@ export const knowledgeBaseArticles = pgTable("knowledge_base_articles", {
   metaDescription: text("meta_description"),
   
   // Status
-  status: pgEnum("status", ["draft", "published", "archived"]),
+  status: varchar("status", { length: 50 }),
   
   // Author
   authorId: varchar("author_id", { length: 255 }),
@@ -225,13 +194,7 @@ export const userFeedback = pgTable("user_feedback", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Feedback Type
-  feedbackType: pgEnum("feedback_type", [
-    "feature_request",
-    "bug_report",
-    "general_feedback",
-    "complaint",
-    "praise"
-  ]),
+  feedbackType: varchar("feedback_type", { length: 50 }),
   
   // Content
   title: varchar("title", { length: 500 }),
@@ -245,14 +208,7 @@ export const userFeedback = pgTable("user_feedback", {
   attachments: text("attachments"), // JSON: screenshots, etc.
   
   // Status
-  status: pgEnum("status", [
-    "new",
-    "under_review",
-    "planned",
-    "in_progress",
-    "completed",
-    "declined"
-  ]),
+  status: varchar("status", { length: 50 }),
   
   // Votes
   upvotes: integer("upvotes").default(0),
@@ -278,7 +234,7 @@ export const bugReports = pgTable("bug_reports", {
   actualBehavior: text("actual_behavior"),
   
   // Severity
-  severity: pgEnum("severity", ["low", "medium", "high", "critical"]),
+  severity: varchar("severity", { length: 50 }),
   
   // Environment
   browser: varchar("browser", { length: 100 }),
@@ -290,14 +246,7 @@ export const bugReports = pgTable("bug_reports", {
   logs: text("logs"),
   
   // Status
-  status: pgEnum("status", [
-    "new",
-    "confirmed",
-    "in_progress",
-    "fixed",
-    "cannot_reproduce",
-    "wont_fix"
-  ]),
+  status: varchar("status", { length: 50 }),
   
   // Assignment
   assignedTo: varchar("assigned_to", { length: 255 }),
@@ -347,19 +296,13 @@ export const systemAnnouncements = pgTable("system_announcements", {
   message: text("message").notNull(),
   
   // Type
-  announcementType: pgEnum("announcement_type", [
-    "maintenance",
-    "new_feature",
-    "update",
-    "alert",
-    "info"
-  ]),
+  announcementType: varchar("announcement_type", { length: 50 }),
   
   // Severity
-  severity: pgEnum("severity", ["info", "warning", "critical"]),
+  severity: varchar("severity", { length: 50 }),
   
   // Visibility
-  targetAudience: pgEnum("target_audience", ["all_users", "specific_users", "admins"]),
+  targetAudience: varchar("target_audience", { length: 50 }),
   targetUserIds: text("target_user_ids"), // JSON
   
   // Display
@@ -385,34 +328,15 @@ export const userReports = pgTable("user_reports", {
   reportedBy: varchar("reported_by", { length: 255 }).notNull(),
   
   // Reported Content
-  reportedType: pgEnum("reported_type", [
-    "user",
-    "post",
-    "comment",
-    "message",
-    "other"
-  ]),
+  reportedType: varchar("reported_type", { length: 50 }),
   reportedId: varchar("reported_id", { length: 255 }).notNull(),
   
   // Reason
-  reason: pgEnum("reason", [
-    "spam",
-    "harassment",
-    "inappropriate_content",
-    "misinformation",
-    "hate_speech",
-    "violence",
-    "other"
-  ]),
+  reason: varchar("reason", { length: 50 }),
   description: text("description"),
   
   // Status
-  status: pgEnum("status", [
-    "pending",
-    "under_review",
-    "action_taken",
-    "dismissed"
-  ]),
+  status: varchar("status", { length: 50 }),
   
   // Review
   reviewedBy: varchar("reviewed_by", { length: 255 }),
@@ -466,15 +390,7 @@ export const adminNotifications = pgTable("admin_notifications", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Notification Type
-  notificationType: pgEnum("notification_type", [
-    "new_ticket",
-    "urgent_ticket",
-    "security_alert",
-    "system_error",
-    "user_report",
-    "feature_request",
-    "bug_report"
-  ]),
+  notificationType: varchar("notification_type", { length: 50 }),
   
   // Content
   title: varchar("title", { length: 500 }).notNull(),
@@ -484,7 +400,7 @@ export const adminNotifications = pgTable("admin_notifications", {
   actionUrl: varchar("action_url", { length: 500 }),
   
   // Priority
-  priority: pgEnum("priority", ["low", "medium", "high", "urgent"]),
+  priority: varchar("priority", { length: 50 }),
   
   // Status
   read: boolean("read").default(false),

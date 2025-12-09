@@ -1,4 +1,4 @@
-import { int, integer, pgEnum, pgTable, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { int, integer, pgTable, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { clients } from "./schema";
 
 /**
@@ -62,7 +62,7 @@ export const clientPatterns = pgTable("clientPatterns", {
   relatedPatterns: text("relatedPatterns"), // JSON array of pattern IDs
   
   // Learning status
-  isValidated: pgEnum("isValidated", ["true", "false"]),
+  isValidated: varchar("isValidated", { length: 50 }),
   confidenceScore: integer("confidenceScore").default(50).notNull(),
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -86,13 +86,13 @@ export const recommendationFeedback = pgTable("recommendationFeedback", {
   context: text("context"), // What situation prompted this recommendation
   
   // Feedback
-  wasUsed: pgEnum("wasUsed", ["yes", "no"]),
-  wasHelpful: pgEnum("wasHelpful", ["yes", "no", "somewhat"]),
+  wasUsed: varchar("wasUsed", { length: 50 }),
+  wasHelpful: varchar("wasHelpful", { length: 50 }),
   rating: integer("rating"), // 1-10 scale
   feedbackNotes: text("feedbackNotes"),
   
   // Outcome tracking
-  problemResolved: pgEnum("problemResolved", ["yes", "no", "partially"]),
+  problemResolved: varchar("problemResolved", { length: 50 }),
   timeToResolution: integer("timeToResolution"), // minutes or hours
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -126,13 +126,13 @@ export const adaptiveOutcomeTracking = pgTable("adaptiveOutcomeTracking", {
   daysInCoaching: integer("daysInCoaching"),
   
   // Specific improvements
-  sleepImproved: pgEnum("sleepImproved", ["yes", "no", "unknown"]),
-  relationshipsImproved: pgEnum("relationshipsImproved", ["yes", "no", "unknown"]),
-  workPerformanceImproved: pgEnum("workPerformanceImproved", ["yes", "no", "unknown"]),
-  physicalHealthImproved: pgEnum("physicalHealthImproved", ["yes", "no", "unknown"]),
+  sleepImproved: varchar("sleepImproved", { length: 50 }),
+  relationshipsImproved: varchar("relationshipsImproved", { length: 50 }),
+  workPerformanceImproved: varchar("workPerformanceImproved", { length: 50 }),
+  physicalHealthImproved: varchar("physicalHealthImproved", { length: 50 }),
   
   // Attribution
-  attributedToCoaching: pgEnum("attributedToCoaching", ["yes", "no", "partially"]),
+  attributedToCoaching: varchar("attributedToCoaching", { length: 50 }),
   mostHelpfulAspect: text("mostHelpfulAspect"),
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -164,8 +164,8 @@ export const trendDetection = pgTable("trendDetection", {
   suggestedApproach: text("suggestedApproach"), // How to address this trend
   
   // Status
-  isActive: pgEnum("isActive", ["true", "false"]),
-  isAddressed: pgEnum("isAddressed", ["true", "false"]),
+  isActive: varchar("isActive", { length: 50 }),
+  isAddressed: varchar("isAddressed", { length: 50 }),
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
@@ -191,11 +191,11 @@ export const strategyAdjustments = pgTable("strategyAdjustments", {
   
   // Implementation
   implementedAt: timestamp("implementedAt").defaultNow().notNull(),
-  isActive: pgEnum("isActive", ["true", "false"]),
+  isActive: varchar("isActive", { length: 50 }),
   
   // Results
   measuredImprovement: text("measuredImprovement"), // JSON: Actual results
-  wasSuccessful: pgEnum("wasSuccessful", ["yes", "no", "unknown"]),
+  wasSuccessful: varchar("wasSuccessful", { length: 50 }),
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),

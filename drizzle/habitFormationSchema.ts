@@ -30,7 +30,7 @@
  * - Predicts habit sustainability based on patterns
  */
 
-import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Habit Profiles
 export const habitProfiles = pgTable("habit_profiles", {
@@ -43,7 +43,7 @@ export const habitProfiles = pgTable("habit_profiles", {
   longestStreak: integer("longest_streak").default(0),
   
   // Preferences
-  preferredHabitTime: pgEnum("preferred_habit_time", ["morning", "midday", "evening", "night", "flexible"]),
+  preferredHabitTime: varchar("preferred_habit_time", { length: 50 }),
   
   // Self-Learning Data
   mostSuccessfulCues: text("most_successful_cues"), // JSON: which cues lead to habit completion
@@ -68,27 +68,10 @@ export const habits = pgTable("habits", {
   identityStatement: varchar("identity_statement", { length: 255 }), // "I am a person who..."
   
   // Habit Type
-  habitType: pgEnum("habit_type", [
-    "build", // Building a new habit
-    "break", // Breaking a bad habit
-    "replace" // Replacing bad habit with good one
-  ]),
+  habitType: varchar("habit_type", { length: 50 }),
   
   // Category
-  category: pgEnum("category", [
-    "health",
-    "fitness",
-    "nutrition",
-    "sleep",
-    "mental_health",
-    "relationships",
-    "career",
-    "finance",
-    "learning",
-    "spiritual",
-    "productivity",
-    "other"
-  ]),
+  category: varchar("category", { length: 50 }),
   
   // Tiny Habits Method (BJ Fogg)
   tinyVersion: varchar("tiny_version", { length: 255 }), // Ridiculously small version
@@ -96,7 +79,7 @@ export const habits = pgTable("habits", {
   
   // Habit Loop (Charles Duhigg)
   cue: varchar("cue", { length: 255 }).notNull(), // What triggers the habit?
-  cueType: pgEnum("cue_type", ["time", "location", "preceding_action", "emotional_state", "other_people"]),
+  cueType: varchar("cue_type", { length: 50 }),
   routine: varchar("routine", { length: 255 }).notNull(), // The habit itself
   reward: varchar("reward", { length: 255 }), // What you get from it
   
@@ -111,13 +94,7 @@ export const habits = pgTable("habits", {
   environmentChanges: text("environment_changes"), // JSON: how to make it obvious/easy
   
   // Frequency
-  targetFrequency: pgEnum("target_frequency", [
-    "daily",
-    "weekdays",
-    "weekends",
-    "weekly",
-    "custom"
-  ]),
+  targetFrequency: varchar("target_frequency", { length: 50 }),
   customFrequency: text("custom_frequency"), // JSON: specific days
   
   // Duration
@@ -136,7 +113,7 @@ export const habits = pgTable("habits", {
   automaticityLevel: integer("automaticity_level"), // 1-10: How automatic is this habit?
   
   // Status
-  status: pgEnum("status", ["active", "paused", "mastered", "abandoned"]),
+  status: varchar("status", { length: 50 }),
   
   // Dates
   startDate: timestamp("start_date").notNull(),
@@ -201,16 +178,7 @@ export const languagePatterns = pgTable("language_patterns", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Pattern Type
-  patternType: pgEnum("pattern_type", [
-    "limiting_belief",
-    "empowering_belief",
-    "fixed_mindset",
-    "growth_mindset",
-    "victim_language",
-    "ownership_language",
-    "obligation_language", // "I have to"
-    "choice_language" // "I choose to"
-  ]),
+  patternType: varchar("pattern_type", { length: 50 }),
   
   // The Language
   originalStatement: text("original_statement"), // What you used to say
@@ -228,7 +196,7 @@ export const languagePatterns = pgTable("language_patterns", {
   impactOnBehavior: integer("impact_on_behavior"), // 1-10
   
   // Status
-  status: pgEnum("status", ["working_on", "integrated", "mastered"]),
+  status: varchar("status", { length: 50 }),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -270,20 +238,10 @@ export const habitObstacles = pgTable("habit_obstacles", {
   
   // Obstacle
   obstacleDescription: text("obstacle_description").notNull(),
-  obstacleType: pgEnum("obstacle_type", [
-    "time",
-    "energy",
-    "motivation",
-    "environment",
-    "other_people",
-    "self_doubt",
-    "competing_priority",
-    "physical_limitation",
-    "lack_of_skill"
-  ]),
+  obstacleType: varchar("obstacle_type", { length: 50 }),
   
   // Frequency
-  frequency: pgEnum("frequency", ["rare", "occasional", "frequent", "constant"]),
+  frequency: varchar("frequency", { length: 50 }),
   
   // Solution (Implementation Intention)
   ifThenPlan: text("if_then_plan"), // "If [obstacle], then I will [solution]"
@@ -305,13 +263,7 @@ export const habitMilestones = pgTable("habit_milestones", {
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  milestoneType: pgEnum("milestone_type", [
-    "first_completion",
-    "streak_milestone", // 7, 30, 60, 90, 365 days
-    "automaticity_achieved", // Habit feels automatic
-    "identity_shift", // "I am" statement feels true
-    "mastery" // Habit is fully integrated
-  ]),
+  milestoneType: varchar("milestone_type", { length: 50 }),
   
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
@@ -331,7 +283,7 @@ export const habitStacks = pgTable("habit_stacks", {
   description: text("description"),
   
   // When
-  timeOfDay: pgEnum("time_of_day", ["morning", "midday", "evening", "night"]),
+  timeOfDay: varchar("time_of_day", { length: 50 }),
   
   // Habits in Stack (ordered)
   habitSequence: text("habit_sequence"), // JSON array: ordered habit IDs

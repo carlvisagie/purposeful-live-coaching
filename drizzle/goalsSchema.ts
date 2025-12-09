@@ -35,7 +35,7 @@
  * - Suggests accountability mechanisms
  */
 
-import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Goal Profiles
 export const goalProfiles = pgTable("goal_profiles", {
@@ -49,13 +49,7 @@ export const goalProfiles = pgTable("goal_profiles", {
   achievementRate: decimal("achievement_rate", { precision: 5, scale: 2 }), // %
   
   // Goal-Setting Style
-  preferredFramework: pgEnum("preferred_framework", [
-    "smart",
-    "okr",
-    "woop",
-    "habit_based",
-    "identity_based"
-  ]),
+  preferredFramework: varchar("preferred_framework", { length: 50 }),
   
   // Optimal Parameters (Self-Learning)
   optimalGoalDifficulty: integer("optimal_goal_difficulty"), // 1-10
@@ -63,22 +57,11 @@ export const goalProfiles = pgTable("goal_profiles", {
   optimalGoalCount: integer("optimal_goal_count"), // How many concurrent goals?
   
   // Motivation Type
-  motivationType: pgEnum("motivation_type", [
-    "outcome_focused", // Wants the result
-    "process_focused", // Enjoys the journey
-    "identity_focused", // Wants to become someone
-    "mixed"
-  ]),
+  motivationType: varchar("motivation_type", { length: 50 }),
   
   // Accountability Preferences
   needsAccountability: boolean("needs_accountability").default(false),
-  preferredAccountabilityType: pgEnum("preferred_accountability_type", [
-    "self",
-    "partner",
-    "group",
-    "public",
-    "coach"
-  ]),
+  preferredAccountabilityType: varchar("preferred_accountability_type", { length: 50 }),
   
   // Success Patterns
   successPatterns: text("success_patterns"), // JSON: what leads to success for this user
@@ -99,17 +82,10 @@ export const goals = pgTable("goals", {
   description: text("description"),
   
   // Goal Type
-  goalType: pgEnum("goal_type", [
-    "outcome", // Achieve a specific result
-    "process", // Follow a specific process
-    "performance", // Meet a standard
-    "learning", // Acquire a skill
-    "avoidance", // Stop doing something
-    "identity" // Become a type of person
-  ]),
+  goalType: varchar("goal_type", { length: 50 }),
   
   // Framework
-  framework: pgEnum("framework", ["smart", "okr", "woop", "habit_based", "identity_based"]),
+  framework: varchar("framework", { length: 50 }),
   
   // SMART Criteria
   specific: boolean("specific").default(false), // Is it specific?
@@ -119,18 +95,7 @@ export const goals = pgTable("goals", {
   timeBound: boolean("time_bound").default(false), // Does it have a deadline?
   
   // Category
-  category: pgEnum("category", [
-    "health",
-    "fitness",
-    "career",
-    "financial",
-    "relationships",
-    "personal_growth",
-    "learning",
-    "creative",
-    "spiritual",
-    "other"
-  ]),
+  category: varchar("category", { length: 50 }),
   
   // Difficulty
   difficulty: integer("difficulty"), // 1-10
@@ -140,7 +105,7 @@ export const goals = pgTable("goals", {
   targetDate: timestamp("target_date"),
   
   // Measurement
-  metricType: pgEnum("metric_type", ["number", "percentage", "boolean", "custom"]),
+  metricType: varchar("metric_type", { length: 50 }),
   currentValue: decimal("current_value", { precision: 10, scale: 2 }),
   targetValue: decimal("target_value", { precision: 10, scale: 2 }),
   unit: varchar("unit", { length: 50 }), // kg, %, hours, etc.
@@ -149,18 +114,10 @@ export const goals = pgTable("goals", {
   progressPercent: decimal("progress_percent", { precision: 5, scale: 2 }), // 0-100
   
   // Status
-  status: pgEnum("status", [
-    "not_started",
-    "in_progress",
-    "on_track",
-    "at_risk",
-    "behind",
-    "achieved",
-    "abandoned"
-  ]),
+  status: varchar("status", { length: 50 }),
   
   // Priority
-  priority: pgEnum("priority", ["low", "medium", "high", "critical"]),
+  priority: varchar("priority", { length: 50 }),
   
   // Visibility
   isPublic: boolean("is_public").default(false), // Share with community?
@@ -188,7 +145,7 @@ export const okrs = pgTable("okrs", {
   objective: text("objective").notNull(),
   
   // Time Period
-  timePeriod: pgEnum("time_period", ["quarterly", "annual", "custom"]),
+  timePeriod: varchar("time_period", { length: 50 }),
   startDate: timestamp("start_date"),
   endDate: timestamp("end_date"),
   
@@ -196,7 +153,7 @@ export const okrs = pgTable("okrs", {
   overallProgress: decimal("overall_progress", { precision: 5, scale: 2 }), // 0-100
   
   // Status
-  status: pgEnum("status", ["not_started", "in_progress", "achieved", "abandoned"]),
+  status: varchar("status", { length: 50 }),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -220,7 +177,7 @@ export const keyResults = pgTable("key_results", {
   progressPercent: decimal("progress_percent", { precision: 5, scale: 2 }), // 0-100
   
   // Status
-  status: pgEnum("status", ["not_started", "in_progress", "achieved"]),
+  status: varchar("status", { length: 50 }),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -261,12 +218,7 @@ export const implementationIntentions = pgTable("implementation_intentions", {
   thenAction: text("then_action").notNull(), // Then I will [action]...
   
   // Type
-  intentionType: pgEnum("intention_type", [
-    "initiation", // When to start
-    "execution", // How to do it
-    "obstacle_management", // How to handle obstacles
-    "recovery" // How to get back on track
-  ]),
+  intentionType: varchar("intention_type", { length: 50 }),
   
   // Effectiveness
   timesTriggered: integer("times_triggered").default(0),
@@ -315,7 +267,7 @@ export const goalProgressLogs = pgTable("goal_progress_logs", {
   notes: text("notes"),
   
   // Momentum
-  momentum: pgEnum("momentum", ["accelerating", "steady", "slowing", "stalled"]),
+  momentum: varchar("momentum", { length: 50 }),
   
   logDate: timestamp("log_date").defaultNow(),
 });
@@ -331,13 +283,7 @@ export const goalObstacles = pgTable("goal_obstacles", {
   description: text("description"),
   
   // Type
-  obstacleType: pgEnum("obstacle_type", [
-    "internal", // Motivation, fear, habits
-    "external", // Time, money, resources
-    "skill", // Lack of knowledge/ability
-    "environmental", // Circumstances
-    "social" // Other people
-  ]),
+  obstacleType: varchar("obstacle_type", { length: 50 }),
   
   // Severity
   severity: integer("severity"), // 1-10
@@ -365,20 +311,13 @@ export const goalAccountability = pgTable("goal_accountability", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Accountability Type
-  accountabilityType: pgEnum("accountability_type", [
-    "self_tracking",
-    "accountability_partner",
-    "group",
-    "public_commitment",
-    "coach",
-    "financial_stake" // Put money on the line
-  ]),
+  accountabilityType: varchar("accountability_type", { length: 50 }),
   
   // Partner (if applicable)
   partnerId: varchar("partner_id", { length: 255 }),
   
   // Check-In Frequency
-  checkInFrequency: pgEnum("check_in_frequency", ["daily", "weekly", "biweekly", "monthly"]),
+  checkInFrequency: varchar("check_in_frequency", { length: 50 }),
   
   // Last Check-In
   lastCheckIn: timestamp("last_check_in"),
@@ -398,13 +337,7 @@ export const goalReflections = pgTable("goal_reflections", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Reflection Type
-  reflectionType: pgEnum("reflection_type", [
-    "weekly_review",
-    "monthly_review",
-    "achievement_reflection",
-    "obstacle_reflection",
-    "abandonment_reflection"
-  ]),
+  reflectionType: varchar("reflection_type", { length: 50 }),
   
   // Reflection Questions
   whatWorked: text("what_worked"),
@@ -426,12 +359,7 @@ export const goalPredictions = pgTable("goal_predictions", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Prediction Type
-  predictionType: pgEnum("prediction_type", [
-    "success_probability", // Will you achieve this goal?
-    "completion_date", // When will you achieve it?
-    "obstacle_likelihood", // What obstacles will you face?
-    "optimal_adjustment" // What should you change?
-  ]),
+  predictionType: varchar("prediction_type", { length: 50 }),
   
   // Prediction
   prediction: text("prediction"),

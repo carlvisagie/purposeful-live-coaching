@@ -4,7 +4,7 @@
  * Research sources: Search Institute (40 Developmental Assets), Big Brothers Big Sisters research, APA Guidelines for Boys and Men
  */
 
-import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Young Men Profiles
 export const youngMenProfiles = pgTable("young_men_profiles", {
@@ -14,9 +14,9 @@ export const youngMenProfiles = pgTable("young_men_profiles", {
   age: integer("age").notNull(),
   
   // Life Situation
-  livingSituation: pgEnum("living_situation", ["with_parents", "single_parent_home", "foster_care", "independent", "homeless", "other"]),
-  educationStatus: pgEnum("education_status", ["in_school", "dropped_out", "graduated_hs", "in_college", "working"]),
-  employmentStatus: pgEnum("employment_status", ["student", "employed", "unemployed", "seeking_work"]),
+  livingSituation: varchar("living_situation", { length: 50 }),
+  educationStatus: varchar("education_status", { length: 50 }),
+  employmentStatus: varchar("employment_status", { length: 50 }),
   
   // Role Model Situation
   hasFatherFigure: boolean("has_father_figure").default(false),
@@ -30,16 +30,7 @@ export const youngMenProfiles = pgTable("young_men_profiles", {
   primaryNeeds: text("primary_needs"), // JSON array: ["guidance", "emotional_support", "life_skills", "career_advice", etc.]
   
   // Goals
-  primaryGoal: pgEnum("primary_goal", [
-    "find_direction",
-    "build_confidence",
-    "learn_life_skills",
-    "career_guidance",
-    "emotional_regulation",
-    "healthy_relationships",
-    "financial_independence",
-    "overcome_trauma"
-  ]),
+  primaryGoal: varchar("primary_goal", { length: 50 }),
   
   specificGoals: text("specific_goals"), // JSON array
   
@@ -130,27 +121,16 @@ export const lifeSkillsDevelopment = pgTable("life_skills_development", {
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  skillCategory: pgEnum("skill_category", [
-    "financial_literacy",
-    "cooking_nutrition",
-    "personal_hygiene",
-    "home_maintenance",
-    "car_maintenance",
-    "time_management",
-    "communication",
-    "conflict_resolution",
-    "job_skills",
-    "emotional_regulation"
-  ]),
+  skillCategory: varchar("skill_category", { length: 50 }),
   
   skillName: varchar("skill_name", { length: 255 }).notNull(),
   
   // Current Level
-  currentLevel: pgEnum("current_level", ["none", "beginner", "intermediate", "proficient"]),
-  targetLevel: pgEnum("target_level", ["beginner", "intermediate", "proficient", "expert"]),
+  currentLevel: varchar("current_level", { length: 50 }),
+  targetLevel: varchar("target_level", { length: 50 }),
   
   // Learning Resources
-  learningMethod: pgEnum("learning_method", ["video_tutorial", "mentor_teaching", "practice", "course", "reading"]),
+  learningMethod: varchar("learning_method", { length: 50 }),
   resources: text("resources"), // JSON array
   
   // Practice Log
@@ -161,7 +141,7 @@ export const lifeSkillsDevelopment = pgTable("life_skills_development", {
   masteryAchieved: boolean("mastery_achieved").default(false),
   masteryDate: timestamp("mastery_date"),
   
-  status: pgEnum("status", ["not_started", "learning", "practicing", "mastered"]),
+  status: varchar("status", { length: 50 }),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -173,19 +153,14 @@ export const mentorshipConnections = pgTable("mentorship_connections", {
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  mentorType: pgEnum("mentor_type", [
-    "platform_mentor", // Matched through platform
-    "real_life_mentor", // External mentor they're tracking
-    "virtual_role_model", // Public figure they follow
-    "peer_mentor" // Older peer
-  ]),
+  mentorType: varchar("mentor_type", { length: 50 }),
   
   mentorName: varchar("mentor_name", { length: 255 }),
   mentorArea: varchar("mentor_area", { length: 255 }), // What they mentor in
   
   // Connection Details
   connectionDate: timestamp("connection_date"),
-  meetingFrequency: pgEnum("meeting_frequency", ["weekly", "biweekly", "monthly", "as_needed"]),
+  meetingFrequency: varchar("meeting_frequency", { length: 50 }),
   
   // Focus Areas
   focusAreas: text("focus_areas"), // JSON array
@@ -199,7 +174,7 @@ export const mentorshipConnections = pgTable("mentorship_connections", {
   impactRating: integer("impact_rating"), // 1-10
   keyLearnings: text("key_learnings"), // JSON array
   
-  status: pgEnum("status", ["active", "on_hold", "completed"]),
+  status: varchar("status", { length: 50 }),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -213,16 +188,7 @@ export const masculinityReflections = pgTable("masculinity_reflections", {
   reflectionDate: timestamp("reflection_date").notNull(),
   
   // Reflection Prompts (evidence-based)
-  promptType: pgEnum("prompt_type", [
-    "what_is_a_man", // Defining healthy masculinity
-    "role_models", // Who do you look up to and why?
-    "emotions", // How do you handle emotions?
-    "relationships", // How do you show care?
-    "strength", // What does strength mean?
-    "vulnerability", // When is it okay to be vulnerable?
-    "responsibility", // What are you responsible for?
-    "purpose" // What's your mission?
-  ]),
+  promptType: varchar("prompt_type", { length: 50 }),
   
   reflection: text("reflection").notNull(),
   
@@ -239,15 +205,7 @@ export const challengeCompletions = pgTable("challenge_completions", {
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  challengeCategory: pgEnum("challenge_category", [
-    "physical", // Fitness challenge
-    "mental", // Learning challenge
-    "emotional", // Vulnerability challenge
-    "social", // Connection challenge
-    "service", // Help others challenge
-    "financial", // Money management challenge
-    "creative" // Create something challenge
-  ]),
+  challengeCategory: varchar("challenge_category", { length: 50 }),
   
   challengeName: varchar("challenge_name", { length: 255 }).notNull(),
   description: text("description"),
@@ -263,7 +221,7 @@ export const challengeCompletions = pgTable("challenge_completions", {
   // Recognition
   badgeEarned: varchar("badge_earned", { length: 255 }),
   
-  status: pgEnum("status", ["in_progress", "completed", "abandoned"]),
+  status: varchar("status", { length: 50 }),
   
   createdAt: timestamp("created_at").defaultNow(),
 });
@@ -274,17 +232,7 @@ export const youngMenMilestones = pgTable("young_men_milestones", {
   profileId: varchar("profile_id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  milestoneType: pgEnum("milestone_type", [
-    "first_job",
-    "financial_independence",
-    "moved_out",
-    "graduated",
-    "learned_critical_skill",
-    "overcame_fear",
-    "helped_someone",
-    "found_purpose",
-    "built_discipline"
-  ]),
+  milestoneType: varchar("milestone_type", { length: 50 }),
   
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),

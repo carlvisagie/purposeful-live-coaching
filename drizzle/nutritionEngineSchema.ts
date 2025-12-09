@@ -10,7 +10,7 @@
  * - Adapts meal timing recommendations based on performance
  */
 
-import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Nutrition Profiles
 export const nutritionProfiles = pgTable("nutrition_profiles", {
@@ -23,31 +23,10 @@ export const nutritionProfiles = pgTable("nutrition_profiles", {
   height: integer("height"), // cm
   
   // Goals
-  primaryGoal: pgEnum("primary_goal", [
-    "lose_fat",
-    "build_muscle",
-    "maintain_weight",
-    "improve_health",
-    "increase_energy",
-    "gut_health",
-    "athletic_performance",
-    "disease_management"
-  ]),
+  primaryGoal: varchar("primary_goal", { length: 50 }),
   
   // Dietary Approach
-  dietaryApproach: pgEnum("dietary_approach", [
-    "balanced",
-    "low_carb",
-    "keto",
-    "paleo",
-    "vegan",
-    "vegetarian",
-    "mediterranean",
-    "intermittent_fasting",
-    "carnivore",
-    "whole30",
-    "flexible_dieting"
-  ]),
+  dietaryApproach: varchar("dietary_approach", { length: 50 }),
   
   // Restrictions & Allergies
   allergies: text("allergies"), // JSON array
@@ -88,14 +67,7 @@ export const meals = pgTable("meals", {
   mealDate: timestamp("meal_date").notNull(),
   
   // Meal Type
-  mealType: pgEnum("meal_type", [
-    "breakfast",
-    "lunch",
-    "dinner",
-    "snack",
-    "pre_workout",
-    "post_workout"
-  ]),
+  mealType: varchar("meal_type", { length: 50 }),
   
   // Foods
   foods: text("foods"), // JSON array: [{name, quantity, unit, calories, protein, carbs, fat}]
@@ -110,10 +82,10 @@ export const meals = pgTable("meals", {
   
   // Context
   location: varchar("location", { length: 255 }), // Home, restaurant, work, etc.
-  socialContext: pgEnum("social_context", ["alone", "family", "friends", "work"]),
+  socialContext: varchar("social_context", { length: 50 }),
   
   // Eating Behavior
-  eatingSpeed: pgEnum("eating_speed", ["slow", "moderate", "fast"]),
+  eatingSpeed: varchar("eating_speed", { length: 50 }),
   mindfulEating: boolean("mindful_eating"), // Were you present while eating?
   distractions: text("distractions"), // JSON: TV, phone, work, etc.
   
@@ -190,25 +162,15 @@ export const supplements = pgTable("supplements", {
   brand: varchar("brand", { length: 255 }),
   
   // Purpose
-  purpose: pgEnum("purpose", [
-    "vitamin_mineral", // General health
-    "protein", // Muscle building
-    "performance", // Pre-workout, creatine, etc.
-    "recovery", // Post-workout, sleep
-    "gut_health", // Probiotics, fiber
-    "cognitive", // Nootropics
-    "immune", // Vitamin C, zinc, etc.
-    "joint_health",
-    "other"
-  ]),
+  purpose: varchar("purpose", { length: 50 }),
   
   // Dosage
   dosage: varchar("dosage", { length: 255 }),
   unit: varchar("unit", { length: 50 }),
-  frequency: pgEnum("frequency", ["daily", "twice_daily", "as_needed", "weekly"]),
+  frequency: varchar("frequency", { length: 50 }),
   
   // Timing
-  timing: pgEnum("timing", ["morning", "afternoon", "evening", "with_meal", "before_bed", "pre_workout", "post_workout"]),
+  timing: varchar("timing", { length: 50 }),
   
   // Active
   active: boolean("active").default(true),
@@ -256,19 +218,11 @@ export const foodReactions = pgTable("food_reactions", {
   suspectedFood: varchar("suspected_food", { length: 255 }).notNull(),
   
   // Reaction Type
-  reactionType: pgEnum("reaction_type", [
-    "digestive", // Bloating, gas, diarrhea, constipation
-    "skin", // Rash, hives, eczema
-    "respiratory", // Congestion, asthma
-    "energy", // Fatigue, brain fog
-    "mood", // Anxiety, irritability
-    "headache",
-    "other"
-  ]),
+  reactionType: varchar("reaction_type", { length: 50 }),
   
   // Symptoms
   symptoms: text("symptoms"), // JSON array
-  severity: pgEnum("severity", ["mild", "moderate", "severe"]),
+  severity: varchar("severity", { length: 50 }),
   
   // Timing
   onsetTime: integer("onset_time"), // minutes after eating
@@ -296,7 +250,7 @@ export const hydrationLogs = pgTable("hydration_logs", {
   alcohol: integer("alcohol"), // standard drinks
   
   // Hydration Status
-  urineColor: pgEnum("urine_color", ["clear", "pale_yellow", "yellow", "dark_yellow", "amber"]), // Hydration indicator
+  urineColor: varchar("urine_color", { length: 50 }), // Hydration indicator
   
   // Symptoms
   headache: boolean("headache"),
@@ -342,15 +296,7 @@ export const nutritionExperiments = pgTable("nutrition_experiments", {
   experimentName: varchar("experiment_name", { length: 255 }).notNull(),
   
   // Type
-  experimentType: pgEnum("experiment_type", [
-    "elimination_diet", // Remove suspected trigger foods
-    "macro_cycling", // Vary macros by day
-    "meal_timing", // Change when you eat
-    "supplement_trial", // Test a new supplement
-    "food_introduction", // Reintroduce eliminated food
-    "calorie_cycling", // Vary calories by day
-    "other"
-  ]),
+  experimentType: varchar("experiment_type", { length: 50 }),
   
   // Hypothesis
   hypothesis: text("hypothesis"), // What do you expect to happen?
