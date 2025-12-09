@@ -59,8 +59,18 @@ export async function createConversation(data: InsertAiChatConversation) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
-  const [result] = await db.insert(aiChatConversations).values(data).returning();
-  return result.id;
+  try {
+    console.log('[createConversation] Inserting with data:', JSON.stringify(data));
+    const [result] = await db.insert(aiChatConversations).values(data).returning();
+    console.log('[createConversation] Result:', JSON.stringify(result));
+    if (!result || !result.id) {
+      throw new Error('Insert succeeded but no result returned');
+    }
+    return result.id;
+  } catch (error) {
+    console.error('[createConversation] Error:', error);
+    throw error;
+  }
 }
 
 /**
