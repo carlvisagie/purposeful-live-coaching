@@ -15,12 +15,12 @@ export const autismProfiles = pgTable("autismProfiles", {
   childName: varchar("childName", { length: 255 }).notNull(),
   dateOfBirth: timestamp("dateOfBirth").notNull(),
   diagnosisDate: timestamp("diagnosisDate"),
-  severity: pgEnum("severity", ["mild", "moderate", "severe"]).notNull(),
+  severity: pgEnum("severity", ["mild", "moderate", "severe"]),
   
   // Assessment Data
   atecScore: integer("atecScore"), // Autism Treatment Evaluation Checklist
   carsScore: integer("carsScore"), // Childhood Autism Rating Scale
-  communicationLevel: pgEnum("communicationLevel", ["nonverbal", "minimally_verbal", "verbal"]).notNull(),
+  communicationLevel: pgEnum("communicationLevel", ["nonverbal", "minimally_verbal", "verbal"]),
   
   // Symptoms & Challenges (stored as JSON text)
   giSymptoms: text("giSymptoms"), // JSON: ["constipation", "diarrhea", "pain"]
@@ -51,7 +51,7 @@ export const interventionPlans = pgTable("interventionPlans", {
   tier4Interventions: text("tier4Interventions"), // JSON: ["neurofeedback", "TMS_trial"]
   
   // Timeline & Providers
-  currentPhase: pgEnum("currentPhase", ["foundation", "biomedical", "behavioral", "advanced"]).notNull(),
+  currentPhase: pgEnum("currentPhase", ["foundation", "biomedical", "behavioral", "advanced"]),
   startDate: timestamp("startDate").notNull(),
   providerDirectory: text("providerDirectory"), // JSON: {"ABA": "provider_name", "OT": "provider_name"}
   
@@ -69,7 +69,7 @@ export const supplementTracking = pgTable("supplementTracking", {
   
   supplementName: varchar("supplementName", { length: 255 }).notNull(), // "Omega-3", "Vitamin D", "Methylcobalamin"
   dosage: varchar("dosage", { length: 255 }).notNull(), // "1000mg EPA+DHA", "300 IU/kg/day"
-  frequency: pgEnum("frequency", ["daily", "twice_daily", "every_3_days"]).notNull(),
+  frequency: pgEnum("frequency", ["daily", "twice_daily", "every_3_days"]),
   
   startDate: timestamp("startDate").notNull(),
   endDate: timestamp("endDate"),
@@ -91,7 +91,7 @@ export const dietaryInterventions = pgTable("dietaryInterventions", {
   id: serial("id").primaryKey(),
   profileId: integer("profileId").notNull().references(() => autismProfiles.id),
   
-  dietType: pgEnum("dietType", ["GFCF", "ketogenic", "SCD"]).notNull(),
+  dietType: pgEnum("dietType", ["GFCF", "ketogenic", "SCD"]),
   startDate: timestamp("startDate").notNull(),
   endDate: timestamp("endDate"),
   
@@ -112,7 +112,7 @@ export const therapySessions = pgTable("therapySessions", {
   id: serial("id").primaryKey(),
   profileId: integer("profileId").notNull().references(() => autismProfiles.id),
   
-  therapyType: pgEnum("therapyType", ["ABA", "OT", "speech", "Floortime", "neurofeedback"]).notNull(),
+  therapyType: pgEnum("therapyType", ["ABA", "OT", "speech", "Floortime", "neurofeedback"]),
   sessionDate: timestamp("sessionDate").notNull(),
   duration: integer("duration").notNull(), // Minutes
   
@@ -184,7 +184,7 @@ export type InsertAutismPatternDetection = typeof autismPatternDetection.$inferI
 export const autismProviders = pgTable("autismProviders", {
   id: serial("id").primaryKey(),
   
-  providerType: pgEnum("providerType", ["ABA", "OT", "speech", "FMT_clinic", "neurofeedback"]).notNull(),
+  providerType: pgEnum("providerType", ["ABA", "OT", "speech", "FMT_clinic", "neurofeedback"]),
   name: varchar("name", { length: 255 }).notNull(),
   location: varchar("location", { length: 255 }).notNull(), // City, State
   
@@ -198,7 +198,7 @@ export const autismProviders = pgTable("autismProviders", {
   reviewCount: integer("reviewCount"),
   
   // Insurance & Cost
-  acceptsInsurance: pgEnum("acceptsInsurance", ["true", "false"]).notNull(),
+  acceptsInsurance: pgEnum("acceptsInsurance", ["true", "false"]),
   costRange: varchar("costRange", { length: 100 }), // "$100-$200/session"
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),

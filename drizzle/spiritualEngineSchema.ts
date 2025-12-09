@@ -45,7 +45,7 @@ export const spiritualProfiles = pgTable("spiritual_profiles", {
     "increase_awareness",
     "heal_spiritually",
     "deepen_practice"
-  ]).notNull(),
+  ]),
   
   specificGoals: text("specific_goals"), // JSON array
   
@@ -88,7 +88,7 @@ export const meditationSessions = pgTable("meditation_sessions", {
     "compassion", // Tonglen
     "gratitude",
     "prayer"
-  ]).notNull(),
+  ]),
   
   guidedOrSilent: pgEnum("guided_or_silent", ["guided", "silent", "hybrid"]),
   guideSource: varchar("guide_source", { length: 255 }), // App, teacher, self, etc.
@@ -143,7 +143,7 @@ export const mindfulnessPractices = pgTable("mindfulness_practices", {
     "pause_practice", // Stop and breathe
     "gratitude_practice",
     "loving_kindness_moment"
-  ]).notNull(),
+  ]),
   
   duration: integer("duration"), // minutes
   
@@ -181,7 +181,7 @@ export const purposeExplorations = pgTable("purpose_explorations", {
     "death_meditation", // Memento mori
     "gratitude_reflection",
     "awe_experience" // Keltner's awe research
-  ]).notNull(),
+  ]),
   
   // Reflection
   prompt: text("prompt"),
@@ -246,7 +246,7 @@ export const compassionPractices = pgTable("compassion_practices", {
     "self_compassion", // Kristin Neff's research
     "forgiveness_practice",
     "acts_of_kindness" // Behavioral compassion
-  ]).notNull(),
+  ]),
   
   duration: integer("duration"), // minutes
   
@@ -287,7 +287,7 @@ export const spiritualExperiences = pgTable("spiritual_experiences", {
     "transcendence",
     "presence",
     "oneness"
-  ]).notNull(),
+  ]),
   
   // Context
   context: text("context"), // What were you doing when this happened?
@@ -329,7 +329,7 @@ export const spiritualMilestones = pgTable("spiritual_milestones", {
     "compassion_breakthrough",
     "spiritual_awakening",
     "habit_established"
-  ]).notNull(),
+  ]),
   
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),

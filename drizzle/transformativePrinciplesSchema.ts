@@ -117,7 +117,7 @@ export const principlePractices = pgTable("principle_practices", {
     "meditation", // Meditate on principle
     "affirmation", // Repeat identity statement
     "habit_practice" // Practice key habit
-  ]).notNull(),
+  ]),
   
   // Engagement
   timeSpent: integer("time_spent"), // minutes
@@ -206,7 +206,7 @@ export const identityTransformations = pgTable("identity_transformations", {
   targetDate: timestamp("target_date"),
   
   // Status
-  status: pgEnum("status", ["in_progress", "achieved", "evolving"]).default("in_progress"),
+  status: pgEnum("status", ["in_progress", "achieved", "evolving"]),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -273,7 +273,7 @@ export const principleGoals = pgTable("principle_goals", {
   whyItMatters: text("why_it_matters"),
   
   // Status
-  status: pgEnum("status", ["active", "achieved", "abandoned"]).default("active"),
+  status: pgEnum("status", ["active", "achieved", "abandoned"]),
   
   achievedDate: timestamp("achieved_date"),
   
@@ -336,7 +336,7 @@ export const transformativeMoments = pgTable("transformative_moments", {
     "pattern_broken", // Broke old pattern
     "new_behavior", // Established new behavior
     "peak_experience" // Transcendent moment
-  ]).notNull(),
+  ]),
   
   // Impact
   significance: integer("significance"), // 1-10

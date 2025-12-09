@@ -121,7 +121,7 @@ export const loginHistory = pgTable("login_history", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Login Details
-  loginMethod: pgEnum("login_method", ["password", "oauth", "magic_link", "sso"]).notNull(),
+  loginMethod: pgEnum("login_method", ["password", "oauth", "magic_link", "sso"]),
   
   // Status
   success: boolean("success").notNull(),
@@ -160,7 +160,7 @@ export const auditLogs = pgTable("audit_logs", {
     "security_event",
     "system_event",
     "compliance_event"
-  ]).notNull(),
+  ]),
   
   // Action
   action: varchar("action", { length: 255 }).notNull(),
@@ -180,7 +180,7 @@ export const auditLogs = pgTable("audit_logs", {
   sessionId: varchar("session_id", { length: 255 }),
   
   // Severity
-  severity: pgEnum("severity", ["info", "warning", "error", "critical"]).default("info"),
+  severity: pgEnum("severity", ["info", "warning", "error", "critical"]),
   
   eventTimestamp: timestamp("event_timestamp").defaultNow(),
 });
@@ -200,10 +200,10 @@ export const securityIncidents = pgTable("security_incidents", {
     "malware_detected",
     "dos_attack",
     "other"
-  ]).notNull(),
+  ]),
   
   // Severity
-  severity: pgEnum("severity", ["low", "medium", "high", "critical"]).notNull(),
+  severity: pgEnum("severity", ["low", "medium", "high", "critical"]),
   
   // Description
   description: text("description"),
@@ -219,7 +219,7 @@ export const securityIncidents = pgTable("security_incidents", {
     "contained",
     "resolved",
     "false_positive"
-  ]).default("detected"),
+  ]),
   
   // Response
   responseActions: text("response_actions"), // JSON: actions taken
@@ -301,7 +301,7 @@ export const rateLimits = pgTable("rate_limits", {
   
   // Identifier (user ID, IP, API key)
   identifier: varchar("identifier", { length: 255 }).notNull(),
-  identifierType: pgEnum("identifier_type", ["user_id", "ip_address", "api_key"]).notNull(),
+  identifierType: pgEnum("identifier_type", ["user_id", "ip_address", "api_key"]),
   
   // Endpoint
   endpoint: varchar("endpoint", { length: 500 }),
@@ -334,7 +334,7 @@ export const dataAccessLogs = pgTable("data_access_logs", {
   
   // Who accessed
   accessedBy: varchar("accessed_by", { length: 255 }).notNull(),
-  accessedByType: pgEnum("accessed_by_type", ["user", "admin", "system", "api"]).notNull(),
+  accessedByType: pgEnum("accessed_by_type", ["user", "admin", "system", "api"]),
   
   // What was accessed
   dataType: varchar("data_type", { length: 100 }).notNull(),
@@ -359,7 +359,7 @@ export const encryptionKeys = pgTable("encryption_keys", {
   
   // Key Details
   keyId: varchar("key_id", { length: 255 }).notNull().unique(),
-  keyType: pgEnum("key_type", ["master", "data", "session"]).notNull(),
+  keyType: pgEnum("key_type", ["master", "data", "session"]),
   algorithm: varchar("algorithm", { length: 100 }).notNull(),
   
   // Status
@@ -379,12 +379,12 @@ export const complianceReports = pgTable("compliance_reports", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Report Details
-  reportType: pgEnum("report_type", ["gdpr", "hipaa", "soc2", "iso27001", "custom"]).notNull(),
+  reportType: pgEnum("report_type", ["gdpr", "hipaa", "soc2", "iso27001", "custom"]),
   reportPeriodStart: timestamp("report_period_start").notNull(),
   reportPeriodEnd: timestamp("report_period_end").notNull(),
   
   // Status
-  status: pgEnum("status", ["generating", "completed", "failed"]).default("generating"),
+  status: pgEnum("status", ["generating", "completed", "failed"]),
   
   // Findings
   findings: text("findings"), // JSON: compliance findings
@@ -412,10 +412,10 @@ export const securityAlerts = pgTable("security_alerts", {
     "suspicious_activity",
     "data_export",
     "settings_changed"
-  ]).notNull(),
+  ]),
   
   // Severity
-  severity: pgEnum("severity", ["info", "warning", "critical"]).default("info"),
+  severity: pgEnum("severity", ["info", "warning", "critical"]),
   
   // Message
   message: text("message"),

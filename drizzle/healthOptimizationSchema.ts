@@ -33,7 +33,7 @@ export const healthOptimizationProfiles = pgTable("health_optimization_profiles"
     "reverse_aging",
     "peak_performance",
     "disease_management"
-  ]).notNull(),
+  ]),
   
   // Risk Factors
   familyHistory: text("family_history"), // JSON: diseases in family
@@ -153,7 +153,7 @@ export const healthProtocols = pgTable("health_protocols", {
     "red_light_therapy",
     "breathwork",
     "other"
-  ]).notNull(),
+  ]),
   
   // Details
   description: text("description"),
@@ -182,7 +182,7 @@ export const healthProtocols = pgTable("health_protocols", {
   willContinue: boolean("will_continue"),
   
   // Status
-  status: pgEnum("status", ["active", "completed", "discontinued"]).default("active"),
+  status: pgEnum("status", ["active", "completed", "discontinued"]),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -323,7 +323,7 @@ export const healthScreenings = pgTable("health_screenings", {
     "genetic_testing",
     "microbiome_test",
     "other"
-  ]).notNull(),
+  ]),
   
   screeningName: varchar("screening_name", { length: 255 }),
   
@@ -365,7 +365,7 @@ export const longevityPractices = pgTable("longevity_practices", {
     "meditation",
     "social_connection",
     "purpose_work"
-  ]).notNull(),
+  ]),
   
   // Details
   duration: integer("duration"), // minutes
@@ -393,7 +393,7 @@ export const healthMilestones = pgTable("health_milestones", {
     "biological_age_decreased",
     "fitness_milestone",
     "health_goal_achieved"
-  ]).notNull(),
+  ]),
   
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),

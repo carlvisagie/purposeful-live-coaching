@@ -39,7 +39,7 @@ export const youngMenProfiles = pgTable("young_men_profiles", {
     "healthy_relationships",
     "financial_independence",
     "overcome_trauma"
-  ]).notNull(),
+  ]),
   
   specificGoals: text("specific_goals"), // JSON array
   
@@ -141,7 +141,7 @@ export const lifeSkillsDevelopment = pgTable("life_skills_development", {
     "conflict_resolution",
     "job_skills",
     "emotional_regulation"
-  ]).notNull(),
+  ]),
   
   skillName: varchar("skill_name", { length: 255 }).notNull(),
   
@@ -178,7 +178,7 @@ export const mentorshipConnections = pgTable("mentorship_connections", {
     "real_life_mentor", // External mentor they're tracking
     "virtual_role_model", // Public figure they follow
     "peer_mentor" // Older peer
-  ]).notNull(),
+  ]),
   
   mentorName: varchar("mentor_name", { length: 255 }),
   mentorArea: varchar("mentor_area", { length: 255 }), // What they mentor in
@@ -222,7 +222,7 @@ export const masculinityReflections = pgTable("masculinity_reflections", {
     "vulnerability", // When is it okay to be vulnerable?
     "responsibility", // What are you responsible for?
     "purpose" // What's your mission?
-  ]).notNull(),
+  ]),
   
   reflection: text("reflection").notNull(),
   
@@ -247,7 +247,7 @@ export const challengeCompletions = pgTable("challenge_completions", {
     "service", // Help others challenge
     "financial", // Money management challenge
     "creative" // Create something challenge
-  ]).notNull(),
+  ]),
   
   challengeName: varchar("challenge_name", { length: 255 }).notNull(),
   description: text("description"),
@@ -284,7 +284,7 @@ export const youngMenMilestones = pgTable("young_men_milestones", {
     "helped_someone",
     "found_purpose",
     "built_discipline"
-  ]).notNull(),
+  ]),
   
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),

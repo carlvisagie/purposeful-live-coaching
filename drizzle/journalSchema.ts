@@ -62,7 +62,7 @@ export const journalProfiles = pgTable("journal_profiles", {
   preferredTime: pgEnum("preferred_time", ["morning", "afternoon", "evening", "night", "flexible"]),
   
   // Privacy
-  defaultPrivacy: pgEnum("default_privacy", ["private", "shared_with_coach", "shared_with_community"]).default("private"),
+  defaultPrivacy: pgEnum("default_privacy", ["private", "shared_with_coach", "shared_with_community"]),
   
   // AI Features
   enableAIInsights: boolean("enable_ai_insights").default(true),
@@ -98,7 +98,7 @@ export const journalEntries = pgTable("journal_entries", {
     "best_possible_self",
     "daily_review",
     "crisis_processing"
-  ]).notNull(),
+  ]),
   
   // Prompt (if used)
   promptId: varchar("prompt_id", { length: 255 }),
@@ -144,7 +144,7 @@ export const journalEntries = pgTable("journal_entries", {
   writingDurationMinutes: integer("writing_duration_minutes"),
   
   // Privacy
-  privacy: pgEnum("privacy", ["private", "shared_with_coach", "shared_with_community"]).default("private"),
+  privacy: pgEnum("privacy", ["private", "shared_with_coach", "shared_with_community"]),
   
   // Favorite
   isFavorite: boolean("is_favorite").default(false),
@@ -183,7 +183,7 @@ export const journalPrompts = pgTable("journal_prompts", {
     "creativity",
     "spirituality",
     "crisis_support"
-  ]).notNull(),
+  ]),
   
   // Research-Backed
   researchBacked: boolean("research_backed").default(false),
@@ -237,7 +237,7 @@ export const bestPossibleSelfEntries = pgTable("best_possible_self_entries", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Timeframe
-  timeframe: pgEnum("timeframe", ["1_year", "5_years", "10_years", "end_of_life"]).notNull(),
+  timeframe: pgEnum("timeframe", ["1_year", "5_years", "10_years", "end_of_life"]),
   
   // Life Areas
   personalLife: text("personal_life"), // What does your personal life look like?
@@ -336,7 +336,7 @@ export const journalInsights = pgTable("journal_insights", {
     "strength_recognized", // You demonstrated X strength
     "value_clarified", // X seems important to you
     "goal_alignment" // Your entries align/misalign with your goals
-  ]).notNull(),
+  ]),
   
   // Content
   title: varchar("title", { length: 255 }).notNull(),
@@ -383,7 +383,7 @@ export const journalReflections = pgTable("journal_reflections", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Reflection Period
-  periodType: pgEnum("period_type", ["weekly", "monthly", "quarterly", "yearly"]).notNull(),
+  periodType: pgEnum("period_type", ["weekly", "monthly", "quarterly", "yearly"]),
   periodStart: timestamp("period_start").notNull(),
   periodEnd: timestamp("period_end").notNull(),
   

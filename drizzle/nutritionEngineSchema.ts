@@ -32,7 +32,7 @@ export const nutritionProfiles = pgTable("nutrition_profiles", {
     "gut_health",
     "athletic_performance",
     "disease_management"
-  ]).notNull(),
+  ]),
   
   // Dietary Approach
   dietaryApproach: pgEnum("dietary_approach", [
@@ -95,7 +95,7 @@ export const meals = pgTable("meals", {
     "snack",
     "pre_workout",
     "post_workout"
-  ]).notNull(),
+  ]),
   
   // Foods
   foods: text("foods"), // JSON array: [{name, quantity, unit, calories, protein, carbs, fat}]
@@ -200,7 +200,7 @@ export const supplements = pgTable("supplements", {
     "immune", // Vitamin C, zinc, etc.
     "joint_health",
     "other"
-  ]).notNull(),
+  ]),
   
   // Dosage
   dosage: varchar("dosage", { length: 255 }),
@@ -264,7 +264,7 @@ export const foodReactions = pgTable("food_reactions", {
     "mood", // Anxiety, irritability
     "headache",
     "other"
-  ]).notNull(),
+  ]),
   
   // Symptoms
   symptoms: text("symptoms"), // JSON array
@@ -350,7 +350,7 @@ export const nutritionExperiments = pgTable("nutrition_experiments", {
     "food_introduction", // Reintroduce eliminated food
     "calorie_cycling", // Vary calories by day
     "other"
-  ]).notNull(),
+  ]),
   
   // Hypothesis
   hypothesis: text("hypothesis"), // What do you expect to happen?

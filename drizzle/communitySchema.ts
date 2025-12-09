@@ -47,7 +47,7 @@ export const communityProfiles = pgTable("community_profiles", {
   primaryGoals: text("primary_goals"), // JSON array
   
   // Community Role
-  role: pgEnum("role", ["member", "mentor", "moderator", "admin"]).default("member"),
+  role: pgEnum("role", ["member", "mentor", "moderator", "admin"]),
   
   // Mentor Availability (if mentor)
   availableAsMentor: boolean("available_as_mentor").default(false),
@@ -89,10 +89,10 @@ export const communities = pgTable("communities", {
     "fitness",
     "spiritual_growth",
     "general_support"
-  ]).notNull(),
+  ]),
   
   // Privacy
-  privacy: pgEnum("privacy", ["public", "private", "invite_only"]).default("public"),
+  privacy: pgEnum("privacy", ["public", "private", "invite_only"]),
   
   // Moderation
   moderatorIds: text("moderator_ids"), // JSON array of user IDs
@@ -119,7 +119,7 @@ export const communityMemberships = pgTable("community_memberships", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Role in Community
-  role: pgEnum("role", ["member", "moderator", "admin"]).default("member"),
+  role: pgEnum("role", ["member", "moderator", "admin"]),
   
   // Engagement
   lastActiveAt: timestamp("last_active_at"),
@@ -148,7 +148,7 @@ export const communityPosts = pgTable("community_posts", {
     "gratitude", // Expressing thanks
     "resource", // Sharing helpful content
     "discussion" // General discussion
-  ]).notNull(),
+  ]),
   
   // Content
   title: varchar("title", { length: 255 }),
@@ -215,7 +215,7 @@ export const accountabilityPartnerships = pgTable("accountability_partnerships",
   helpfulnessRating: integer("helpfulness_rating"), // 1-10
   
   // Status
-  status: pgEnum("status", ["active", "paused", "ended"]).default("active"),
+  status: pgEnum("status", ["active", "paused", "ended"]),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -270,7 +270,7 @@ export const mentorships = pgTable("mentorships", {
   menteeSatisfaction: integer("mentee_satisfaction"), // 1-10
   
   // Status
-  status: pgEnum("status", ["active", "paused", "completed"]).default("active"),
+  status: pgEnum("status", ["active", "paused", "completed"]),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -324,7 +324,7 @@ export const communityChallenges = pgTable("community_challenges", {
     "goal_achievement", // Specific goal
     "streak", // Longest streak wins
     "transformation" // Before/after
-  ]).notNull(),
+  ]),
   
   // Duration
   startDate: timestamp("start_date"),
@@ -335,7 +335,7 @@ export const communityChallenges = pgTable("community_challenges", {
   participantCount: integer("participant_count").default(0),
   
   // Status
-  status: pgEnum("status", ["upcoming", "active", "completed"]).default("upcoming"),
+  status: pgEnum("status", ["upcoming", "active", "completed"]),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),

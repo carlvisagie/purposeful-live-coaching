@@ -39,7 +39,7 @@ export const emotionalProfiles = pgTable("emotional_profiles", {
     "feel_more",
     "feel_less_overwhelmed",
     "emotional_stability"
-  ]).notNull(),
+  ]),
   
   // Emotional Patterns (self-learning)
   commonTriggers: text("common_triggers"), // JSON: learned from tracking
@@ -108,7 +108,7 @@ export const dbtSkillsPractice = pgTable("dbt_skills_practice", {
     "distress_tolerance",
     "emotion_regulation",
     "interpersonal_effectiveness"
-  ]).notNull(),
+  ]),
   
   // Specific Skill
   skillUsed: pgEnum("skill_used", [
@@ -179,7 +179,7 @@ export const actPractices = pgTable("act_practices", {
     "self_as_context", // Observer self
     "values", // What matters to you
     "committed_action" // Values-based action
-  ]).notNull(),
+  ]),
   
   // Specific Technique
   technique: varchar("technique", { length: 255 }),
@@ -270,7 +270,7 @@ export const resilienceActivities = pgTable("resilience_activities", {
     "growth_mindset", // Learning from challenges
     "gratitude", // Appreciating what you have
     "self_compassion" // Being kind to yourself
-  ]).notNull(),
+  ]),
   
   activity: varchar("activity", { length: 255 }).notNull(),
   description: text("description"),
@@ -307,7 +307,7 @@ export const emotionalProcessing = pgTable("emotional_processing", {
     "crying",
     "meditation",
     "ritual"
-  ]).notNull(),
+  ]),
   
   // Process
   whatCameUp: text("what_came_up"), // Insights, memories, realizations
@@ -343,7 +343,7 @@ export const emotionalWins = pgTable("emotional_wins", {
     "resilience_moment",
     "emotional_breakthrough",
     "pattern_broken"
-  ]).notNull(),
+  ]),
   
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),

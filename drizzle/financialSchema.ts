@@ -39,7 +39,7 @@ export const financialProfiles = pgTable("financial_profiles", {
     "invest_for_future",
     "improve_credit_score",
     "financial_literacy"
-  ]).notNull(),
+  ]),
   
   specificGoals: text("specific_goals"), // JSON array
   
@@ -70,7 +70,7 @@ export const debtAccounts = pgTable("debt_accounts", {
     "payday_loan",
     "mortgage",
     "other"
-  ]).notNull(),
+  ]),
   
   creditorName: varchar("creditor_name", { length: 255 }).notNull(),
   
@@ -142,7 +142,7 @@ export const budgetCategories = pgTable("budget_categories", {
     "entertainment",
     "giving",
     "other"
-  ]).notNull(),
+  ]),
   
   categoryName: varchar("category_name", { length: 255 }).notNull(),
   
@@ -212,7 +212,7 @@ export const incomeEntries = pgTable("income_entries", {
     "gift",
     "refund",
     "other"
-  ]).notNull(),
+  ]),
   
   source: varchar("source", { length: 255 }),
   description: text("description"),
@@ -237,7 +237,7 @@ export const savingsGoals = pgTable("savings_goals", {
     "retirement",
     "wedding",
     "other"
-  ]).notNull(),
+  ]),
   
   goalName: varchar("goal_name", { length: 255 }).notNull(),
   description: text("description"),
@@ -284,7 +284,7 @@ export const financialWins = pgTable("financial_wins", {
     "income_increased",
     "credit_score_improved",
     "financial_habit_built"
-  ]).notNull(),
+  ]),
   
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
@@ -316,7 +316,7 @@ export const moneyMindsetReflections = pgTable("money_mindset_reflections", {
     "emotional_spending", // What emotions trigger spending?
     "financial_fears", // What are you afraid of financially?
     "financial_dreams" // What would financial freedom look like?
-  ]).notNull(),
+  ]),
   
   reflection: text("reflection").notNull(),
   
@@ -347,7 +347,7 @@ export const financialEducation = pgTable("financial_education", {
     "insurance",
     "real_estate",
     "behavioral_finance"
-  ]).notNull(),
+  ]),
   
   resourceType: pgEnum("resource_type", ["article", "video", "course", "book", "podcast"]),
   resourceName: varchar("resource_name", { length: 255 }),

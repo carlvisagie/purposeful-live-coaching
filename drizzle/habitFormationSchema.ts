@@ -72,7 +72,7 @@ export const habits = pgTable("habits", {
     "build", // Building a new habit
     "break", // Breaking a bad habit
     "replace" // Replacing bad habit with good one
-  ]).notNull(),
+  ]),
   
   // Category
   category: pgEnum("category", [
@@ -88,7 +88,7 @@ export const habits = pgTable("habits", {
     "spiritual",
     "productivity",
     "other"
-  ]).notNull(),
+  ]),
   
   // Tiny Habits Method (BJ Fogg)
   tinyVersion: varchar("tiny_version", { length: 255 }), // Ridiculously small version
@@ -117,7 +117,7 @@ export const habits = pgTable("habits", {
     "weekends",
     "weekly",
     "custom"
-  ]).notNull(),
+  ]),
   customFrequency: text("custom_frequency"), // JSON: specific days
   
   // Duration
@@ -136,7 +136,7 @@ export const habits = pgTable("habits", {
   automaticityLevel: integer("automaticity_level"), // 1-10: How automatic is this habit?
   
   // Status
-  status: pgEnum("status", ["active", "paused", "mastered", "abandoned"]).default("active"),
+  status: pgEnum("status", ["active", "paused", "mastered", "abandoned"]),
   
   // Dates
   startDate: timestamp("start_date").notNull(),
@@ -210,7 +210,7 @@ export const languagePatterns = pgTable("language_patterns", {
     "ownership_language",
     "obligation_language", // "I have to"
     "choice_language" // "I choose to"
-  ]).notNull(),
+  ]),
   
   // The Language
   originalStatement: text("original_statement"), // What you used to say
@@ -228,7 +228,7 @@ export const languagePatterns = pgTable("language_patterns", {
   impactOnBehavior: integer("impact_on_behavior"), // 1-10
   
   // Status
-  status: pgEnum("status", ["working_on", "integrated", "mastered"]).default("working_on"),
+  status: pgEnum("status", ["working_on", "integrated", "mastered"]),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -311,7 +311,7 @@ export const habitMilestones = pgTable("habit_milestones", {
     "automaticity_achieved", // Habit feels automatic
     "identity_shift", // "I am" statement feels true
     "mastery" // Habit is fully integrated
-  ]).notNull(),
+  ]),
   
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),

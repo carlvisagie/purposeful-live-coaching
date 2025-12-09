@@ -36,7 +36,7 @@ export const forbiddenContentDictionary = pgTable("forbidden_content_dictionary"
     "domain",
     "topic",
     "context"
-  ]).notNull(),
+  ]),
   
   content: text("content").notNull(), // The actual forbidden content
   pattern: text("pattern"), // Regex pattern for matching
@@ -62,7 +62,7 @@ export const forbiddenContentDictionary = pgTable("forbidden_content_dictionary"
     "misinformation",
     "spam",
     "harassment"
-  ]).notNull(),
+  ]),
   
   // Severity
   severityLevel: pgEnum("severity_level", [
@@ -70,7 +70,7 @@ export const forbiddenContentDictionary = pgTable("forbidden_content_dictionary"
     "high", // Block, professional risk
     "medium", // Flag for review
     "low" // Log only
-  ]).notNull(),
+  ]),
   
   // Action
   action: pgEnum("action", [
@@ -78,7 +78,7 @@ export const forbiddenContentDictionary = pgTable("forbidden_content_dictionary"
     "soft_block", // Warn and redirect
     "flag_review", // Allow but flag for human review
     "log_only" // Track but allow
-  ]).notNull(),
+  ]),
   
   // Source
   source: pgEnum("source", [
@@ -88,7 +88,7 @@ export const forbiddenContentDictionary = pgTable("forbidden_content_dictionary"
     "pattern_learning", // Learned from patterns
     "regulatory_update", // From legal/compliance update
     "incident_response" // Added after incident
-  ]).notNull(),
+  ]),
   
   // Learning Data
   detectionCount: integer("detection_count").default(0), // How many times detected
@@ -144,7 +144,7 @@ export const contentModerationLogs = pgTable("content_moderation_logs", {
     "flagged",
     "allowed",
     "escalated"
-  ]).notNull(),
+  ]),
   
   // Response
   userResponse: text("user_response"), // What we told the user
@@ -188,7 +188,7 @@ export const aiSafetyRules = pgTable("ai_safety_rules", {
     "ethical_guideline",
     "brand_protection",
     "professional_standard"
-  ]).notNull(),
+  ]),
   
   // Rule Content
   systemPromptAddition: text("system_prompt_addition"), // Added to AI system prompt
@@ -202,7 +202,7 @@ export const aiSafetyRules = pgTable("ai_safety_rules", {
     "community_posts",
     "journal_entries",
     "chat_messages"
-  ]).notNull(),
+  ]),
   
   // Priority
   priority: integer("priority").default(100), // Higher = more important
@@ -236,10 +236,10 @@ export const brandSafetyKeywords = pgTable("brand_safety_keywords", {
     "customer_complaint",
     "refund_request",
     "cancellation_intent"
-  ]).notNull(),
+  ]),
   
   // Risk
-  riskLevel: pgEnum("risk_level", ["critical", "high", "medium", "low"]).notNull(),
+  riskLevel: pgEnum("risk_level", ["critical", "high", "medium", "low"]),
   
   // Action
   alertTeam: boolean("alert_team").default(false),
@@ -269,7 +269,7 @@ export const complianceCheckpoints = pgTable("compliance_checkpoints", {
     "insurance_requirements",
     "state_regulations",
     "industry_standards"
-  ]).notNull(),
+  ]),
   
   // Requirement
   requirement: text("requirement").notNull(),
@@ -311,7 +311,7 @@ export const patternLearning = pgTable("pattern_learning", {
     "crisis_indicator_pattern",
     "manipulation_pattern",
     "spam_pattern"
-  ]).notNull(),
+  ]),
   
   // Pattern Data
   patternSignature: text("pattern_signature"), // What the pattern looks like
@@ -352,12 +352,12 @@ export const crisisInterventionLogs = pgTable("crisis_intervention_logs", {
     "severe_distress",
     "psychotic_episode",
     "substance_abuse_crisis"
-  ]).notNull(),
+  ]),
   
   // Detection
   detectedContent: text("detected_content"),
   crisisIndicators: text("crisis_indicators"), // JSON: what triggered
-  riskLevel: pgEnum("risk_level", ["imminent", "high", "moderate", "low"]).notNull(),
+  riskLevel: pgEnum("risk_level", ["imminent", "high", "moderate", "low"]),
   
   // Response
   responseProvided: text("response_provided"),
@@ -403,7 +403,7 @@ export const professionalBoundaryViolations = pgTable("professional_boundary_vio
     "emotional_dependency",
     "inappropriate_disclosure",
     "scope_of_practice"
-  ]).notNull(),
+  ]),
   
   // Context
   conversationId: varchar("conversation_id", { length: 255 }),
@@ -418,7 +418,7 @@ export const professionalBoundaryViolations = pgTable("professional_boundary_vio
   detectedBy: pgEnum("detected_by", ["ai", "human_review", "user_report", "compliance_audit"]),
   
   // Severity
-  severity: pgEnum("severity", ["critical", "high", "medium", "low"]).notNull(),
+  severity: pgEnum("severity", ["critical", "high", "medium", "low"]),
   
   // Response
   correctionProvided: text("correction_provided"),

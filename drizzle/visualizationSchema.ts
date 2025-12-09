@@ -54,7 +54,7 @@ export const visualizationProfiles = pgTable("visualization_profiles", {
     "habits", // Habit tracking
     "trends", // Long-term trends
     "custom" // User-defined
-  ]).default("overview"),
+  ]),
   
   // Chart Preferences
   preferredChartTypes: text("preferred_chart_types"), // JSON: line, bar, heatmap, etc.
@@ -66,7 +66,7 @@ export const visualizationProfiles = pgTable("visualization_profiles", {
     "quarter",
     "year",
     "all_time"
-  ]).default("month"),
+  ]),
   
   // Comparison Preferences
   showComparisons: boolean("show_comparisons").default(true), // Compare to previous periods
@@ -130,7 +130,7 @@ export const visualizationWidgets = pgTable("visualization_widgets", {
     "scorecard",
     "table",
     "custom"
-  ]).notNull(),
+  ]),
   
   // Data Source
   dataSource: varchar("data_source", { length: 255 }).notNull(), // habits, goals, sleep, etc.
@@ -207,7 +207,7 @@ export const trendData = pgTable("trend_data", {
   metricCategory: varchar("metric_category", { length: 100 }), // habits, sleep, stress, etc.
   
   // Time Period
-  periodType: pgEnum("period_type", ["daily", "weekly", "monthly"]).notNull(),
+  periodType: pgEnum("period_type", ["daily", "weekly", "monthly"]),
   periodStart: timestamp("period_start").notNull(),
   periodEnd: timestamp("period_end").notNull(),
   
@@ -234,7 +234,7 @@ export const heatmapData = pgTable("heatmap_data", {
     "energy_patterns", // Energy by day of week / time of day
     "stress_patterns", // Stress by day of week / time of day
     "productivity_patterns" // Productivity by day of week / time of day
-  ]).notNull(),
+  ]),
   
   // Date
   date: timestamp("date").notNull(),
@@ -261,7 +261,7 @@ export const milestoneVisualizations = pgTable("milestone_visualizations", {
     "transformation_journey", // Overall transformation
     "habit_mastery", // Journey to habit mastery
     "wellness_journey" // Wellness improvement
-  ]).notNull(),
+  ]),
   
   // Related Entity
   relatedId: varchar("related_id", { length: 255 }), // Goal ID, habit ID, etc.
@@ -290,7 +290,7 @@ export const comparisonViews = pgTable("comparison_views", {
     "year_over_year",
     "best_vs_current",
     "baseline_vs_current"
-  ]).notNull(),
+  ]),
   
   // Metric
   metric: varchar("metric", { length: 255 }).notNull(),
@@ -330,7 +330,7 @@ export const progressCelebrations = pgTable("progress_celebrations", {
     "achievement_unlocked",
     "personal_best",
     "transformation_marker"
-  ]).notNull(),
+  ]),
   
   // Details
   title: varchar("title", { length: 255 }).notNull(),
@@ -366,7 +366,7 @@ export const chartInteractions = pgTable("chart_interactions", {
     "exported",
     "shared",
     "customized"
-  ]).notNull(),
+  ]),
   
   // Duration
   viewDuration: integer("view_duration"), // seconds
@@ -429,7 +429,7 @@ export const customReports = pgTable("custom_reports", {
     "habit_analysis",
     "correlation_report",
     "custom"
-  ]).notNull(),
+  ]),
   
   // Configuration
   metrics: text("metrics"), // JSON: which metrics to include
@@ -463,7 +463,7 @@ export const reportGenerations = pgTable("report_generations", {
   filePath: varchar("file_path", { length: 500 }), // If exported
   
   // Status
-  status: pgEnum("status", ["generating", "completed", "failed"]).default("generating"),
+  status: pgEnum("status", ["generating", "completed", "failed"]),
   
   createdAt: timestamp("created_at").defaultNow(),
 });

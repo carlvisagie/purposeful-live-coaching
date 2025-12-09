@@ -36,7 +36,7 @@ export const mentalProfiles = pgTable("mental_profiles", {
     "boost_creativity",
     "improve_decision_making",
     "mental_performance"
-  ]).notNull(),
+  ]),
   
   // Learning Style (evidence-based)
   learningStyle: text("learning_style"), // JSON: visual, auditory, kinesthetic, reading/writing
@@ -76,7 +76,7 @@ export const focusSessions = pgTable("focus_sessions", {
     "focused_learning",
     "creative_work",
     "problem_solving"
-  ]).notNull(),
+  ]),
   
   task: varchar("task", { length: 255 }).notNull(),
   taskType: pgEnum("task_type", ["learning", "creating", "analyzing", "writing", "coding", "planning"]),
@@ -138,7 +138,7 @@ export const memoryPractices = pgTable("memory_practices", {
     "active_recall", // Testing yourself
     "elaboration", // Explaining in your own words
     "interleaving" // Mixing topics
-  ]).notNull(),
+  ]),
   
   // What You're Memorizing
   contentType: pgEnum("content_type", ["facts", "concepts", "skills", "names", "numbers", "language", "other"]),
@@ -183,7 +183,7 @@ export const learningSessions = pgTable("learning_sessions", {
     "project_based",
     "discussion",
     "experimentation"
-  ]).notNull(),
+  ]),
   
   // Duration
   duration: integer("duration"), // minutes
@@ -264,7 +264,7 @@ export const brainTrainingExercises = pgTable("brain_training_exercises", {
     "pattern_recognition",
     "spatial_reasoning",
     "verbal_fluency"
-  ]).notNull(),
+  ]),
   
   exerciseName: varchar("exercise_name", { length: 255 }),
   
@@ -341,7 +341,7 @@ export const mentalBreaks = pgTable("mental_breaks", {
     "nap", // Power nap
     "nature_break",
     "social_break"
-  ]).notNull(),
+  ]),
   
   duration: integer("duration"), // minutes
   

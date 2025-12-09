@@ -251,7 +251,7 @@ export const stressInterventions = pgTable("stress_interventions", {
     "rest", // NSDR, nap, relaxation
     "creative", // Art, journaling, music
     "other"
-  ]).notNull(),
+  ]),
   
   // Evidence Base
   researchBacked: boolean("research_backed").default(false),
@@ -353,7 +353,7 @@ export const stressRecoverySessions = pgTable("stress_recovery_sessions", {
     "massage",
     "nature_walk",
     "creative_activity"
-  ]).notNull(),
+  ]),
   
   // Duration
   durationMinutes: integer("duration_minutes"),
@@ -387,7 +387,7 @@ export const stressPredictions = pgTable("stress_predictions", {
     "burnout_risk", // You're at risk of burnout
     "recovery_needed", // You need recovery time
     "optimal_intervention" // This intervention will work best
-  ]).notNull(),
+  ]),
   
   // Prediction
   prediction: text("prediction"),

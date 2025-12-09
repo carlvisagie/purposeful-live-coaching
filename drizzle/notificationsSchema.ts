@@ -89,7 +89,7 @@ export const notificationPreferences = pgTable("notification_preferences", {
     "alert",
     "social",
     "system"
-  ]).notNull(),
+  ]),
   
   // Enabled
   enabled: boolean("enabled").default(true),
@@ -101,7 +101,7 @@ export const notificationPreferences = pgTable("notification_preferences", {
   inAppEnabled: boolean("in_app_enabled").default(true),
   
   // Frequency
-  frequency: pgEnum("frequency", ["realtime", "daily_digest", "weekly_digest", "never"]).default("realtime"),
+  frequency: pgEnum("frequency", ["realtime", "daily_digest", "weekly_digest", "never"]),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -124,7 +124,7 @@ export const notifications = pgTable("notifications", {
     "alert",
     "social",
     "system"
-  ]).notNull(),
+  ]),
   
   // Content
   title: varchar("title", { length: 255 }).notNull(),
@@ -135,7 +135,7 @@ export const notifications = pgTable("notifications", {
   actionText: varchar("action_text", { length: 100 }), // Button text
   
   // Priority
-  priority: pgEnum("priority", ["low", "medium", "high", "urgent"]).default("medium"),
+  priority: pgEnum("priority", ["low", "medium", "high", "urgent"]),
   
   // Delivery
   channels: text("channels"), // JSON: which channels to use
@@ -151,7 +151,7 @@ export const notifications = pgTable("notifications", {
     "delivered",
     "failed",
     "cancelled"
-  ]).default("pending"),
+  ]),
   
   // Delivery Tracking
   sentAt: timestamp("sent_at"),
@@ -193,7 +193,7 @@ export const reminders = pgTable("reminders", {
     "medication",
     "appointment",
     "custom"
-  ]).notNull(),
+  ]),
   
   // Content
   title: varchar("title", { length: 255 }).notNull(),
@@ -210,7 +210,7 @@ export const reminders = pgTable("reminders", {
     "weekly", // Specific days of week
     "monthly", // Specific day of month
     "custom" // Custom recurrence
-  ]).notNull(),
+  ]),
   
   // Timing
   reminderTime: varchar("reminder_time", { length: 10 }), // "14:30"
@@ -260,7 +260,7 @@ export const reminderOccurrences = pgTable("reminder_occurrences", {
     "snoozed",
     "missed",
     "cancelled"
-  ]).default("pending"),
+  ]),
   
   // Snooze
   snoozedUntil: timestamp("snoozed_until"),
@@ -283,7 +283,7 @@ export const notificationBatches = pgTable("notification_batches", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Batch Details
-  batchType: pgEnum("batch_type", ["daily_digest", "weekly_digest", "smart_batch"]).notNull(),
+  batchType: pgEnum("batch_type", ["daily_digest", "weekly_digest", "smart_batch"]),
   
   // Content
   title: varchar("title", { length: 255 }).notNull(),
@@ -297,7 +297,7 @@ export const notificationBatches = pgTable("notification_batches", {
   sentAt: timestamp("sent_at"),
   
   // Status
-  status: pgEnum("status", ["pending", "sent", "failed"]).default("pending"),
+  status: pgEnum("status", ["pending", "sent", "failed"]),
   
   createdAt: timestamp("created_at").defaultNow(),
 });
@@ -309,7 +309,7 @@ export const pushTokens = pgTable("push_tokens", {
   
   // Token Details
   token: varchar("token", { length: 500 }).notNull(),
-  platform: pgEnum("platform", ["ios", "android", "web"]).notNull(),
+  platform: pgEnum("platform", ["ios", "android", "web"]),
   
   // Device Info
   deviceId: varchar("device_id", { length: 255 }),
@@ -340,10 +340,10 @@ export const emailQueue = pgTable("email_queue", {
   bodyHtml: text("body_html"),
   
   // Priority
-  priority: pgEnum("priority", ["low", "medium", "high"]).default("medium"),
+  priority: pgEnum("priority", ["low", "medium", "high"]),
   
   // Status
-  status: pgEnum("status", ["pending", "sending", "sent", "failed"]).default("pending"),
+  status: pgEnum("status", ["pending", "sending", "sent", "failed"]),
   
   // Delivery
   sentAt: timestamp("sent_at"),
@@ -374,7 +374,7 @@ export const smsQueue = pgTable("sms_queue", {
   message: text("message").notNull(),
   
   // Status
-  status: pgEnum("status", ["pending", "sending", "sent", "failed"]).default("pending"),
+  status: pgEnum("status", ["pending", "sending", "sent", "failed"]),
   
   // Delivery
   sentAt: timestamp("sent_at"),
@@ -439,7 +439,7 @@ export const userNotificationFeedback = pgTable("user_notification_feedback", {
     "wrong_time",
     "irrelevant",
     "perfect"
-  ]).notNull(),
+  ]),
   
   // Details
   feedbackText: text("feedback_text"),

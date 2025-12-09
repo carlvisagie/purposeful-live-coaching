@@ -54,7 +54,7 @@ export const validatedResearch = pgTable("validated_research", {
     "cross_sectional_study",
     "case_series",
     "expert_opinion"
-  ]).notNull(),
+  ]),
   
   // Evidence Level (Oxford CEBM)
   evidenceLevel: pgEnum("evidence_level", [
@@ -62,7 +62,7 @@ export const validatedResearch = pgTable("validated_research", {
     "level_b_moderate",  // Individual RCTs, cohort studies
     "level_c_low",       // Case-control, expert consensus
     "level_d_reject"     // Insufficient evidence - REJECTED
-  ]).notNull(),
+  ]),
   
   // Quality Metrics
   sampleSize: integer("sample_size"),
@@ -102,7 +102,7 @@ export const validatedResearch = pgTable("validated_research", {
     "spirituality",
     "career_development",
     "financial_psychology"
-  ]).notNull(),
+  ]),
   
   // Key Findings
   keyFindings: text("key_findings").notNull(), // Summary of main results
@@ -121,7 +121,7 @@ export const validatedResearch = pgTable("validated_research", {
     "rejected",
     "needs_replication",
     "superseded" // Newer research contradicts this
-  ]).default("pending_review"),
+  ]),
   
   // Reviewer Info
   reviewedBy: varchar("reviewed_by", { length: 255 }), // Who validated this?
@@ -153,7 +153,7 @@ export const platformRecommendations = pgTable("platform_recommendations", {
     "behavior_change",   // "Use implementation intentions"
     "mindset_shift",     // "Adopt growth mindset"
     "lifestyle_change"   // "Prioritize sleep over work"
-  ]).notNull(),
+  ]),
   
   // Content
   title: varchar("title", { length: 255 }).notNull(),
@@ -165,7 +165,7 @@ export const platformRecommendations = pgTable("platform_recommendations", {
     "level_a_high",
     "level_b_moderate",
     "level_c_low"
-  ]).notNull(),
+  ]),
   
   // Research Citations (Links to validatedResearch table)
   primaryResearchId: varchar("primary_research_id", { length: 255 }).notNull(), // Main supporting study
@@ -192,7 +192,7 @@ export const platformRecommendations = pgTable("platform_recommendations", {
     "under_review",
     "deprecated",      // No longer recommended
     "superseded"       // Replaced by better recommendation
-  ]).default("active"),
+  ]),
   
   // Superseded Info
   supersededBy: varchar("superseded_by", { length: 255 }), // ID of newer recommendation
@@ -220,7 +220,7 @@ export const researchMonitoring = pgTable("research_monitoring", {
     "daily",
     "weekly",
     "monthly"
-  ]).default("weekly"),
+  ]),
   
   // Alert Thresholds
   alertOnHighQuality: boolean("alert_on_high_quality").default(true), // Alert when Level A research found
@@ -255,7 +255,7 @@ export const pseudoscienceBlocklist = pgTable("pseudoscience_blocklist", {
     "conflict_of_interest",
     "cherry_picked_data",
     "correlation_not_causation"
-  ]).notNull(),
+  ]),
   
   // Why Blocked
   reason: text("reason").notNull(),
@@ -266,14 +266,14 @@ export const pseudoscienceBlocklist = pgTable("pseudoscience_blocklist", {
     "dangerous",   // Could cause harm
     "misleading",  // False but not harmful
     "unproven"     // Just lacks evidence
-  ]).notNull(),
+  ]),
   
   // Action
   action: pgEnum("action", [
     "hard_block",  // Never allow
     "flag_review", // Flag for human review
     "show_warning" // Allow but warn user
-  ]).notNull(),
+  ]),
   
   // Detection
   detectionCount: integer("detection_count").default(0), // How many times detected
@@ -319,7 +319,7 @@ export const researchQualityReviews = pgTable("research_quality_reviews", {
     "good",
     "fair",
     "poor"
-  ]).notNull(),
+  ]),
   
   // Recommendation
   recommendForPlatform: boolean("recommend_for_platform").notNull(),
@@ -328,7 +328,7 @@ export const researchQualityReviews = pgTable("research_quality_reviews", {
     "level_b_moderate",
     "level_c_low",
     "level_d_reject"
-  ]).notNull(),
+  ]),
   
   // Notes
   reviewNotes: text("review_notes"),

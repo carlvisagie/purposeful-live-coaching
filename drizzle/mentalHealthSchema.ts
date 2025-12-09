@@ -109,7 +109,7 @@ export const dbtSkillsPractice = pgTable("dbt_skills_practice", {
   practiceDate: timestamp("practice_date").notNull(),
   
   // DBT Module
-  module: pgEnum("module", ["mindfulness", "distress_tolerance", "emotion_regulation", "interpersonal_effectiveness"]).notNull(),
+  module: pgEnum("module", ["mindfulness", "distress_tolerance", "emotion_regulation", "interpersonal_effectiveness"]),
   
   // Specific Skill
   skillName: varchar("skill_name", { length: 255 }).notNull(), // e.g., "TIPP", "DEAR MAN", "Opposite Action"
@@ -181,7 +181,7 @@ export const recoveryMilestones = pgTable("recovery_milestones", {
     "self_care_consistency",
     "crisis_management",
     "skill_mastery"
-  ]).notNull(),
+  ]),
   
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),

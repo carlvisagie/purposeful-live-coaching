@@ -184,7 +184,7 @@ export const sleepExperiments = pgTable("sleep_experiments", {
   keepPractice: boolean("keep_practice"), // Will you continue this?
   
   // Status
-  status: pgEnum("status", ["planning", "active", "completed"]).default("planning"),
+  status: pgEnum("status", ["planning", "active", "completed"]),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -204,7 +204,7 @@ export const sleepPerformanceCorrelations = pgTable("sleep_performance_correlati
     "productivity",
     "creativity",
     "social"
-  ]).notNull(),
+  ]),
   
   // Correlation Strength
   correlationCoefficient: decimal("correlation_coefficient", { precision: 4, scale: 3 }), // -1 to 1
@@ -234,7 +234,7 @@ export const sleepInsights = pgTable("sleep_insights", {
     "warning",
     "achievement",
     "correlation_found"
-  ]).notNull(),
+  ]),
   
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
@@ -246,7 +246,7 @@ export const sleepInsights = pgTable("sleep_insights", {
   actionRecommended: text("action_recommended"),
   
   // Priority
-  priority: pgEnum("priority", ["low", "medium", "high"]).default("medium"),
+  priority: pgEnum("priority", ["low", "medium", "high"]),
   
   // User Response
   acknowledged: boolean("acknowledged").default(false),

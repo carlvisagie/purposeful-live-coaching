@@ -48,7 +48,7 @@ export const memoryMasteryProfiles = pgTable("memory_mastery_profiles", {
     "language_learning",
     "prevent_decline",
     "peak_performance"
-  ]).notNull(),
+  ]),
   
   // Preferred Techniques
   preferredTechniques: text("preferred_techniques"), // JSON array
@@ -89,7 +89,7 @@ export const memoryItems = pgTable("memory_items", {
     "quote",
     "list",
     "other"
-  ]).notNull(),
+  ]),
   
   title: varchar("title", { length: 255 }).notNull(),
   content: text("content"), // What to remember
@@ -160,7 +160,7 @@ export const memoryReviews = pgTable("memory_reviews", {
     "cramming", // Last-minute review
     "reinforcement", // Extra practice
     "test" // Self-testing
-  ]).notNull(),
+  ]),
   
   // Performance
   recalled: boolean("recalled").notNull(), // Did you remember it?
@@ -230,7 +230,7 @@ export const learningSessions = pgTable("learning_sessions", {
     "review", // Reviewing old material
     "practice", // Active practice
     "testing" // Self-testing
-  ]).notNull(),
+  ]),
   
   // Duration
   duration: integer("duration"), // minutes
@@ -282,7 +282,7 @@ export const memoryTechniquePractice = pgTable("memory_technique_practice", {
     "dual_coding",
     "elaboration",
     "active_recall"
-  ]).notNull(),
+  ]),
   
   // Practice Details
   practiceType: varchar("practice_type", { length: 255 }), // What were you practicing?
@@ -323,7 +323,7 @@ export const memoryChallenges = pgTable("memory_challenges", {
     "dates_events", // Historical dates
     "vocabulary", // Foreign language
     "custom"
-  ]).notNull(),
+  ]),
   
   // Challenge Details
   itemCount: integer("item_count"), // How many items to memorize
@@ -357,7 +357,7 @@ export const memoryMilestones = pgTable("memory_milestones", {
     "challenge_completed", // Completed a challenge
     "palace_created", // Built a memory palace
     "personal_record"
-  ]).notNull(),
+  ]),
   
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
@@ -487,7 +487,7 @@ export const nameRecallPractice = pgTable("name_recall_practice", {
     "name_to_face", // Hear name, visualize face
     "feature_identification", // Identify outstanding feature
     "association_review" // Review mental associations
-  ]).notNull(),
+  ]),
   
   // Performance
   recalled: boolean("recalled"),
@@ -517,7 +517,7 @@ export const numberMemory = pgTable("number_memory", {
     "id_number",
     "mathematical_constant",
     "other"
-  ]).notNull(),
+  ]),
   
   label: varchar("label", { length: 255 }), // What is this number?
   

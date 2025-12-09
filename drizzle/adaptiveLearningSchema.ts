@@ -62,7 +62,7 @@ export const clientPatterns = pgTable("clientPatterns", {
   relatedPatterns: text("relatedPatterns"), // JSON array of pattern IDs
   
   // Learning status
-  isValidated: pgEnum("isValidated", ["true", "false"]).default("false").notNull(),
+  isValidated: pgEnum("isValidated", ["true", "false"]),
   confidenceScore: integer("confidenceScore").default(50).notNull(),
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -86,7 +86,7 @@ export const recommendationFeedback = pgTable("recommendationFeedback", {
   context: text("context"), // What situation prompted this recommendation
   
   // Feedback
-  wasUsed: pgEnum("wasUsed", ["yes", "no"]).notNull(),
+  wasUsed: pgEnum("wasUsed", ["yes", "no"]),
   wasHelpful: pgEnum("wasHelpful", ["yes", "no", "somewhat"]),
   rating: integer("rating"), // 1-10 scale
   feedbackNotes: text("feedbackNotes"),
@@ -164,8 +164,8 @@ export const trendDetection = pgTable("trendDetection", {
   suggestedApproach: text("suggestedApproach"), // How to address this trend
   
   // Status
-  isActive: pgEnum("isActive", ["true", "false"]).default("true").notNull(),
-  isAddressed: pgEnum("isAddressed", ["true", "false"]).default("false").notNull(),
+  isActive: pgEnum("isActive", ["true", "false"]),
+  isAddressed: pgEnum("isAddressed", ["true", "false"]),
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
@@ -191,7 +191,7 @@ export const strategyAdjustments = pgTable("strategyAdjustments", {
   
   // Implementation
   implementedAt: timestamp("implementedAt").defaultNow().notNull(),
-  isActive: pgEnum("isActive", ["true", "false"]).default("true").notNull(),
+  isActive: pgEnum("isActive", ["true", "false"]),
   
   // Results
   measuredImprovement: text("measuredImprovement"), // JSON: Actual results

@@ -43,12 +43,12 @@ export const userSettings = pgTable("user_settings", {
   language: varchar("language", { length: 10 }).default("en"),
   
   // Units
-  measurementSystem: pgEnum("measurement_system", ["metric", "imperial"]).default("metric"),
-  temperatureUnit: pgEnum("temperature_unit", ["celsius", "fahrenheit"]).default("celsius"),
+  measurementSystem: pgEnum("measurement_system", ["metric", "imperial"]),
+  temperatureUnit: pgEnum("temperature_unit", ["celsius", "fahrenheit"]),
   
   // Date & Time Format
   dateFormat: varchar("date_format", { length: 50 }).default("YYYY-MM-DD"),
-  timeFormat: pgEnum("time_format", ["12h", "24h"]).default("24h"),
+  timeFormat: pgEnum("time_format", ["12h", "24h"]),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -60,7 +60,7 @@ export const privacySettings = pgTable("privacy_settings", {
   userId: varchar("user_id", { length: 255 }).notNull().unique(),
   
   // Profile Visibility
-  profileVisibility: pgEnum("profile_visibility", ["private", "friends", "public"]).default("private"),
+  profileVisibility: pgEnum("profile_visibility", ["private", "friends", "public"]),
   
   // Data Sharing
   shareDataForResearch: boolean("share_data_for_research").default(false),
@@ -93,15 +93,15 @@ export const appearanceSettings = pgTable("appearance_settings", {
   userId: varchar("user_id", { length: 255 }).notNull().unique(),
   
   // Theme
-  theme: pgEnum("theme", ["light", "dark", "auto"]).default("auto"),
+  theme: pgEnum("theme", ["light", "dark", "auto"]),
   accentColor: varchar("accent_color", { length: 50 }).default("#3B82F6"),
   
   // Layout
-  sidebarPosition: pgEnum("sidebar_position", ["left", "right"]).default("left"),
+  sidebarPosition: pgEnum("sidebar_position", ["left", "right"]),
   compactMode: boolean("compact_mode").default(false),
   
   // Typography
-  fontSize: pgEnum("font_size", ["small", "medium", "large", "extra_large"]).default("medium"),
+  fontSize: pgEnum("font_size", ["small", "medium", "large", "extra_large"]),
   fontFamily: varchar("font_family", { length: 100 }).default("system"),
   
   // Accessibility
@@ -137,8 +137,8 @@ export const aiSettings = pgTable("ai_settings", {
   proactiveInterventions: boolean("proactive_interventions").default(true),
   
   // AI Personality
-  aiTone: pgEnum("ai_tone", ["supportive", "challenging", "balanced"]).default("balanced"),
-  aiVerbosity: pgEnum("ai_verbosity", ["concise", "moderate", "detailed"]).default("moderate"),
+  aiTone: pgEnum("ai_tone", ["supportive", "challenging", "balanced"]),
+  aiVerbosity: pgEnum("ai_verbosity", ["concise", "moderate", "detailed"]),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -151,7 +151,7 @@ export const dataSettings = pgTable("data_settings", {
   
   // Backup
   autoBackupEnabled: boolean("auto_backup_enabled").default(true),
-  backupFrequency: pgEnum("backup_frequency", ["daily", "weekly", "monthly"]).default("weekly"),
+  backupFrequency: pgEnum("backup_frequency", ["daily", "weekly", "monthly"]),
   lastBackupAt: timestamp("last_backup_at"),
   
   // Data Retention
@@ -160,10 +160,10 @@ export const dataSettings = pgTable("data_settings", {
     "90_days",
     "1_year",
     "forever"
-  ]).default("forever"),
+  ]),
   
   // Export
-  exportFormat: pgEnum("export_format", ["json", "csv", "pdf"]).default("json"),
+  exportFormat: pgEnum("export_format", ["json", "csv", "pdf"]),
   
   // Storage
   storageUsed: integer("storage_used").default(0), // bytes
@@ -226,7 +226,7 @@ export const consentRecords = pgTable("consent_records", {
     "marketing_emails",
     "research_participation",
     "ai_features"
-  ]).notNull(),
+  ]),
   
   // Consent
   consented: boolean("consented").notNull(),
@@ -279,7 +279,7 @@ export const accountDeletionRequests = pgTable("account_deletion_requests", {
   feedback: text("feedback"),
   
   // Status
-  status: pgEnum("status", ["pending", "processing", "completed", "cancelled"]).default("pending"),
+  status: pgEnum("status", ["pending", "processing", "completed", "cancelled"]),
   
   // Scheduled Deletion
   scheduledFor: timestamp("scheduled_for"), // Grace period (e.g., 30 days)
@@ -324,7 +324,7 @@ export const accessibilityProfiles = pgTable("accessibility_profiles", {
     "protanopia",
     "deuteranopia",
     "tritanopia"
-  ]).default("none"),
+  ]),
   
   // Motor
   reduceMotion: boolean("reduce_motion").default(false),
@@ -352,7 +352,7 @@ export const betaFeatures = pgTable("beta_features", {
   description: text("description"),
   
   // Status
-  status: pgEnum("status", ["development", "beta", "stable", "deprecated"]).default("development"),
+  status: pgEnum("status", ["development", "beta", "stable", "deprecated"]),
   
   // Availability
   availableToAll: boolean("available_to_all").default(false),

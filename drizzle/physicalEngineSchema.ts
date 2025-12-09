@@ -36,7 +36,7 @@ export const physicalProfiles = pgTable("physical_profiles", {
     "general_health",
     "injury_recovery",
     "longevity"
-  ]).notNull(),
+  ]),
   
   specificGoals: text("specific_goals"), // JSON array
   
@@ -85,7 +85,7 @@ export const workouts = pgTable("workouts", {
     "martial_arts",
     "dance",
     "other"
-  ]).notNull(),
+  ]),
   
   // Focus
   primaryFocus: pgEnum("primary_focus", [
@@ -203,7 +203,7 @@ export const cardioSessions = pgTable("cardio_sessions", {
     "stair_climbing",
     "jump_rope",
     "other"
-  ]).notNull(),
+  ]),
   
   // Duration & Distance
   duration: integer("duration"), // minutes
@@ -247,7 +247,7 @@ export const mobilityWork = pgTable("mobility_work", {
     "dynamic_warmup",
     "mobility_drills",
     "joint_prep"
-  ]).notNull(),
+  ]),
   
   // Focus Areas
   areasWorked: text("areas_worked"), // JSON: hips, shoulders, ankles, etc.
@@ -368,7 +368,7 @@ export const strengthBenchmarks = pgTable("strength_benchmarks", {
     "5RM",
     "max_reps", // Max reps at bodyweight or specific weight
     "time_to_failure"
-  ]).notNull(),
+  ]),
   
   // Result
   weight: decimal("weight", { precision: 6, scale: 2 }), // kg

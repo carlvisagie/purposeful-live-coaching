@@ -12,8 +12,8 @@ export const relationshipProfiles = pgTable("relationship_profiles", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Relationship Type & Status
-  relationshipType: pgEnum("relationship_type", ["dating", "committed", "engaged", "married", "separated", "divorced", "post_breakup"]).notNull(),
-  relationshipStatus: pgEnum("relationship_status", ["active", "on_break", "ending", "ended"]).notNull(),
+  relationshipType: pgEnum("relationship_type", ["dating", "committed", "engaged", "married", "separated", "divorced", "post_breakup"]),
+  relationshipStatus: pgEnum("relationship_status", ["active", "on_break", "ending", "ended"]),
   relationshipDuration: integer("relationship_duration"), // months
   
   // Partner Information (optional, for privacy)
@@ -40,7 +40,7 @@ export const relationshipProfiles = pgTable("relationship_profiles", {
     "navigate_breakup",
     "co_parenting",
     "find_new_relationship"
-  ]).notNull(),
+  ]),
   
   specificGoals: text("specific_goals"), // JSON array
   
@@ -66,7 +66,7 @@ export const communicationLogs = pgTable("communication_logs", {
   logDate: timestamp("log_date").notNull(),
   
   // Conversation Type
-  conversationType: pgEnum("conversation_type", ["conflict", "difficult_topic", "check_in", "quality_time", "repair_attempt"]).notNull(),
+  conversationType: pgEnum("conversation_type", ["conflict", "difficult_topic", "check_in", "quality_time", "repair_attempt"]),
   
   // Topic & Context
   topic: varchar("topic", { length: 255 }).notNull(),
@@ -139,11 +139,11 @@ export const connectionBids = pgTable("connection_bids", {
   bidDate: timestamp("bid_date").notNull(),
   
   // Bid Details
-  bidType: pgEnum("bid_type", ["conversation", "affection", "humor", "help", "quality_time"]).notNull(),
+  bidType: pgEnum("bid_type", ["conversation", "affection", "humor", "help", "quality_time"]),
   bidDescription: text("bid_description"),
   
   // Response
-  response: pgEnum("response", ["turned_toward", "turned_away", "turned_against"]).notNull(),
+  response: pgEnum("response", ["turned_toward", "turned_away", "turned_against"]),
   responseDescription: text("response_description"),
   
   // Impact
@@ -172,7 +172,7 @@ export const repairAttempts = pgTable("repair_attempts", {
     "humor",
     "affection",
     "compromise_offer"
-  ]).notNull(),
+  ]),
   
   repairDetails: text("repair_details"),
   
@@ -204,7 +204,7 @@ export const relationshipRituals = pgTable("relationship_rituals", {
     "evening_routine",
     "appreciation_practice",
     "conflict_resolution_ritual"
-  ]).notNull(),
+  ]),
   
   ritualName: varchar("ritual_name", { length: 255 }).notNull(),
   description: text("description"),
@@ -273,7 +273,7 @@ export const loveLanguageActions = pgTable("love_language_actions", {
   actionDate: timestamp("action_date").notNull(),
   
   // Action Type
-  actionType: pgEnum("action_type", ["given", "received"]).notNull(),
+  actionType: pgEnum("action_type", ["given", "received"]),
   
   // Love Language
   loveLanguage: pgEnum("love_language", [
@@ -282,7 +282,7 @@ export const loveLanguageActions = pgTable("love_language_actions", {
     "receiving_gifts",
     "acts_of_service",
     "physical_touch"
-  ]).notNull(),
+  ]),
   
   // Specific Action
   actionDescription: text("action_description").notNull(),

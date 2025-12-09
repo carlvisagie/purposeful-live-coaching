@@ -58,9 +58,9 @@ export const aiCoachProfiles = pgTable("ai_coach_profiles", {
     "supportive",
     "challenging",
     "balanced"
-  ]).default("balanced"),
+  ]),
   
-  verbosity: pgEnum("verbosity", ["concise", "moderate", "detailed"]).default("moderate"),
+  verbosity: pgEnum("verbosity", ["concise", "moderate", "detailed"]),
   
   // Interaction Preferences
   proactiveCheckins: boolean("proactive_checkins").default(true),
@@ -102,10 +102,10 @@ export const coachingConversations = pgTable("coaching_conversations", {
     "celebration", // Celebrating wins
     "exploration", // Exploring options
     "accountability" // Accountability conversation
-  ]).notNull(),
+  ]),
   
   // Status
-  status: pgEnum("status", ["active", "paused", "completed"]).default("active"),
+  status: pgEnum("status", ["active", "paused", "completed"]),
   
   // Outcomes
   insightsGenerated: integer("insights_generated").default(0),
@@ -128,7 +128,7 @@ export const conversationMessages = pgTable("conversation_messages", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Message Details
-  sender: pgEnum("sender", ["user", "ai_coach"]).notNull(),
+  sender: pgEnum("sender", ["user", "ai_coach"]),
   messageText: text("message_text").notNull(),
   
   // Message Type (for AI messages)
@@ -186,7 +186,7 @@ export const coachingQuestions = pgTable("coaching_questions", {
     "future_focused", // "Where do you want to be?"
     "clarifying", // "Can you tell me more about...?"
     "challenging" // "Is that really true?"
-  ]).notNull(),
+  ]),
   
   // Category
   category: varchar("category", { length: 100 }),
@@ -223,7 +223,7 @@ export const aiRecommendations = pgTable("ai_recommendations", {
     "adjustment_suggestion", // Adjust your approach
     "timing_suggestion", // Change when you do X
     "connection_suggestion" // Connect with someone
-  ]).notNull(),
+  ]),
   
   // Content
   title: varchar("title", { length: 255 }).notNull(),
@@ -237,10 +237,10 @@ export const aiRecommendations = pgTable("ai_recommendations", {
   confidence: decimal("confidence", { precision: 5, scale: 2 }), // %
   
   // Priority
-  priority: pgEnum("priority", ["low", "medium", "high", "urgent"]).default("medium"),
+  priority: pgEnum("priority", ["low", "medium", "high", "urgent"]),
   
   // Status
-  status: pgEnum("status", ["pending", "accepted", "declined", "deferred"]).default("pending"),
+  status: pgEnum("status", ["pending", "accepted", "declined", "deferred"]),
   
   // User Response
   userFeedback: text("user_feedback"),
@@ -271,7 +271,7 @@ export const proactiveCheckIns = pgTable("proactive_check_ins", {
     "obstacle_check", // Still struggling with X?
     "celebration", // Congrats on X!
     "motivation_boost" // Need a boost?
-  ]).notNull(),
+  ]),
   
   // Trigger
   triggerType: pgEnum("trigger_type", [
@@ -282,7 +282,7 @@ export const proactiveCheckIns = pgTable("proactive_check_ins", {
     "low_engagement", // Haven't logged in
     "stress_spike", // High stress detected
     "achievement" // Something to celebrate
-  ]).notNull(),
+  ]),
   
   // Message
   message: text("message"),
@@ -314,7 +314,7 @@ export const coachingInsights = pgTable("coaching_insights", {
     "progress_highlight", // "Look how far you've come..."
     "connection", // "X seems related to Y..."
     "discrepancy" // "You say X but do Y..."
-  ]).notNull(),
+  ]),
   
   // Content
   title: varchar("title", { length: 255 }).notNull(),
@@ -407,7 +407,7 @@ export const aiCoachFeedback = pgTable("ai_coach_feedback", {
     "insightful",
     "generic",
     "perfect"
-  ]).notNull(),
+  ]),
   
   // Details
   feedbackText: text("feedback_text"),
@@ -436,7 +436,7 @@ export const coachingResources = pgTable("coaching_resources", {
     "podcast",
     "course",
     "tool"
-  ]).notNull(),
+  ]),
   
   // URL
   url: varchar("url", { length: 500 }),

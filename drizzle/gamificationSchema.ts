@@ -89,7 +89,7 @@ export const experiencePointsLog = pgTable("experience_points_log", {
     "helping_others",
     "consistency_bonus",
     "level_up"
-  ]).notNull(),
+  ]),
   
   sourceId: varchar("source_id", { length: 255 }), // ID of the habit, goal, etc.
   
@@ -120,7 +120,7 @@ export const achievements = pgTable("achievements", {
     "learning",
     "health",
     "transformation"
-  ]).notNull(),
+  ]),
   
   // Difficulty
   difficulty: pgEnum("difficulty", ["bronze", "silver", "gold", "platinum", "legendary"]),
@@ -174,7 +174,7 @@ export const challenges = pgTable("challenges", {
     "weekly", // Complete this week
     "one_time", // Complete once
     "recurring" // Repeats
-  ]).notNull(),
+  ]),
   
   // Difficulty
   difficulty: integer("difficulty"), // 1-10
@@ -281,7 +281,7 @@ export const milestones = pgTable("milestones", {
     "first_habit_mastered",
     "level_milestone",
     "transformation_milestone"
-  ]).notNull(),
+  ]),
   
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
@@ -311,7 +311,7 @@ export const leaderboards = pgTable("leaderboards", {
     "habits_mastered", // Most habits mastered
     "community_support", // Most helpful to others
     "transformation" // Biggest transformation
-  ]).notNull(),
+  ]),
   
   // Time Period
   timePeriod: pgEnum("time_period", ["all_time", "monthly", "weekly"]),
@@ -382,7 +382,7 @@ export const motivationBoosts = pgTable("motivation_boosts", {
     "goal_stalled", // No progress on goal
     "achievement_close", // Almost unlocked achievement
     "milestone_approaching" // Close to milestone
-  ]).notNull(),
+  ]),
   
   // Boost Type
   boostType: pgEnum("boost_type", [
@@ -391,7 +391,7 @@ export const motivationBoosts = pgTable("motivation_boosts", {
     "challenge", // New challenge offered
     "reward_preview", // Show what they're close to earning
     "social_proof" // Others are succeeding
-  ]).notNull(),
+  ]),
   
   // Content
   message: text("message"),

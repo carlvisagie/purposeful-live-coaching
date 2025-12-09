@@ -20,7 +20,7 @@ export const careerProfiles = pgTable("career_profiles", {
     "student",
     "career_transition",
     "retired"
-  ]).notNull(),
+  ]),
   
   currentRole: varchar("current_role", { length: 255 }),
   currentIndustry: varchar("current_industry", { length: 255 }),
@@ -36,7 +36,7 @@ export const careerProfiles = pgTable("career_profiles", {
     "work_life_balance",
     "skill_development",
     "leadership_role"
-  ]).notNull(),
+  ]),
   
   targetRole: varchar("target_role", { length: 255 }),
   targetIndustry: varchar("target_industry", { length: 255 }),
@@ -80,7 +80,7 @@ export const jobSearchActivities = pgTable("job_search_activities", {
     "follow_up",
     "offer_received",
     "rejection"
-  ]).notNull(),
+  ]),
   
   // Job Details
   companyName: varchar("company_name", { length: 255 }),
@@ -194,7 +194,7 @@ export const purposeActivities = pgTable("purpose_activities", {
     "legacy_reflection",
     "contribution_mapping",
     "meaning_making"
-  ]).notNull(),
+  ]),
   
   // Reflections
   insights: text("insights"),
@@ -227,7 +227,7 @@ export const careerExperiments = pgTable("career_experiments", {
     "side_project",
     "online_course",
     "industry_event"
-  ]).notNull(),
+  ]),
   
   experimentName: varchar("experiment_name", { length: 255 }).notNull(),
   description: text("description"),
@@ -270,7 +270,7 @@ export const careerMilestones = pgTable("career_milestones", {
     "network_milestone",
     "business_launch",
     "revenue_milestone"
-  ]).notNull(),
+  ]),
   
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),

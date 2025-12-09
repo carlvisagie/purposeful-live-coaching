@@ -39,19 +39,19 @@ export const dailyCheckins = pgTable("dailyCheckins", {
   checkinDate: timestamp("checkinDate").defaultNow().notNull(),
   
   // Physical health (minimal questions)
-  sleptWell: pgEnum("sleptWell", ["yes", "no"]).notNull(),
-  ateWell: pgEnum("ateWell", ["yes", "no"]).notNull(),
-  movedBody: pgEnum("movedBody", ["yes", "no"]).notNull(),
+  sleptWell: pgEnum("sleptWell", ["yes", "no"]),
+  ateWell: pgEnum("ateWell", ["yes", "no"]),
+  movedBody: pgEnum("movedBody", ["yes", "no"]),
   
   // Emotional state (single rating)
   emotionalState: integer("emotionalState").notNull(), // 1-10 scale
   
   // Discipline tracking
-  followedPlan: pgEnum("followedPlan", ["yes", "no"]).notNull(),
-  controlledImpulses: pgEnum("controlledImpulses", ["yes", "no"]).notNull(),
+  followedPlan: pgEnum("followedPlan", ["yes", "no"]),
+  controlledImpulses: pgEnum("controlledImpulses", ["yes", "no"]),
   
   // Identity reinforcement
-  actedLikeTargetIdentity: pgEnum("actedLikeTargetIdentity", ["yes", "no"]).notNull(),
+  actedLikeTargetIdentity: pgEnum("actedLikeTargetIdentity", ["yes", "no"]),
   
   // Optional notes (not required)
   notes: text("notes"),
@@ -71,7 +71,7 @@ export const habitCompletions = pgTable("habitCompletions", {
   id: serial("id").primaryKey(),
   habitId: integer("habitId").notNull().references(() => habits.id),
   completionDate: timestamp("completionDate").defaultNow().notNull(),
-  completed: pgEnum("completed", ["yes", "no"]).notNull(),
+  completed: pgEnum("completed", ["yes", "no"]),
   notes: text("notes"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
@@ -88,13 +88,13 @@ export const disciplineEvents = pgTable("disciplineEvents", {
   eventDate: timestamp("eventDate").defaultNow().notNull(),
   
   // Event details
-  eventType: pgEnum("eventType", ["impulse_controlled", "impulse_failed", "discipline_win", "discipline_fail"]).notNull(),
+  eventType: pgEnum("eventType", ["impulse_controlled", "impulse_failed", "discipline_win", "discipline_fail"]),
   situation: text("situation"), // What happened
   response: text("response"), // How they responded
   outcome: text("outcome"), // Result
   
   // Identity impact
-  reinforcedIdentity: pgEnum("reinforcedIdentity", ["yes", "no"]).notNull(),
+  reinforcedIdentity: pgEnum("reinforcedIdentity", ["yes", "no"]),
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
@@ -118,7 +118,7 @@ export const microHabits = pgTable("microHabits", {
   identityReinforcement: text("identityReinforcement"), // "This makes me [identity]"
   
   // Status
-  isActive: pgEnum("isActive", ["true", "false"]).default("true").notNull(),
+  isActive: pgEnum("isActive", ["true", "false"]),
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),

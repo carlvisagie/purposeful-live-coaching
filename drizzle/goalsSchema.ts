@@ -106,7 +106,7 @@ export const goals = pgTable("goals", {
     "learning", // Acquire a skill
     "avoidance", // Stop doing something
     "identity" // Become a type of person
-  ]).notNull(),
+  ]),
   
   // Framework
   framework: pgEnum("framework", ["smart", "okr", "woop", "habit_based", "identity_based"]),
@@ -157,10 +157,10 @@ export const goals = pgTable("goals", {
     "behind",
     "achieved",
     "abandoned"
-  ]).default("not_started"),
+  ]),
   
   // Priority
-  priority: pgEnum("priority", ["low", "medium", "high", "critical"]).default("medium"),
+  priority: pgEnum("priority", ["low", "medium", "high", "critical"]),
   
   // Visibility
   isPublic: boolean("is_public").default(false), // Share with community?
@@ -196,7 +196,7 @@ export const okrs = pgTable("okrs", {
   overallProgress: decimal("overall_progress", { precision: 5, scale: 2 }), // 0-100
   
   // Status
-  status: pgEnum("status", ["not_started", "in_progress", "achieved", "abandoned"]).default("not_started"),
+  status: pgEnum("status", ["not_started", "in_progress", "achieved", "abandoned"]),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -220,7 +220,7 @@ export const keyResults = pgTable("key_results", {
   progressPercent: decimal("progress_percent", { precision: 5, scale: 2 }), // 0-100
   
   // Status
-  status: pgEnum("status", ["not_started", "in_progress", "achieved"]).default("not_started"),
+  status: pgEnum("status", ["not_started", "in_progress", "achieved"]),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -372,7 +372,7 @@ export const goalAccountability = pgTable("goal_accountability", {
     "public_commitment",
     "coach",
     "financial_stake" // Put money on the line
-  ]).notNull(),
+  ]),
   
   // Partner (if applicable)
   partnerId: varchar("partner_id", { length: 255 }),
@@ -404,7 +404,7 @@ export const goalReflections = pgTable("goal_reflections", {
     "achievement_reflection",
     "obstacle_reflection",
     "abandonment_reflection"
-  ]).notNull(),
+  ]),
   
   // Reflection Questions
   whatWorked: text("what_worked"),
@@ -431,7 +431,7 @@ export const goalPredictions = pgTable("goal_predictions", {
     "completion_date", // When will you achieve it?
     "obstacle_likelihood", // What obstacles will you face?
     "optimal_adjustment" // What should you change?
-  ]).notNull(),
+  ]),
   
   // Prediction
   prediction: text("prediction"),

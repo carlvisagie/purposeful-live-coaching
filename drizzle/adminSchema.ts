@@ -41,7 +41,7 @@ export const adminUsers = pgTable("admin_users", {
     "support_agent",
     "analyst",
     "developer"
-  ]).notNull(),
+  ]),
   
   // Permissions
   permissions: text("permissions"), // JSON: specific permissions
@@ -70,7 +70,7 @@ export const adminActions = pgTable("admin_actions", {
     "data_access",
     "support",
     "security"
-  ]).notNull(),
+  ]),
   
   // Target
   targetType: varchar("target_type", { length: 100 }),
@@ -106,10 +106,10 @@ export const supportTickets = pgTable("support_tickets", {
     "data_privacy",
     "general_inquiry",
     "other"
-  ]).notNull(),
+  ]),
   
   // Priority
-  priority: pgEnum("priority", ["low", "medium", "high", "urgent"]).default("medium"),
+  priority: pgEnum("priority", ["low", "medium", "high", "urgent"]),
   
   // Status
   status: pgEnum("status", [
@@ -120,7 +120,7 @@ export const supportTickets = pgTable("support_tickets", {
     "waiting_on_team",
     "resolved",
     "closed"
-  ]).default("new"),
+  ]),
   
   // Assignment
   assignedTo: varchar("assigned_to", { length: 255 }),
@@ -153,7 +153,7 @@ export const ticketMessages = pgTable("ticket_messages", {
   
   // Sender
   senderId: varchar("sender_id", { length: 255 }).notNull(),
-  senderType: pgEnum("sender_type", ["user", "admin", "system"]).notNull(),
+  senderType: pgEnum("sender_type", ["user", "admin", "system"]),
   
   // Message
   message: text("message").notNull(),
@@ -185,7 +185,7 @@ export const knowledgeBaseArticles = pgTable("knowledge_base_articles", {
   metaDescription: text("meta_description"),
   
   // Status
-  status: pgEnum("status", ["draft", "published", "archived"]).default("draft"),
+  status: pgEnum("status", ["draft", "published", "archived"]),
   
   // Author
   authorId: varchar("author_id", { length: 255 }),
@@ -231,7 +231,7 @@ export const userFeedback = pgTable("user_feedback", {
     "general_feedback",
     "complaint",
     "praise"
-  ]).notNull(),
+  ]),
   
   // Content
   title: varchar("title", { length: 500 }),
@@ -252,7 +252,7 @@ export const userFeedback = pgTable("user_feedback", {
     "in_progress",
     "completed",
     "declined"
-  ]).default("new"),
+  ]),
   
   // Votes
   upvotes: integer("upvotes").default(0),
@@ -278,7 +278,7 @@ export const bugReports = pgTable("bug_reports", {
   actualBehavior: text("actual_behavior"),
   
   // Severity
-  severity: pgEnum("severity", ["low", "medium", "high", "critical"]).default("medium"),
+  severity: pgEnum("severity", ["low", "medium", "high", "critical"]),
   
   // Environment
   browser: varchar("browser", { length: 100 }),
@@ -297,7 +297,7 @@ export const bugReports = pgTable("bug_reports", {
     "fixed",
     "cannot_reproduce",
     "wont_fix"
-  ]).default("new"),
+  ]),
   
   // Assignment
   assignedTo: varchar("assigned_to", { length: 255 }),
@@ -353,13 +353,13 @@ export const systemAnnouncements = pgTable("system_announcements", {
     "update",
     "alert",
     "info"
-  ]).notNull(),
+  ]),
   
   // Severity
-  severity: pgEnum("severity", ["info", "warning", "critical"]).default("info"),
+  severity: pgEnum("severity", ["info", "warning", "critical"]),
   
   // Visibility
-  targetAudience: pgEnum("target_audience", ["all_users", "specific_users", "admins"]).default("all_users"),
+  targetAudience: pgEnum("target_audience", ["all_users", "specific_users", "admins"]),
   targetUserIds: text("target_user_ids"), // JSON
   
   // Display
@@ -391,7 +391,7 @@ export const userReports = pgTable("user_reports", {
     "comment",
     "message",
     "other"
-  ]).notNull(),
+  ]),
   reportedId: varchar("reported_id", { length: 255 }).notNull(),
   
   // Reason
@@ -403,7 +403,7 @@ export const userReports = pgTable("user_reports", {
     "hate_speech",
     "violence",
     "other"
-  ]).notNull(),
+  ]),
   description: text("description"),
   
   // Status
@@ -412,7 +412,7 @@ export const userReports = pgTable("user_reports", {
     "under_review",
     "action_taken",
     "dismissed"
-  ]).default("pending"),
+  ]),
   
   // Review
   reviewedBy: varchar("reviewed_by", { length: 255 }),
@@ -474,7 +474,7 @@ export const adminNotifications = pgTable("admin_notifications", {
     "user_report",
     "feature_request",
     "bug_report"
-  ]).notNull(),
+  ]),
   
   // Content
   title: varchar("title", { length: 500 }).notNull(),
@@ -484,7 +484,7 @@ export const adminNotifications = pgTable("admin_notifications", {
   actionUrl: varchar("action_url", { length: 500 }),
   
   // Priority
-  priority: pgEnum("priority", ["low", "medium", "high", "urgent"]).default("medium"),
+  priority: pgEnum("priority", ["low", "medium", "high", "urgent"]),
   
   // Status
   read: boolean("read").default(false),

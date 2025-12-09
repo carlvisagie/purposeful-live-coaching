@@ -35,8 +35,8 @@ export const analyticsProfiles = pgTable("analytics_profiles", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Dashboard Preferences
-  preferredView: pgEnum("preferred_view", ["overview", "detailed", "minimal"]).default("overview"),
-  preferredChartType: pgEnum("preferred_chart_type", ["line", "bar", "area", "mixed"]).default("line"),
+  preferredView: pgEnum("preferred_view", ["overview", "detailed", "minimal"]),
+  preferredChartType: pgEnum("preferred_chart_type", ["line", "bar", "area", "mixed"]),
   
   // Tracking Preferences
   trackingFrequency: pgEnum("tracking_frequency", ["daily", "weekly", "monthly"]),
@@ -235,7 +235,7 @@ export const predictions = pgTable("predictions", {
     "wellness_trajectory", // Where are you headed?
     "risk_assessment", // Risk of burnout, relapse, etc.
     "optimal_intervention" // What should you do next?
-  ]).notNull(),
+  ]),
   
   // Target
   targetId: varchar("target_id", { length: 255 }), // Goal ID, habit ID, etc.
@@ -277,7 +277,7 @@ export const insights = pgTable("insights", {
     "recommendation", // "Try this intervention"
     "warning", // "You're at risk of burnout"
     "celebration" // "You've improved 50%!"
-  ]).notNull(),
+  ]),
   
   // Content
   title: varchar("title", { length: 255 }).notNull(),
@@ -291,7 +291,7 @@ export const insights = pgTable("insights", {
   suggestedAction: text("suggested_action"),
   
   // Priority
-  priority: pgEnum("priority", ["low", "medium", "high", "urgent"]).default("medium"),
+  priority: pgEnum("priority", ["low", "medium", "high", "urgent"]),
   
   // User Response
   viewed: boolean("viewed").default(false),
@@ -323,7 +323,7 @@ export const progressMilestones = pgTable("progress_milestones", {
     "goal_achieved",
     "consistency_milestone",
     "transformation_milestone"
-  ]).notNull(),
+  ]),
   
   // Details
   title: varchar("title", { length: 255 }).notNull(),
@@ -355,7 +355,7 @@ export const comparativeAnalytics = pgTable("comparative_analytics", {
     "year_over_year",
     "best_week_vs_current",
     "worst_week_vs_current"
-  ]).notNull(),
+  ]),
   
   // Metric
   metric: varchar("metric", { length: 255 }).notNull(),

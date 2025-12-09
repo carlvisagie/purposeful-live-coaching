@@ -44,10 +44,10 @@ export const integrationProfiles = pgTable("integration_profiles", {
   
   // Integration Preferences
   autoSyncEnabled: boolean("auto_sync_enabled").default(true),
-  syncFrequency: pgEnum("sync_frequency", ["realtime", "hourly", "daily", "manual"]).default("daily"),
+  syncFrequency: pgEnum("sync_frequency", ["realtime", "hourly", "daily", "manual"]),
   
   // Privacy
-  dataSharing: pgEnum("data_sharing", ["minimal", "standard", "full"]).default("standard"),
+  dataSharing: pgEnum("data_sharing", ["minimal", "standard", "full"]),
   
   // Stats
   totalIntegrations: integer("total_integrations").default(0),
@@ -81,10 +81,10 @@ export const availableIntegrations = pgTable("available_integrations", {
     "finance",
     "communication",
     "other"
-  ]).notNull(),
+  ]),
   
   // Authentication
-  authType: pgEnum("auth_type", ["oauth2", "api_key", "webhook", "manual"]).notNull(),
+  authType: pgEnum("auth_type", ["oauth2", "api_key", "webhook", "manual"]),
   
   // Capabilities
   capabilities: text("capabilities"), // JSON: what data can be imported/exported
@@ -127,7 +127,7 @@ export const userIntegrations = pgTable("user_integrations", {
     "error",
     "pending_auth",
     "expired"
-  ]).default("pending_auth"),
+  ]),
   
   // Authentication
   accessToken: varchar("access_token", { length: 500 }), // Encrypted
@@ -139,7 +139,7 @@ export const userIntegrations = pgTable("user_integrations", {
   
   // Sync Settings
   syncEnabled: boolean("sync_enabled").default(true),
-  syncFrequency: pgEnum("sync_frequency", ["realtime", "hourly", "daily", "manual"]).default("daily"),
+  syncFrequency: pgEnum("sync_frequency", ["realtime", "hourly", "daily", "manual"]),
   lastSyncAt: timestamp("last_sync_at"),
   nextSyncAt: timestamp("next_sync_at"),
   
@@ -172,10 +172,10 @@ export const syncLogs = pgTable("sync_logs", {
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Sync Details
-  syncType: pgEnum("sync_type", ["import", "export", "bidirectional"]).notNull(),
+  syncType: pgEnum("sync_type", ["import", "export", "bidirectional"]),
   
   // Status
-  status: pgEnum("status", ["started", "in_progress", "completed", "failed"]).default("started"),
+  status: pgEnum("status", ["started", "in_progress", "completed", "failed"]),
   
   // Data
   recordsProcessed: integer("records_processed").default(0),
@@ -217,7 +217,7 @@ export const importedData = pgTable("imported_data", {
     "calendar_event",
     "transaction",
     "other"
-  ]).notNull(),
+  ]),
   
   // Source
   sourceId: varchar("source_id", { length: 255 }), // ID in source system
@@ -259,7 +259,7 @@ export const exportedData = pgTable("exported_data", {
   destinationId: varchar("destination_id", { length: 255 }), // ID in destination system
   
   // Status
-  status: pgEnum("status", ["pending", "sent", "confirmed", "failed"]).default("pending"),
+  status: pgEnum("status", ["pending", "sent", "confirmed", "failed"]),
   
   // Error
   errorMessage: text("error_message"),
@@ -414,7 +414,7 @@ export const integrationRecommendations = pgTable("integration_recommendations",
   confidence: decimal("confidence", { precision: 5, scale: 2 }), // %
   
   // Status
-  status: pgEnum("status", ["pending", "accepted", "declined", "deferred"]).default("pending"),
+  status: pgEnum("status", ["pending", "accepted", "declined", "deferred"]),
   
   // User Response
   userFeedback: text("user_feedback"),
@@ -434,16 +434,16 @@ export const exportRequests = pgTable("export_requests", {
     "module_export", // Specific module data
     "date_range_export", // Data from date range
     "custom_export" // Custom query
-  ]).notNull(),
+  ]),
   
   // Format
-  exportFormat: pgEnum("export_format", ["json", "csv", "pdf", "xlsx"]).notNull(),
+  exportFormat: pgEnum("export_format", ["json", "csv", "pdf", "xlsx"]),
   
   // Filters
   filters: text("filters"), // JSON: what to include
   
   // Status
-  status: pgEnum("status", ["pending", "processing", "completed", "failed"]).default("pending"),
+  status: pgEnum("status", ["pending", "processing", "completed", "failed"]),
   
   // File
   filePath: varchar("file_path", { length: 500 }),
