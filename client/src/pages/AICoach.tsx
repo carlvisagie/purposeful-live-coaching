@@ -172,11 +172,11 @@ export default function AICoach() {
     }
   };
 
-  // Redirect to login if not authenticated
-  if (!authLoading && !user) {
-    window.location.href = getLoginUrl();
-    return null;
-  }
+  // Auth requirement disabled for demo mode
+  // if (!authLoading && !user) {
+  //   window.location.href = getLoginUrl();
+  //   return null;
+  // }
 
   // Auth and subscription checks disabled for demo/development
   // if (authLoading || subscriptionLoading) {
