@@ -1,6 +1,5 @@
 import { int, integer, pgTable, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { clients } from "./schema";
-import { habits } from "./habitFormationSchema";
 
 /**
  * Identity Profiles - Track user's evolving identity

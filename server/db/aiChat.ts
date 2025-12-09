@@ -59,8 +59,8 @@ export async function createConversation(data: InsertAiChatConversation) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
-  const [result] = await db.insert(aiChatConversations).values(data);
-  return result.insertId;
+  const [result] = await db.insert(aiChatConversations).values(data).returning();
+  return result.id;
 }
 
 /**
@@ -71,7 +71,7 @@ export async function addMessage(data: InsertAiChatMessage) {
   if (!db) throw new Error("Database not available");
 
   // Insert message
-  const [result] = await db.insert(aiChatMessages).values(data);
+  const [result] = await db.insert(aiChatMessages).values(data).returning();
 
   // Update conversation's lastMessageAt
   await db
@@ -79,7 +79,7 @@ export async function addMessage(data: InsertAiChatMessage) {
     .set({ lastMessageAt: new Date() })
     .where(eq(aiChatConversations.id, data.conversationId));
 
-  return result.insertId;
+  return result.id;
 }
 
 /**

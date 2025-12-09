@@ -229,7 +229,7 @@ export const challengeCompletions = pgTable("challenge_completions", {
 // Milestones (Rites of Passage)
 export const youngMenMilestones = pgTable("young_men_milestones", {
   id: varchar("id", { length: 255 }).primaryKey(),
-  profileId: varchar("profile_id", { length: 255 }).notNull(),
+  profileId: varchar("profile_id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   milestoneType: varchar("milestone_type", { length: 50 }),
