@@ -139,15 +139,20 @@ export const aiChatRouter = router({
   /**
    * Get all conversations for current user
    */
-  listConversations: protectedProcedure.query(async ({ ctx }) => {
-    const conversations = await getUserConversations(ctx.user.id);
+  listConversations: publicProcedure.query(async ({ ctx }) => {
+    // Demo mode: return empty array if no user
+    const userId = ctx.user?.id;
+    if (!userId) {
+      return { conversations: [] };
+    }
+    const conversations = await getUserConversations(userId);
     return { conversations };
   }),
 
   /**
    * Get a specific conversation with all messages
    */
-  getConversation: protectedProcedure
+  getConversation: publicProcedure
     .input(z.object({ conversationId: z.number() }))
     .query(async ({ input, ctx }) => {
       const data = await getConversationWithMessages(input.conversationId);
@@ -159,8 +164,9 @@ export const aiChatRouter = router({
         });
       }
 
-      // Verify user owns this conversation
-      if (data.conversation.userId !== ctx.user.id) {
+      // Verify user owns this conversation (demo mode: allow null userId)
+      const userId = ctx.user?.id || null;
+      if (data.conversation.userId !== userId && data.conversation.userId !== null) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "You don't have access to this conversation",
@@ -173,7 +179,7 @@ export const aiChatRouter = router({
   /**
    * Create a new conversation
    */
-  createConversation: protectedProcedure
+  createConversation: publicProcedure
     .input(
       z.object({
         title: z.string().optional(),
@@ -181,8 +187,11 @@ export const aiChatRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
+      // Demo mode: allow guest users (use null for userId if not authenticated)
+      const userId = ctx.user?.id || null;
+      
       const conversationId = await createConversation({
-        userId: ctx.user.id,
+        userId,
         clientId: input.clientId,
         title: input.title || "New Conversation",
       });
@@ -193,7 +202,7 @@ export const aiChatRouter = router({
   /**
    * Send a message and get AI response
    */
-  sendMessage: protectedProcedure
+  sendMessage: publicProcedure
     .input(
       z.object({
         conversationId: z.number(),
@@ -201,9 +210,10 @@ export const aiChatRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      // Verify conversation ownership
+      // Verify conversation ownership (demo mode: allow null userId)
       const data = await getConversationWithMessages(input.conversationId);
-      if (!data || data.conversation.userId !== ctx.user.id) {
+      const userId = ctx.user?.id || null;
+      if (!data || (data.conversation.userId !== userId && data.conversation.userId !== null)) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "Invalid conversation",
@@ -235,30 +245,30 @@ export const aiChatRouter = router({
       // Build enhanced system prompt with context
       let enhancedSystemPrompt = SYSTEM_PROMPT;
       
-      // Load recent files for context
+      // Load recent files for context (demo mode: skip if no user)
       const { clientFiles } = await import("../../drizzle/schema");
-      const recentFiles = await db
+      const recentFiles = userId ? await db
         .select()
         .from(clientFiles)
-        .where(eq(clientFiles.userId, ctx.user.id))
+        .where(eq(clientFiles.userId, userId))
         .orderBy(desc(clientFiles.uploadedAt))
-        .limit(5);
+        .limit(5) : [];
       
       const filesWithContent = recentFiles.filter(f => 
         f.transcriptionText || f.fileType === "transcript" || f.fileType === "document"
       );
 
-      // Load user profile for progressive profiling
-      const [userProfile] = await db
+      // Load user profile for progressive profiling (demo mode: skip if no user)
+      const userProfile = userId ? (await db
         .select()
         .from(users)
-        .where(eq(users.id, ctx.user.id))
-        .limit(1);
+        .where(eq(users.id, userId))
+        .limit(1))[0] : null;
 
       // Add cross-conversation memory for first message in new conversation
-      if (isFirstMessage) {
+      if (isFirstMessage && userId) {
         // Load user's previous conversations for context
-        const previousConversations = await getUserConversations(ctx.user.id);
+        const previousConversations = await getUserConversations(userId);
         const otherConversations = previousConversations.filter(c => c.id !== input.conversationId);
         
         if (otherConversations.length > 0) {
@@ -359,13 +369,15 @@ export const aiChatRouter = router({
           const { profileExtractionRouter } = await import("./profileExtraction");
           const extractionContext = data.messages.slice(-3).map(m => `${m.role}: ${m.content}`).join("\n");
           
-          // Call extraction in background (don't await)
-          profileExtractionRouter.createCaller({ user: ctx.user, req: ctx.req, res: ctx.res })
-            .extractFromMessage({
-              message: input.message,
-              conversationContext: extractionContext,
-            })
-            .catch(err => console.error("[Profile Extraction] Background extraction failed:", err));
+          // Call extraction in background (don't await) - demo mode: skip if no user
+          if (ctx.user) {
+            profileExtractionRouter.createCaller({ user: ctx.user, req: ctx.req, res: ctx.res })
+              .extractFromMessage({
+                message: input.message,
+                conversationContext: extractionContext,
+              })
+              .catch(err => console.error("[Profile Extraction] Background extraction failed:", err));
+          }
         } catch (err) {
           // Silently fail - profile extraction is non-critical
           console.error("[Profile Extraction] Import failed:", err);
@@ -405,12 +417,13 @@ export const aiChatRouter = router({
   /**
    * Delete a conversation
    */
-  deleteConversation: protectedProcedure
+  deleteConversation: publicProcedure
     .input(z.object({ conversationId: z.number() }))
     .mutation(async ({ input, ctx }) => {
-      // Verify ownership
+      // Verify ownership (demo mode: allow null userId)
       const data = await getConversationWithMessages(input.conversationId);
-      if (!data || data.conversation.userId !== ctx.user.id) {
+      const userId = ctx.user?.id || null;
+      if (!data || (data.conversation.userId !== userId && data.conversation.userId !== null)) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "Invalid conversation",
