@@ -62,30 +62,7 @@ export const dailyCheckins = mysqlTable("dailyCheckins", {
 export type DailyCheckin = typeof dailyCheckins.$inferSelect;
 export type InsertDailyCheckin = typeof dailyCheckins.$inferInsert;
 
-/**
- * Habit Tracking - Identity-based habits
- */
-export const habits = mysqlTable("habits", {
-  id: int("id").autoincrement().primaryKey(),
-  clientId: int("clientId").notNull().references(() => clients.id),
-  
-  // Habit definition
-  habitName: varchar("habitName", { length: 255 }).notNull(),
-  habitDescription: text("habitDescription"),
-  identityConnection: text("identityConnection"), // "This habit makes me [identity]"
-  
-  // Frequency
-  frequency: mysqlEnum("frequency", ["daily", "weekly", "custom"]).default("daily").notNull(),
-  
-  // Status
-  isActive: mysqlEnum("isActive", ["true", "false"]).default("true").notNull(),
-  
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-});
-
-export type Habit = typeof habits.$inferSelect;
-export type InsertHabit = typeof habits.$inferInsert;
+// Habit tracking moved to habitFormationSchema.ts for better structure
 
 /**
  * Habit Completions - Track daily execution

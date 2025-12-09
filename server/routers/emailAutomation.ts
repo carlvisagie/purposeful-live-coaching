@@ -62,7 +62,6 @@ async function sendEmail(params: {
   }
 
   // Log email
-  const db = await getDb();
   if (db) {
     await db.insert(emailLogs).values({
       userId,
