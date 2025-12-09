@@ -36,15 +36,15 @@
  * - Personalizes recommendation types
  */
 
-import { mysqlTable, varchar, text, int, timestamp, boolean, decimal, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
 
 // AI Coach Profiles
-export const aiCoachProfiles = mysqlTable("ai_coach_profiles", {
+export const aiCoachProfiles = pgTable("ai_coach_profiles", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Coaching Preferences
-  preferredCoachingStyle: mysqlEnum("preferred_coaching_style", [
+  preferredCoachingStyle: pgEnum("preferred_coaching_style", [
     "motivational", // Motivational Interviewing
     "socratic", // Questioning approach
     "solution_focused", // Build on strengths
@@ -54,13 +54,13 @@ export const aiCoachProfiles = mysqlTable("ai_coach_profiles", {
   ]),
   
   // Communication Preferences
-  preferredTone: mysqlEnum("preferred_tone", [
+  preferredTone: pgEnum("preferred_tone", [
     "supportive",
     "challenging",
     "balanced"
   ]).default("balanced"),
   
-  verbosity: mysqlEnum("verbosity", ["concise", "moderate", "detailed"]).default("moderate"),
+  verbosity: pgEnum("verbosity", ["concise", "moderate", "detailed"]).default("moderate"),
   
   // Interaction Preferences
   proactiveCheckins: boolean("proactive_checkins").default(true),
@@ -76,15 +76,15 @@ export const aiCoachProfiles = mysqlTable("ai_coach_profiles", {
   optimalCheckInTiming: text("optimal_check_in_timing"), // JSON: when to reach out
   
   // Coach Relationship
-  trustLevel: int("trust_level"), // 1-10 (how much user trusts AI coach)
-  satisfactionLevel: int("satisfaction_level"), // 1-10
+  trustLevel: integer("trust_level"), // 1-10 (how much user trusts AI coach)
+  satisfactionLevel: integer("satisfaction_level"), // 1-10
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Coaching Conversations
-export const coachingConversations = mysqlTable("coaching_conversations", {
+export const coachingConversations = pgTable("coaching_conversations", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -93,7 +93,7 @@ export const coachingConversations = mysqlTable("coaching_conversations", {
   conversationTitle: varchar("conversation_title", { length: 255 }),
   
   // Conversation Type
-  conversationType: mysqlEnum("conversation_type", [
+  conversationType: pgEnum("conversation_type", [
     "check_in", // Daily/weekly check-in
     "goal_setting", // Setting new goals
     "obstacle_solving", // Working through challenges
@@ -105,14 +105,14 @@ export const coachingConversations = mysqlTable("coaching_conversations", {
   ]).notNull(),
   
   // Status
-  status: mysqlEnum("status", ["active", "paused", "completed"]).default("active"),
+  status: pgEnum("status", ["active", "paused", "completed"]).default("active"),
   
   // Outcomes
-  insightsGenerated: int("insights_generated").default(0),
-  actionsIdentified: int("actions_identified").default(0),
+  insightsGenerated: integer("insights_generated").default(0),
+  actionsIdentified: integer("actions_identified").default(0),
   
   // Effectiveness
-  helpfulnessRating: int("helpfulness_rating"), // 1-10 (user feedback)
+  helpfulnessRating: integer("helpfulness_rating"), // 1-10 (user feedback)
   
   startedAt: timestamp("started_at").defaultNow(),
   completedAt: timestamp("completed_at"),
@@ -122,17 +122,17 @@ export const coachingConversations = mysqlTable("coaching_conversations", {
 });
 
 // Conversation Messages
-export const conversationMessages = mysqlTable("conversation_messages", {
+export const conversationMessages = pgTable("conversation_messages", {
   id: varchar("id", { length: 255 }).primaryKey(),
   conversationId: varchar("conversation_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Message Details
-  sender: mysqlEnum("sender", ["user", "ai_coach"]).notNull(),
+  sender: pgEnum("sender", ["user", "ai_coach"]).notNull(),
   messageText: text("message_text").notNull(),
   
   // Message Type (for AI messages)
-  messageType: mysqlEnum("message_type", [
+  messageType: pgEnum("message_type", [
     "question", // Asking a question
     "reflection", // Reflecting back what user said
     "insight", // Offering an insight
@@ -144,7 +144,7 @@ export const conversationMessages = mysqlTable("conversation_messages", {
   ]),
   
   // Coaching Technique Used
-  coachingTechnique: mysqlEnum("coaching_technique", [
+  coachingTechnique: pgEnum("coaching_technique", [
     "open_question",
     "scaling_question",
     "miracle_question",
@@ -168,14 +168,14 @@ export const conversationMessages = mysqlTable("conversation_messages", {
 });
 
 // Coaching Questions Library
-export const coachingQuestions = mysqlTable("coaching_questions", {
+export const coachingQuestions = pgTable("coaching_questions", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Question Details
   questionText: text("question_text").notNull(),
   
   // Question Type
-  questionType: mysqlEnum("question_type", [
+  questionType: pgEnum("question_type", [
     "open_ended", // "What do you think about...?"
     "scaling", // "On a scale of 1-10..."
     "miracle", // "If a miracle happened..."
@@ -202,20 +202,20 @@ export const coachingQuestions = mysqlTable("coaching_questions", {
   avgInsightRate: decimal("avg_insight_rate", { precision: 5, scale: 2 }), // % who had insight
   avgActionRate: decimal("avg_action_rate", { precision: 5, scale: 2 }), // % who took action
   avgHelpfulnessRating: decimal("avg_helpfulness_rating", { precision: 4, scale: 2 }), // 1-10
-  totalUses: int("total_uses").default(0),
+  totalUses: integer("total_uses").default(0),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // AI Recommendations
-export const aiRecommendations = mysqlTable("ai_recommendations", {
+export const aiRecommendations = pgTable("ai_recommendations", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Recommendation Type
-  recommendationType: mysqlEnum("recommendation_type", [
+  recommendationType: pgEnum("recommendation_type", [
     "habit_suggestion", // Try this habit
     "goal_suggestion", // Consider this goal
     "intervention_suggestion", // Use this technique
@@ -237,14 +237,14 @@ export const aiRecommendations = mysqlTable("ai_recommendations", {
   confidence: decimal("confidence", { precision: 5, scale: 2 }), // %
   
   // Priority
-  priority: mysqlEnum("priority", ["low", "medium", "high", "urgent"]).default("medium"),
+  priority: pgEnum("priority", ["low", "medium", "high", "urgent"]).default("medium"),
   
   // Status
-  status: mysqlEnum("status", ["pending", "accepted", "declined", "deferred"]).default("pending"),
+  status: pgEnum("status", ["pending", "accepted", "declined", "deferred"]).default("pending"),
   
   // User Response
   userFeedback: text("user_feedback"),
-  helpfulnessRating: int("helpfulness_rating"), // 1-10
+  helpfulnessRating: integer("helpfulness_rating"), // 1-10
   
   // Outcome
   implemented: boolean("implemented").default(false),
@@ -256,13 +256,13 @@ export const aiRecommendations = mysqlTable("ai_recommendations", {
 });
 
 // Proactive Check-Ins
-export const proactiveCheckIns = mysqlTable("proactive_check_ins", {
+export const proactiveCheckIns = pgTable("proactive_check_ins", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Check-In Type
-  checkInType: mysqlEnum("check_in_type", [
+  checkInType: pgEnum("check_in_type", [
     "daily_check_in", // How's your day?
     "weekly_review", // How was your week?
     "goal_progress", // How's goal X going?
@@ -274,7 +274,7 @@ export const proactiveCheckIns = mysqlTable("proactive_check_ins", {
   ]).notNull(),
   
   // Trigger
-  triggerType: mysqlEnum("trigger_type", [
+  triggerType: pgEnum("trigger_type", [
     "scheduled", // Regular schedule
     "pattern_detected", // AI noticed something
     "goal_milestone", // Close to goal
@@ -290,7 +290,7 @@ export const proactiveCheckIns = mysqlTable("proactive_check_ins", {
   // Response
   responded: boolean("responded").default(false),
   respondedAt: timestamp("responded_at"),
-  responseQuality: mysqlEnum("response_quality", ["brief", "engaged", "insightful"]),
+  responseQuality: pgEnum("response_quality", ["brief", "engaged", "insightful"]),
   
   // Effectiveness
   helpful: boolean("helpful"),
@@ -299,13 +299,13 @@ export const proactiveCheckIns = mysqlTable("proactive_check_ins", {
 });
 
 // Coaching Insights (AI-Generated)
-export const coachingInsights = mysqlTable("coaching_insights", {
+export const coachingInsights = pgTable("coaching_insights", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Insight Type
-  insightType: mysqlEnum("insight_type", [
+  insightType: pgEnum("insight_type", [
     "pattern_recognition", // "I notice you always..."
     "strength_identification", // "You're really good at..."
     "blind_spot", // "You might not realize..."
@@ -337,15 +337,15 @@ export const coachingInsights = mysqlTable("coaching_insights", {
 });
 
 // Coaching Goals (AI-Assisted Goal Setting)
-export const coachingGoals = mysqlTable("coaching_goals", {
+export const coachingGoals = pgTable("coaching_goals", {
   id: varchar("id", { length: 255 }).primaryKey(),
   conversationId: varchar("conversation_id", { length: 255 }),
   goalId: varchar("goal_id", { length: 255 }), // Links to goals table
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Goal Clarity
-  initialClarity: int("initial_clarity"), // 1-10 (how clear was goal at start)
-  finalClarity: int("final_clarity"), // 1-10 (how clear after coaching)
+  initialClarity: integer("initial_clarity"), // 1-10 (how clear was goal at start)
+  finalClarity: integer("final_clarity"), // 1-10 (how clear after coaching)
   
   // AI Contribution
   aiContribution: text("ai_contribution"), // How did AI help clarify/refine goal?
@@ -360,7 +360,7 @@ export const coachingGoals = mysqlTable("coaching_goals", {
 });
 
 // Coaching Effectiveness (Self-Learning)
-export const coachingEffectiveness = mysqlTable("coaching_effectiveness", {
+export const coachingEffectiveness = pgTable("coaching_effectiveness", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Coaching Element
@@ -381,8 +381,8 @@ export const coachingEffectiveness = mysqlTable("coaching_effectiveness", {
   optimalUserType: text("optimal_user_type"), // JSON: who this works best for
   
   // Sample Size
-  userCount: int("user_count"),
-  totalUses: int("total_uses"),
+  userCount: integer("user_count"),
+  totalUses: integer("total_uses"),
   
   lastCalculated: timestamp("last_calculated").defaultNow(),
   
@@ -391,14 +391,14 @@ export const coachingEffectiveness = mysqlTable("coaching_effectiveness", {
 });
 
 // AI Coach Feedback
-export const aiCoachFeedback = mysqlTable("ai_coach_feedback", {
+export const aiCoachFeedback = pgTable("ai_coach_feedback", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   conversationId: varchar("conversation_id", { length: 255 }),
   messageId: varchar("message_id", { length: 255 }),
   
   // Feedback Type
-  feedbackType: mysqlEnum("feedback_type", [
+  feedbackType: pgEnum("feedback_type", [
     "helpful",
     "not_helpful",
     "too_pushy",
@@ -413,13 +413,13 @@ export const aiCoachFeedback = mysqlTable("ai_coach_feedback", {
   feedbackText: text("feedback_text"),
   
   // Rating
-  rating: int("rating"), // 1-10
+  rating: integer("rating"), // 1-10
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Coaching Resources
-export const coachingResources = mysqlTable("coaching_resources", {
+export const coachingResources = pgTable("coaching_resources", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Resource Details
@@ -427,7 +427,7 @@ export const coachingResources = mysqlTable("coaching_resources", {
   description: text("description"),
   
   // Resource Type
-  resourceType: mysqlEnum("resource_type", [
+  resourceType: pgEnum("resource_type", [
     "article",
     "video",
     "exercise",
@@ -452,14 +452,14 @@ export const coachingResources = mysqlTable("coaching_resources", {
   
   // Effectiveness
   avgHelpfulnessRating: decimal("avg_helpfulness_rating", { precision: 4, scale: 2 }), // 1-10
-  totalRecommendations: int("total_recommendations").default(0),
+  totalRecommendations: integer("total_recommendations").default(0),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // User Resource Interactions
-export const userResourceInteractions = mysqlTable("user_resource_interactions", {
+export const userResourceInteractions = pgTable("user_resource_interactions", {
   id: varchar("id", { length: 255 }).primaryKey(),
   resourceId: varchar("resource_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -473,7 +473,7 @@ export const userResourceInteractions = mysqlTable("user_resource_interactions",
   
   // Feedback
   helpful: boolean("helpful"),
-  helpfulnessRating: int("helpfulness_rating"), // 1-10
+  helpfulnessRating: integer("helpfulness_rating"), // 1-10
   
   // Impact
   actionTaken: boolean("action_taken").default(false),

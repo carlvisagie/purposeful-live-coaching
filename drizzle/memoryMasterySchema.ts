@@ -28,18 +28,18 @@
  * - Learns which content types benefit from which techniques
  */
 
-import { mysqlTable, varchar, text, int, timestamp, boolean, decimal, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
 
 // Memory Mastery Profiles
-export const memoryMasteryProfiles = mysqlTable("memory_mastery_profiles", {
+export const memoryMasteryProfiles = pgTable("memory_mastery_profiles", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Current Memory Assessment
-  selfAssessedMemory: int("self_assessed_memory"), // 1-10
+  selfAssessedMemory: integer("self_assessed_memory"), // 1-10
   
   // Goals
-  primaryGoal: mysqlEnum("primary_goal", [
+  primaryGoal: pgEnum("primary_goal", [
     "improve_retention",
     "learn_faster",
     "remember_names",
@@ -54,11 +54,11 @@ export const memoryMasteryProfiles = mysqlTable("memory_mastery_profiles", {
   preferredTechniques: text("preferred_techniques"), // JSON array
   
   // Learning Style
-  learningStyle: mysqlEnum("learning_style", ["visual", "auditory", "kinesthetic", "reading_writing", "mixed"]),
+  learningStyle: pgEnum("learning_style", ["visual", "auditory", "kinesthetic", "reading_writing", "mixed"]),
   
   // Practice Schedule
   dailyReviewTime: varchar("daily_review_time", { length: 10 }), // HH:MM
-  weeklyGoalMinutes: int("weekly_goal_minutes"),
+  weeklyGoalMinutes: integer("weekly_goal_minutes"),
   
   // Self-Learning Data
   optimalReviewTime: varchar("optimal_review_time", { length: 100 }), // When retention is highest
@@ -71,13 +71,13 @@ export const memoryMasteryProfiles = mysqlTable("memory_mastery_profiles", {
 });
 
 // Memory Items (Things to Remember)
-export const memoryItems = mysqlTable("memory_items", {
+export const memoryItems = pgTable("memory_items", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Content
-  itemType: mysqlEnum("item_type", [
+  itemType: pgEnum("item_type", [
     "fact",
     "concept",
     "name_face",
@@ -99,7 +99,7 @@ export const memoryItems = mysqlTable("memory_items", {
   tags: text("tags"), // JSON array
   
   // Encoding Technique Used
-  encodingTechnique: mysqlEnum("encoding_technique", [
+  encodingTechnique: pgEnum("encoding_technique", [
     "rote_repetition",
     "spaced_repetition",
     "memory_palace",
@@ -125,17 +125,17 @@ export const memoryItems = mysqlTable("memory_items", {
   existingKnowledge: text("existing_knowledge"), // What you already know that this connects to
   
   // Importance
-  importance: int("importance"), // 1-10
+  importance: integer("importance"), // 1-10
   
   // Spaced Repetition Data
   easeFactor: decimal("ease_factor", { precision: 4, scale: 2 }).default("2.5"), // SuperMemo algorithm
-  interval: int("interval").default(1), // Days until next review
-  repetitions: int("repetitions").default(0),
+  interval: integer("interval").default(1), // Days until next review
+  repetitions: integer("repetitions").default(0),
   nextReviewDate: timestamp("next_review_date"),
   
   // Performance
-  totalReviews: int("total_reviews").default(0),
-  successfulRecalls: int("successful_recalls").default(0),
+  totalReviews: integer("total_reviews").default(0),
+  successfulRecalls: integer("successful_recalls").default(0),
   retentionRate: decimal("retention_rate", { precision: 5, scale: 2 }), // %
   
   // Status
@@ -147,7 +147,7 @@ export const memoryItems = mysqlTable("memory_items", {
 });
 
 // Memory Reviews (Spaced Repetition Sessions)
-export const memoryReviews = mysqlTable("memory_reviews", {
+export const memoryReviews = pgTable("memory_reviews", {
   id: varchar("id", { length: 255 }).primaryKey(),
   itemId: varchar("item_id", { length: 255 }).notNull(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
@@ -155,7 +155,7 @@ export const memoryReviews = mysqlTable("memory_reviews", {
   reviewDate: timestamp("review_date").notNull(),
   
   // Review Type
-  reviewType: mysqlEnum("review_type", [
+  reviewType: pgEnum("review_type", [
     "scheduled", // Spaced repetition
     "cramming", // Last-minute review
     "reinforcement", // Extra practice
@@ -164,11 +164,11 @@ export const memoryReviews = mysqlTable("memory_reviews", {
   
   // Performance
   recalled: boolean("recalled").notNull(), // Did you remember it?
-  recallSpeed: mysqlEnum("recall_speed", ["instant", "quick", "slow", "failed"]),
-  confidence: int("confidence"), // 1-10: How confident in your recall?
+  recallSpeed: pgEnum("recall_speed", ["instant", "quick", "slow", "failed"]),
+  confidence: integer("confidence"), // 1-10: How confident in your recall?
   
   // Difficulty Rating (for spaced repetition algorithm)
-  difficultyRating: mysqlEnum("difficulty_rating", [
+  difficultyRating: pgEnum("difficulty_rating", [
     "again", // Didn't remember (0)
     "hard", // Remembered with difficulty (3)
     "good", // Remembered (4)
@@ -176,21 +176,21 @@ export const memoryReviews = mysqlTable("memory_reviews", {
   ]).notNull(),
   
   // Time
-  timeToRecall: int("time_to_recall"), // seconds
+  timeToRecall: integer("time_to_recall"), // seconds
   
   // Context
   reviewContext: varchar("review_context", { length: 255 }), // Where/when reviewed
   distractions: boolean("distractions"),
   
   // Next Review Scheduled
-  nextInterval: int("next_interval"), // days
+  nextInterval: integer("next_interval"), // days
   nextReviewDate: timestamp("next_review_date"),
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Memory Palaces (Method of Loci)
-export const memoryPalaces = mysqlTable("memory_palaces", {
+export const memoryPalaces = pgTable("memory_palaces", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -205,7 +205,7 @@ export const memoryPalaces = mysqlTable("memory_palaces", {
   purpose: varchar("purpose", { length: 255 }), // What is this palace for?
   
   // Items Stored
-  itemCount: int("item_count").default(0),
+  itemCount: integer("item_count").default(0),
   
   // Effectiveness
   avgRecallRate: decimal("avg_recall_rate", { precision: 5, scale: 2 }),
@@ -217,7 +217,7 @@ export const memoryPalaces = mysqlTable("memory_palaces", {
 });
 
 // Learning Sessions (Study Sessions)
-export const learningSessions = mysqlTable("learning_sessions", {
+export const learningSessions = pgTable("learning_sessions", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -225,7 +225,7 @@ export const learningSessions = mysqlTable("learning_sessions", {
   
   // Session Details
   topic: varchar("topic", { length: 255 }).notNull(),
-  sessionType: mysqlEnum("session_type", [
+  sessionType: pgEnum("session_type", [
     "new_learning", // Learning new material
     "review", // Reviewing old material
     "practice", // Active practice
@@ -233,28 +233,28 @@ export const learningSessions = mysqlTable("learning_sessions", {
   ]).notNull(),
   
   // Duration
-  duration: int("duration"), // minutes
+  duration: integer("duration"), // minutes
   
   // Techniques Used
   techniquesUsed: text("techniques_used"), // JSON array
   
   // Materials
   materialsStudied: text("materials_studied"), // JSON array
-  newItemsCreated: int("new_items_created"),
-  itemsReviewed: int("items_reviewed"),
+  newItemsCreated: integer("new_items_created"),
+  itemsReviewed: integer("items_reviewed"),
   
   // Performance
-  focusLevel: int("focus_level"), // 1-10
-  comprehensionLevel: int("comprehension_level"), // 1-10
-  retentionConfidence: int("retention_confidence"), // 1-10
+  focusLevel: integer("focus_level"), // 1-10
+  comprehensionLevel: integer("comprehension_level"), // 1-10
+  retentionConfidence: integer("retention_confidence"), // 1-10
   
   // Environment
   location: varchar("location", { length: 255 }),
   distractions: text("distractions"), // JSON array
   
   // State
-  energyBefore: int("energy_before"), // 1-10
-  energyAfter: int("energy_after"), // 1-10
+  energyBefore: integer("energy_before"), // 1-10
+  energyAfter: integer("energy_after"), // 1-10
   
   // Notes
   notes: text("notes"),
@@ -264,14 +264,14 @@ export const learningSessions = mysqlTable("learning_sessions", {
 });
 
 // Memory Techniques Practice
-export const memoryTechniquePractice = mysqlTable("memory_technique_practice", {
+export const memoryTechniquePractice = pgTable("memory_technique_practice", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   practiceDate: timestamp("practice_date").notNull(),
   
   // Technique
-  technique: mysqlEnum("technique", [
+  technique: pgEnum("technique", [
     "memory_palace",
     "chunking",
     "peg_system",
@@ -286,15 +286,15 @@ export const memoryTechniquePractice = mysqlTable("memory_technique_practice", {
   
   // Practice Details
   practiceType: varchar("practice_type", { length: 255 }), // What were you practicing?
-  duration: int("duration"), // minutes
+  duration: integer("duration"), // minutes
   
   // Performance
-  itemsAttempted: int("items_attempted"),
-  itemsRecalled: int("items_recalled"),
+  itemsAttempted: integer("items_attempted"),
+  itemsRecalled: integer("items_recalled"),
   accuracyRate: decimal("accuracy_rate", { precision: 5, scale: 2 }), // %
   
   // Difficulty
-  difficulty: int("difficulty"), // 1-10
+  difficulty: integer("difficulty"), // 1-10
   
   // Improvement
   improvementFromLast: decimal("improvement_from_last", { precision: 6, scale: 2 }), // % change
@@ -307,7 +307,7 @@ export const memoryTechniquePractice = mysqlTable("memory_technique_practice", {
 });
 
 // Memory Challenges (Gamification)
-export const memoryChallenges = mysqlTable("memory_challenges", {
+export const memoryChallenges = pgTable("memory_challenges", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -315,7 +315,7 @@ export const memoryChallenges = mysqlTable("memory_challenges", {
   challengeName: varchar("challenge_name", { length: 255 }).notNull(),
   
   // Challenge Type
-  challengeType: mysqlEnum("challenge_type", [
+  challengeType: pgEnum("challenge_type", [
     "number_memorization", // Memorize long numbers
     "name_recall", // Remember names
     "card_memorization", // Deck of cards
@@ -326,16 +326,16 @@ export const memoryChallenges = mysqlTable("memory_challenges", {
   ]).notNull(),
   
   // Challenge Details
-  itemCount: int("item_count"), // How many items to memorize
-  timeLimit: int("time_limit"), // seconds
+  itemCount: integer("item_count"), // How many items to memorize
+  timeLimit: integer("time_limit"), // seconds
   
   // Performance
-  itemsRecalled: int("items_recalled"),
+  itemsRecalled: integer("items_recalled"),
   accuracy: decimal("accuracy", { precision: 5, scale: 2 }), // %
-  timeUsed: int("time_used"), // seconds
+  timeUsed: integer("time_used"), // seconds
   
   // Score
-  score: int("score"),
+  score: integer("score"),
   personalBest: boolean("personal_best"),
   
   attemptDate: timestamp("attempt_date"),
@@ -344,12 +344,12 @@ export const memoryChallenges = mysqlTable("memory_challenges", {
 });
 
 // Memory Milestones
-export const memoryMilestones = mysqlTable("memory_milestones", {
+export const memoryMilestones = pgTable("memory_milestones", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  milestoneType: mysqlEnum("milestone_type", [
+  milestoneType: pgEnum("milestone_type", [
     "items_mastered", // Mastered X items
     "retention_rate", // Achieved X% retention
     "streak", // X day streak
@@ -368,7 +368,7 @@ export const memoryMilestones = mysqlTable("memory_milestones", {
 });
 
 // Sleep & Memory Consolidation Tracking
-export const sleepMemoryTracking = mysqlTable("sleep_memory_tracking", {
+export const sleepMemoryTracking = pgTable("sleep_memory_tracking", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -377,12 +377,12 @@ export const sleepMemoryTracking = mysqlTable("sleep_memory_tracking", {
   // Learning Before Sleep
   studiedBeforeSleep: boolean("studied_before_sleep"),
   studyTopics: text("study_topics"), // JSON array
-  studyDuration: int("study_duration"), // minutes
+  studyDuration: integer("study_duration"), // minutes
   
   // Sleep Quality
-  sleepQuality: int("sleep_quality"), // 1-10
+  sleepQuality: integer("sleep_quality"), // 1-10
   sleepDuration: decimal("sleep_duration", { precision: 3, scale: 1 }), // hours
-  deepSleepMinutes: int("deep_sleep_minutes"),
+  deepSleepMinutes: integer("deep_sleep_minutes"),
   
   // Morning Recall
   morningRecallTest: boolean("morning_recall_test"),
@@ -395,7 +395,7 @@ export const sleepMemoryTracking = mysqlTable("sleep_memory_tracking", {
 });
 
 // Memory Mastery Engine Self-Learning Analytics
-export const memoryMasteryAnalytics = mysqlTable("memory_mastery_analytics", {
+export const memoryMasteryAnalytics = pgTable("memory_mastery_analytics", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Technique Effectiveness (aggregated)
@@ -407,15 +407,15 @@ export const memoryMasteryAnalytics = mysqlTable("memory_mastery_analytics", {
   avgRecallSpeed: decimal("avg_recall_speed", { precision: 6, scale: 2 }), // seconds
   
   // Optimal Parameters
-  optimalReviewInterval: int("optimal_review_interval"), // days
-  optimalSessionDuration: int("optimal_session_duration"), // minutes
+  optimalReviewInterval: integer("optimal_review_interval"), // days
+  optimalSessionDuration: integer("optimal_session_duration"), // minutes
   
   // User Segments
   mostEffectiveFor: text("most_effective_for"), // JSON: different learning styles
   
   // Sample Size
-  reviewCount: int("review_count"),
-  userCount: int("user_count"),
+  reviewCount: integer("review_count"),
+  userCount: integer("user_count"),
   
   lastCalculated: timestamp("last_calculated").defaultNow(),
   
@@ -424,7 +424,7 @@ export const memoryMasteryAnalytics = mysqlTable("memory_mastery_analytics", {
 });
 
 // Name-Face Memory (Harry Lorayne Method)
-export const nameFaceMemory = mysqlTable("name_face_memory", {
+export const nameFaceMemory = pgTable("name_face_memory", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -459,12 +459,12 @@ export const nameFaceMemory = mysqlTable("name_face_memory", {
   conversationTopics: text("conversation_topics"), // What you talked about
   
   // Memory Performance
-  totalEncounters: int("total_encounters").default(1),
-  successfulRecalls: int("successful_recalls").default(0),
+  totalEncounters: integer("total_encounters").default(1),
+  successfulRecalls: integer("successful_recalls").default(0),
   lastEncounter: timestamp("last_encounter"),
   
   // Importance
-  importance: int("importance"), // 1-10
+  importance: integer("importance"), // 1-10
   
   // Status
   mastered: boolean("mastered").default(false), // Can recall instantly
@@ -474,7 +474,7 @@ export const nameFaceMemory = mysqlTable("name_face_memory", {
 });
 
 // Name Recall Practice
-export const nameRecallPractice = mysqlTable("name_recall_practice", {
+export const nameRecallPractice = pgTable("name_recall_practice", {
   id: varchar("id", { length: 255 }).primaryKey(),
   nameFaceId: varchar("name_face_id", { length: 255 }).notNull(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
@@ -482,7 +482,7 @@ export const nameRecallPractice = mysqlTable("name_recall_practice", {
   practiceDate: timestamp("practice_date").notNull(),
   
   // Practice Type
-  practiceType: mysqlEnum("practice_type", [
+  practiceType: pgEnum("practice_type", [
     "face_to_name", // See face, recall name
     "name_to_face", // Hear name, visualize face
     "feature_identification", // Identify outstanding feature
@@ -491,24 +491,24 @@ export const nameRecallPractice = mysqlTable("name_recall_practice", {
   
   // Performance
   recalled: boolean("recalled"),
-  recallSpeed: mysqlEnum("recall_speed", ["instant", "quick", "slow", "failed"]),
-  confidence: int("confidence"), // 1-10
+  recallSpeed: pgEnum("recall_speed", ["instant", "quick", "slow", "failed"]),
+  confidence: integer("confidence"), // 1-10
   
   // Time
-  timeToRecall: int("time_to_recall"), // seconds
+  timeToRecall: integer("time_to_recall"), // seconds
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Number Memory (Major/Phonetic System)
-export const numberMemory = mysqlTable("number_memory", {
+export const numberMemory = pgTable("number_memory", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Number to Remember
   number: varchar("number", { length: 255 }).notNull(),
-  numberType: mysqlEnum("number_type", [
+  numberType: pgEnum("number_type", [
     "phone",
     "pin",
     "date",
@@ -529,8 +529,8 @@ export const numberMemory = mysqlTable("number_memory", {
   chunks: text("chunks"), // JSON array: break into memorable chunks
   
   // Performance
-  totalRecalls: int("total_recalls").default(0),
-  successfulRecalls: int("successful_recalls").default(0),
+  totalRecalls: integer("total_recalls").default(0),
+  successfulRecalls: integer("successful_recalls").default(0),
   
   // Status
   mastered: boolean("mastered").default(false),

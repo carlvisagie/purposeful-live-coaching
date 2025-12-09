@@ -37,20 +37,20 @@
  * - Predicts when journaling would be most helpful
  */
 
-import { mysqlTable, varchar, text, int, timestamp, boolean, decimal, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
 
 // Journal Profiles
-export const journalProfiles = mysqlTable("journal_profiles", {
+export const journalProfiles = pgTable("journal_profiles", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Journaling Stats
-  totalEntries: int("total_entries").default(0),
-  currentStreak: int("current_streak").default(0), // Days
-  longestStreak: int("longest_streak").default(0),
+  totalEntries: integer("total_entries").default(0),
+  currentStreak: integer("current_streak").default(0), // Days
+  longestStreak: integer("longest_streak").default(0),
   
   // Preferences
-  preferredJournalType: mysqlEnum("preferred_journal_type", [
+  preferredJournalType: pgEnum("preferred_journal_type", [
     "free_form",
     "gratitude",
     "reflective",
@@ -59,10 +59,10 @@ export const journalProfiles = mysqlTable("journal_profiles", {
     "mixed"
   ]),
   
-  preferredTime: mysqlEnum("preferred_time", ["morning", "afternoon", "evening", "night", "flexible"]),
+  preferredTime: pgEnum("preferred_time", ["morning", "afternoon", "evening", "night", "flexible"]),
   
   // Privacy
-  defaultPrivacy: mysqlEnum("default_privacy", ["private", "shared_with_coach", "shared_with_community"]).default("private"),
+  defaultPrivacy: pgEnum("default_privacy", ["private", "shared_with_coach", "shared_with_community"]).default("private"),
   
   // AI Features
   enableAIInsights: boolean("enable_ai_insights").default(true),
@@ -79,7 +79,7 @@ export const journalProfiles = mysqlTable("journal_profiles", {
 });
 
 // Journal Entries
-export const journalEntries = mysqlTable("journal_entries", {
+export const journalEntries = pgTable("journal_entries", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -89,7 +89,7 @@ export const journalEntries = mysqlTable("journal_entries", {
   content: text("content").notNull(),
   
   // Entry Type
-  entryType: mysqlEnum("entry_type", [
+  entryType: pgEnum("entry_type", [
     "free_form",
     "gratitude",
     "reflective",
@@ -105,11 +105,11 @@ export const journalEntries = mysqlTable("journal_entries", {
   promptText: text("prompt_text"),
   
   // Mood Before/After
-  moodBefore: int("mood_before"), // 1-10
-  moodAfter: int("mood_after"), // 1-10
+  moodBefore: integer("mood_before"), // 1-10
+  moodAfter: integer("mood_after"), // 1-10
   
   // Emotions (AI-Detected)
-  primaryEmotion: mysqlEnum("primary_emotion", [
+  primaryEmotion: pgEnum("primary_emotion", [
     "joy",
     "gratitude",
     "peace",
@@ -125,7 +125,7 @@ export const journalEntries = mysqlTable("journal_entries", {
     "neutral"
   ]),
   
-  emotionIntensity: int("emotion_intensity"), // 1-10
+  emotionIntensity: integer("emotion_intensity"), // 1-10
   secondaryEmotions: text("secondary_emotions"), // JSON array
   
   // Themes (AI-Detected)
@@ -138,13 +138,13 @@ export const journalEntries = mysqlTable("journal_entries", {
   aiInsights: text("ai_insights"), // JSON: patterns, suggestions, reflections
   
   // Word Count
-  wordCount: int("word_count"),
+  wordCount: integer("word_count"),
   
   // Duration
-  writingDurationMinutes: int("writing_duration_minutes"),
+  writingDurationMinutes: integer("writing_duration_minutes"),
   
   // Privacy
-  privacy: mysqlEnum("privacy", ["private", "shared_with_coach", "shared_with_community"]).default("private"),
+  privacy: pgEnum("privacy", ["private", "shared_with_coach", "shared_with_community"]).default("private"),
   
   // Favorite
   isFavorite: boolean("is_favorite").default(false),
@@ -163,7 +163,7 @@ export const journalEntries = mysqlTable("journal_entries", {
 });
 
 // Journal Prompts Library
-export const journalPrompts = mysqlTable("journal_prompts", {
+export const journalPrompts = pgTable("journal_prompts", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Prompt Details
@@ -171,7 +171,7 @@ export const journalPrompts = mysqlTable("journal_prompts", {
   description: text("description"),
   
   // Category
-  category: mysqlEnum("category", [
+  category: pgEnum("category", [
     "gratitude",
     "reflection",
     "goal_setting",
@@ -193,11 +193,11 @@ export const journalPrompts = mysqlTable("journal_prompts", {
   bestFor: text("best_for"), // JSON: situations, emotions, goals
   
   // Difficulty
-  difficulty: mysqlEnum("difficulty", ["beginner", "intermediate", "advanced"]),
+  difficulty: pgEnum("difficulty", ["beginner", "intermediate", "advanced"]),
   
   // Effectiveness
   avgHelpfulnessRating: decimal("avg_helpfulness_rating", { precision: 4, scale: 2 }), // 1-10
-  totalUses: int("total_uses").default(0),
+  totalUses: integer("total_uses").default(0),
   
   // Active
   active: boolean("active").default(true),
@@ -207,7 +207,7 @@ export const journalPrompts = mysqlTable("journal_prompts", {
 });
 
 // Gratitude Entries (Specific Type)
-export const gratitudeEntries = mysqlTable("gratitude_entries", {
+export const gratitudeEntries = pgTable("gratitude_entries", {
   id: varchar("id", { length: 255 }).primaryKey(),
   journalEntryId: varchar("journal_entry_id", { length: 255 }).notNull(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
@@ -224,20 +224,20 @@ export const gratitudeEntries = mysqlTable("gratitude_entries", {
   whyItHappened3: text("why_it_happened_3"),
   
   // Overall Gratitude Level
-  gratitudeLevel: int("gratitude_level"), // 1-10
+  gratitudeLevel: integer("gratitude_level"), // 1-10
   
   entryDate: timestamp("entry_date").defaultNow(),
 });
 
 // Best Possible Self Entries (Laura King's exercise)
-export const bestPossibleSelfEntries = mysqlTable("best_possible_self_entries", {
+export const bestPossibleSelfEntries = pgTable("best_possible_self_entries", {
   id: varchar("id", { length: 255 }).primaryKey(),
   journalEntryId: varchar("journal_entry_id", { length: 255 }).notNull(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Timeframe
-  timeframe: mysqlEnum("timeframe", ["1_year", "5_years", "10_years", "end_of_life"]).notNull(),
+  timeframe: pgEnum("timeframe", ["1_year", "5_years", "10_years", "end_of_life"]).notNull(),
   
   // Life Areas
   personalLife: text("personal_life"), // What does your personal life look like?
@@ -256,7 +256,7 @@ export const bestPossibleSelfEntries = mysqlTable("best_possible_self_entries", 
 });
 
 // Daily Reviews
-export const dailyReviews = mysqlTable("daily_reviews", {
+export const dailyReviews = pgTable("daily_reviews", {
   id: varchar("id", { length: 255 }).primaryKey(),
   journalEntryId: varchar("journal_entry_id", { length: 255 }),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
@@ -278,19 +278,19 @@ export const dailyReviews = mysqlTable("daily_reviews", {
   tomorrowFocus: text("tomorrow_focus"),
   
   // Overall Day Rating
-  dayRating: int("day_rating"), // 1-10
+  dayRating: integer("day_rating"), // 1-10
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Emotional Patterns (AI-Detected)
-export const emotionalPatterns = mysqlTable("emotional_patterns", {
+export const emotionalPatterns = pgTable("emotional_patterns", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Pattern Type
-  patternType: mysqlEnum("pattern_type", [
+  patternType: pgEnum("pattern_type", [
     "recurring_emotion", // Same emotion keeps appearing
     "trigger_pattern", // Specific triggers → specific emotions
     "time_pattern", // Emotions vary by time of day/week
@@ -303,7 +303,7 @@ export const emotionalPatterns = mysqlTable("emotional_patterns", {
   description: text("description"),
   
   // Frequency
-  occurrenceCount: int("occurrence_count").default(0),
+  occurrenceCount: integer("occurrence_count").default(0),
   firstDetected: timestamp("first_detected"),
   lastDetected: timestamp("last_detected"),
   
@@ -322,13 +322,13 @@ export const emotionalPatterns = mysqlTable("emotional_patterns", {
 });
 
 // Journal Insights (AI-Generated)
-export const journalInsights = mysqlTable("journal_insights", {
+export const journalInsights = pgTable("journal_insights", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Insight Type
-  insightType: mysqlEnum("insight_type", [
+  insightType: pgEnum("insight_type", [
     "emotional_trend", // Your emotions are improving/declining
     "growth_detected", // You're making progress in X area
     "pattern_identified", // Recurring theme detected
@@ -358,7 +358,7 @@ export const journalInsights = mysqlTable("journal_insights", {
 });
 
 // Writing Streaks
-export const writingStreaks = mysqlTable("writing_streaks", {
+export const writingStreaks = pgTable("writing_streaks", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -368,7 +368,7 @@ export const writingStreaks = mysqlTable("writing_streaks", {
   endDate: timestamp("end_date"),
   
   // Length
-  streakLength: int("streak_length"), // Days
+  streakLength: integer("streak_length"), // Days
   
   // Status
   active: boolean("active").default(true),
@@ -377,13 +377,13 @@ export const writingStreaks = mysqlTable("writing_streaks", {
 });
 
 // Journal Reflections (Meta-Journaling)
-export const journalReflections = mysqlTable("journal_reflections", {
+export const journalReflections = pgTable("journal_reflections", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Reflection Period
-  periodType: mysqlEnum("period_type", ["weekly", "monthly", "quarterly", "yearly"]).notNull(),
+  periodType: pgEnum("period_type", ["weekly", "monthly", "quarterly", "yearly"]).notNull(),
   periodStart: timestamp("period_start").notNull(),
   periodEnd: timestamp("period_end").notNull(),
   
@@ -402,12 +402,12 @@ export const journalReflections = mysqlTable("journal_reflections", {
 });
 
 // Prompt Effectiveness (Self-Learning)
-export const promptEffectiveness = mysqlTable("prompt_effectiveness", {
+export const promptEffectiveness = pgTable("prompt_effectiveness", {
   id: varchar("id", { length: 255 }).primaryKey(),
   promptId: varchar("prompt_id", { length: 255 }).notNull(),
   
   // Usage Stats
-  totalUses: int("total_uses").default(0),
+  totalUses: integer("total_uses").default(0),
   
   // Effectiveness Metrics
   avgWordCount: decimal("avg_word_count", { precision: 8, scale: 2 }),
@@ -423,7 +423,7 @@ export const promptEffectiveness = mysqlTable("prompt_effectiveness", {
   mostEffectiveForSituations: text("most_effective_for_situations"), // JSON
   
   // Sample Size
-  userCount: int("user_count"),
+  userCount: integer("user_count"),
   
   lastCalculated: timestamp("last_calculated").defaultNow(),
   
@@ -432,7 +432,7 @@ export const promptEffectiveness = mysqlTable("prompt_effectiveness", {
 });
 
 // Journal Analytics (Self-Learning)
-export const journalAnalytics = mysqlTable("journal_analytics", {
+export const journalAnalytics = pgTable("journal_analytics", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Entry Type
@@ -444,16 +444,16 @@ export const journalAnalytics = mysqlTable("journal_analytics", {
   avgBehaviorChange: decimal("avg_behavior_change", { precision: 5, scale: 2 }), // % who took action
   
   // Optimal Parameters
-  optimalWordCount: int("optimal_word_count"),
-  optimalDuration: int("optimal_duration"), // minutes
+  optimalWordCount: integer("optimal_word_count"),
+  optimalDuration: integer("optimal_duration"), // minutes
   optimalTimeOfDay: varchar("optimal_time_of_day", { length: 100 }),
   
   // Best For
   mostEffectiveFor: text("most_effective_for"), // JSON: user types, situations
   
   // Sample Size
-  userCount: int("user_count"),
-  totalEntries: int("total_entries"),
+  userCount: integer("user_count"),
+  totalEntries: integer("total_entries"),
   
   lastCalculated: timestamp("last_calculated").defaultNow(),
   

@@ -10,20 +10,20 @@
  * - Adapts meal timing recommendations based on performance
  */
 
-import { mysqlTable, varchar, text, int, timestamp, boolean, decimal, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
 
 // Nutrition Profiles
-export const nutritionProfiles = mysqlTable("nutrition_profiles", {
+export const nutritionProfiles = pgTable("nutrition_profiles", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Current State
   currentWeight: decimal("current_weight", { precision: 5, scale: 2 }), // kg
   targetWeight: decimal("target_weight", { precision: 5, scale: 2 }), // kg
-  height: int("height"), // cm
+  height: integer("height"), // cm
   
   // Goals
-  primaryGoal: mysqlEnum("primary_goal", [
+  primaryGoal: pgEnum("primary_goal", [
     "lose_fat",
     "build_muscle",
     "maintain_weight",
@@ -35,7 +35,7 @@ export const nutritionProfiles = mysqlTable("nutrition_profiles", {
   ]).notNull(),
   
   // Dietary Approach
-  dietaryApproach: mysqlEnum("dietary_approach", [
+  dietaryApproach: pgEnum("dietary_approach", [
     "balanced",
     "low_carb",
     "keto",
@@ -59,16 +59,16 @@ export const nutritionProfiles = mysqlTable("nutrition_profiles", {
   medications: text("medications"), // JSON array
   
   // Targets (calculated or custom)
-  targetCalories: int("target_calories"),
-  targetProtein: int("target_protein"), // grams
-  targetCarbs: int("target_carbs"), // grams
-  targetFat: int("target_fat"), // grams
-  targetFiber: int("target_fiber"), // grams
+  targetCalories: integer("target_calories"),
+  targetProtein: integer("target_protein"), // grams
+  targetCarbs: integer("target_carbs"), // grams
+  targetFat: integer("target_fat"), // grams
+  targetFiber: integer("target_fiber"), // grams
   
   // Eating Patterns
-  mealsPerDay: int("meals_per_day"),
-  fastingWindow: int("fasting_window"), // hours (if IF)
-  eatingWindow: int("eating_window"), // hours
+  mealsPerDay: integer("meals_per_day"),
+  fastingWindow: integer("fasting_window"), // hours (if IF)
+  eatingWindow: integer("eating_window"), // hours
   
   // Self-Learning Data
   optimalMacroRatio: text("optimal_macro_ratio"), // JSON: {protein: 30, carbs: 40, fat: 30}
@@ -81,14 +81,14 @@ export const nutritionProfiles = mysqlTable("nutrition_profiles", {
 });
 
 // Meals & Food Logging
-export const meals = mysqlTable("meals", {
+export const meals = pgTable("meals", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   mealDate: timestamp("meal_date").notNull(),
   
   // Meal Type
-  mealType: mysqlEnum("meal_type", [
+  mealType: pgEnum("meal_type", [
     "breakfast",
     "lunch",
     "dinner",
@@ -101,7 +101,7 @@ export const meals = mysqlTable("meals", {
   foods: text("foods"), // JSON array: [{name, quantity, unit, calories, protein, carbs, fat}]
   
   // Macros (calculated from foods)
-  totalCalories: int("total_calories"),
+  totalCalories: integer("total_calories"),
   totalProtein: decimal("total_protein", { precision: 5, scale: 1 }), // grams
   totalCarbs: decimal("total_carbs", { precision: 5, scale: 1 }), // grams
   totalFat: decimal("total_fat", { precision: 5, scale: 1 }), // grams
@@ -110,26 +110,26 @@ export const meals = mysqlTable("meals", {
   
   // Context
   location: varchar("location", { length: 255 }), // Home, restaurant, work, etc.
-  socialContext: mysqlEnum("social_context", ["alone", "family", "friends", "work"]),
+  socialContext: pgEnum("social_context", ["alone", "family", "friends", "work"]),
   
   // Eating Behavior
-  eatingSpeed: mysqlEnum("eating_speed", ["slow", "moderate", "fast"]),
+  eatingSpeed: pgEnum("eating_speed", ["slow", "moderate", "fast"]),
   mindfulEating: boolean("mindful_eating"), // Were you present while eating?
   distractions: text("distractions"), // JSON: TV, phone, work, etc.
   
   // Hunger & Satisfaction
-  hungerBefore: int("hunger_before"), // 1-10
-  hungerAfter: int("hunger_after"), // 1-10
-  satisfactionLevel: int("satisfaction_level"), // 1-10
+  hungerBefore: integer("hunger_before"), // 1-10
+  hungerAfter: integer("hunger_after"), // 1-10
+  satisfactionLevel: integer("satisfaction_level"), // 1-10
   
   // Emotional State
   emotionBefore: varchar("emotion_before", { length: 100 }),
   emotionalEating: boolean("emotional_eating"), // Was this emotion-driven?
   
   // Post-Meal Effects (tracked later)
-  energyAfter: int("energy_after"), // 1-10 (30-60 min post-meal)
-  digestionQuality: int("digestion_quality"), // 1-10
-  bloating: int("bloating"), // 1-10
+  energyAfter: integer("energy_after"), // 1-10 (30-60 min post-meal)
+  digestionQuality: integer("digestion_quality"), // 1-10
+  bloating: integer("bloating"), // 1-10
   
   // Photos
   mealPhoto: varchar("meal_photo", { length: 255 }),
@@ -138,14 +138,14 @@ export const meals = mysqlTable("meals", {
 });
 
 // Daily Nutrition Summary
-export const dailyNutritionSummary = mysqlTable("daily_nutrition_summary", {
+export const dailyNutritionSummary = pgTable("daily_nutrition_summary", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   summaryDate: timestamp("summary_date").notNull(),
   
   // Total Macros
-  totalCalories: int("total_calories"),
+  totalCalories: integer("total_calories"),
   totalProtein: decimal("total_protein", { precision: 6, scale: 1 }),
   totalCarbs: decimal("total_carbs", { precision: 6, scale: 1 }),
   totalFat: decimal("total_fat", { precision: 6, scale: 1 }),
@@ -155,32 +155,32 @@ export const dailyNutritionSummary = mysqlTable("daily_nutrition_summary", {
   waterIntake: decimal("water_intake", { precision: 4, scale: 1 }), // liters
   
   // Adherence
-  calorieAdherence: int("calorie_adherence"), // % of target
-  proteinAdherence: int("protein_adherence"), // % of target
+  calorieAdherence: integer("calorie_adherence"), // % of target
+  proteinAdherence: integer("protein_adherence"), // % of target
   
   // Quality
-  vegetableServings: int("vegetable_servings"),
-  fruitServings: int("fruit_servings"),
-  processedFoodServings: int("processed_food_servings"),
+  vegetableServings: integer("vegetable_servings"),
+  fruitServings: integer("fruit_servings"),
+  processedFoodServings: integer("processed_food_servings"),
   
   // Overall Ratings
-  nutritionQuality: int("nutrition_quality"), // 1-10
-  adherenceRating: int("adherence_rating"), // 1-10
+  nutritionQuality: integer("nutrition_quality"), // 1-10
+  adherenceRating: integer("adherence_rating"), // 1-10
   
   // Energy & Performance
-  avgEnergyLevel: int("avg_energy_level"), // 1-10
-  sleepQuality: int("sleep_quality"), // 1-10 (that night)
-  workoutPerformance: int("workout_performance"), // 1-10 (if workout that day)
+  avgEnergyLevel: integer("avg_energy_level"), // 1-10
+  sleepQuality: integer("sleep_quality"), // 1-10 (that night)
+  workoutPerformance: integer("workout_performance"), // 1-10 (if workout that day)
   
   // Digestive Health
-  bowelMovements: int("bowel_movements"),
-  digestiveComfort: int("digestive_comfort"), // 1-10
+  bowelMovements: integer("bowel_movements"),
+  digestiveComfort: integer("digestive_comfort"), // 1-10
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Supplements
-export const supplements = mysqlTable("supplements", {
+export const supplements = pgTable("supplements", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -190,7 +190,7 @@ export const supplements = mysqlTable("supplements", {
   brand: varchar("brand", { length: 255 }),
   
   // Purpose
-  purpose: mysqlEnum("purpose", [
+  purpose: pgEnum("purpose", [
     "vitamin_mineral", // General health
     "protein", // Muscle building
     "performance", // Pre-workout, creatine, etc.
@@ -205,10 +205,10 @@ export const supplements = mysqlTable("supplements", {
   // Dosage
   dosage: varchar("dosage", { length: 255 }),
   unit: varchar("unit", { length: 50 }),
-  frequency: mysqlEnum("frequency", ["daily", "twice_daily", "as_needed", "weekly"]),
+  frequency: pgEnum("frequency", ["daily", "twice_daily", "as_needed", "weekly"]),
   
   // Timing
-  timing: mysqlEnum("timing", ["morning", "afternoon", "evening", "with_meal", "before_bed", "pre_workout", "post_workout"]),
+  timing: pgEnum("timing", ["morning", "afternoon", "evening", "with_meal", "before_bed", "pre_workout", "post_workout"]),
   
   // Active
   active: boolean("active").default(true),
@@ -216,7 +216,7 @@ export const supplements = mysqlTable("supplements", {
   endDate: timestamp("end_date"),
   
   // Effectiveness (self-learning)
-  perceivedEffectiveness: int("perceived_effectiveness"), // 1-10
+  perceivedEffectiveness: integer("perceived_effectiveness"), // 1-10
   sideEffects: text("side_effects"),
   
   createdAt: timestamp("created_at").defaultNow(),
@@ -224,7 +224,7 @@ export const supplements = mysqlTable("supplements", {
 });
 
 // Supplement Logs
-export const supplementLogs = mysqlTable("supplement_logs", {
+export const supplementLogs = pgTable("supplement_logs", {
   id: varchar("id", { length: 255 }).primaryKey(),
   supplementId: varchar("supplement_id", { length: 255 }).notNull(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
@@ -239,14 +239,14 @@ export const supplementLogs = mysqlTable("supplement_logs", {
   withFood: boolean("with_food"),
   
   // Effects
-  perceivedEffect: int("perceived_effect"), // 1-10
+  perceivedEffect: integer("perceived_effect"), // 1-10
   sideEffects: text("side_effects"),
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Food Sensitivities & Reactions
-export const foodReactions = mysqlTable("food_reactions", {
+export const foodReactions = pgTable("food_reactions", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -256,7 +256,7 @@ export const foodReactions = mysqlTable("food_reactions", {
   suspectedFood: varchar("suspected_food", { length: 255 }).notNull(),
   
   // Reaction Type
-  reactionType: mysqlEnum("reaction_type", [
+  reactionType: pgEnum("reaction_type", [
     "digestive", // Bloating, gas, diarrhea, constipation
     "skin", // Rash, hives, eczema
     "respiratory", // Congestion, asthma
@@ -268,11 +268,11 @@ export const foodReactions = mysqlTable("food_reactions", {
   
   // Symptoms
   symptoms: text("symptoms"), // JSON array
-  severity: mysqlEnum("severity", ["mild", "moderate", "severe"]),
+  severity: pgEnum("severity", ["mild", "moderate", "severe"]),
   
   // Timing
-  onsetTime: int("onset_time"), // minutes after eating
-  duration: int("duration"), // hours
+  onsetTime: integer("onset_time"), // minutes after eating
+  duration: integer("duration"), // hours
   
   // Pattern
   consistentReaction: boolean("consistent_reaction"), // Does this food always cause this?
@@ -281,7 +281,7 @@ export const foodReactions = mysqlTable("food_reactions", {
 });
 
 // Hydration Tracking
-export const hydrationLogs = mysqlTable("hydration_logs", {
+export const hydrationLogs = pgTable("hydration_logs", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -291,12 +291,12 @@ export const hydrationLogs = mysqlTable("hydration_logs", {
   waterIntake: decimal("water_intake", { precision: 4, scale: 2 }), // liters
   
   // Other Beverages
-  coffee: int("coffee"), // cups
-  tea: int("tea"), // cups
-  alcohol: int("alcohol"), // standard drinks
+  coffee: integer("coffee"), // cups
+  tea: integer("tea"), // cups
+  alcohol: integer("alcohol"), // standard drinks
   
   // Hydration Status
-  urineColor: mysqlEnum("urine_color", ["clear", "pale_yellow", "yellow", "dark_yellow", "amber"]), // Hydration indicator
+  urineColor: pgEnum("urine_color", ["clear", "pale_yellow", "yellow", "dark_yellow", "amber"]), // Hydration indicator
   
   // Symptoms
   headache: boolean("headache"),
@@ -307,7 +307,7 @@ export const hydrationLogs = mysqlTable("hydration_logs", {
 });
 
 // Meal Planning
-export const mealPlans = mysqlTable("meal_plans", {
+export const mealPlans = pgTable("meal_plans", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -334,7 +334,7 @@ export const mealPlans = mysqlTable("meal_plans", {
 });
 
 // Nutrition Experiments (Elimination diets, macro cycling, etc.)
-export const nutritionExperiments = mysqlTable("nutrition_experiments", {
+export const nutritionExperiments = pgTable("nutrition_experiments", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -342,7 +342,7 @@ export const nutritionExperiments = mysqlTable("nutrition_experiments", {
   experimentName: varchar("experiment_name", { length: 255 }).notNull(),
   
   // Type
-  experimentType: mysqlEnum("experiment_type", [
+  experimentType: pgEnum("experiment_type", [
     "elimination_diet", // Remove suspected trigger foods
     "macro_cycling", // Vary macros by day
     "meal_timing", // Change when you eat
@@ -364,13 +364,13 @@ export const nutritionExperiments = mysqlTable("nutrition_experiments", {
   
   // Baseline Metrics
   baselineWeight: decimal("baseline_weight", { precision: 5, scale: 2 }),
-  baselineEnergy: int("baseline_energy"), // 1-10
-  baselineDigestion: int("baseline_digestion"), // 1-10
+  baselineEnergy: integer("baseline_energy"), // 1-10
+  baselineDigestion: integer("baseline_digestion"), // 1-10
   
   // Results
   endWeight: decimal("end_weight", { precision: 5, scale: 2 }),
-  endEnergy: int("end_energy"), // 1-10
-  endDigestion: int("end_digestion"), // 1-10
+  endEnergy: integer("end_energy"), // 1-10
+  endDigestion: integer("end_digestion"), // 1-10
   
   // Findings
   findings: text("findings"),
@@ -384,7 +384,7 @@ export const nutritionExperiments = mysqlTable("nutrition_experiments", {
 });
 
 // Nutrition Engine Self-Learning Analytics
-export const nutritionEngineAnalytics = mysqlTable("nutrition_engine_analytics", {
+export const nutritionEngineAnalytics = pgTable("nutrition_engine_analytics", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Food-Effect Correlations (aggregated)
@@ -406,8 +406,8 @@ export const nutritionEngineAnalytics = mysqlTable("nutrition_engine_analytics",
   mostBeneficialFor: text("most_beneficial_for"), // JSON: different user types
   
   // Sample Size
-  mealCount: int("meal_count"),
-  userCount: int("user_count"),
+  mealCount: integer("meal_count"),
+  userCount: integer("user_count"),
   
   lastCalculated: timestamp("last_calculated").defaultNow(),
   

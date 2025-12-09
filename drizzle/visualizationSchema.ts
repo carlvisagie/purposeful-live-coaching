@@ -39,15 +39,15 @@
  * - Suggests relevant comparisons
  */
 
-import { mysqlTable, varchar, text, int, timestamp, boolean, decimal, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
 
 // Visualization Profiles
-export const visualizationProfiles = mysqlTable("visualization_profiles", {
+export const visualizationProfiles = pgTable("visualization_profiles", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Dashboard Preferences
-  defaultDashboard: mysqlEnum("default_dashboard", [
+  defaultDashboard: pgEnum("default_dashboard", [
     "overview", // All areas at a glance
     "wellness", // Physical, mental, emotional, spiritual
     "goals", // Goal progress
@@ -60,7 +60,7 @@ export const visualizationProfiles = mysqlTable("visualization_profiles", {
   preferredChartTypes: text("preferred_chart_types"), // JSON: line, bar, heatmap, etc.
   
   // Time Range Preferences
-  defaultTimeRange: mysqlEnum("default_time_range", [
+  defaultTimeRange: pgEnum("default_time_range", [
     "week",
     "month",
     "quarter",
@@ -82,7 +82,7 @@ export const visualizationProfiles = mysqlTable("visualization_profiles", {
 });
 
 // Dashboard Configurations
-export const dashboardConfigurations = mysqlTable("dashboard_configurations", {
+export const dashboardConfigurations = pgTable("dashboard_configurations", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -108,7 +108,7 @@ export const dashboardConfigurations = mysqlTable("dashboard_configurations", {
 });
 
 // Visualization Widgets
-export const visualizationWidgets = mysqlTable("visualization_widgets", {
+export const visualizationWidgets = pgTable("visualization_widgets", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Widget Details
@@ -116,7 +116,7 @@ export const visualizationWidgets = mysqlTable("visualization_widgets", {
   description: text("description"),
   
   // Widget Type
-  widgetType: mysqlEnum("widget_type", [
+  widgetType: pgEnum("widget_type", [
     "line_chart",
     "bar_chart",
     "area_chart",
@@ -140,10 +140,10 @@ export const visualizationWidgets = mysqlTable("visualization_widgets", {
   configuration: text("configuration"), // JSON: chart-specific settings
   
   // Refresh
-  refreshInterval: int("refresh_interval"), // seconds (null = manual refresh)
+  refreshInterval: integer("refresh_interval"), // seconds (null = manual refresh)
   
   // Popularity
-  totalUses: int("total_uses").default(0),
+  totalUses: integer("total_uses").default(0),
   avgHelpfulnessRating: decimal("avg_helpfulness_rating", { precision: 4, scale: 2 }), // 1-10
   
   createdAt: timestamp("created_at").defaultNow(),
@@ -151,27 +151,27 @@ export const visualizationWidgets = mysqlTable("visualization_widgets", {
 });
 
 // Progress Snapshots (Pre-Rendered Data)
-export const progressSnapshots = mysqlTable("progress_snapshots", {
+export const progressSnapshots = pgTable("progress_snapshots", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   snapshotDate: timestamp("snapshot_date").notNull(),
   
   // Overall Wellness (0-100 for each)
-  overallScore: int("overall_score"),
-  physicalScore: int("physical_score"),
-  mentalScore: int("mental_score"),
-  emotionalScore: int("emotional_score"),
-  spiritualScore: int("spiritual_score"),
+  overallScore: integer("overall_score"),
+  physicalScore: integer("physical_score"),
+  mentalScore: integer("mental_score"),
+  emotionalScore: integer("emotional_score"),
+  spiritualScore: integer("spiritual_score"),
   
   // Habits
   habitCompletionRate: decimal("habit_completion_rate", { precision: 5, scale: 2 }), // %
-  activeHabits: int("active_habits"),
+  activeHabits: integer("active_habits"),
   
   // Goals
-  goalsOnTrack: int("goals_on_track"),
-  goalsAtRisk: int("goals_at_risk"),
-  goalsAchievedThisPeriod: int("goals_achieved_this_period"),
+  goalsOnTrack: integer("goals_on_track"),
+  goalsAtRisk: integer("goals_at_risk"),
+  goalsAchievedThisPeriod: integer("goals_achieved_this_period"),
   
   // Sleep
   avgSleepDuration: decimal("avg_sleep_duration", { precision: 4, scale: 2 }),
@@ -186,18 +186,18 @@ export const progressSnapshots = mysqlTable("progress_snapshots", {
   avgEnergy: decimal("avg_energy", { precision: 4, scale: 2 }),
   
   // Engagement
-  daysActive: int("days_active"),
-  journalEntries: int("journal_entries"),
+  daysActive: integer("days_active"),
+  journalEntries: integer("journal_entries"),
   
   // Achievements
-  achievementsUnlocked: int("achievements_unlocked"),
-  experiencePoints: int("experience_points"),
+  achievementsUnlocked: integer("achievements_unlocked"),
+  experiencePoints: integer("experience_points"),
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Trend Data (Aggregated for Charts)
-export const trendData = mysqlTable("trend_data", {
+export const trendData = pgTable("trend_data", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -207,7 +207,7 @@ export const trendData = mysqlTable("trend_data", {
   metricCategory: varchar("metric_category", { length: 100 }), // habits, sleep, stress, etc.
   
   // Time Period
-  periodType: mysqlEnum("period_type", ["daily", "weekly", "monthly"]).notNull(),
+  periodType: pgEnum("period_type", ["daily", "weekly", "monthly"]).notNull(),
   periodStart: timestamp("period_start").notNull(),
   periodEnd: timestamp("period_end").notNull(),
   
@@ -215,20 +215,20 @@ export const trendData = mysqlTable("trend_data", {
   value: decimal("value", { precision: 10, scale: 2 }),
   
   // Trend
-  trendDirection: mysqlEnum("trend_direction", ["up", "down", "stable"]),
+  trendDirection: pgEnum("trend_direction", ["up", "down", "stable"]),
   changePercent: decimal("change_percent", { precision: 6, scale: 2 }), // % vs previous period
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Heatmap Data
-export const heatmapData = mysqlTable("heatmap_data", {
+export const heatmapData = pgTable("heatmap_data", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Heatmap Type
-  heatmapType: mysqlEnum("heatmap_type", [
+  heatmapType: pgEnum("heatmap_type", [
     "habit_consistency", // Calendar view of habit completion
     "mood_patterns", // Mood by day of week / time of day
     "energy_patterns", // Energy by day of week / time of day
@@ -240,23 +240,23 @@ export const heatmapData = mysqlTable("heatmap_data", {
   date: timestamp("date").notNull(),
   
   // Intensity (0-100)
-  intensity: int("intensity"),
+  intensity: integer("intensity"),
   
   // Context
-  dayOfWeek: int("day_of_week"), // 0-6 (Sunday-Saturday)
-  hourOfDay: int("hour_of_day"), // 0-23
+  dayOfWeek: integer("day_of_week"), // 0-6 (Sunday-Saturday)
+  hourOfDay: integer("hour_of_day"), // 0-23
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Milestone Visualizations
-export const milestoneVisualizations = mysqlTable("milestone_visualizations", {
+export const milestoneVisualizations = pgTable("milestone_visualizations", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Timeline Type
-  timelineType: mysqlEnum("timeline_type", [
+  timelineType: pgEnum("timeline_type", [
     "goal_journey", // Path to a specific goal
     "transformation_journey", // Overall transformation
     "habit_mastery", // Journey to habit mastery
@@ -277,13 +277,13 @@ export const milestoneVisualizations = mysqlTable("milestone_visualizations", {
 });
 
 // Comparison Views
-export const comparisonViews = mysqlTable("comparison_views", {
+export const comparisonViews = pgTable("comparison_views", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Comparison Type
-  comparisonType: mysqlEnum("comparison_type", [
+  comparisonType: pgEnum("comparison_type", [
     "week_over_week",
     "month_over_month",
     "quarter_over_quarter",
@@ -310,19 +310,19 @@ export const comparisonViews = mysqlTable("comparison_views", {
   percentChange: decimal("percent_change", { precision: 6, scale: 2 }),
   
   // Interpretation
-  interpretation: mysqlEnum("interpretation", ["improved", "stable", "declined"]),
+  interpretation: pgEnum("interpretation", ["improved", "stable", "declined"]),
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Progress Celebrations (Visual Markers)
-export const progressCelebrations = mysqlTable("progress_celebrations", {
+export const progressCelebrations = pgTable("progress_celebrations", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Celebration Type
-  celebrationType: mysqlEnum("celebration_type", [
+  celebrationType: pgEnum("celebration_type", [
     "goal_achieved",
     "milestone_reached",
     "streak_milestone",
@@ -353,13 +353,13 @@ export const progressCelebrations = mysqlTable("progress_celebrations", {
 });
 
 // Chart Interactions (Self-Learning)
-export const chartInteractions = mysqlTable("chart_interactions", {
+export const chartInteractions = pgTable("chart_interactions", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   widgetId: varchar("widget_id", { length: 255 }),
   
   // Interaction Type
-  interactionType: mysqlEnum("interaction_type", [
+  interactionType: pgEnum("interaction_type", [
     "viewed",
     "clicked",
     "filtered",
@@ -369,7 +369,7 @@ export const chartInteractions = mysqlTable("chart_interactions", {
   ]).notNull(),
   
   // Duration
-  viewDuration: int("view_duration"), // seconds
+  viewDuration: integer("view_duration"), // seconds
   
   // Action Taken
   actionTaken: boolean("action_taken").default(false), // Did they change behavior after viewing?
@@ -379,7 +379,7 @@ export const chartInteractions = mysqlTable("chart_interactions", {
 });
 
 // Visualization Analytics (Self-Learning)
-export const visualizationAnalytics = mysqlTable("visualization_analytics", {
+export const visualizationAnalytics = pgTable("visualization_analytics", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Widget Type
@@ -402,8 +402,8 @@ export const visualizationAnalytics = mysqlTable("visualization_analytics", {
   mostEffectiveFor: text("most_effective_for"), // JSON: user types, metrics
   
   // Sample Size
-  userCount: int("user_count"),
-  totalViews: int("total_views"),
+  userCount: integer("user_count"),
+  totalViews: integer("total_views"),
   
   lastCalculated: timestamp("last_calculated").defaultNow(),
   
@@ -412,7 +412,7 @@ export const visualizationAnalytics = mysqlTable("visualization_analytics", {
 });
 
 // Custom Reports
-export const customReports = mysqlTable("custom_reports", {
+export const customReports = pgTable("custom_reports", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -422,7 +422,7 @@ export const customReports = mysqlTable("custom_reports", {
   description: text("description"),
   
   // Report Type
-  reportType: mysqlEnum("report_type", [
+  reportType: pgEnum("report_type", [
     "progress_summary",
     "goal_review",
     "wellness_assessment",
@@ -438,17 +438,17 @@ export const customReports = mysqlTable("custom_reports", {
   
   // Schedule
   scheduled: boolean("scheduled").default(false),
-  scheduleFrequency: mysqlEnum("schedule_frequency", ["daily", "weekly", "monthly"]),
+  scheduleFrequency: pgEnum("schedule_frequency", ["daily", "weekly", "monthly"]),
   
   // Export
-  exportFormat: mysqlEnum("export_format", ["pdf", "csv", "json"]),
+  exportFormat: pgEnum("export_format", ["pdf", "csv", "json"]),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Report Generations
-export const reportGenerations = mysqlTable("report_generations", {
+export const reportGenerations = pgTable("report_generations", {
   id: varchar("id", { length: 255 }).primaryKey(),
   reportId: varchar("report_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -463,7 +463,7 @@ export const reportGenerations = mysqlTable("report_generations", {
   filePath: varchar("file_path", { length: 500 }), // If exported
   
   // Status
-  status: mysqlEnum("status", ["generating", "completed", "failed"]).default("generating"),
+  status: pgEnum("status", ["generating", "completed", "failed"]).default("generating"),
   
   createdAt: timestamp("created_at").defaultNow(),
 });

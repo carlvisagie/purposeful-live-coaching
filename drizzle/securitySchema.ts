@@ -26,16 +26,16 @@
  * - ISO 27001 (Information Security Management)
  */
 
-import { mysqlTable, varchar, text, int, timestamp, boolean, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, varchar, text, int, timestamp, boolean, pgEnum } from "drizzle-orm/pg-core";
 
 // Security Profiles
-export const securityProfiles = mysqlTable("security_profiles", {
+export const securityProfiles = pgTable("security_profiles", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull().unique(),
   
   // Multi-Factor Authentication
   mfaEnabled: boolean("mfa_enabled").default(false),
-  mfaMethod: mysqlEnum("mfa_method", ["totp", "sms", "email", "authenticator_app"]),
+  mfaMethod: pgEnum("mfa_method", ["totp", "sms", "email", "authenticator_app"]),
   mfaSecret: varchar("mfa_secret", { length: 500 }), // Encrypted
   mfaBackupCodes: text("mfa_backup_codes"), // Encrypted JSON array
   
@@ -57,27 +57,27 @@ export const securityProfiles = mysqlTable("security_profiles", {
   accountLockedReason: text("account_locked_reason"),
   
   // Failed Login Attempts
-  failedLoginAttempts: int("failed_login_attempts").default(0),
+  failedLoginAttempts: integer("failed_login_attempts").default(0),
   lastFailedLoginAt: timestamp("last_failed_login_at"),
   
   // Suspicious Activity
   suspiciousActivityDetected: boolean("suspicious_activity_detected").default(false),
-  suspiciousActivityCount: int("suspicious_activity_count").default(0),
+  suspiciousActivityCount: integer("suspicious_activity_count").default(0),
   
   // IP Restrictions
   ipWhitelistEnabled: boolean("ip_whitelist_enabled").default(false),
   ipWhitelist: text("ip_whitelist"), // JSON array
   
   // Session Settings
-  maxActiveSessions: int("max_active_sessions").default(5),
-  sessionTimeout: int("session_timeout").default(3600), // seconds
+  maxActiveSessions: integer("max_active_sessions").default(5),
+  sessionTimeout: integer("session_timeout").default(3600), // seconds
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Active Sessions
-export const activeSessions = mysqlTable("active_sessions", {
+export const activeSessions = pgTable("active_sessions", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
@@ -87,7 +87,7 @@ export const activeSessions = mysqlTable("active_sessions", {
   // Device Info
   deviceId: varchar("device_id", { length: 255 }),
   deviceName: varchar("device_name", { length: 255 }),
-  deviceType: mysqlEnum("device_type", ["desktop", "mobile", "tablet", "other"]),
+  deviceType: pgEnum("device_type", ["desktop", "mobile", "tablet", "other"]),
   
   // Location
   ipAddress: varchar("ip_address", { length: 50 }),
@@ -116,12 +116,12 @@ export const activeSessions = mysqlTable("active_sessions", {
 });
 
 // Login History
-export const loginHistory = mysqlTable("login_history", {
+export const loginHistory = pgTable("login_history", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Login Details
-  loginMethod: mysqlEnum("login_method", ["password", "oauth", "magic_link", "sso"]).notNull(),
+  loginMethod: pgEnum("login_method", ["password", "oauth", "magic_link", "sso"]).notNull(),
   
   // Status
   success: boolean("success").notNull(),
@@ -138,20 +138,20 @@ export const loginHistory = mysqlTable("login_history", {
   mfaCompleted: boolean("mfa_completed").default(false),
   
   // Risk Assessment
-  riskScore: int("risk_score"), // 0-100
+  riskScore: integer("risk_score"), // 0-100
   riskFactors: text("risk_factors"), // JSON: what made this risky
   
   loginAt: timestamp("login_at").defaultNow(),
 });
 
 // Audit Logs
-export const auditLogs = mysqlTable("audit_logs", {
+export const auditLogs = pgTable("audit_logs", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }), // Null for system events
   
   // Event Details
   eventType: varchar("event_type", { length: 100 }).notNull(),
-  eventCategory: mysqlEnum("event_category", [
+  eventCategory: pgEnum("event_category", [
     "authentication",
     "authorization",
     "data_access",
@@ -180,18 +180,18 @@ export const auditLogs = mysqlTable("audit_logs", {
   sessionId: varchar("session_id", { length: 255 }),
   
   // Severity
-  severity: mysqlEnum("severity", ["info", "warning", "error", "critical"]).default("info"),
+  severity: pgEnum("severity", ["info", "warning", "error", "critical"]).default("info"),
   
   eventTimestamp: timestamp("event_timestamp").defaultNow(),
 });
 
 // Security Incidents
-export const securityIncidents = mysqlTable("security_incidents", {
+export const securityIncidents = pgTable("security_incidents", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }), // Null for system-wide incidents
   
   // Incident Details
-  incidentType: mysqlEnum("incident_type", [
+  incidentType: pgEnum("incident_type", [
     "unauthorized_access",
     "data_breach",
     "account_takeover",
@@ -203,7 +203,7 @@ export const securityIncidents = mysqlTable("security_incidents", {
   ]).notNull(),
   
   // Severity
-  severity: mysqlEnum("severity", ["low", "medium", "high", "critical"]).notNull(),
+  severity: pgEnum("severity", ["low", "medium", "high", "critical"]).notNull(),
   
   // Description
   description: text("description"),
@@ -213,7 +213,7 @@ export const securityIncidents = mysqlTable("security_incidents", {
   detectionMethod: varchar("detection_method", { length: 255 }),
   
   // Status
-  status: mysqlEnum("status", [
+  status: pgEnum("status", [
     "detected",
     "investigating",
     "contained",
@@ -226,7 +226,7 @@ export const securityIncidents = mysqlTable("security_incidents", {
   
   // Impact
   impactAssessment: text("impact_assessment"),
-  affectedUsers: int("affected_users"),
+  affectedUsers: integer("affected_users"),
   dataCompromised: boolean("data_compromised").default(false),
   
   // Resolution
@@ -241,7 +241,7 @@ export const securityIncidents = mysqlTable("security_incidents", {
 });
 
 // API Keys
-export const apiKeys = mysqlTable("api_keys", {
+export const apiKeys = pgTable("api_keys", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
@@ -255,14 +255,14 @@ export const apiKeys = mysqlTable("api_keys", {
   
   // Restrictions
   ipWhitelist: text("ip_whitelist"), // JSON: allowed IPs
-  rateLimit: int("rate_limit"), // requests per hour
+  rateLimit: integer("rate_limit"), // requests per hour
   
   // Status
   active: boolean("active").default(true),
   
   // Usage
   lastUsedAt: timestamp("last_used_at"),
-  totalRequests: int("total_requests").default(0),
+  totalRequests: integer("total_requests").default(0),
   
   // Expiry
   expiresAt: timestamp("expires_at"),
@@ -272,7 +272,7 @@ export const apiKeys = mysqlTable("api_keys", {
 });
 
 // API Request Logs
-export const apiRequestLogs = mysqlTable("api_request_logs", {
+export const apiRequestLogs = pgTable("api_request_logs", {
   id: varchar("id", { length: 255 }).primaryKey(),
   apiKeyId: varchar("api_key_id", { length: 255 }),
   userId: varchar("user_id", { length: 255 }),
@@ -282,8 +282,8 @@ export const apiRequestLogs = mysqlTable("api_request_logs", {
   endpoint: varchar("endpoint", { length: 500 }).notNull(),
   
   // Response
-  statusCode: int("status_code").notNull(),
-  responseTime: int("response_time"), // milliseconds
+  statusCode: integer("status_code").notNull(),
+  responseTime: integer("response_time"), // milliseconds
   
   // Context
   ipAddress: varchar("ip_address", { length: 50 }),
@@ -296,25 +296,25 @@ export const apiRequestLogs = mysqlTable("api_request_logs", {
 });
 
 // Rate Limiting
-export const rateLimits = mysqlTable("rate_limits", {
+export const rateLimits = pgTable("rate_limits", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Identifier (user ID, IP, API key)
   identifier: varchar("identifier", { length: 255 }).notNull(),
-  identifierType: mysqlEnum("identifier_type", ["user_id", "ip_address", "api_key"]).notNull(),
+  identifierType: pgEnum("identifier_type", ["user_id", "ip_address", "api_key"]).notNull(),
   
   // Endpoint
   endpoint: varchar("endpoint", { length: 500 }),
   
   // Limits
-  requestsPerMinute: int("requests_per_minute"),
-  requestsPerHour: int("requests_per_hour"),
-  requestsPerDay: int("requests_per_day"),
+  requestsPerMinute: integer("requests_per_minute"),
+  requestsPerHour: integer("requests_per_hour"),
+  requestsPerDay: integer("requests_per_day"),
   
   // Current Usage
-  requestsThisMinute: int("requests_this_minute").default(0),
-  requestsThisHour: int("requests_this_hour").default(0),
-  requestsToday: int("requests_today").default(0),
+  requestsThisMinute: integer("requests_this_minute").default(0),
+  requestsThisHour: integer("requests_this_hour").default(0),
+  requestsToday: integer("requests_today").default(0),
   
   // Reset Times
   minuteResetAt: timestamp("minute_reset_at"),
@@ -329,12 +329,12 @@ export const rateLimits = mysqlTable("rate_limits", {
 });
 
 // Data Access Logs (GDPR/HIPAA compliance)
-export const dataAccessLogs = mysqlTable("data_access_logs", {
+export const dataAccessLogs = pgTable("data_access_logs", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Who accessed
   accessedBy: varchar("accessed_by", { length: 255 }).notNull(),
-  accessedByType: mysqlEnum("accessed_by_type", ["user", "admin", "system", "api"]).notNull(),
+  accessedByType: pgEnum("accessed_by_type", ["user", "admin", "system", "api"]).notNull(),
   
   // What was accessed
   dataType: varchar("data_type", { length: 100 }).notNull(),
@@ -354,19 +354,19 @@ export const dataAccessLogs = mysqlTable("data_access_logs", {
 });
 
 // Encryption Keys (metadata only, not actual keys)
-export const encryptionKeys = mysqlTable("encryption_keys", {
+export const encryptionKeys = pgTable("encryption_keys", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Key Details
   keyId: varchar("key_id", { length: 255 }).notNull().unique(),
-  keyType: mysqlEnum("key_type", ["master", "data", "session"]).notNull(),
+  keyType: pgEnum("key_type", ["master", "data", "session"]).notNull(),
   algorithm: varchar("algorithm", { length: 100 }).notNull(),
   
   // Status
   active: boolean("active").default(true),
   
   // Rotation
-  rotationSchedule: mysqlEnum("rotation_schedule", ["never", "monthly", "quarterly", "yearly"]),
+  rotationSchedule: pgEnum("rotation_schedule", ["never", "monthly", "quarterly", "yearly"]),
   lastRotatedAt: timestamp("last_rotated_at"),
   nextRotationAt: timestamp("next_rotation_at"),
   
@@ -375,16 +375,16 @@ export const encryptionKeys = mysqlTable("encryption_keys", {
 });
 
 // Compliance Reports
-export const complianceReports = mysqlTable("compliance_reports", {
+export const complianceReports = pgTable("compliance_reports", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Report Details
-  reportType: mysqlEnum("report_type", ["gdpr", "hipaa", "soc2", "iso27001", "custom"]).notNull(),
+  reportType: pgEnum("report_type", ["gdpr", "hipaa", "soc2", "iso27001", "custom"]).notNull(),
   reportPeriodStart: timestamp("report_period_start").notNull(),
   reportPeriodEnd: timestamp("report_period_end").notNull(),
   
   // Status
-  status: mysqlEnum("status", ["generating", "completed", "failed"]).default("generating"),
+  status: pgEnum("status", ["generating", "completed", "failed"]).default("generating"),
   
   // Findings
   findings: text("findings"), // JSON: compliance findings
@@ -399,12 +399,12 @@ export const complianceReports = mysqlTable("compliance_reports", {
 });
 
 // Security Alerts
-export const securityAlerts = mysqlTable("security_alerts", {
+export const securityAlerts = pgTable("security_alerts", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }),
   
   // Alert Details
-  alertType: mysqlEnum("alert_type", [
+  alertType: pgEnum("alert_type", [
     "new_login",
     "new_device",
     "password_changed",
@@ -415,7 +415,7 @@ export const securityAlerts = mysqlTable("security_alerts", {
   ]).notNull(),
   
   // Severity
-  severity: mysqlEnum("severity", ["info", "warning", "critical"]).default("info"),
+  severity: pgEnum("severity", ["info", "warning", "critical"]).default("info"),
   
   // Message
   message: text("message"),
@@ -432,14 +432,14 @@ export const securityAlerts = mysqlTable("security_alerts", {
 });
 
 // Trusted Devices
-export const trustedDevices = mysqlTable("trusted_devices", {
+export const trustedDevices = pgTable("trusted_devices", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Device Details
   deviceId: varchar("device_id", { length: 255 }).notNull(),
   deviceName: varchar("device_name", { length: 255 }),
-  deviceType: mysqlEnum("device_type", ["desktop", "mobile", "tablet"]),
+  deviceType: pgEnum("device_type", ["desktop", "mobile", "tablet"]),
   
   // Fingerprint
   deviceFingerprint: varchar("device_fingerprint", { length: 500 }),

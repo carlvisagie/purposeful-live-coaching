@@ -27,18 +27,18 @@
  * - Adapts reminders and prompts based on engagement
  */
 
-import { mysqlTable, varchar, text, int, timestamp, boolean, decimal, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
 
 // Transformative Principles Profiles
-export const transformativePrinciplesProfiles = mysqlTable("transformative_principles_profiles", {
+export const transformativePrinciplesProfiles = pgTable("transformative_principles_profiles", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Current State
-  overallGrowth: int("overall_growth"), // 1-10 self-assessment
+  overallGrowth: integer("overall_growth"), // 1-10 self-assessment
   
   // Primary Focus
-  primaryPrinciple: mysqlEnum("primary_principle", [
+  primaryPrinciple: pgEnum("primary_principle", [
     "discipline",
     "resilience",
     "purpose",
@@ -54,8 +54,8 @@ export const transformativePrinciplesProfiles = mysqlTable("transformative_princ
   ]),
   
   // Practice Preferences
-  preferredPracticeTime: mysqlEnum("preferred_practice_time", ["morning", "midday", "evening", "night"]),
-  practiceFrequency: mysqlEnum("practice_frequency", ["daily", "weekdays", "custom"]),
+  preferredPracticeTime: pgEnum("preferred_practice_time", ["morning", "midday", "evening", "night"]),
+  practiceFrequency: pgEnum("practice_frequency", ["daily", "weekdays", "custom"]),
   
   // Reminders
   remindersEnabled: boolean("reminders_enabled").default(true),
@@ -71,10 +71,10 @@ export const transformativePrinciplesProfiles = mysqlTable("transformative_princ
 });
 
 // The 12 Principles (Master Reference)
-export const principles = mysqlTable("principles", {
+export const principles = pgTable("principles", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
-  principleNumber: int("principle_number").notNull(), // 1-12
+  principleNumber: integer("principle_number").notNull(), // 1-12
   principleName: varchar("principle_name", { length: 255 }).notNull(),
   identityStatement: varchar("identity_statement", { length: 255 }).notNull(), // "I AM..."
   
@@ -99,7 +99,7 @@ export const principles = mysqlTable("principles", {
 });
 
 // Daily Principle Practice
-export const principlePractices = mysqlTable("principle_practices", {
+export const principlePractices = pgTable("principle_practices", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -107,10 +107,10 @@ export const principlePractices = mysqlTable("principle_practices", {
   
   // Which Principle
   principleId: varchar("principle_id", { length: 255 }).notNull(),
-  principleNumber: int("principle_number").notNull(), // 1-12
+  principleNumber: integer("principle_number").notNull(), // 1-12
   
   // Practice Type
-  practiceType: mysqlEnum("practice_type", [
+  practiceType: pgEnum("practice_type", [
     "reading", // Read the principle
     "reflection", // Journal on prompts
     "action", // Take specific action
@@ -120,7 +120,7 @@ export const principlePractices = mysqlTable("principle_practices", {
   ]).notNull(),
   
   // Engagement
-  timeSpent: int("time_spent"), // minutes
+  timeSpent: integer("time_spent"), // minutes
   completed: boolean("completed").default(true),
   
   // Reflection
@@ -133,8 +133,8 @@ export const principlePractices = mysqlTable("principle_practices", {
   winsAchieved: text("wins_achieved"),
   
   // Impact
-  impactOnDay: int("impact_on_day"), // 1-10: How much did this principle improve your day?
-  embodimentLevel: int("embodiment_level"), // 1-10: How well did you embody this principle today?
+  impactOnDay: integer("impact_on_day"), // 1-10: How much did this principle improve your day?
+  embodimentLevel: integer("embodiment_level"), // 1-10: How well did you embody this principle today?
   
   // Mood & State
   moodBefore: varchar("mood_before", { length: 100 }),
@@ -144,19 +144,19 @@ export const principlePractices = mysqlTable("principle_practices", {
 });
 
 // Principle Progress Tracking
-export const principleProgress = mysqlTable("principle_progress", {
+export const principleProgress = pgTable("principle_progress", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   principleId: varchar("principle_id", { length: 255 }).notNull(),
   
   // Mastery Level
-  masteryLevel: int("mastery_level"), // 1-100
+  masteryLevel: integer("mastery_level"), // 1-100
   
   // Practice Stats
-  totalPractices: int("total_practices"),
-  currentStreak: int("current_streak"), // days
-  longestStreak: int("longest_streak"), // days
+  totalPractices: integer("total_practices"),
+  currentStreak: integer("current_streak"), // days
+  longestStreak: integer("longest_streak"), // days
   
   // Embodiment
   avgEmbodimentLevel: decimal("avg_embodiment_level", { precision: 4, scale: 2 }), // Average of embodiment ratings
@@ -177,7 +177,7 @@ export const principleProgress = mysqlTable("principle_progress", {
 });
 
 // Identity Transformation Tracking
-export const identityTransformations = mysqlTable("identity_transformations", {
+export const identityTransformations = pgTable("identity_transformations", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -196,7 +196,7 @@ export const identityTransformations = mysqlTable("identity_transformations", {
   supportingPrinciples: text("supporting_principles"), // JSON: which principles support this transformation
   
   // Progress
-  transformationProgress: int("transformation_progress"), // 1-100
+  transformationProgress: integer("transformation_progress"), // 1-100
   
   // Evidence
   evidenceOfChange: text("evidence_of_change"), // JSON array: concrete examples
@@ -206,21 +206,21 @@ export const identityTransformations = mysqlTable("identity_transformations", {
   targetDate: timestamp("target_date"),
   
   // Status
-  status: mysqlEnum("status", ["in_progress", "achieved", "evolving"]).default("in_progress"),
+  status: pgEnum("status", ["in_progress", "achieved", "evolving"]).default("in_progress"),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Weekly Principle Review
-export const weeklyPrincipleReviews = mysqlTable("weekly_principle_reviews", {
+export const weeklyPrincipleReviews = pgTable("weekly_principle_reviews", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   weekStartDate: timestamp("week_start_date").notNull(),
   
   // Overall Week
-  overallGrowth: int("overall_growth"), // 1-10
+  overallGrowth: integer("overall_growth"), // 1-10
   
   // Principle of the Week (which one did you focus on most?)
   focusPrinciple: varchar("focus_principle", { length: 255 }),
@@ -245,7 +245,7 @@ export const weeklyPrincipleReviews = mysqlTable("weekly_principle_reviews", {
 });
 
 // Principle-Based Goals
-export const principleGoals = mysqlTable("principle_goals", {
+export const principleGoals = pgTable("principle_goals", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -267,13 +267,13 @@ export const principleGoals = mysqlTable("principle_goals", {
   milestones: text("milestones"), // JSON array: smaller steps
   
   // Progress
-  progress: int("progress"), // 0-100
+  progress: integer("progress"), // 0-100
   
   // Why This Matters
   whyItMatters: text("why_it_matters"),
   
   // Status
-  status: mysqlEnum("status", ["active", "achieved", "abandoned"]).default("active"),
+  status: pgEnum("status", ["active", "achieved", "abandoned"]).default("active"),
   
   achievedDate: timestamp("achieved_date"),
   
@@ -282,7 +282,7 @@ export const principleGoals = mysqlTable("principle_goals", {
 });
 
 // Daily Affirmations (Identity Reinforcement)
-export const dailyAffirmations = mysqlTable("daily_affirmations", {
+export const dailyAffirmations = pgTable("daily_affirmations", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -292,7 +292,7 @@ export const dailyAffirmations = mysqlTable("daily_affirmations", {
   affirmations: text("affirmations"), // JSON array: "I am disciplined", "I am resilient", etc.
   
   // How Practiced
-  practiceMethod: mysqlEnum("practice_method", [
+  practiceMethod: pgEnum("practice_method", [
     "spoken_aloud",
     "written",
     "visualization",
@@ -301,20 +301,20 @@ export const dailyAffirmations = mysqlTable("daily_affirmations", {
   ]),
   
   // Repetitions
-  repetitions: int("repetitions"),
+  repetitions: integer("repetitions"),
   
   // Belief Level
-  beliefLevel: int("belief_level"), // 1-10: How much do you believe these statements?
+  beliefLevel: integer("belief_level"), // 1-10: How much do you believe these statements?
   
   // Impact
-  impactOnMood: int("impact_on_mood"), // 1-10
-  impactOnBehavior: int("impact_on_behavior"), // 1-10
+  impactOnMood: integer("impact_on_mood"), // 1-10
+  impactOnBehavior: integer("impact_on_behavior"), // 1-10
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Transformative Moments (Breakthrough Experiences)
-export const transformativeMoments = mysqlTable("transformative_moments", {
+export const transformativeMoments = pgTable("transformative_moments", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -328,7 +328,7 @@ export const transformativeMoments = mysqlTable("transformative_moments", {
   relatedPrinciple: varchar("related_principle", { length: 255 }),
   
   // Type of Moment
-  momentType: mysqlEnum("moment_type", [
+  momentType: pgEnum("moment_type", [
     "breakthrough", // Major insight or realization
     "embodiment", // Fully embodied a principle
     "identity_shift", // Felt a shift in who you are
@@ -339,7 +339,7 @@ export const transformativeMoments = mysqlTable("transformative_moments", {
   ]).notNull(),
   
   // Impact
-  significance: int("significance"), // 1-10
+  significance: integer("significance"), // 1-10
   lifeAreasAffected: text("life_areas_affected"), // JSON array
   
   // Insights
@@ -353,7 +353,7 @@ export const transformativeMoments = mysqlTable("transformative_moments", {
 });
 
 // Transformative Principles Engine Self-Learning Analytics
-export const transformativePrinciplesAnalytics = mysqlTable("transformative_principles_analytics", {
+export const transformativePrinciplesAnalytics = pgTable("transformative_principles_analytics", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Principle Effectiveness (aggregated)
@@ -377,8 +377,8 @@ export const transformativePrinciplesAnalytics = mysqlTable("transformative_prin
   mostEffectiveFor: text("most_effective_for"), // JSON: different user types
   
   // Sample Size
-  practiceCount: int("practice_count"),
-  userCount: int("user_count"),
+  practiceCount: integer("practice_count"),
+  userCount: integer("user_count"),
   
   lastCalculated: timestamp("last_calculated").defaultNow(),
   

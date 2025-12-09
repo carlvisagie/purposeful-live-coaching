@@ -10,15 +10,15 @@
  * - Integrates with latest meditation & mindfulness research
  */
 
-import { mysqlTable, varchar, text, int, timestamp, boolean, decimal, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
 
 // Spiritual Profiles
-export const spiritualProfiles = mysqlTable("spiritual_profiles", {
+export const spiritualProfiles = pgTable("spiritual_profiles", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Spiritual Background
-  spiritualBackground: mysqlEnum("spiritual_background", [
+  spiritualBackground: pgEnum("spiritual_background", [
     "religious",
     "spiritual_not_religious",
     "secular",
@@ -32,11 +32,11 @@ export const spiritualProfiles = mysqlTable("spiritual_profiles", {
   
   // Current Practice
   hasMeditationPractice: boolean("has_meditation_practice").default(false),
-  meditationExperience: mysqlEnum("meditation_experience", ["none", "beginner", "intermediate", "advanced"]),
+  meditationExperience: pgEnum("meditation_experience", ["none", "beginner", "intermediate", "advanced"]),
   currentPractices: text("current_practices"), // JSON array
   
   // Spiritual Goals
-  primaryGoal: mysqlEnum("primary_goal", [
+  primaryGoal: pgEnum("primary_goal", [
     "reduce_stress",
     "find_peace",
     "discover_purpose",
@@ -53,13 +53,13 @@ export const spiritualProfiles = mysqlTable("spiritual_profiles", {
   barriers: text("barriers"), // JSON array: time, skepticism, don't know how, etc.
   
   // Preferences
-  preferredPracticeTime: mysqlEnum("preferred_practice_time", ["morning", "afternoon", "evening", "night", "flexible"]),
-  preferredDuration: int("preferred_duration"), // minutes
+  preferredPracticeTime: pgEnum("preferred_practice_time", ["morning", "afternoon", "evening", "night", "flexible"]),
+  preferredDuration: integer("preferred_duration"), // minutes
   preferredStyle: text("preferred_style"), // JSON array: guided, silent, movement, etc.
   
   // Self-Learning Data
   mostEffectivePractices: text("most_effective_practices"), // JSON: practices that work best for this user
-  optimalPracticeTime: int("optimal_practice_time"), // minutes (learned from user data)
+  optimalPracticeTime: integer("optimal_practice_time"), // minutes (learned from user data)
   bestTimeOfDay: varchar("best_time_of_day", { length: 50 }), // learned from completion rates
   
   createdAt: timestamp("created_at").defaultNow(),
@@ -67,7 +67,7 @@ export const spiritualProfiles = mysqlTable("spiritual_profiles", {
 });
 
 // Meditation Sessions
-export const meditationSessions = mysqlTable("meditation_sessions", {
+export const meditationSessions = pgTable("meditation_sessions", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -75,7 +75,7 @@ export const meditationSessions = mysqlTable("meditation_sessions", {
   sessionDate: timestamp("session_date").notNull(),
   
   // Practice Details
-  practiceType: mysqlEnum("practice_type", [
+  practiceType: pgEnum("practice_type", [
     "mindfulness", // MBSR-based
     "loving_kindness", // Metta meditation
     "body_scan", // Body awareness
@@ -90,24 +90,24 @@ export const meditationSessions = mysqlTable("meditation_sessions", {
     "prayer"
   ]).notNull(),
   
-  guidedOrSilent: mysqlEnum("guided_or_silent", ["guided", "silent", "hybrid"]),
+  guidedOrSilent: pgEnum("guided_or_silent", ["guided", "silent", "hybrid"]),
   guideSource: varchar("guide_source", { length: 255 }), // App, teacher, self, etc.
   
   // Duration
-  plannedDuration: int("planned_duration"), // minutes
-  actualDuration: int("actual_duration"), // minutes
+  plannedDuration: integer("planned_duration"), // minutes
+  actualDuration: integer("actual_duration"), // minutes
   
   // Quality Metrics
-  focusLevel: int("focus_level"), // 1-10 (how focused were you?)
-  distractionLevel: int("distraction_level"), // 1-10
-  peaceLevel: int("peace_level"), // 1-10 (how peaceful did you feel?)
-  insightLevel: int("insight_level"), // 1-10 (any insights or realizations?)
+  focusLevel: integer("focus_level"), // 1-10 (how focused were you?)
+  distractionLevel: integer("distraction_level"), // 1-10
+  peaceLevel: integer("peace_level"), // 1-10 (how peaceful did you feel?)
+  insightLevel: integer("insight_level"), // 1-10 (any insights or realizations?)
   
   // State Before/After
   emotionBefore: varchar("emotion_before", { length: 255 }),
-  stressLevelBefore: int("stress_level_before"), // 1-10
+  stressLevelBefore: integer("stress_level_before"), // 1-10
   emotionAfter: varchar("emotion_after", { length: 255 }),
-  stressLevelAfter: int("stress_level_after"), // 1-10
+  stressLevelAfter: integer("stress_level_after"), // 1-10
   
   // Experience
   experiences: text("experiences"), // JSON array: calm, restless, sleepy, energized, etc.
@@ -118,20 +118,20 @@ export const meditationSessions = mysqlTable("meditation_sessions", {
   completed: boolean("completed").default(true),
   
   // Self-Learning Data
-  effectiveness: int("effectiveness"), // 1-10 (calculated from before/after metrics)
+  effectiveness: integer("effectiveness"), // 1-10 (calculated from before/after metrics)
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Mindfulness Practices (Daily Informal Practice)
-export const mindfulnessPractices = mysqlTable("mindfulness_practices", {
+export const mindfulnessPractices = pgTable("mindfulness_practices", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   practiceDate: timestamp("practice_date").notNull(),
   
   // Practice Type (informal mindfulness)
-  practiceType: mysqlEnum("practice_type", [
+  practiceType: pgEnum("practice_type", [
     "mindful_eating",
     "mindful_walking",
     "mindful_listening",
@@ -145,15 +145,15 @@ export const mindfulnessPractices = mysqlTable("mindfulness_practices", {
     "loving_kindness_moment"
   ]).notNull(),
   
-  duration: int("duration"), // minutes
+  duration: integer("duration"), // minutes
   
   // Context
   activity: varchar("activity", { length: 255 }), // What were you doing?
   location: varchar("location", { length: 255 }),
   
   // Quality
-  presenceLevel: int("presence_level"), // 1-10 (how present were you?)
-  awarenessLevel: int("awareness_level"), // 1-10
+  presenceLevel: integer("presence_level"), // 1-10 (how present were you?)
+  awarenessLevel: integer("awareness_level"), // 1-10
   
   // Experience
   whatYouNoticed: text("what_you_noticed"),
@@ -163,14 +163,14 @@ export const mindfulnessPractices = mysqlTable("mindfulness_practices", {
 });
 
 // Purpose & Meaning Exploration
-export const purposeExplorations = mysqlTable("purpose_explorations", {
+export const purposeExplorations = pgTable("purpose_explorations", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   explorationDate: timestamp("exploration_date").notNull(),
   
   // Exploration Type (evidence-based purpose discovery)
-  explorationType: mysqlEnum("exploration_type", [
+  explorationType: pgEnum("exploration_type", [
     "ikigai_reflection", // Japanese concept: reason for being
     "values_clarification", // ACT-based
     "life_review", // Narrative therapy
@@ -198,13 +198,13 @@ export const purposeExplorations = mysqlTable("purpose_explorations", {
   contribution: text("contribution"), // How you want to serve the world
   
   // Clarity Level
-  clarityLevel: int("clarity_level"), // 1-10 (how clear is your purpose?)
+  clarityLevel: integer("clarity_level"), // 1-10 (how clear is your purpose?)
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Gratitude Practice
-export const gratitudeEntries = mysqlTable("gratitude_entries", {
+export const gratitudeEntries = pgTable("gratitude_entries", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -218,25 +218,25 @@ export const gratitudeEntries = mysqlTable("gratitude_entries", {
   gratitude5: text("gratitude_5"),
   
   // Depth
-  gratitudeDepth: mysqlEnum("gratitude_depth", ["surface", "moderate", "deep"]), // Surface = "coffee", Deep = "my health that allows me to enjoy coffee"
+  gratitudeDepth: pgEnum("gratitude_depth", ["surface", "moderate", "deep"]), // Surface = "coffee", Deep = "my health that allows me to enjoy coffee"
   
   // Emotional Impact
-  emotionalImpact: int("emotional_impact"), // 1-10
+  emotionalImpact: integer("emotional_impact"), // 1-10
   
   // Savoring
-  savoringTime: int("savoring_time"), // seconds spent savoring each gratitude
+  savoringTime: integer("savoring_time"), // seconds spent savoring each gratitude
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Compassion & Loving-Kindness Practice
-export const compassionPractices = mysqlTable("compassion_practices", {
+export const compassionPractices = pgTable("compassion_practices", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   practiceDate: timestamp("practice_date").notNull(),
   
-  practiceType: mysqlEnum("practice_type", [
+  practiceType: pgEnum("practice_type", [
     "loving_kindness_self", // Metta for self
     "loving_kindness_loved_one",
     "loving_kindness_neutral",
@@ -248,7 +248,7 @@ export const compassionPractices = mysqlTable("compassion_practices", {
     "acts_of_kindness" // Behavioral compassion
   ]).notNull(),
   
-  duration: int("duration"), // minutes
+  duration: integer("duration"), // minutes
   
   // Target
   target: varchar("target", { length: 255 }), // Who was the practice directed toward?
@@ -257,8 +257,8 @@ export const compassionPractices = mysqlTable("compassion_practices", {
   emotionBefore: varchar("emotion_before", { length: 255 }),
   emotionAfter: varchar("emotion_after", { length: 255 }),
   
-  warmthLevel: int("warmth_level"), // 1-10 (how much warmth/compassion did you feel?)
-  resistanceLevel: int("resistance_level"), // 1-10 (any resistance or difficulty?)
+  warmthLevel: integer("warmth_level"), // 1-10 (how much warmth/compassion did you feel?)
+  resistanceLevel: integer("resistance_level"), // 1-10 (any resistance or difficulty?)
   
   // Insights
   insights: text("insights"),
@@ -270,13 +270,13 @@ export const compassionPractices = mysqlTable("compassion_practices", {
 });
 
 // Spiritual Experiences & Insights
-export const spiritualExperiences = mysqlTable("spiritual_experiences", {
+export const spiritualExperiences = pgTable("spiritual_experiences", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   experienceDate: timestamp("experience_date").notNull(),
   
-  experienceType: mysqlEnum("experience_type", [
+  experienceType: pgEnum("experience_type", [
     "peak_experience", // Maslow
     "flow_state", // Csikszentmihalyi
     "awe_experience", // Keltner
@@ -297,12 +297,12 @@ export const spiritualExperiences = mysqlTable("spiritual_experiences", {
   description: text("description").notNull(),
   
   // Qualities
-  intensity: int("intensity"), // 1-10
-  duration: int("duration"), // minutes or hours
+  intensity: integer("intensity"), // 1-10
+  duration: integer("duration"), // minutes or hours
   
   // Impact
-  emotionalImpact: int("emotional_impact"), // 1-10
-  meaningfulness: int("meaningfulness"), // 1-10
+  emotionalImpact: integer("emotional_impact"), // 1-10
+  meaningfulness: integer("meaningfulness"), // 1-10
   lifeChanging: boolean("life_changing").default(false),
   
   // Integration
@@ -314,12 +314,12 @@ export const spiritualExperiences = mysqlTable("spiritual_experiences", {
 });
 
 // Spiritual Milestones
-export const spiritualMilestones = mysqlTable("spiritual_milestones", {
+export const spiritualMilestones = pgTable("spiritual_milestones", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  milestoneType: mysqlEnum("milestone_type", [
+  milestoneType: pgEnum("milestone_type", [
     "meditation_streak",
     "retreat_completed",
     "practice_deepened",
@@ -344,7 +344,7 @@ export const spiritualMilestones = mysqlTable("spiritual_milestones", {
 });
 
 // Self-Learning Analytics (Engine learns from all users)
-export const spiritualEngineAnalytics = mysqlTable("spiritual_engine_analytics", {
+export const spiritualEngineAnalytics = pgTable("spiritual_engine_analytics", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Practice Effectiveness (aggregated across all users)
@@ -356,15 +356,15 @@ export const spiritualEngineAnalytics = mysqlTable("spiritual_engine_analytics",
   avgCompletionRate: decimal("avg_completion_rate", { precision: 5, scale: 2 }), // % who complete
   
   // Optimal Parameters (learned)
-  optimalDuration: int("optimal_duration"), // minutes
+  optimalDuration: integer("optimal_duration"), // minutes
   optimalTimeOfDay: varchar("optimal_time_of_day", { length: 50 }),
   
   // User Segments
   mostEffectiveFor: text("most_effective_for"), // JSON: {beginners: 8.5, advanced: 7.2, etc.}
   
   // Sample Size
-  sessionCount: int("session_count"), // How many sessions analyzed
-  userCount: int("user_count"), // How many users
+  sessionCount: integer("session_count"), // How many sessions analyzed
+  userCount: integer("user_count"), // How many users
   
   // Last Updated
   lastCalculated: timestamp("last_calculated").defaultNow(),

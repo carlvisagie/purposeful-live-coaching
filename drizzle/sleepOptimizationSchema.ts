@@ -19,10 +19,10 @@
  * - Predicts recovery based on sleep patterns
  */
 
-import { mysqlTable, varchar, text, int, timestamp, boolean, decimal, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
 
 // Sleep Profiles
-export const sleepProfiles = mysqlTable("sleep_profiles", {
+export const sleepProfiles = pgTable("sleep_profiles", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
@@ -32,13 +32,13 @@ export const sleepProfiles = mysqlTable("sleep_profiles", {
   targetWakeTime: varchar("target_wake_time", { length: 10 }), // HH:MM
   
   // Chronotype (circadian preference)
-  chronotype: mysqlEnum("chronotype", ["early_bird", "night_owl", "intermediate", "unknown"]),
+  chronotype: pgEnum("chronotype", ["early_bird", "night_owl", "intermediate", "unknown"]),
   
   // Current Issues
   sleepIssues: text("sleep_issues"), // JSON array: insomnia, apnea, restless, etc.
   
   // Tracking Method
-  trackingMethod: mysqlEnum("tracking_method", ["manual", "wearable", "app"]),
+  trackingMethod: pgEnum("tracking_method", ["manual", "wearable", "app"]),
   wearableDevice: varchar("wearable_device", { length: 100 }), // Oura, WHOOP, Apple Watch, etc.
   
   // Self-Learning Data
@@ -52,7 +52,7 @@ export const sleepProfiles = mysqlTable("sleep_profiles", {
 });
 
 // Daily Sleep Tracking
-export const sleepTracking = mysqlTable("sleep_tracking", {
+export const sleepTracking = pgTable("sleep_tracking", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -68,36 +68,36 @@ export const sleepTracking = mysqlTable("sleep_tracking", {
   sleepEfficiency: decimal("sleep_efficiency", { precision: 5, scale: 2 }), // % (sleep duration / time in bed)
   
   // Sleep Stages (if available from wearable)
-  lightSleepMinutes: int("light_sleep_minutes"),
-  deepSleepMinutes: int("deep_sleep_minutes"),
-  remSleepMinutes: int("rem_sleep_minutes"),
-  awakeMinutes: int("awake_minutes"),
+  lightSleepMinutes: integer("light_sleep_minutes"),
+  deepSleepMinutes: integer("deep_sleep_minutes"),
+  remSleepMinutes: integer("rem_sleep_minutes"),
+  awakeMinutes: integer("awake_minutes"),
   
   // Quality Metrics
-  sleepQuality: int("sleep_quality"), // 1-10 subjective
-  sleepScore: int("sleep_score"), // 0-100 (if from wearable)
+  sleepQuality: integer("sleep_quality"), // 1-10 subjective
+  sleepScore: integer("sleep_score"), // 0-100 (if from wearable)
   
   // Disruptions
-  timesToWakeUp: int("times_to_wake_up"),
-  timeToFallAsleep: int("time_to_fall_asleep"), // minutes (sleep latency)
+  timesToWakeUp: integer("times_to_wake_up"),
+  timeToFallAsleep: integer("time_to_fall_asleep"), // minutes (sleep latency)
   
   // Recovery Metrics
-  restingHeartRate: int("resting_heart_rate"), // bpm
-  hrv: int("hrv"), // Heart Rate Variability (ms)
+  restingHeartRate: integer("resting_heart_rate"), // bpm
+  hrv: integer("hrv"), // Heart Rate Variability (ms)
   respiratoryRate: decimal("respiratory_rate", { precision: 4, scale: 2 }), // breaths per minute
   bodyTemperature: decimal("body_temperature", { precision: 4, scale: 2 }), // Celsius
   
   // Recovery Score
-  recoveryScore: int("recovery_score"), // 0-100
-  readinessScore: int("readiness_score"), // 0-100 (Oura-style)
+  recoveryScore: integer("recovery_score"), // 0-100
+  readinessScore: integer("readiness_score"), // 0-100 (Oura-style)
   
   // Morning State
   morningMood: varchar("morning_mood", { length: 100 }),
-  morningEnergy: int("morning_energy"), // 1-10
-  morningFocus: int("morning_focus"), // 1-10
+  morningEnergy: integer("morning_energy"), // 1-10
+  morningFocus: integer("morning_focus"), // 1-10
   
   // Sleep Hygiene Compliance
-  hygieneScore: int("hygiene_score"), // 0-100
+  hygieneScore: integer("hygiene_score"), // 0-100
   
   // Notes
   notes: text("notes"),
@@ -106,7 +106,7 @@ export const sleepTracking = mysqlTable("sleep_tracking", {
 });
 
 // Sleep Hygiene Practices
-export const sleepHygienePractices = mysqlTable("sleep_hygiene_practices", {
+export const sleepHygienePractices = pgTable("sleep_hygiene_practices", {
   id: varchar("id", { length: 255 }).primaryKey(),
   sleepTrackingId: varchar("sleep_tracking_id", { length: 255 }).notNull(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
@@ -135,7 +135,7 @@ export const sleepHygienePractices = mysqlTable("sleep_hygiene_practices", {
   noNapsAfter3pm: boolean("no_naps_after_3pm"),
   
   // Relaxation
-  relaxationPractice: mysqlEnum("relaxation_practice", [
+  relaxationPractice: pgEnum("relaxation_practice", [
     "none",
     "meditation",
     "breathing",
@@ -152,7 +152,7 @@ export const sleepHygienePractices = mysqlTable("sleep_hygiene_practices", {
 });
 
 // Sleep Experiments
-export const sleepExperiments = mysqlTable("sleep_experiments", {
+export const sleepExperiments = pgTable("sleep_experiments", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -166,7 +166,7 @@ export const sleepExperiments = mysqlTable("sleep_experiments", {
   // Duration
   startDate: timestamp("start_date"),
   endDate: timestamp("end_date"),
-  duration: int("duration"), // days
+  duration: integer("duration"), // days
   
   // Baseline
   baselineSleepQuality: decimal("baseline_sleep_quality", { precision: 4, scale: 2 }),
@@ -184,20 +184,20 @@ export const sleepExperiments = mysqlTable("sleep_experiments", {
   keepPractice: boolean("keep_practice"), // Will you continue this?
   
   // Status
-  status: mysqlEnum("status", ["planning", "active", "completed"]).default("planning"),
+  status: pgEnum("status", ["planning", "active", "completed"]).default("planning"),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Sleep-Performance Correlations
-export const sleepPerformanceCorrelations = mysqlTable("sleep_performance_correlations", {
+export const sleepPerformanceCorrelations = pgTable("sleep_performance_correlations", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Performance Area
-  performanceArea: mysqlEnum("performance_area", [
+  performanceArea: pgEnum("performance_area", [
     "cognitive",
     "physical",
     "emotional",
@@ -211,10 +211,10 @@ export const sleepPerformanceCorrelations = mysqlTable("sleep_performance_correl
   
   // Optimal Sleep for This Area
   optimalSleepDuration: decimal("optimal_sleep_duration", { precision: 3, scale: 1 }),
-  optimalSleepQuality: int("optimal_sleep_quality"),
+  optimalSleepQuality: integer("optimal_sleep_quality"),
   
   // Sample Size
-  dataPoints: int("data_points"),
+  dataPoints: integer("data_points"),
   
   lastCalculated: timestamp("last_calculated").defaultNow(),
   
@@ -223,12 +223,12 @@ export const sleepPerformanceCorrelations = mysqlTable("sleep_performance_correl
 });
 
 // Sleep Insights (AI-Generated)
-export const sleepInsights = mysqlTable("sleep_insights", {
+export const sleepInsights = pgTable("sleep_insights", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  insightType: mysqlEnum("insight_type", [
+  insightType: pgEnum("insight_type", [
     "pattern_detected",
     "recommendation",
     "warning",
@@ -246,7 +246,7 @@ export const sleepInsights = mysqlTable("sleep_insights", {
   actionRecommended: text("action_recommended"),
   
   // Priority
-  priority: mysqlEnum("priority", ["low", "medium", "high"]).default("medium"),
+  priority: pgEnum("priority", ["low", "medium", "high"]).default("medium"),
   
   // User Response
   acknowledged: boolean("acknowledged").default(false),
@@ -256,7 +256,7 @@ export const sleepInsights = mysqlTable("sleep_insights", {
 });
 
 // Sleep Analytics (Self-Learning)
-export const sleepAnalytics = mysqlTable("sleep_analytics", {
+export const sleepAnalytics = pgTable("sleep_analytics", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Hygiene Practice Effectiveness (aggregated)
@@ -273,7 +273,7 @@ export const sleepAnalytics = mysqlTable("sleep_analytics", {
   mostEffectiveFor: text("most_effective_for"), // JSON: different user types
   
   // Sample Size
-  userCount: int("user_count"),
+  userCount: integer("user_count"),
   
   lastCalculated: timestamp("last_calculated").defaultNow(),
   

@@ -4,15 +4,15 @@
  * Research sources: Stanford Career Development, Positive Psychology, Purpose Research (Damon, Bronk)
  */
 
-import { mysqlTable, varchar, text, int, timestamp, boolean, decimal, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
 
 // Career Profiles
-export const careerProfiles = mysqlTable("career_profiles", {
+export const careerProfiles = pgTable("career_profiles", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Current Status
-  employmentStatus: mysqlEnum("employment_status", [
+  employmentStatus: pgEnum("employment_status", [
     "employed_full_time",
     "employed_part_time",
     "self_employed",
@@ -24,10 +24,10 @@ export const careerProfiles = mysqlTable("career_profiles", {
   
   currentRole: varchar("current_role", { length: 255 }),
   currentIndustry: varchar("current_industry", { length: 255 }),
-  yearsExperience: int("years_experience"),
+  yearsExperience: integer("years_experience"),
   
   // Career Goals
-  primaryGoal: mysqlEnum("primary_goal", [
+  primaryGoal: pgEnum("primary_goal", [
     "find_first_job",
     "career_change",
     "advancement",
@@ -40,7 +40,7 @@ export const careerProfiles = mysqlTable("career_profiles", {
   
   targetRole: varchar("target_role", { length: 255 }),
   targetIndustry: varchar("target_industry", { length: 255 }),
-  targetTimeline: int("target_timeline"), // months
+  targetTimeline: integer("target_timeline"), // months
   
   // Ikigai Framework (What you love, what you're good at, what the world needs, what you can be paid for)
   whatYouLove: text("what_you_love"), // JSON array
@@ -65,13 +65,13 @@ export const careerProfiles = mysqlTable("career_profiles", {
 });
 
 // Job Search Tracking
-export const jobSearchActivities = mysqlTable("job_search_activities", {
+export const jobSearchActivities = pgTable("job_search_activities", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   activityDate: timestamp("activity_date").notNull(),
   
-  activityType: mysqlEnum("activity_type", [
+  activityType: pgEnum("activity_type", [
     "application_submitted",
     "networking_event",
     "informational_interview",
@@ -92,12 +92,12 @@ export const jobSearchActivities = mysqlTable("job_search_activities", {
   referralSource: varchar("referral_source", { length: 255 }),
   
   // Interview Details
-  interviewType: mysqlEnum("interview_type", ["phone", "video", "in_person", "panel", "technical"]),
-  interviewRound: int("interview_round"),
+  interviewType: pgEnum("interview_type", ["phone", "video", "in_person", "panel", "technical"]),
+  interviewRound: integer("interview_round"),
   interviewNotes: text("interview_notes"),
   
   // Outcome
-  status: mysqlEnum("status", ["pending", "interviewing", "offered", "rejected", "accepted", "declined"]),
+  status: pgEnum("status", ["pending", "interviewing", "offered", "rejected", "accepted", "declined"]),
   
   // Follow-up
   nextSteps: text("next_steps"),
@@ -107,7 +107,7 @@ export const jobSearchActivities = mysqlTable("job_search_activities", {
 });
 
 // Networking Contacts
-export const networkingContacts = mysqlTable("networking_contacts", {
+export const networkingContacts = pgTable("networking_contacts", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -120,7 +120,7 @@ export const networkingContacts = mysqlTable("networking_contacts", {
   
   // Connection
   howMet: text("how_met"),
-  connectionStrength: mysqlEnum("connection_strength", ["weak", "moderate", "strong"]),
+  connectionStrength: pgEnum("connection_strength", ["weak", "moderate", "strong"]),
   
   // Contact Details
   email: varchar("email", { length: 255 }),
@@ -129,7 +129,7 @@ export const networkingContacts = mysqlTable("networking_contacts", {
   
   // Relationship
   lastContact: timestamp("last_contact"),
-  contactFrequency: mysqlEnum("contact_frequency", ["monthly", "quarterly", "yearly", "as_needed"]),
+  contactFrequency: pgEnum("contact_frequency", ["monthly", "quarterly", "yearly", "as_needed"]),
   
   // Value Exchange
   howTheyCanHelp: text("how_they_can_help"),
@@ -143,17 +143,17 @@ export const networkingContacts = mysqlTable("networking_contacts", {
 });
 
 // Skill Development Tracking
-export const skillDevelopment = mysqlTable("skill_development", {
+export const skillDevelopment = pgTable("skill_development", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   skillName: varchar("skill_name", { length: 255 }).notNull(),
-  skillCategory: mysqlEnum("skill_category", ["technical", "soft_skill", "leadership", "industry_specific"]),
+  skillCategory: pgEnum("skill_category", ["technical", "soft_skill", "leadership", "industry_specific"]),
   
   // Current Level
-  currentLevel: mysqlEnum("current_level", ["beginner", "intermediate", "advanced", "expert"]),
-  targetLevel: mysqlEnum("target_level", ["beginner", "intermediate", "advanced", "expert"]),
+  currentLevel: pgEnum("current_level", ["beginner", "intermediate", "advanced", "expert"]),
+  targetLevel: pgEnum("target_level", ["beginner", "intermediate", "advanced", "expert"]),
   
   // Learning Plan
   learningResources: text("learning_resources"), // JSON array: [{type, name, url, cost}]
@@ -172,21 +172,21 @@ export const skillDevelopment = mysqlTable("skill_development", {
   targetCompletionDate: timestamp("target_completion_date"),
   completionDate: timestamp("completion_date"),
   
-  status: mysqlEnum("status", ["not_started", "in_progress", "completed", "on_hold"]),
+  status: pgEnum("status", ["not_started", "in_progress", "completed", "on_hold"]),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Purpose Exploration Activities
-export const purposeActivities = mysqlTable("purpose_activities", {
+export const purposeActivities = pgTable("purpose_activities", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   activityDate: timestamp("activity_date").notNull(),
   
   // Activity Type (evidence-based purpose discovery methods)
-  activityType: mysqlEnum("activity_type", [
+  activityType: pgEnum("activity_type", [
     "values_clarification",
     "life_review",
     "peak_experiences",
@@ -214,12 +214,12 @@ export const purposeActivities = mysqlTable("purpose_activities", {
 });
 
 // Career Experiments - Test before committing
-export const careerExperiments = mysqlTable("career_experiments", {
+export const careerExperiments = pgTable("career_experiments", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  experimentType: mysqlEnum("experiment_type", [
+  experimentType: pgEnum("experiment_type", [
     "informational_interview",
     "job_shadowing",
     "freelance_project",
@@ -249,19 +249,19 @@ export const careerExperiments = mysqlTable("career_experiments", {
   conclusion: text("conclusion"),
   nextSteps: text("next_steps"),
   
-  status: mysqlEnum("status", ["planned", "in_progress", "completed"]),
+  status: pgEnum("status", ["planned", "in_progress", "completed"]),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Career Milestones
-export const careerMilestones = mysqlTable("career_milestones", {
+export const careerMilestones = pgTable("career_milestones", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  milestoneType: mysqlEnum("milestone_type", [
+  milestoneType: pgEnum("milestone_type", [
     "job_offer",
     "promotion",
     "skill_mastery",
@@ -278,8 +278,8 @@ export const careerMilestones = mysqlTable("career_milestones", {
   targetDate: timestamp("target_date"),
   achievedDate: timestamp("achieved_date"),
   
-  progress: int("progress"), // 0-100%
-  status: mysqlEnum("status", ["not_started", "in_progress", "achieved"]),
+  progress: integer("progress"), // 0-100%
+  status: pgEnum("status", ["not_started", "in_progress", "achieved"]),
   
   impact: text("impact"), // How did this move you toward your purpose?
   

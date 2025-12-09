@@ -4,8 +4,8 @@
  * This allows guest users to create conversations without authentication
  */
 
-import { drizzle } from 'drizzle-orm/mysql2';
-import mysql from 'mysql2/promise';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
 
 async function migrate() {
   console.log('🔄 Starting migration: Make userId nullable...');
@@ -17,15 +17,16 @@ async function migrate() {
   }
   
   // Create connection
-  const connection = await mysql.createConnection(dbUrl);
+  const sql = postgres(dbUrl);
+  const db = drizzle(sql);
   
   try {
     // Run migration
     console.log('📝 Altering aiChatConversations table...');
-    await connection.execute(`
-      ALTER TABLE aiChatConversations 
-      MODIFY COLUMN userId INT NULL
-    `);
+    await sql`
+      ALTER TABLE "aiChatConversations" 
+      ALTER COLUMN "userId" DROP NOT NULL
+    `;
     
     console.log('✅ Migration completed successfully!');
     console.log('✅ userId is now nullable in aiChatConversations');
@@ -34,7 +35,7 @@ async function migrate() {
     console.error('❌ Migration failed:', error.message);
     throw error;
   } finally {
-    await connection.end();
+    await sql.end();
   }
 }
 

@@ -35,30 +35,30 @@
  * - Suggests new integrations based on goals
  */
 
-import { mysqlTable, varchar, text, int, timestamp, boolean, decimal, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
 
 // Integration Profiles
-export const integrationProfiles = mysqlTable("integration_profiles", {
+export const integrationProfiles = pgTable("integration_profiles", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Integration Preferences
   autoSyncEnabled: boolean("auto_sync_enabled").default(true),
-  syncFrequency: mysqlEnum("sync_frequency", ["realtime", "hourly", "daily", "manual"]).default("daily"),
+  syncFrequency: pgEnum("sync_frequency", ["realtime", "hourly", "daily", "manual"]).default("daily"),
   
   // Privacy
-  dataSharing: mysqlEnum("data_sharing", ["minimal", "standard", "full"]).default("standard"),
+  dataSharing: pgEnum("data_sharing", ["minimal", "standard", "full"]).default("standard"),
   
   // Stats
-  totalIntegrations: int("total_integrations").default(0),
-  activeIntegrations: int("active_integrations").default(0),
+  totalIntegrations: integer("total_integrations").default(0),
+  activeIntegrations: integer("active_integrations").default(0),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Available Integrations
-export const availableIntegrations = mysqlTable("available_integrations", {
+export const availableIntegrations = pgTable("available_integrations", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Integration Details
@@ -69,7 +69,7 @@ export const availableIntegrations = mysqlTable("available_integrations", {
   provider: varchar("provider", { length: 255 }).notNull(), // Oura, Whoop, etc.
   
   // Category
-  category: mysqlEnum("category", [
+  category: pgEnum("category", [
     "wearable",
     "sleep_tracking",
     "fitness",
@@ -84,7 +84,7 @@ export const availableIntegrations = mysqlTable("available_integrations", {
   ]).notNull(),
   
   // Authentication
-  authType: mysqlEnum("auth_type", ["oauth2", "api_key", "webhook", "manual"]).notNull(),
+  authType: pgEnum("auth_type", ["oauth2", "api_key", "webhook", "manual"]).notNull(),
   
   // Capabilities
   capabilities: text("capabilities"), // JSON: what data can be imported/exported
@@ -99,14 +99,14 @@ export const availableIntegrations = mysqlTable("available_integrations", {
   // API Details
   apiEndpoint: varchar("api_endpoint", { length: 500 }),
   apiDocumentation: varchar("api_documentation", { length: 500 }),
-  rateLimitPerHour: int("rate_limit_per_hour"),
+  rateLimitPerHour: integer("rate_limit_per_hour"),
   
   // Status
   active: boolean("active").default(true),
   beta: boolean("beta").default(false),
   
   // Popularity
-  totalUsers: int("total_users").default(0),
+  totalUsers: integer("total_users").default(0),
   avgSatisfactionRating: decimal("avg_satisfaction_rating", { precision: 4, scale: 2 }), // 1-10
   
   createdAt: timestamp("created_at").defaultNow(),
@@ -114,14 +114,14 @@ export const availableIntegrations = mysqlTable("available_integrations", {
 });
 
 // User Integrations
-export const userIntegrations = mysqlTable("user_integrations", {
+export const userIntegrations = pgTable("user_integrations", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   integrationId: varchar("integration_id", { length: 255 }).notNull(),
   
   // Connection Status
-  status: mysqlEnum("status", [
+  status: pgEnum("status", [
     "connected",
     "disconnected",
     "error",
@@ -139,7 +139,7 @@ export const userIntegrations = mysqlTable("user_integrations", {
   
   // Sync Settings
   syncEnabled: boolean("sync_enabled").default(true),
-  syncFrequency: mysqlEnum("sync_frequency", ["realtime", "hourly", "daily", "manual"]).default("daily"),
+  syncFrequency: pgEnum("sync_frequency", ["realtime", "hourly", "daily", "manual"]).default("daily"),
   lastSyncAt: timestamp("last_sync_at"),
   nextSyncAt: timestamp("next_sync_at"),
   
@@ -147,16 +147,16 @@ export const userIntegrations = mysqlTable("user_integrations", {
   dataTypesToSync: text("data_types_to_sync"), // JSON: which data types to import
   
   // Stats
-  totalSyncs: int("total_syncs").default(0),
-  totalRecordsImported: int("total_records_imported").default(0),
-  totalRecordsExported: int("total_records_exported").default(0),
+  totalSyncs: integer("total_syncs").default(0),
+  totalRecordsImported: integer("total_records_imported").default(0),
+  totalRecordsExported: integer("total_records_exported").default(0),
   
   // Errors
   lastError: text("last_error"),
-  errorCount: int("error_count").default(0),
+  errorCount: integer("error_count").default(0),
   
   // User Satisfaction
-  satisfactionRating: int("satisfaction_rating"), // 1-10
+  satisfactionRating: integer("satisfaction_rating"), // 1-10
   
   connectedAt: timestamp("connected_at").defaultNow(),
   disconnectedAt: timestamp("disconnected_at"),
@@ -166,26 +166,26 @@ export const userIntegrations = mysqlTable("user_integrations", {
 });
 
 // Sync Logs
-export const syncLogs = mysqlTable("sync_logs", {
+export const syncLogs = pgTable("sync_logs", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userIntegrationId: varchar("user_integration_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Sync Details
-  syncType: mysqlEnum("sync_type", ["import", "export", "bidirectional"]).notNull(),
+  syncType: pgEnum("sync_type", ["import", "export", "bidirectional"]).notNull(),
   
   // Status
-  status: mysqlEnum("status", ["started", "in_progress", "completed", "failed"]).default("started"),
+  status: pgEnum("status", ["started", "in_progress", "completed", "failed"]).default("started"),
   
   // Data
-  recordsProcessed: int("records_processed").default(0),
-  recordsSuccessful: int("records_successful").default(0),
-  recordsFailed: int("records_failed").default(0),
+  recordsProcessed: integer("records_processed").default(0),
+  recordsSuccessful: integer("records_successful").default(0),
+  recordsFailed: integer("records_failed").default(0),
   
   // Duration
   startedAt: timestamp("started_at").defaultNow(),
   completedAt: timestamp("completed_at"),
-  durationSeconds: int("duration_seconds"),
+  durationSeconds: integer("duration_seconds"),
   
   // Errors
   errorMessage: text("error_message"),
@@ -195,13 +195,13 @@ export const syncLogs = mysqlTable("sync_logs", {
 });
 
 // Imported Data
-export const importedData = mysqlTable("imported_data", {
+export const importedData = pgTable("imported_data", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userIntegrationId: varchar("user_integration_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Data Type
-  dataType: mysqlEnum("data_type", [
+  dataType: pgEnum("data_type", [
     "sleep",
     "hrv",
     "heart_rate",
@@ -233,14 +233,14 @@ export const importedData = mysqlTable("imported_data", {
   mappedToType: varchar("mapped_to_type", { length: 100 }), // Which table?
   
   // Quality
-  dataQuality: mysqlEnum("data_quality", ["high", "medium", "low"]),
+  dataQuality: pgEnum("data_quality", ["high", "medium", "low"]),
   validationErrors: text("validation_errors"), // JSON: any validation issues
   
   importedAt: timestamp("imported_at").defaultNow(),
 });
 
 // Exported Data
-export const exportedData = mysqlTable("exported_data", {
+export const exportedData = pgTable("exported_data", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userIntegrationId: varchar("user_integration_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -259,7 +259,7 @@ export const exportedData = mysqlTable("exported_data", {
   destinationId: varchar("destination_id", { length: 255 }), // ID in destination system
   
   // Status
-  status: mysqlEnum("status", ["pending", "sent", "confirmed", "failed"]).default("pending"),
+  status: pgEnum("status", ["pending", "sent", "confirmed", "failed"]).default("pending"),
   
   // Error
   errorMessage: text("error_message"),
@@ -269,7 +269,7 @@ export const exportedData = mysqlTable("exported_data", {
 });
 
 // Webhooks
-export const webhooks = mysqlTable("webhooks", {
+export const webhooks = pgTable("webhooks", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userIntegrationId: varchar("user_integration_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -285,7 +285,7 @@ export const webhooks = mysqlTable("webhooks", {
   active: boolean("active").default(true),
   
   // Stats
-  totalReceived: int("total_received").default(0),
+  totalReceived: integer("total_received").default(0),
   lastReceivedAt: timestamp("last_received_at"),
   
   createdAt: timestamp("created_at").defaultNow(),
@@ -293,7 +293,7 @@ export const webhooks = mysqlTable("webhooks", {
 });
 
 // Webhook Events
-export const webhookEvents = mysqlTable("webhook_events", {
+export const webhookEvents = pgTable("webhook_events", {
   id: varchar("id", { length: 255 }).primaryKey(),
   webhookId: varchar("webhook_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -313,17 +313,17 @@ export const webhookEvents = mysqlTable("webhook_events", {
 });
 
 // API Rate Limits
-export const apiRateLimits = mysqlTable("api_rate_limits", {
+export const apiRateLimits = pgTable("api_rate_limits", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userIntegrationId: varchar("user_integration_id", { length: 255 }).notNull(),
   
   // Rate Limit Details
-  requestsPerHour: int("requests_per_hour"),
-  requestsPerDay: int("requests_per_day"),
+  requestsPerHour: integer("requests_per_hour"),
+  requestsPerDay: integer("requests_per_day"),
   
   // Current Usage
-  requestsThisHour: int("requests_this_hour").default(0),
-  requestsToday: int("requests_today").default(0),
+  requestsThisHour: integer("requests_this_hour").default(0),
+  requestsToday: integer("requests_today").default(0),
   
   // Reset Times
   hourResetAt: timestamp("hour_reset_at"),
@@ -337,7 +337,7 @@ export const apiRateLimits = mysqlTable("api_rate_limits", {
 });
 
 // Data Mapping Rules
-export const dataMappingRules = mysqlTable("data_mapping_rules", {
+export const dataMappingRules = pgTable("data_mapping_rules", {
   id: varchar("id", { length: 255 }).primaryKey(),
   integrationId: varchar("integration_id", { length: 255 }).notNull(),
   
@@ -363,13 +363,13 @@ export const dataMappingRules = mysqlTable("data_mapping_rules", {
 });
 
 // Integration Analytics (Self-Learning)
-export const integrationAnalytics = mysqlTable("integration_analytics", {
+export const integrationAnalytics = pgTable("integration_analytics", {
   id: varchar("id", { length: 255 }).primaryKey(),
   integrationId: varchar("integration_id", { length: 255 }).notNull(),
   
   // Usage Stats
-  totalUsers: int("total_users").default(0),
-  activeUsers: int("active_users").default(0),
+  totalUsers: integer("total_users").default(0),
+  activeUsers: integer("active_users").default(0),
   
   // Sync Stats
   avgSyncsPerDay: decimal("avg_syncs_per_day", { precision: 6, scale: 2 }),
@@ -398,7 +398,7 @@ export const integrationAnalytics = mysqlTable("integration_analytics", {
 });
 
 // Integration Recommendations
-export const integrationRecommendations = mysqlTable("integration_recommendations", {
+export const integrationRecommendations = pgTable("integration_recommendations", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -414,7 +414,7 @@ export const integrationRecommendations = mysqlTable("integration_recommendation
   confidence: decimal("confidence", { precision: 5, scale: 2 }), // %
   
   // Status
-  status: mysqlEnum("status", ["pending", "accepted", "declined", "deferred"]).default("pending"),
+  status: pgEnum("status", ["pending", "accepted", "declined", "deferred"]).default("pending"),
   
   // User Response
   userFeedback: text("user_feedback"),
@@ -424,12 +424,12 @@ export const integrationRecommendations = mysqlTable("integration_recommendation
 });
 
 // Export Requests
-export const exportRequests = mysqlTable("export_requests", {
+export const exportRequests = pgTable("export_requests", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Export Type
-  exportType: mysqlEnum("export_type", [
+  exportType: pgEnum("export_type", [
     "full_data_export", // All user data
     "module_export", // Specific module data
     "date_range_export", // Data from date range
@@ -437,17 +437,17 @@ export const exportRequests = mysqlTable("export_requests", {
   ]).notNull(),
   
   // Format
-  exportFormat: mysqlEnum("export_format", ["json", "csv", "pdf", "xlsx"]).notNull(),
+  exportFormat: pgEnum("export_format", ["json", "csv", "pdf", "xlsx"]).notNull(),
   
   // Filters
   filters: text("filters"), // JSON: what to include
   
   // Status
-  status: mysqlEnum("status", ["pending", "processing", "completed", "failed"]).default("pending"),
+  status: pgEnum("status", ["pending", "processing", "completed", "failed"]).default("pending"),
   
   // File
   filePath: varchar("file_path", { length: 500 }),
-  fileSize: int("file_size"), // bytes
+  fileSize: integer("file_size"), // bytes
   
   // Download
   downloadUrl: varchar("download_url", { length: 500 }),

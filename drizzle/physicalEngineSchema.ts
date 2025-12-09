@@ -10,23 +10,23 @@
  * - Adapts programming based on progress and recovery
  */
 
-import { mysqlTable, varchar, text, int, timestamp, boolean, decimal, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
 
 // Physical Profiles
-export const physicalProfiles = mysqlTable("physical_profiles", {
+export const physicalProfiles = pgTable("physical_profiles", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Current State
-  fitnessLevel: mysqlEnum("fitness_level", ["sedentary", "beginner", "intermediate", "advanced", "athlete"]),
+  fitnessLevel: pgEnum("fitness_level", ["sedentary", "beginner", "intermediate", "advanced", "athlete"]),
   
   // Measurements
-  height: int("height"), // cm
+  height: integer("height"), // cm
   weight: decimal("weight", { precision: 5, scale: 2 }), // kg
   bodyFatPercentage: decimal("body_fat_percentage", { precision: 4, scale: 1 }),
   
   // Goals
-  primaryGoal: mysqlEnum("primary_goal", [
+  primaryGoal: pgEnum("primary_goal", [
     "lose_weight",
     "build_muscle",
     "increase_strength",
@@ -51,11 +51,11 @@ export const physicalProfiles = mysqlTable("physical_profiles", {
   // Preferences
   preferredExerciseTypes: text("preferred_exercise_types"), // JSON array
   availableEquipment: text("available_equipment"), // JSON array
-  timeAvailable: int("time_available"), // minutes per session
+  timeAvailable: integer("time_available"), // minutes per session
   
   // Self-Learning Data
-  optimalTrainingFrequency: int("optimal_training_frequency"), // days per week
-  optimalSessionDuration: int("optimal_session_duration"), // minutes
+  optimalTrainingFrequency: integer("optimal_training_frequency"), // days per week
+  optimalSessionDuration: integer("optimal_session_duration"), // minutes
   bestRecoveryStrategies: text("best_recovery_strategies"), // JSON
   injuryRiskFactors: text("injury_risk_factors"), // JSON: patterns that lead to injury
   
@@ -64,14 +64,14 @@ export const physicalProfiles = mysqlTable("physical_profiles", {
 });
 
 // Workouts
-export const workouts = mysqlTable("workouts", {
+export const workouts = pgTable("workouts", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   workoutDate: timestamp("workout_date").notNull(),
   
   // Workout Type
-  workoutType: mysqlEnum("workout_type", [
+  workoutType: pgEnum("workout_type", [
     "strength_training",
     "cardio",
     "HIIT",
@@ -88,7 +88,7 @@ export const workouts = mysqlTable("workouts", {
   ]).notNull(),
   
   // Focus
-  primaryFocus: mysqlEnum("primary_focus", [
+  primaryFocus: pgEnum("primary_focus", [
     "upper_body",
     "lower_body",
     "full_body",
@@ -102,27 +102,27 @@ export const workouts = mysqlTable("workouts", {
   ]),
   
   // Duration & Intensity
-  duration: int("duration"), // minutes
-  intensity: mysqlEnum("intensity", ["low", "moderate", "high", "max"]),
-  perceivedExertion: int("perceived_exertion"), // 1-10 (RPE)
+  duration: integer("duration"), // minutes
+  intensity: pgEnum("intensity", ["low", "moderate", "high", "max"]),
+  perceivedExertion: integer("perceived_exertion"), // 1-10 (RPE)
   
   // State Before
-  energyBefore: int("energy_before"), // 1-10
-  sorenessBefore: int("soreness_before"), // 1-10
-  motivationBefore: int("motivation_before"), // 1-10
+  energyBefore: integer("energy_before"), // 1-10
+  sorenessBefore: integer("soreness_before"), // 1-10
+  motivationBefore: integer("motivation_before"), // 1-10
   
   // Performance
-  performanceRating: int("performance_rating"), // 1-10
+  performanceRating: integer("performance_rating"), // 1-10
   personalRecords: text("personal_records"), // JSON: any PRs achieved
   
   // State After
-  energyAfter: int("energy_after"), // 1-10
-  sorenessAfter: int("soreness_after"), // 1-10
-  satisfactionLevel: int("satisfaction_level"), // 1-10
+  energyAfter: integer("energy_after"), // 1-10
+  sorenessAfter: integer("soreness_after"), // 1-10
+  satisfactionLevel: integer("satisfaction_level"), // 1-10
   
   // Environment
   location: varchar("location", { length: 255 }),
-  temperature: int("temperature"), // celsius
+  temperature: integer("temperature"), // celsius
   
   // Notes
   notes: text("notes"),
@@ -134,7 +134,7 @@ export const workouts = mysqlTable("workouts", {
 });
 
 // Exercises (within workouts)
-export const exercises = mysqlTable("exercises", {
+export const exercises = pgTable("exercises", {
   id: varchar("id", { length: 255 }).primaryKey(),
   workoutId: varchar("workout_id", { length: 255 }).notNull(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
@@ -142,7 +142,7 @@ export const exercises = mysqlTable("exercises", {
   
   // Exercise Details
   exerciseName: varchar("exercise_name", { length: 255 }).notNull(),
-  exerciseType: mysqlEnum("exercise_type", [
+  exerciseType: pgEnum("exercise_type", [
     "compound", // Multi-joint (squat, deadlift, bench)
     "isolation", // Single-joint (bicep curl, leg extension)
     "cardio",
@@ -155,22 +155,22 @@ export const exercises = mysqlTable("exercises", {
   muscleGroup: varchar("muscle_group", { length: 255 }), // Primary muscle worked
   
   // Sets & Reps
-  sets: int("sets"),
+  sets: integer("sets"),
   reps: text("reps"), // JSON array (can vary per set)
   weight: text("weight"), // JSON array (kg per set)
   
   // Rest
-  restBetweenSets: int("rest_between_sets"), // seconds
+  restBetweenSets: integer("rest_between_sets"), // seconds
   
   // Tempo (if tracked)
   tempo: varchar("tempo", { length: 50 }), // e.g., "3-1-2-0" (eccentric-pause-concentric-pause)
   
   // Range of Motion
-  rangeOfMotion: mysqlEnum("range_of_motion", ["full", "partial", "limited"]),
+  rangeOfMotion: pgEnum("range_of_motion", ["full", "partial", "limited"]),
   
   // Quality
-  formQuality: int("form_quality"), // 1-10
-  difficulty: int("difficulty"), // 1-10
+  formQuality: integer("form_quality"), // 1-10
+  difficulty: integer("difficulty"), // 1-10
   
   // Progression
   progressionFromLast: varchar("progression_from_last", { length: 255 }), // More weight, reps, better form, etc.
@@ -178,13 +178,13 @@ export const exercises = mysqlTable("exercises", {
   // Pain/Discomfort
   painDuring: boolean("pain_during"),
   painLocation: varchar("pain_location", { length: 255 }),
-  painLevel: int("pain_level"), // 1-10
+  painLevel: integer("pain_level"), // 1-10
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Cardio Sessions
-export const cardioSessions = mysqlTable("cardio_sessions", {
+export const cardioSessions = pgTable("cardio_sessions", {
   id: varchar("id", { length: 255 }).primaryKey(),
   workoutId: varchar("workout_id", { length: 255 }).notNull(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
@@ -192,7 +192,7 @@ export const cardioSessions = mysqlTable("cardio_sessions", {
   sessionDate: timestamp("session_date").notNull(),
   
   // Activity
-  activityType: mysqlEnum("activity_type", [
+  activityType: pgEnum("activity_type", [
     "running",
     "cycling",
     "swimming",
@@ -206,41 +206,41 @@ export const cardioSessions = mysqlTable("cardio_sessions", {
   ]).notNull(),
   
   // Duration & Distance
-  duration: int("duration"), // minutes
+  duration: integer("duration"), // minutes
   distance: decimal("distance", { precision: 6, scale: 2 }), // km
   
   // Intensity
-  avgHeartRate: int("avg_heart_rate"), // bpm
-  maxHeartRate: int("max_heart_rate"), // bpm
+  avgHeartRate: integer("avg_heart_rate"), // bpm
+  maxHeartRate: integer("max_heart_rate"), // bpm
   heartRateZones: text("heart_rate_zones"), // JSON: time in each zone
   
   avgPace: varchar("avg_pace", { length: 50 }), // min/km
   avgSpeed: decimal("avg_speed", { precision: 5, scale: 2 }), // km/h
   
   // Elevation
-  elevationGain: int("elevation_gain"), // meters
+  elevationGain: integer("elevation_gain"), // meters
   
   // Calories
-  caloriesBurned: int("calories_burned"),
+  caloriesBurned: integer("calories_burned"),
   
   // Performance
-  performanceRating: int("performance_rating"), // 1-10
+  performanceRating: integer("performance_rating"), // 1-10
   
   // Recovery
-  recoveryHeartRate: int("recovery_heart_rate"), // HR 1 min after stopping
+  recoveryHeartRate: integer("recovery_heart_rate"), // HR 1 min after stopping
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Mobility & Flexibility Work
-export const mobilityWork = mysqlTable("mobility_work", {
+export const mobilityWork = pgTable("mobility_work", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   sessionDate: timestamp("session_date").notNull(),
   
   // Session Type
-  sessionType: mysqlEnum("session_type", [
+  sessionType: pgEnum("session_type", [
     "stretching",
     "foam_rolling",
     "yoga",
@@ -253,57 +253,57 @@ export const mobilityWork = mysqlTable("mobility_work", {
   areasWorked: text("areas_worked"), // JSON: hips, shoulders, ankles, etc.
   
   // Duration
-  duration: int("duration"), // minutes
+  duration: integer("duration"), // minutes
   
   // Quality
-  rangeOfMotionBefore: int("range_of_motion_before"), // 1-10
-  rangeOfMotionAfter: int("range_of_motion_after"), // 1-10
+  rangeOfMotionBefore: integer("range_of_motion_before"), // 1-10
+  rangeOfMotionAfter: integer("range_of_motion_after"), // 1-10
   
-  painBefore: int("pain_before"), // 1-10
-  painAfter: int("pain_after"), // 1-10
+  painBefore: integer("pain_before"), // 1-10
+  painAfter: integer("pain_after"), // 1-10
   
   // Techniques Used
   techniquesUsed: text("techniques_used"), // JSON array
   
   // Effectiveness
-  effectiveness: int("effectiveness"), // 1-10
+  effectiveness: integer("effectiveness"), // 1-10
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Recovery Tracking
-export const recoveryTracking = mysqlTable("recovery_tracking", {
+export const recoveryTracking = pgTable("recovery_tracking", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   trackingDate: timestamp("tracking_date").notNull(),
   
   // Recovery Score (calculated or self-reported)
-  recoveryScore: int("recovery_score"), // 1-10
+  recoveryScore: integer("recovery_score"), // 1-10
   
   // Metrics
-  restingHeartRate: int("resting_heart_rate"), // bpm
-  hrv: int("hrv"), // Heart Rate Variability (ms)
+  restingHeartRate: integer("resting_heart_rate"), // bpm
+  hrv: integer("hrv"), // Heart Rate Variability (ms)
   
-  sleepQuality: int("sleep_quality"), // 1-10
+  sleepQuality: integer("sleep_quality"), // 1-10
   sleepHours: decimal("sleep_hours", { precision: 3, scale: 1 }),
   
   // Soreness
-  overallSoreness: int("overall_soreness"), // 1-10
+  overallSoreness: integer("overall_soreness"), // 1-10
   soreAreas: text("sore_areas"), // JSON: specific muscles/joints
   
   // Energy & Readiness
-  energyLevel: int("energy_level"), // 1-10
-  readinessToTrain: int("readiness_to_train"), // 1-10
+  energyLevel: integer("energy_level"), // 1-10
+  readinessToTrain: integer("readiness_to_train"), // 1-10
   
   // Stress
-  stressLevel: int("stress_level"), // 1-10
+  stressLevel: integer("stress_level"), // 1-10
   
   // Recovery Strategies Used
   recoveryStrategies: text("recovery_strategies"), // JSON: sleep, nutrition, massage, ice bath, etc.
   
   // Recommendations (self-learning)
-  recommendedAction: mysqlEnum("recommended_action", [
+  recommendedAction: pgEnum("recommended_action", [
     "full_training",
     "light_training",
     "active_recovery",
@@ -315,7 +315,7 @@ export const recoveryTracking = mysqlTable("recovery_tracking", {
 });
 
 // Body Measurements
-export const bodyMeasurements = mysqlTable("body_measurements", {
+export const bodyMeasurements = pgTable("body_measurements", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -352,7 +352,7 @@ export const bodyMeasurements = mysqlTable("body_measurements", {
 });
 
 // Strength Benchmarks
-export const strengthBenchmarks = mysqlTable("strength_benchmarks", {
+export const strengthBenchmarks = pgTable("strength_benchmarks", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -362,7 +362,7 @@ export const strengthBenchmarks = mysqlTable("strength_benchmarks", {
   exercise: varchar("exercise", { length: 255 }).notNull(),
   
   // Test Type
-  testType: mysqlEnum("test_type", [
+  testType: pgEnum("test_type", [
     "1RM", // One rep max
     "3RM",
     "5RM",
@@ -372,8 +372,8 @@ export const strengthBenchmarks = mysqlTable("strength_benchmarks", {
   
   // Result
   weight: decimal("weight", { precision: 6, scale: 2 }), // kg
-  reps: int("reps"),
-  duration: int("duration"), // seconds (for time-based tests)
+  reps: integer("reps"),
+  duration: integer("duration"), // seconds (for time-based tests)
   
   // Relative Strength
   bodyweightRatio: decimal("bodyweight_ratio", { precision: 4, scale: 2 }), // weight lifted / bodyweight
@@ -385,7 +385,7 @@ export const strengthBenchmarks = mysqlTable("strength_benchmarks", {
 });
 
 // Physical Engine Self-Learning Analytics
-export const physicalEngineAnalytics = mysqlTable("physical_engine_analytics", {
+export const physicalEngineAnalytics = pgTable("physical_engine_analytics", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Training Effectiveness (aggregated)
@@ -397,19 +397,19 @@ export const physicalEngineAnalytics = mysqlTable("physical_engine_analytics", {
   injuryRate: decimal("injury_rate", { precision: 5, scale: 2 }), // % of users who get injured
   
   // Optimal Parameters
-  optimalFrequency: int("optimal_frequency"), // sessions per week
-  optimalDuration: int("optimal_duration"), // minutes
+  optimalFrequency: integer("optimal_frequency"), // sessions per week
+  optimalDuration: integer("optimal_duration"), // minutes
   optimalIntensity: varchar("optimal_intensity", { length: 50 }),
   
   // Recovery
-  avgRecoveryTime: int("avg_recovery_time"), // hours needed
+  avgRecoveryTime: integer("avg_recovery_time"), // hours needed
   
   // User Segments
   mostEffectiveFor: text("most_effective_for"), // JSON: different fitness levels
   
   // Sample Size
-  workoutCount: int("workout_count"),
-  userCount: int("user_count"),
+  workoutCount: integer("workout_count"),
+  userCount: integer("user_count"),
   
   lastCalculated: timestamp("last_calculated").defaultNow(),
   

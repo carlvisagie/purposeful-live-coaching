@@ -30,20 +30,20 @@
  * - Predicts habit sustainability based on patterns
  */
 
-import { mysqlTable, varchar, text, int, timestamp, boolean, decimal, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
 
 // Habit Profiles
-export const habitProfiles = mysqlTable("habit_profiles", {
+export const habitProfiles = pgTable("habit_profiles", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Current State
-  totalActiveHabits: int("total_active_habits").default(0),
-  totalMasteredHabits: int("total_mastered_habits").default(0),
-  longestStreak: int("longest_streak").default(0),
+  totalActiveHabits: integer("total_active_habits").default(0),
+  totalMasteredHabits: integer("total_mastered_habits").default(0),
+  longestStreak: integer("longest_streak").default(0),
   
   // Preferences
-  preferredHabitTime: mysqlEnum("preferred_habit_time", ["morning", "midday", "evening", "night", "flexible"]),
+  preferredHabitTime: pgEnum("preferred_habit_time", ["morning", "midday", "evening", "night", "flexible"]),
   
   // Self-Learning Data
   mostSuccessfulCues: text("most_successful_cues"), // JSON: which cues lead to habit completion
@@ -55,7 +55,7 @@ export const habitProfiles = mysqlTable("habit_profiles", {
 });
 
 // Habits
-export const habits = mysqlTable("habits", {
+export const habits = pgTable("habits", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -68,14 +68,14 @@ export const habits = mysqlTable("habits", {
   identityStatement: varchar("identity_statement", { length: 255 }), // "I am a person who..."
   
   // Habit Type
-  habitType: mysqlEnum("habit_type", [
+  habitType: pgEnum("habit_type", [
     "build", // Building a new habit
     "break", // Breaking a bad habit
     "replace" // Replacing bad habit with good one
   ]).notNull(),
   
   // Category
-  category: mysqlEnum("category", [
+  category: pgEnum("category", [
     "health",
     "fitness",
     "nutrition",
@@ -96,7 +96,7 @@ export const habits = mysqlTable("habits", {
   
   // Habit Loop (Charles Duhigg)
   cue: varchar("cue", { length: 255 }).notNull(), // What triggers the habit?
-  cueType: mysqlEnum("cue_type", ["time", "location", "preceding_action", "emotional_state", "other_people"]),
+  cueType: pgEnum("cue_type", ["time", "location", "preceding_action", "emotional_state", "other_people"]),
   routine: varchar("routine", { length: 255 }).notNull(), // The habit itself
   reward: varchar("reward", { length: 255 }), // What you get from it
   
@@ -111,7 +111,7 @@ export const habits = mysqlTable("habits", {
   environmentChanges: text("environment_changes"), // JSON: how to make it obvious/easy
   
   // Frequency
-  targetFrequency: mysqlEnum("target_frequency", [
+  targetFrequency: pgEnum("target_frequency", [
     "daily",
     "weekdays",
     "weekends",
@@ -121,22 +121,22 @@ export const habits = mysqlTable("habits", {
   customFrequency: text("custom_frequency"), // JSON: specific days
   
   // Duration
-  targetDuration: int("target_duration"), // minutes (if applicable)
+  targetDuration: integer("target_duration"), // minutes (if applicable)
   
   // Difficulty
-  difficulty: int("difficulty"), // 1-10
+  difficulty: integer("difficulty"), // 1-10
   
   // Progress
-  currentStreak: int("current_streak").default(0),
-  longestStreak: int("longest_streak").default(0),
-  totalCompletions: int("total_completions").default(0),
+  currentStreak: integer("current_streak").default(0),
+  longestStreak: integer("longest_streak").default(0),
+  totalCompletions: integer("total_completions").default(0),
   successRate: decimal("success_rate", { precision: 5, scale: 2 }), // %
   
   // Automaticity (Wendy Wood)
-  automaticityLevel: int("automaticity_level"), // 1-10: How automatic is this habit?
+  automaticityLevel: integer("automaticity_level"), // 1-10: How automatic is this habit?
   
   // Status
-  status: mysqlEnum("status", ["active", "paused", "mastered", "abandoned"]).default("active"),
+  status: pgEnum("status", ["active", "paused", "mastered", "abandoned"]).default("active"),
   
   // Dates
   startDate: timestamp("start_date").notNull(),
@@ -147,7 +147,7 @@ export const habits = mysqlTable("habits", {
 });
 
 // Daily Habit Tracking
-export const habitTracking = mysqlTable("habit_tracking", {
+export const habitTracking = pgTable("habit_tracking", {
   id: varchar("id", { length: 255 }).primaryKey(),
   habitId: varchar("habit_id", { length: 255 }).notNull(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
@@ -158,8 +158,8 @@ export const habitTracking = mysqlTable("habit_tracking", {
   completed: boolean("completed").notNull(),
   
   // Details
-  duration: int("duration"), // minutes (if applicable)
-  intensity: int("intensity"), // 1-10 (if applicable)
+  duration: integer("duration"), // minutes (if applicable)
+  intensity: integer("intensity"), // 1-10 (if applicable)
   
   // Context
   timeOfDay: varchar("time_of_day", { length: 50 }),
@@ -167,15 +167,15 @@ export const habitTracking = mysqlTable("habit_tracking", {
   
   // Cue Recognition
   cuePresent: boolean("cue_present"), // Was the cue there?
-  cueEffectiveness: int("cue_effectiveness"), // 1-10: How well did the cue work?
+  cueEffectiveness: integer("cue_effectiveness"), // 1-10: How well did the cue work?
   
   // Resistance & Ease
-  resistanceLevel: int("resistance_level"), // 1-10: How hard was it to start?
-  easeOfCompletion: int("ease_of_completion"), // 1-10: How easy once started?
+  resistanceLevel: integer("resistance_level"), // 1-10: How hard was it to start?
+  easeOfCompletion: integer("ease_of_completion"), // 1-10: How easy once started?
   
   // Reward
   rewardExperienced: boolean("reward_experienced"),
-  rewardSatisfaction: int("reward_satisfaction"), // 1-10
+  rewardSatisfaction: integer("reward_satisfaction"), // 1-10
   
   // Automaticity
   feltAutomatic: boolean("felt_automatic"), // Did it feel automatic?
@@ -183,8 +183,8 @@ export const habitTracking = mysqlTable("habit_tracking", {
   // Mood & Energy
   moodBefore: varchar("mood_before", { length: 100 }),
   moodAfter: varchar("mood_after", { length: 100 }),
-  energyBefore: int("energy_before"), // 1-10
-  energyAfter: int("energy_after"), // 1-10
+  energyBefore: integer("energy_before"), // 1-10
+  energyAfter: integer("energy_after"), // 1-10
   
   // Notes
   notes: text("notes"),
@@ -195,13 +195,13 @@ export const habitTracking = mysqlTable("habit_tracking", {
 });
 
 // Language Patterns (Self-Talk Tracking)
-export const languagePatterns = mysqlTable("language_patterns", {
+export const languagePatterns = pgTable("language_patterns", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Pattern Type
-  patternType: mysqlEnum("pattern_type", [
+  patternType: pgEnum("pattern_type", [
     "limiting_belief",
     "empowering_belief",
     "fixed_mindset",
@@ -221,21 +221,21 @@ export const languagePatterns = mysqlTable("language_patterns", {
   relatedHabit: varchar("related_habit_id", { length: 255 }), // Which habit is this about?
   
   // Belief Level
-  beliefInOld: int("belief_in_old"), // 1-10: How much do you still believe the old statement?
-  beliefInNew: int("belief_in_new"), // 1-10: How much do you believe the new statement?
+  beliefInOld: integer("belief_in_old"), // 1-10: How much do you still believe the old statement?
+  beliefInNew: integer("belief_in_new"), // 1-10: How much do you believe the new statement?
   
   // Impact
-  impactOnBehavior: int("impact_on_behavior"), // 1-10
+  impactOnBehavior: integer("impact_on_behavior"), // 1-10
   
   // Status
-  status: mysqlEnum("status", ["working_on", "integrated", "mastered"]).default("working_on"),
+  status: pgEnum("status", ["working_on", "integrated", "mastered"]).default("working_on"),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Language Pattern Practice (Daily Reframing)
-export const languagePatternPractice = mysqlTable("language_pattern_practice", {
+export const languagePatternPractice = pgTable("language_pattern_practice", {
   id: varchar("id", { length: 255 }).primaryKey(),
   patternId: varchar("pattern_id", { length: 255 }).notNull(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
@@ -252,8 +252,8 @@ export const languagePatternPractice = mysqlTable("language_pattern_practice", {
   usedNewPattern: boolean("used_new_pattern"), // Did you use the empowering language?
   
   // Impact
-  impactOnMood: int("impact_on_mood"), // 1-10
-  impactOnAction: int("impact_on_action"), // 1-10
+  impactOnMood: integer("impact_on_mood"), // 1-10
+  impactOnAction: integer("impact_on_action"), // 1-10
   
   // Notes
   notes: text("notes"),
@@ -262,7 +262,7 @@ export const languagePatternPractice = mysqlTable("language_pattern_practice", {
 });
 
 // Habit Obstacles & Solutions
-export const habitObstacles = mysqlTable("habit_obstacles", {
+export const habitObstacles = pgTable("habit_obstacles", {
   id: varchar("id", { length: 255 }).primaryKey(),
   habitId: varchar("habit_id", { length: 255 }).notNull(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
@@ -270,7 +270,7 @@ export const habitObstacles = mysqlTable("habit_obstacles", {
   
   // Obstacle
   obstacleDescription: text("obstacle_description").notNull(),
-  obstacleType: mysqlEnum("obstacle_type", [
+  obstacleType: pgEnum("obstacle_type", [
     "time",
     "energy",
     "motivation",
@@ -283,13 +283,13 @@ export const habitObstacles = mysqlTable("habit_obstacles", {
   ]),
   
   // Frequency
-  frequency: mysqlEnum("frequency", ["rare", "occasional", "frequent", "constant"]),
+  frequency: pgEnum("frequency", ["rare", "occasional", "frequent", "constant"]),
   
   // Solution (Implementation Intention)
   ifThenPlan: text("if_then_plan"), // "If [obstacle], then I will [solution]"
   
   // Effectiveness
-  solutionEffectiveness: int("solution_effectiveness"), // 1-10
+  solutionEffectiveness: integer("solution_effectiveness"), // 1-10
   
   // Status
   resolved: boolean("resolved").default(false),
@@ -299,13 +299,13 @@ export const habitObstacles = mysqlTable("habit_obstacles", {
 });
 
 // Habit Milestones
-export const habitMilestones = mysqlTable("habit_milestones", {
+export const habitMilestones = pgTable("habit_milestones", {
   id: varchar("id", { length: 255 }).primaryKey(),
   habitId: varchar("habit_id", { length: 255 }).notNull(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  milestoneType: mysqlEnum("milestone_type", [
+  milestoneType: pgEnum("milestone_type", [
     "first_completion",
     "streak_milestone", // 7, 30, 60, 90, 365 days
     "automaticity_achieved", // Habit feels automatic
@@ -322,7 +322,7 @@ export const habitMilestones = mysqlTable("habit_milestones", {
 });
 
 // Habit Stacks (Sequences of Habits)
-export const habitStacks = mysqlTable("habit_stacks", {
+export const habitStacks = pgTable("habit_stacks", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -331,17 +331,17 @@ export const habitStacks = mysqlTable("habit_stacks", {
   description: text("description"),
   
   // When
-  timeOfDay: mysqlEnum("time_of_day", ["morning", "midday", "evening", "night"]),
+  timeOfDay: pgEnum("time_of_day", ["morning", "midday", "evening", "night"]),
   
   // Habits in Stack (ordered)
   habitSequence: text("habit_sequence"), // JSON array: ordered habit IDs
   
   // Total Duration
-  estimatedDuration: int("estimated_duration"), // minutes
+  estimatedDuration: integer("estimated_duration"), // minutes
   
   // Performance
-  totalCompletions: int("total_completions").default(0),
-  currentStreak: int("current_streak").default(0),
+  totalCompletions: integer("total_completions").default(0),
+  currentStreak: integer("current_streak").default(0),
   successRate: decimal("success_rate", { precision: 5, scale: 2 }),
   
   // Status
@@ -352,7 +352,7 @@ export const habitStacks = mysqlTable("habit_stacks", {
 });
 
 // Weekly Habit Reviews
-export const weeklyHabitReviews = mysqlTable("weekly_habit_reviews", {
+export const weeklyHabitReviews = pgTable("weekly_habit_reviews", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -360,7 +360,7 @@ export const weeklyHabitReviews = mysqlTable("weekly_habit_reviews", {
   
   // Overall Performance
   overallSuccessRate: decimal("overall_success_rate", { precision: 5, scale: 2 }),
-  totalHabitsCompleted: int("total_habits_completed"),
+  totalHabitsCompleted: integer("total_habits_completed"),
   
   // Wins
   biggestWins: text("biggest_wins"), // JSON array
@@ -371,8 +371,8 @@ export const weeklyHabitReviews = mysqlTable("weekly_habit_reviews", {
   habitsStrugglingWith: text("habits_struggling_with"), // JSON: habit IDs
   
   // Language Patterns
-  limitingLanguageCaught: int("limiting_language_caught"), // How many times caught yourself
-  empoweringLanguageUsed: int("empowering_language_used"), // How many times used new patterns
+  limitingLanguageCaught: integer("limiting_language_caught"), // How many times caught yourself
+  empoweringLanguageUsed: integer("empowering_language_used"), // How many times used new patterns
   
   // Insights
   keyInsights: text("key_insights"),
@@ -387,7 +387,7 @@ export const weeklyHabitReviews = mysqlTable("weekly_habit_reviews", {
 });
 
 // Habit Formation Analytics (Self-Learning)
-export const habitFormationAnalytics = mysqlTable("habit_formation_analytics", {
+export const habitFormationAnalytics = pgTable("habit_formation_analytics", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Strategy Effectiveness (aggregated)
@@ -396,8 +396,8 @@ export const habitFormationAnalytics = mysqlTable("habit_formation_analytics", {
   
   // Success Metrics
   avgSuccessRate: decimal("avg_success_rate", { precision: 5, scale: 2 }),
-  avgTimeToAutomaticity: int("avg_time_to_automaticity"), // days
-  avgStreakLength: int("avg_streak_length"),
+  avgTimeToAutomaticity: integer("avg_time_to_automaticity"), // days
+  avgStreakLength: integer("avg_streak_length"),
   
   // Optimal Parameters
   optimalCueType: varchar("optimal_cue_type", { length: 100 }),
@@ -407,8 +407,8 @@ export const habitFormationAnalytics = mysqlTable("habit_formation_analytics", {
   mostEffectiveFor: text("most_effective_for"), // JSON: different user types
   
   // Sample Size
-  habitCount: int("habit_count"),
-  userCount: int("user_count"),
+  habitCount: integer("habit_count"),
+  userCount: integer("user_count"),
   
   lastCalculated: timestamp("last_calculated").defaultNow(),
   

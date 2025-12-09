@@ -21,10 +21,10 @@
  * - AI & Automation (AI features, automation)
  */
 
-import { mysqlTable, varchar, text, int, timestamp, boolean, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, varchar, text, int, timestamp, boolean, pgEnum } from "drizzle-orm/pg-core";
 
 // User Settings
-export const userSettings = mysqlTable("user_settings", {
+export const userSettings = pgTable("user_settings", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull().unique(),
   
@@ -43,24 +43,24 @@ export const userSettings = mysqlTable("user_settings", {
   language: varchar("language", { length: 10 }).default("en"),
   
   // Units
-  measurementSystem: mysqlEnum("measurement_system", ["metric", "imperial"]).default("metric"),
-  temperatureUnit: mysqlEnum("temperature_unit", ["celsius", "fahrenheit"]).default("celsius"),
+  measurementSystem: pgEnum("measurement_system", ["metric", "imperial"]).default("metric"),
+  temperatureUnit: pgEnum("temperature_unit", ["celsius", "fahrenheit"]).default("celsius"),
   
   // Date & Time Format
   dateFormat: varchar("date_format", { length: 50 }).default("YYYY-MM-DD"),
-  timeFormat: mysqlEnum("time_format", ["12h", "24h"]).default("24h"),
+  timeFormat: pgEnum("time_format", ["12h", "24h"]).default("24h"),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Privacy Settings
-export const privacySettings = mysqlTable("privacy_settings", {
+export const privacySettings = pgTable("privacy_settings", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull().unique(),
   
   // Profile Visibility
-  profileVisibility: mysqlEnum("profile_visibility", ["private", "friends", "public"]).default("private"),
+  profileVisibility: pgEnum("profile_visibility", ["private", "friends", "public"]).default("private"),
   
   // Data Sharing
   shareDataForResearch: boolean("share_data_for_research").default(false),
@@ -88,20 +88,20 @@ export const privacySettings = mysqlTable("privacy_settings", {
 });
 
 // Appearance Settings
-export const appearanceSettings = mysqlTable("appearance_settings", {
+export const appearanceSettings = pgTable("appearance_settings", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull().unique(),
   
   // Theme
-  theme: mysqlEnum("theme", ["light", "dark", "auto"]).default("auto"),
+  theme: pgEnum("theme", ["light", "dark", "auto"]).default("auto"),
   accentColor: varchar("accent_color", { length: 50 }).default("#3B82F6"),
   
   // Layout
-  sidebarPosition: mysqlEnum("sidebar_position", ["left", "right"]).default("left"),
+  sidebarPosition: pgEnum("sidebar_position", ["left", "right"]).default("left"),
   compactMode: boolean("compact_mode").default(false),
   
   // Typography
-  fontSize: mysqlEnum("font_size", ["small", "medium", "large", "extra_large"]).default("medium"),
+  fontSize: pgEnum("font_size", ["small", "medium", "large", "extra_large"]).default("medium"),
   fontFamily: varchar("font_family", { length: 100 }).default("system"),
   
   // Accessibility
@@ -117,7 +117,7 @@ export const appearanceSettings = mysqlTable("appearance_settings", {
 });
 
 // AI & Automation Settings
-export const aiSettings = mysqlTable("ai_settings", {
+export const aiSettings = pgTable("ai_settings", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull().unique(),
   
@@ -137,25 +137,25 @@ export const aiSettings = mysqlTable("ai_settings", {
   proactiveInterventions: boolean("proactive_interventions").default(true),
   
   // AI Personality
-  aiTone: mysqlEnum("ai_tone", ["supportive", "challenging", "balanced"]).default("balanced"),
-  aiVerbosity: mysqlEnum("ai_verbosity", ["concise", "moderate", "detailed"]).default("moderate"),
+  aiTone: pgEnum("ai_tone", ["supportive", "challenging", "balanced"]).default("balanced"),
+  aiVerbosity: pgEnum("ai_verbosity", ["concise", "moderate", "detailed"]).default("moderate"),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Data & Storage Settings
-export const dataSettings = mysqlTable("data_settings", {
+export const dataSettings = pgTable("data_settings", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull().unique(),
   
   // Backup
   autoBackupEnabled: boolean("auto_backup_enabled").default(true),
-  backupFrequency: mysqlEnum("backup_frequency", ["daily", "weekly", "monthly"]).default("weekly"),
+  backupFrequency: pgEnum("backup_frequency", ["daily", "weekly", "monthly"]).default("weekly"),
   lastBackupAt: timestamp("last_backup_at"),
   
   // Data Retention
-  dataRetentionPeriod: mysqlEnum("data_retention_period", [
+  dataRetentionPeriod: pgEnum("data_retention_period", [
     "30_days",
     "90_days",
     "1_year",
@@ -163,18 +163,18 @@ export const dataSettings = mysqlTable("data_settings", {
   ]).default("forever"),
   
   // Export
-  exportFormat: mysqlEnum("export_format", ["json", "csv", "pdf"]).default("json"),
+  exportFormat: pgEnum("export_format", ["json", "csv", "pdf"]).default("json"),
   
   // Storage
-  storageUsed: int("storage_used").default(0), // bytes
-  storageLimit: int("storage_limit").default(1073741824), // 1GB default
+  storageUsed: integer("storage_used").default(0), // bytes
+  storageLimit: integer("storage_limit").default(1073741824), // 1GB default
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Module Preferences
-export const modulePreferences = mysqlTable("module_preferences", {
+export const modulePreferences = pgTable("module_preferences", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
@@ -186,7 +186,7 @@ export const modulePreferences = mysqlTable("module_preferences", {
   
   // Visibility
   showInDashboard: boolean("show_in_dashboard").default(true),
-  dashboardOrder: int("dashboard_order"),
+  dashboardOrder: integer("dashboard_order"),
   
   // Settings
   moduleSettings: text("module_settings"), // JSON: module-specific settings
@@ -196,7 +196,7 @@ export const modulePreferences = mysqlTable("module_preferences", {
 });
 
 // Feature Flags (for gradual rollout)
-export const userFeatureFlags = mysqlTable("user_feature_flags", {
+export const userFeatureFlags = pgTable("user_feature_flags", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
@@ -214,12 +214,12 @@ export const userFeatureFlags = mysqlTable("user_feature_flags", {
 });
 
 // Consent Records (GDPR compliance)
-export const consentRecords = mysqlTable("consent_records", {
+export const consentRecords = pgTable("consent_records", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Consent Type
-  consentType: mysqlEnum("consent_type", [
+  consentType: pgEnum("consent_type", [
     "terms_of_service",
     "privacy_policy",
     "data_processing",
@@ -242,7 +242,7 @@ export const consentRecords = mysqlTable("consent_records", {
 });
 
 // Session Preferences (temporary, per-session)
-export const sessionPreferences = mysqlTable("session_preferences", {
+export const sessionPreferences = pgTable("session_preferences", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   sessionId: varchar("session_id", { length: 255 }).notNull(),
@@ -258,7 +258,7 @@ export const sessionPreferences = mysqlTable("session_preferences", {
 });
 
 // Blocked Users
-export const blockedUsers = mysqlTable("blocked_users", {
+export const blockedUsers = pgTable("blocked_users", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(), // Who blocked
   blockedUserId: varchar("blocked_user_id", { length: 255 }).notNull(), // Who was blocked
@@ -270,7 +270,7 @@ export const blockedUsers = mysqlTable("blocked_users", {
 });
 
 // Account Deletion Requests
-export const accountDeletionRequests = mysqlTable("account_deletion_requests", {
+export const accountDeletionRequests = pgTable("account_deletion_requests", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
@@ -279,7 +279,7 @@ export const accountDeletionRequests = mysqlTable("account_deletion_requests", {
   feedback: text("feedback"),
   
   // Status
-  status: mysqlEnum("status", ["pending", "processing", "completed", "cancelled"]).default("pending"),
+  status: pgEnum("status", ["pending", "processing", "completed", "cancelled"]).default("pending"),
   
   // Scheduled Deletion
   scheduledFor: timestamp("scheduled_for"), // Grace period (e.g., 30 days)
@@ -291,7 +291,7 @@ export const accountDeletionRequests = mysqlTable("account_deletion_requests", {
 });
 
 // Settings Change Log (audit trail)
-export const settingsChangeLog = mysqlTable("settings_change_log", {
+export const settingsChangeLog = pgTable("settings_change_log", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
@@ -311,7 +311,7 @@ export const settingsChangeLog = mysqlTable("settings_change_log", {
 });
 
 // Accessibility Profiles
-export const accessibilityProfiles = mysqlTable("accessibility_profiles", {
+export const accessibilityProfiles = pgTable("accessibility_profiles", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull().unique(),
   
@@ -319,7 +319,7 @@ export const accessibilityProfiles = mysqlTable("accessibility_profiles", {
   screenReaderEnabled: boolean("screen_reader_enabled").default(false),
   highContrast: boolean("high_contrast").default(false),
   largeText: boolean("large_text").default(false),
-  colorBlindMode: mysqlEnum("color_blind_mode", [
+  colorBlindMode: pgEnum("color_blind_mode", [
     "none",
     "protanopia",
     "deuteranopia",
@@ -344,7 +344,7 @@ export const accessibilityProfiles = mysqlTable("accessibility_profiles", {
 });
 
 // Beta Features
-export const betaFeatures = mysqlTable("beta_features", {
+export const betaFeatures = pgTable("beta_features", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Feature Details
@@ -352,28 +352,28 @@ export const betaFeatures = mysqlTable("beta_features", {
   description: text("description"),
   
   // Status
-  status: mysqlEnum("status", ["development", "beta", "stable", "deprecated"]).default("development"),
+  status: pgEnum("status", ["development", "beta", "stable", "deprecated"]).default("development"),
   
   // Availability
   availableToAll: boolean("available_to_all").default(false),
   requiresOptIn: boolean("requires_opt_in").default(true),
   
   // Stats
-  totalOptIns: int("total_opt_ins").default(0),
+  totalOptIns: integer("total_opt_ins").default(0),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // User Beta Opt-Ins
-export const userBetaOptIns = mysqlTable("user_beta_opt_ins", {
+export const userBetaOptIns = pgTable("user_beta_opt_ins", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   betaFeatureId: varchar("beta_feature_id", { length: 255 }).notNull(),
   
   // Feedback
   feedback: text("feedback"),
-  rating: int("rating"), // 1-10
+  rating: integer("rating"), // 1-10
   
   optedInAt: timestamp("opted_in_at").defaultNow(),
   optedOutAt: timestamp("opted_out_at"),

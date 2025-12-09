@@ -35,21 +35,21 @@
  * - Suggests accountability mechanisms
  */
 
-import { mysqlTable, varchar, text, int, timestamp, boolean, decimal, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
 
 // Goal Profiles
-export const goalProfiles = mysqlTable("goal_profiles", {
+export const goalProfiles = pgTable("goal_profiles", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Achievement Stats
-  totalGoalsSet: int("total_goals_set").default(0),
-  totalGoalsAchieved: int("total_goals_achieved").default(0),
-  totalGoalsAbandoned: int("total_goals_abandoned").default(0),
+  totalGoalsSet: integer("total_goals_set").default(0),
+  totalGoalsAchieved: integer("total_goals_achieved").default(0),
+  totalGoalsAbandoned: integer("total_goals_abandoned").default(0),
   achievementRate: decimal("achievement_rate", { precision: 5, scale: 2 }), // %
   
   // Goal-Setting Style
-  preferredFramework: mysqlEnum("preferred_framework", [
+  preferredFramework: pgEnum("preferred_framework", [
     "smart",
     "okr",
     "woop",
@@ -58,12 +58,12 @@ export const goalProfiles = mysqlTable("goal_profiles", {
   ]),
   
   // Optimal Parameters (Self-Learning)
-  optimalGoalDifficulty: int("optimal_goal_difficulty"), // 1-10
+  optimalGoalDifficulty: integer("optimal_goal_difficulty"), // 1-10
   optimalTimeframe: varchar("optimal_timeframe", { length: 100 }), // "30 days", "90 days", etc.
-  optimalGoalCount: int("optimal_goal_count"), // How many concurrent goals?
+  optimalGoalCount: integer("optimal_goal_count"), // How many concurrent goals?
   
   // Motivation Type
-  motivationType: mysqlEnum("motivation_type", [
+  motivationType: pgEnum("motivation_type", [
     "outcome_focused", // Wants the result
     "process_focused", // Enjoys the journey
     "identity_focused", // Wants to become someone
@@ -72,7 +72,7 @@ export const goalProfiles = mysqlTable("goal_profiles", {
   
   // Accountability Preferences
   needsAccountability: boolean("needs_accountability").default(false),
-  preferredAccountabilityType: mysqlEnum("preferred_accountability_type", [
+  preferredAccountabilityType: pgEnum("preferred_accountability_type", [
     "self",
     "partner",
     "group",
@@ -89,7 +89,7 @@ export const goalProfiles = mysqlTable("goal_profiles", {
 });
 
 // Goals
-export const goals = mysqlTable("goals", {
+export const goals = pgTable("goals", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -99,7 +99,7 @@ export const goals = mysqlTable("goals", {
   description: text("description"),
   
   // Goal Type
-  goalType: mysqlEnum("goal_type", [
+  goalType: pgEnum("goal_type", [
     "outcome", // Achieve a specific result
     "process", // Follow a specific process
     "performance", // Meet a standard
@@ -109,7 +109,7 @@ export const goals = mysqlTable("goals", {
   ]).notNull(),
   
   // Framework
-  framework: mysqlEnum("framework", ["smart", "okr", "woop", "habit_based", "identity_based"]),
+  framework: pgEnum("framework", ["smart", "okr", "woop", "habit_based", "identity_based"]),
   
   // SMART Criteria
   specific: boolean("specific").default(false), // Is it specific?
@@ -119,7 +119,7 @@ export const goals = mysqlTable("goals", {
   timeBound: boolean("time_bound").default(false), // Does it have a deadline?
   
   // Category
-  category: mysqlEnum("category", [
+  category: pgEnum("category", [
     "health",
     "fitness",
     "career",
@@ -133,14 +133,14 @@ export const goals = mysqlTable("goals", {
   ]),
   
   // Difficulty
-  difficulty: int("difficulty"), // 1-10
+  difficulty: integer("difficulty"), // 1-10
   
   // Timeline
   startDate: timestamp("start_date"),
   targetDate: timestamp("target_date"),
   
   // Measurement
-  metricType: mysqlEnum("metric_type", ["number", "percentage", "boolean", "custom"]),
+  metricType: pgEnum("metric_type", ["number", "percentage", "boolean", "custom"]),
   currentValue: decimal("current_value", { precision: 10, scale: 2 }),
   targetValue: decimal("target_value", { precision: 10, scale: 2 }),
   unit: varchar("unit", { length: 50 }), // kg, %, hours, etc.
@@ -149,7 +149,7 @@ export const goals = mysqlTable("goals", {
   progressPercent: decimal("progress_percent", { precision: 5, scale: 2 }), // 0-100
   
   // Status
-  status: mysqlEnum("status", [
+  status: pgEnum("status", [
     "not_started",
     "in_progress",
     "on_track",
@@ -160,7 +160,7 @@ export const goals = mysqlTable("goals", {
   ]).default("not_started"),
   
   // Priority
-  priority: mysqlEnum("priority", ["low", "medium", "high", "critical"]).default("medium"),
+  priority: pgEnum("priority", ["low", "medium", "high", "critical"]).default("medium"),
   
   // Visibility
   isPublic: boolean("is_public").default(false), // Share with community?
@@ -179,7 +179,7 @@ export const goals = mysqlTable("goals", {
 });
 
 // OKRs (Objectives & Key Results)
-export const okrs = mysqlTable("okrs", {
+export const okrs = pgTable("okrs", {
   id: varchar("id", { length: 255 }).primaryKey(),
   goalId: varchar("goal_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -188,7 +188,7 @@ export const okrs = mysqlTable("okrs", {
   objective: text("objective").notNull(),
   
   // Time Period
-  timePeriod: mysqlEnum("time_period", ["quarterly", "annual", "custom"]),
+  timePeriod: pgEnum("time_period", ["quarterly", "annual", "custom"]),
   startDate: timestamp("start_date"),
   endDate: timestamp("end_date"),
   
@@ -196,14 +196,14 @@ export const okrs = mysqlTable("okrs", {
   overallProgress: decimal("overall_progress", { precision: 5, scale: 2 }), // 0-100
   
   // Status
-  status: mysqlEnum("status", ["not_started", "in_progress", "achieved", "abandoned"]).default("not_started"),
+  status: pgEnum("status", ["not_started", "in_progress", "achieved", "abandoned"]).default("not_started"),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Key Results
-export const keyResults = mysqlTable("key_results", {
+export const keyResults = pgTable("key_results", {
   id: varchar("id", { length: 255 }).primaryKey(),
   okrId: varchar("okr_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -220,14 +220,14 @@ export const keyResults = mysqlTable("key_results", {
   progressPercent: decimal("progress_percent", { precision: 5, scale: 2 }), // 0-100
   
   // Status
-  status: mysqlEnum("status", ["not_started", "in_progress", "achieved"]).default("not_started"),
+  status: pgEnum("status", ["not_started", "in_progress", "achieved"]).default("not_started"),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // WOOP Plans (Mental Contrasting)
-export const woopPlans = mysqlTable("woop_plans", {
+export const woopPlans = pgTable("woop_plans", {
   id: varchar("id", { length: 255 }).primaryKey(),
   goalId: varchar("goal_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -251,7 +251,7 @@ export const woopPlans = mysqlTable("woop_plans", {
 });
 
 // Implementation Intentions (If-Then Plans)
-export const implementationIntentions = mysqlTable("implementation_intentions", {
+export const implementationIntentions = pgTable("implementation_intentions", {
   id: varchar("id", { length: 255 }).primaryKey(),
   goalId: varchar("goal_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -261,7 +261,7 @@ export const implementationIntentions = mysqlTable("implementation_intentions", 
   thenAction: text("then_action").notNull(), // Then I will [action]...
   
   // Type
-  intentionType: mysqlEnum("intention_type", [
+  intentionType: pgEnum("intention_type", [
     "initiation", // When to start
     "execution", // How to do it
     "obstacle_management", // How to handle obstacles
@@ -269,8 +269,8 @@ export const implementationIntentions = mysqlTable("implementation_intentions", 
   ]),
   
   // Effectiveness
-  timesTriggered: int("times_triggered").default(0),
-  timesExecuted: int("times_executed").default(0),
+  timesTriggered: integer("times_triggered").default(0),
+  timesExecuted: integer("times_executed").default(0),
   executionRate: decimal("execution_rate", { precision: 5, scale: 2 }), // %
   
   createdAt: timestamp("created_at").defaultNow(),
@@ -278,7 +278,7 @@ export const implementationIntentions = mysqlTable("implementation_intentions", 
 });
 
 // Goal Milestones
-export const goalMilestones = mysqlTable("goal_milestones", {
+export const goalMilestones = pgTable("goal_milestones", {
   id: varchar("id", { length: 255 }).primaryKey(),
   goalId: varchar("goal_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -296,13 +296,13 @@ export const goalMilestones = mysqlTable("goal_milestones", {
   achievedAt: timestamp("achieved_at"),
   
   // Order
-  sequenceOrder: int("sequence_order"), // 1st milestone, 2nd, etc.
+  sequenceOrder: integer("sequence_order"), // 1st milestone, 2nd, etc.
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Goal Progress Logs
-export const goalProgressLogs = mysqlTable("goal_progress_logs", {
+export const goalProgressLogs = pgTable("goal_progress_logs", {
   id: varchar("id", { length: 255 }).primaryKey(),
   goalId: varchar("goal_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -315,13 +315,13 @@ export const goalProgressLogs = mysqlTable("goal_progress_logs", {
   notes: text("notes"),
   
   // Momentum
-  momentum: mysqlEnum("momentum", ["accelerating", "steady", "slowing", "stalled"]),
+  momentum: pgEnum("momentum", ["accelerating", "steady", "slowing", "stalled"]),
   
   logDate: timestamp("log_date").defaultNow(),
 });
 
 // Goal Obstacles
-export const goalObstacles = mysqlTable("goal_obstacles", {
+export const goalObstacles = pgTable("goal_obstacles", {
   id: varchar("id", { length: 255 }).primaryKey(),
   goalId: varchar("goal_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -331,7 +331,7 @@ export const goalObstacles = mysqlTable("goal_obstacles", {
   description: text("description"),
   
   // Type
-  obstacleType: mysqlEnum("obstacle_type", [
+  obstacleType: pgEnum("obstacle_type", [
     "internal", // Motivation, fear, habits
     "external", // Time, money, resources
     "skill", // Lack of knowledge/ability
@@ -340,10 +340,10 @@ export const goalObstacles = mysqlTable("goal_obstacles", {
   ]),
   
   // Severity
-  severity: int("severity"), // 1-10
+  severity: integer("severity"), // 1-10
   
   // Frequency
-  occurrenceCount: int("occurrence_count").default(0),
+  occurrenceCount: integer("occurrence_count").default(0),
   lastOccurrence: timestamp("last_occurrence"),
   
   // Solution
@@ -359,13 +359,13 @@ export const goalObstacles = mysqlTable("goal_obstacles", {
 });
 
 // Goal Accountability
-export const goalAccountability = mysqlTable("goal_accountability", {
+export const goalAccountability = pgTable("goal_accountability", {
   id: varchar("id", { length: 255 }).primaryKey(),
   goalId: varchar("goal_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Accountability Type
-  accountabilityType: mysqlEnum("accountability_type", [
+  accountabilityType: pgEnum("accountability_type", [
     "self_tracking",
     "accountability_partner",
     "group",
@@ -378,7 +378,7 @@ export const goalAccountability = mysqlTable("goal_accountability", {
   partnerId: varchar("partner_id", { length: 255 }),
   
   // Check-In Frequency
-  checkInFrequency: mysqlEnum("check_in_frequency", ["daily", "weekly", "biweekly", "monthly"]),
+  checkInFrequency: pgEnum("check_in_frequency", ["daily", "weekly", "biweekly", "monthly"]),
   
   // Last Check-In
   lastCheckIn: timestamp("last_check_in"),
@@ -392,13 +392,13 @@ export const goalAccountability = mysqlTable("goal_accountability", {
 });
 
 // Goal Reflections
-export const goalReflections = mysqlTable("goal_reflections", {
+export const goalReflections = pgTable("goal_reflections", {
   id: varchar("id", { length: 255 }).primaryKey(),
   goalId: varchar("goal_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Reflection Type
-  reflectionType: mysqlEnum("reflection_type", [
+  reflectionType: pgEnum("reflection_type", [
     "weekly_review",
     "monthly_review",
     "achievement_reflection",
@@ -413,20 +413,20 @@ export const goalReflections = mysqlTable("goal_reflections", {
   adjustmentsNeeded: text("adjustments_needed"),
   
   // Mood
-  confidenceLevel: int("confidence_level"), // 1-10
-  motivationLevel: int("motivation_level"), // 1-10
+  confidenceLevel: integer("confidence_level"), // 1-10
+  motivationLevel: integer("motivation_level"), // 1-10
   
   reflectionDate: timestamp("reflection_date").defaultNow(),
 });
 
 // Goal Predictions (AI-Powered)
-export const goalPredictions = mysqlTable("goal_predictions", {
+export const goalPredictions = pgTable("goal_predictions", {
   id: varchar("id", { length: 255 }).primaryKey(),
   goalId: varchar("goal_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Prediction Type
-  predictionType: mysqlEnum("prediction_type", [
+  predictionType: pgEnum("prediction_type", [
     "success_probability", // Will you achieve this goal?
     "completion_date", // When will you achieve it?
     "obstacle_likelihood", // What obstacles will you face?
@@ -452,7 +452,7 @@ export const goalPredictions = mysqlTable("goal_predictions", {
 });
 
 // Goal Analytics (Self-Learning)
-export const goalAnalytics = mysqlTable("goal_analytics", {
+export const goalAnalytics = pgTable("goal_analytics", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Goal Type
@@ -460,12 +460,12 @@ export const goalAnalytics = mysqlTable("goal_analytics", {
   
   // Success Metrics
   avgAchievementRate: decimal("avg_achievement_rate", { precision: 5, scale: 2 }), // %
-  avgTimeToCompletion: int("avg_time_to_completion"), // days
+  avgTimeToCompletion: integer("avg_time_to_completion"), // days
   avgAbandonmentRate: decimal("avg_abandonment_rate", { precision: 5, scale: 2 }), // %
   
   // Optimal Parameters
-  optimalDifficulty: int("optimal_difficulty"), // 1-10
-  optimalTimeframe: int("optimal_timeframe"), // days
+  optimalDifficulty: integer("optimal_difficulty"), // 1-10
+  optimalTimeframe: integer("optimal_timeframe"), // days
   optimalAccountabilityType: varchar("optimal_accountability_type", { length: 100 }),
   
   // Success Factors
@@ -473,8 +473,8 @@ export const goalAnalytics = mysqlTable("goal_analytics", {
   failureFactors: text("failure_factors"), // JSON: what predicts failure
   
   // Sample Size
-  userCount: int("user_count"),
-  totalGoals: int("total_goals"),
+  userCount: integer("user_count"),
+  totalGoals: integer("total_goals"),
   
   lastCalculated: timestamp("last_calculated").defaultNow(),
   

@@ -26,26 +26,26 @@
  * 8. Independent verification
  */
 
-import { mysqlTable, varchar, text, int, timestamp, boolean, decimal, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
 
 // ============================================================================
 // VALIDATED RESEARCH DATABASE
 // ============================================================================
 
-export const validatedResearch = mysqlTable("validated_research", {
+export const validatedResearch = pgTable("validated_research", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Research Details
   title: varchar("title", { length: 500 }).notNull(),
   authors: text("authors").notNull(), // JSON array
   journal: varchar("journal", { length: 255 }).notNull(),
-  publicationYear: int("publication_year").notNull(),
+  publicationYear: integer("publication_year").notNull(),
   doi: varchar("doi", { length: 255 }), // Digital Object Identifier
   pubmedId: varchar("pubmed_id", { length: 50 }),
   url: varchar("url", { length: 500 }),
   
   // Study Type
-  studyType: mysqlEnum("study_type", [
+  studyType: pgEnum("study_type", [
     "meta_analysis",
     "systematic_review",
     "randomized_controlled_trial",
@@ -57,7 +57,7 @@ export const validatedResearch = mysqlTable("validated_research", {
   ]).notNull(),
   
   // Evidence Level (Oxford CEBM)
-  evidenceLevel: mysqlEnum("evidence_level", [
+  evidenceLevel: pgEnum("evidence_level", [
     "level_a_high",      // Systematic reviews, meta-analyses, multiple RCTs
     "level_b_moderate",  // Individual RCTs, cohort studies
     "level_c_low",       // Case-control, expert consensus
@@ -65,7 +65,7 @@ export const validatedResearch = mysqlTable("validated_research", {
   ]).notNull(),
   
   // Quality Metrics
-  sampleSize: int("sample_size"),
+  sampleSize: integer("sample_size"),
   hasControlGroup: boolean("has_control_group"),
   isRandomized: boolean("is_randomized"),
   isBlinded: boolean("is_blinded"), // Single, double, or triple blind
@@ -85,7 +85,7 @@ export const validatedResearch = mysqlTable("validated_research", {
   industrySponsored: boolean("industry_sponsored"),
   
   // Research Domain
-  domain: mysqlEnum("domain", [
+  domain: pgEnum("domain", [
     "nutrition",
     "exercise",
     "sleep",
@@ -115,7 +115,7 @@ export const validatedResearch = mysqlTable("validated_research", {
   contraindications: text("contraindications"), // When NOT to apply this
   
   // Validation Status
-  validationStatus: mysqlEnum("validation_status", [
+  validationStatus: pgEnum("validation_status", [
     "pending_review",
     "approved",
     "rejected",
@@ -129,8 +129,8 @@ export const validatedResearch = mysqlTable("validated_research", {
   reviewNotes: text("review_notes"),
   
   // Usage Tracking
-  citationCount: int("citation_count").default(0), // How many times cited on platform
-  recommendationCount: int("recommendation_count").default(0), // How many recommendations use this
+  citationCount: integer("citation_count").default(0), // How many times cited on platform
+  recommendationCount: integer("recommendation_count").default(0), // How many recommendations use this
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -140,11 +140,11 @@ export const validatedResearch = mysqlTable("validated_research", {
 // PLATFORM RECOMMENDATIONS (Linked to Research)
 // ============================================================================
 
-export const platformRecommendations = mysqlTable("platform_recommendations", {
+export const platformRecommendations = pgTable("platform_recommendations", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Recommendation Details
-  recommendationType: mysqlEnum("recommendation_type", [
+  recommendationType: pgEnum("recommendation_type", [
     "intervention",      // "Try 4-7-8 breathing for anxiety"
     "protocol",          // "Huberman sleep protocol"
     "habit",             // "Exercise 3x per week"
@@ -161,7 +161,7 @@ export const platformRecommendations = mysqlTable("platform_recommendations", {
   howToImplement: text("how_to_implement"), // Step-by-step instructions
   
   // Evidence Backing
-  evidenceLevel: mysqlEnum("evidence_level", [
+  evidenceLevel: pgEnum("evidence_level", [
     "level_a_high",
     "level_b_moderate",
     "level_c_low"
@@ -172,7 +172,7 @@ export const platformRecommendations = mysqlTable("platform_recommendations", {
   supportingResearchIds: text("supporting_research_ids"), // JSON array: additional studies
   
   // Confidence
-  confidenceScore: int("confidence_score"), // 0-100: How confident are we in this recommendation?
+  confidenceScore: integer("confidence_score"), // 0-100: How confident are we in this recommendation?
   
   // Domain
   domain: varchar("domain", { length: 100 }).notNull(),
@@ -182,12 +182,12 @@ export const platformRecommendations = mysqlTable("platform_recommendations", {
   contraindications: text("contraindications"), // Who should NOT do this?
   
   // Effectiveness Tracking (Self-Learning)
-  totalUses: int("total_uses").default(0),
+  totalUses: integer("total_uses").default(0),
   successRate: decimal("success_rate", { precision: 5, scale: 2 }), // % of users who found it helpful
   avgEffectivenessRating: decimal("avg_effectiveness_rating", { precision: 4, scale: 2 }), // 1-10
   
   // Status
-  status: mysqlEnum("status", [
+  status: pgEnum("status", [
     "active",
     "under_review",
     "deprecated",      // No longer recommended
@@ -207,7 +207,7 @@ export const platformRecommendations = mysqlTable("platform_recommendations", {
 // RESEARCH MONITORING (Watch for New Studies)
 // ============================================================================
 
-export const researchMonitoring = mysqlTable("research_monitoring", {
+export const researchMonitoring = pgTable("research_monitoring", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // What to Monitor
@@ -216,7 +216,7 @@ export const researchMonitoring = mysqlTable("research_monitoring", {
   domain: varchar("domain", { length: 100 }),
   
   // Monitoring Config
-  monitoringFrequency: mysqlEnum("monitoring_frequency", [
+  monitoringFrequency: pgEnum("monitoring_frequency", [
     "daily",
     "weekly",
     "monthly"
@@ -228,7 +228,7 @@ export const researchMonitoring = mysqlTable("research_monitoring", {
   
   // Last Check
   lastCheckedAt: timestamp("last_checked_at"),
-  newStudiesFound: int("new_studies_found").default(0),
+  newStudiesFound: integer("new_studies_found").default(0),
   
   // Status
   active: boolean("active").default(true),
@@ -241,12 +241,12 @@ export const researchMonitoring = mysqlTable("research_monitoring", {
 // PSEUDOSCIENCE BLOCKLIST
 // ============================================================================
 
-export const pseudoscienceBlocklist = mysqlTable("pseudoscience_blocklist", {
+export const pseudoscienceBlocklist = pgTable("pseudoscience_blocklist", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Blocked Claim
   claim: text("claim").notNull(),
-  category: mysqlEnum("category", [
+  category: pgEnum("category", [
     "unproven_supplement",
     "debunked_theory",
     "dangerous_practice",
@@ -262,21 +262,21 @@ export const pseudoscienceBlocklist = mysqlTable("pseudoscience_blocklist", {
   evidenceAgainst: text("evidence_against"), // Research that debunks this
   
   // Severity
-  severity: mysqlEnum("severity", [
+  severity: pgEnum("severity", [
     "dangerous",   // Could cause harm
     "misleading",  // False but not harmful
     "unproven"     // Just lacks evidence
   ]).notNull(),
   
   // Action
-  action: mysqlEnum("action", [
+  action: pgEnum("action", [
     "hard_block",  // Never allow
     "flag_review", // Flag for human review
     "show_warning" // Allow but warn user
   ]).notNull(),
   
   // Detection
-  detectionCount: int("detection_count").default(0), // How many times detected
+  detectionCount: integer("detection_count").default(0), // How many times detected
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -287,7 +287,7 @@ export const pseudoscienceBlocklist = mysqlTable("pseudoscience_blocklist", {
 // RESEARCH QUALITY REVIEWS
 // ============================================================================
 
-export const researchQualityReviews = mysqlTable("research_quality_reviews", {
+export const researchQualityReviews = pgTable("research_quality_reviews", {
   id: varchar("id", { length: 255 }).primaryKey(),
   researchId: varchar("research_id", { length: 255 }).notNull(),
   
@@ -297,11 +297,11 @@ export const researchQualityReviews = mysqlTable("research_quality_reviews", {
   reviewerCredentials: text("reviewer_credentials"), // PhD, MD, etc.
   
   // Quality Assessment
-  methodologyScore: int("methodology_score"), // 1-10
+  methodologyScore: integer("methodology_score"), // 1-10
   sampleSizeAdequate: boolean("sample_size_adequate"),
-  statisticalRigor: int("statistical_rigor"), // 1-10
-  clinicalRelevance: int("clinical_relevance"), // 1-10
-  replicationStatus: mysqlEnum("replication_status", [
+  statisticalRigor: integer("statistical_rigor"), // 1-10
+  clinicalRelevance: integer("clinical_relevance"), // 1-10
+  replicationStatus: pgEnum("replication_status", [
     "replicated",
     "not_replicated",
     "needs_replication",
@@ -314,7 +314,7 @@ export const researchQualityReviews = mysqlTable("research_quality_reviews", {
   confirmationBias: boolean("confirmation_bias"),
   
   // Overall Assessment
-  overallQuality: mysqlEnum("overall_quality", [
+  overallQuality: pgEnum("overall_quality", [
     "excellent",
     "good",
     "fair",
@@ -323,7 +323,7 @@ export const researchQualityReviews = mysqlTable("research_quality_reviews", {
   
   // Recommendation
   recommendForPlatform: boolean("recommend_for_platform").notNull(),
-  recommendedEvidenceLevel: mysqlEnum("recommended_evidence_level", [
+  recommendedEvidenceLevel: pgEnum("recommended_evidence_level", [
     "level_a_high",
     "level_b_moderate",
     "level_c_low",

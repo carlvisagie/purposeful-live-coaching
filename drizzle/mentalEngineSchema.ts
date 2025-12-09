@@ -10,24 +10,24 @@
  * - Learns best learning strategies for individual
  */
 
-import { mysqlTable, varchar, text, int, timestamp, boolean, decimal, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
 
 // Mental Profiles
-export const mentalProfiles = mysqlTable("mental_profiles", {
+export const mentalProfiles = pgTable("mental_profiles", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Current Mental State
-  mentalClarity: int("mental_clarity"), // 1-10 baseline
-  focusAbility: int("focus_ability"), // 1-10
-  memoryQuality: int("memory_quality"), // 1-10
-  cognitiveEnergy: int("cognitive_energy"), // 1-10
+  mentalClarity: integer("mental_clarity"), // 1-10 baseline
+  focusAbility: integer("focus_ability"), // 1-10
+  memoryQuality: integer("memory_quality"), // 1-10
+  cognitiveEnergy: integer("cognitive_energy"), // 1-10
   
   // Challenges
   primaryChallenges: text("primary_challenges"), // JSON: brain_fog, poor_focus, memory_issues, overwhelm, etc.
   
   // Goals
-  primaryGoal: mysqlEnum("primary_goal", [
+  primaryGoal: pgEnum("primary_goal", [
     "improve_focus",
     "enhance_memory",
     "increase_clarity",
@@ -43,9 +43,9 @@ export const mentalProfiles = mysqlTable("mental_profiles", {
   bestLearningTime: varchar("best_learning_time", { length: 50 }), // morning, afternoon, evening
   
   // Current Habits
-  sleepQuality: int("sleep_quality"), // 1-10 (affects cognition)
-  exerciseFrequency: mysqlEnum("exercise_frequency", ["none", "1-2x_week", "3-4x_week", "5+x_week"]),
-  screenTimeHours: int("screen_time_hours"), // daily
+  sleepQuality: integer("sleep_quality"), // 1-10 (affects cognition)
+  exerciseFrequency: pgEnum("exercise_frequency", ["none", "1-2x_week", "3-4x_week", "5+x_week"]),
+  screenTimeHours: integer("screen_time_hours"), // daily
   
   // Medications/Supplements affecting cognition
   cognitiveSupplements: text("cognitive_supplements"), // JSON array
@@ -53,7 +53,7 @@ export const mentalProfiles = mysqlTable("mental_profiles", {
   
   // Self-Learning Data
   peakFocusHours: text("peak_focus_hours"), // JSON: hours of day when focus is best
-  optimalWorkDuration: int("optimal_work_duration"), // minutes before break needed
+  optimalWorkDuration: integer("optimal_work_duration"), // minutes before break needed
   mostEffectiveTechniques: text("most_effective_techniques"), // JSON: techniques that work for this user
   
   createdAt: timestamp("created_at").defaultNow(),
@@ -61,14 +61,14 @@ export const mentalProfiles = mysqlTable("mental_profiles", {
 });
 
 // Focus Sessions (Deep Work / Flow States)
-export const focusSessions = mysqlTable("focus_sessions", {
+export const focusSessions = pgTable("focus_sessions", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   sessionDate: timestamp("session_date").notNull(),
   
   // Session Details
-  sessionType: mysqlEnum("session_type", [
+  sessionType: pgEnum("session_type", [
     "deep_work", // Cal Newport
     "pomodoro", // 25/5 technique
     "flow_session", // Extended focus
@@ -79,56 +79,56 @@ export const focusSessions = mysqlTable("focus_sessions", {
   ]).notNull(),
   
   task: varchar("task", { length: 255 }).notNull(),
-  taskType: mysqlEnum("task_type", ["learning", "creating", "analyzing", "writing", "coding", "planning"]),
+  taskType: pgEnum("task_type", ["learning", "creating", "analyzing", "writing", "coding", "planning"]),
   
   // Duration
-  plannedDuration: int("planned_duration"), // minutes
-  actualDuration: int("actual_duration"), // minutes
+  plannedDuration: integer("planned_duration"), // minutes
+  actualDuration: integer("actual_duration"), // minutes
   
   // Environment
   location: varchar("location", { length: 255 }),
-  noiseLevel: mysqlEnum("noise_level", ["silent", "quiet", "moderate", "noisy"]),
+  noiseLevel: pgEnum("noise_level", ["silent", "quiet", "moderate", "noisy"]),
   usedNoiseBlocking: boolean("used_noise_blocking"), // Headphones, white noise, etc.
   
   // Pre-Session State
-  energyBefore: int("energy_before"), // 1-10
-  focusBefore: int("focus_before"), // 1-10
-  stressBefore: int("stress_before"), // 1-10
+  energyBefore: integer("energy_before"), // 1-10
+  focusBefore: integer("focus_before"), // 1-10
+  stressBefore: integer("stress_before"), // 1-10
   
   // Session Quality
-  focusQuality: int("focus_quality"), // 1-10
+  focusQuality: integer("focus_quality"), // 1-10
   flowState: boolean("flow_state"), // Did you achieve flow?
-  distractionCount: int("distraction_count"),
+  distractionCount: integer("distraction_count"),
   distractionTypes: text("distraction_types"), // JSON: phone, people, thoughts, etc.
   
   // Post-Session State
-  energyAfter: int("energy_after"), // 1-10
-  focusAfter: int("focus_after"), // 1-10
-  satisfactionLevel: int("satisfaction_level"), // 1-10 with output
+  energyAfter: integer("energy_after"), // 1-10
+  focusAfter: integer("focus_after"), // 1-10
+  satisfactionLevel: integer("satisfaction_level"), // 1-10 with output
   
   // Output
-  productivityRating: int("productivity_rating"), // 1-10
-  outputQuality: int("output_quality"), // 1-10
+  productivityRating: integer("productivity_rating"), // 1-10
+  outputQuality: integer("output_quality"), // 1-10
   
   // What Worked / Didn't Work
   whatHelped: text("what_helped"), // JSON array
   whatHindered: text("what_hindered"), // JSON array
   
   // Self-Learning Data
-  effectiveness: int("effectiveness"), // Calculated score
+  effectiveness: integer("effectiveness"), // Calculated score
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Memory Training & Practice
-export const memoryPractices = mysqlTable("memory_practices", {
+export const memoryPractices = pgTable("memory_practices", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   practiceDate: timestamp("practice_date").notNull(),
   
   // Practice Type (evidence-based memory techniques)
-  practiceType: mysqlEnum("practice_type", [
+  practiceType: pgEnum("practice_type", [
     "spaced_repetition", // Anki, flashcards
     "memory_palace", // Method of loci
     "chunking", // Breaking info into chunks
@@ -141,20 +141,20 @@ export const memoryPractices = mysqlTable("memory_practices", {
   ]).notNull(),
   
   // What You're Memorizing
-  contentType: mysqlEnum("content_type", ["facts", "concepts", "skills", "names", "numbers", "language", "other"]),
+  contentType: pgEnum("content_type", ["facts", "concepts", "skills", "names", "numbers", "language", "other"]),
   topic: varchar("topic", { length: 255 }),
   
   // Practice Details
-  duration: int("duration"), // minutes
-  itemsReviewed: int("items_reviewed"),
-  itemsRecalled: int("items_recalled"),
+  duration: integer("duration"), // minutes
+  itemsReviewed: integer("items_reviewed"),
+  itemsRecalled: integer("items_recalled"),
   
   // Performance
-  recallAccuracy: int("recall_accuracy"), // 0-100%
-  confidenceLevel: int("confidence_level"), // 1-10
+  recallAccuracy: integer("recall_accuracy"), // 0-100%
+  confidenceLevel: integer("confidence_level"), // 1-10
   
   // Difficulty
-  difficulty: mysqlEnum("difficulty", ["easy", "moderate", "hard"]),
+  difficulty: pgEnum("difficulty", ["easy", "moderate", "hard"]),
   
   // Next Review (spaced repetition)
   nextReviewDate: timestamp("next_review_date"),
@@ -163,7 +163,7 @@ export const memoryPractices = mysqlTable("memory_practices", {
 });
 
 // Learning Sessions
-export const learningSessions = mysqlTable("learning_sessions", {
+export const learningSessions = pgTable("learning_sessions", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -174,7 +174,7 @@ export const learningSessions = mysqlTable("learning_sessions", {
   subject: varchar("subject", { length: 255 }),
   
   // Learning Method
-  learningMethod: mysqlEnum("learning_method", [
+  learningMethod: pgEnum("learning_method", [
     "reading",
     "video",
     "course",
@@ -186,11 +186,11 @@ export const learningSessions = mysqlTable("learning_sessions", {
   ]).notNull(),
   
   // Duration
-  duration: int("duration"), // minutes
+  duration: integer("duration"), // minutes
   
   // Engagement
-  engagementLevel: int("engagement_level"), // 1-10
-  comprehensionLevel: int("comprehension_level"), // 1-10
+  engagementLevel: integer("engagement_level"), // 1-10
+  comprehensionLevel: integer("comprehension_level"), // 1-10
   
   // Techniques Used
   techniquesUsed: text("techniques_used"), // JSON: active_recall, note_taking, summarizing, etc.
@@ -201,7 +201,7 @@ export const learningSessions = mysqlTable("learning_sessions", {
   taughtToSomeone: boolean("taught_to_someone"),
   
   // Retention
-  immediateRecall: int("immediate_recall"), // 1-10 (can you explain it now?)
+  immediateRecall: integer("immediate_recall"), // 1-10 (can you explain it now?)
   
   // Follow-up
   willReview: boolean("will_review"),
@@ -211,34 +211,34 @@ export const learningSessions = mysqlTable("learning_sessions", {
 });
 
 // Cognitive Performance Tracking
-export const cognitivePerformance = mysqlTable("cognitive_performance", {
+export const cognitivePerformance = pgTable("cognitive_performance", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   assessmentDate: timestamp("assessment_date").notNull(),
   
   // Daily Cognitive Metrics
-  mentalClarity: int("mental_clarity"), // 1-10
-  focusAbility: int("focus_ability"), // 1-10
-  memorySharpness: int("memory_sharpness"), // 1-10
-  processingSpeed: int("processing_speed"), // 1-10 (how quickly can you think?)
-  decisionQuality: int("decision_quality"), // 1-10
-  creativity: int("creativity"), // 1-10
+  mentalClarity: integer("mental_clarity"), // 1-10
+  focusAbility: integer("focus_ability"), // 1-10
+  memorySharpness: integer("memory_sharpness"), // 1-10
+  processingSpeed: integer("processing_speed"), // 1-10 (how quickly can you think?)
+  decisionQuality: integer("decision_quality"), // 1-10
+  creativity: integer("creativity"), // 1-10
   
   // Brain Fog
-  brainFog: int("brain_fog"), // 1-10 (higher = worse)
-  mentalFatigue: int("mental_fatigue"), // 1-10
+  brainFog: integer("brain_fog"), // 1-10 (higher = worse)
+  mentalFatigue: integer("mental_fatigue"), // 1-10
   
   // Contributing Factors
-  sleepQuality: int("sleep_quality"), // 1-10
+  sleepQuality: integer("sleep_quality"), // 1-10
   sleepHours: decimal("sleep_hours", { precision: 3, scale: 1 }),
   exerciseToday: boolean("exercise_today"),
-  stressLevel: int("stress_level"), // 1-10
-  hydration: mysqlEnum("hydration", ["poor", "moderate", "good"]),
-  nutrition: mysqlEnum("nutrition", ["poor", "moderate", "good"]),
+  stressLevel: integer("stress_level"), // 1-10
+  hydration: pgEnum("hydration", ["poor", "moderate", "good"]),
+  nutrition: pgEnum("nutrition", ["poor", "moderate", "good"]),
   
   // Substances
-  caffeineIntake: int("caffeine_intake"), // mg
+  caffeineIntake: integer("caffeine_intake"), // mg
   alcoholYesterday: boolean("alcohol_yesterday"),
   
   // Notes
@@ -248,14 +248,14 @@ export const cognitivePerformance = mysqlTable("cognitive_performance", {
 });
 
 // Brain Training Exercises
-export const brainTrainingExercises = mysqlTable("brain_training_exercises", {
+export const brainTrainingExercises = pgTable("brain_training_exercises", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   exerciseDate: timestamp("exercise_date").notNull(),
   
   // Exercise Type
-  exerciseType: mysqlEnum("exercise_type", [
+  exerciseType: pgEnum("exercise_type", [
     "working_memory", // N-back tasks
     "attention", // Focus exercises
     "processing_speed", // Reaction time
@@ -269,45 +269,45 @@ export const brainTrainingExercises = mysqlTable("brain_training_exercises", {
   exerciseName: varchar("exercise_name", { length: 255 }),
   
   // Performance
-  score: int("score"),
-  accuracy: int("accuracy"), // 0-100%
-  speed: int("speed"), // milliseconds or custom metric
+  score: integer("score"),
+  accuracy: integer("accuracy"), // 0-100%
+  speed: integer("speed"), // milliseconds or custom metric
   
   // Difficulty
-  difficultyLevel: int("difficulty_level"), // 1-10
+  difficultyLevel: integer("difficulty_level"), // 1-10
   
   // Duration
-  duration: int("duration"), // minutes
+  duration: integer("duration"), // minutes
   
   // Progress
   personalBest: boolean("personal_best"),
-  improvementFromLast: int("improvement_from_last"), // percentage
+  improvementFromLast: integer("improvement_from_last"), // percentage
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Reading & Information Consumption
-export const readingSessions = mysqlTable("reading_sessions", {
+export const readingSessions = pgTable("reading_sessions", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   sessionDate: timestamp("session_date").notNull(),
   
   // What You Read
-  contentType: mysqlEnum("content_type", ["book", "article", "research_paper", "documentation", "news"]),
+  contentType: pgEnum("content_type", ["book", "article", "research_paper", "documentation", "news"]),
   title: varchar("title", { length: 255 }),
   author: varchar("author", { length: 255 }),
   
   // Reading Details
-  pagesRead: int("pages_read"),
-  duration: int("duration"), // minutes
+  pagesRead: integer("pages_read"),
+  duration: integer("duration"), // minutes
   
   // Reading Speed
-  wordsPerMinute: int("words_per_minute"),
+  wordsPerMinute: integer("words_per_minute"),
   
   // Comprehension
-  comprehensionLevel: int("comprehension_level"), // 1-10
-  retentionLevel: int("retention_level"), // 1-10 (how much will you remember?)
+  comprehensionLevel: integer("comprehension_level"), // 1-10
+  retentionLevel: integer("retention_level"), // 1-10 (how much will you remember?)
   
   // Techniques Used
   activeReading: boolean("active_reading"), // Highlighting, notes, questions
@@ -319,20 +319,20 @@ export const readingSessions = mysqlTable("reading_sessions", {
   summaryWritten: boolean("summary_written"),
   
   // Value
-  valueRating: int("value_rating"), // 1-10 (how valuable was this?)
+  valueRating: integer("value_rating"), // 1-10 (how valuable was this?)
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Mental Breaks & Recovery
-export const mentalBreaks = mysqlTable("mental_breaks", {
+export const mentalBreaks = pgTable("mental_breaks", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   breakDate: timestamp("break_date").notNull(),
   
   // Break Type
-  breakType: mysqlEnum("break_type", [
+  breakType: pgEnum("break_type", [
     "micro_break", // 1-5 min
     "short_break", // 5-15 min
     "long_break", // 15-30 min
@@ -343,23 +343,23 @@ export const mentalBreaks = mysqlTable("mental_breaks", {
     "social_break"
   ]).notNull(),
   
-  duration: int("duration"), // minutes
+  duration: integer("duration"), // minutes
   
   // Activity
   activity: varchar("activity", { length: 255 }),
   
   // State Before/After
-  mentalFatigueBefore: int("mental_fatigue_before"), // 1-10
-  mentalFatigueAfter: int("mental_fatigue_after"), // 1-10
+  mentalFatigueBefore: integer("mental_fatigue_before"), // 1-10
+  mentalFatigueAfter: integer("mental_fatigue_after"), // 1-10
   
   // Effectiveness
-  restorationLevel: int("restoration_level"), // 1-10 (how restored do you feel?)
+  restorationLevel: integer("restoration_level"), // 1-10 (how restored do you feel?)
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Mental Engine Self-Learning Analytics
-export const mentalEngineAnalytics = mysqlTable("mental_engine_analytics", {
+export const mentalEngineAnalytics = pgTable("mental_engine_analytics", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Focus Patterns (aggregated)
@@ -371,16 +371,16 @@ export const mentalEngineAnalytics = mysqlTable("mental_engine_analytics", {
   avgFlowStateRate: decimal("avg_flow_state_rate", { precision: 5, scale: 2 }), // % of sessions achieving flow
   
   // Optimal Parameters
-  optimalDuration: int("optimal_duration"), // minutes
+  optimalDuration: integer("optimal_duration"), // minutes
   optimalTimeOfDay: varchar("optimal_time_of_day", { length: 50 }),
-  optimalBreakFrequency: int("optimal_break_frequency"), // minutes between breaks
+  optimalBreakFrequency: integer("optimal_break_frequency"), // minutes between breaks
   
   // User Segments
   mostEffectiveFor: text("most_effective_for"), // JSON: different user types
   
   // Sample Size
-  sessionCount: int("session_count"),
-  userCount: int("user_count"),
+  sessionCount: integer("session_count"),
+  userCount: integer("user_count"),
   
   lastCalculated: timestamp("last_calculated").defaultNow(),
   

@@ -1,4 +1,4 @@
-import { mysqlTable, int, varchar, text, timestamp, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, int, varchar, text, timestamp, pgEnum } from "drizzle-orm/pg-core";
 import { clients } from "./schema";
 
 /**
@@ -10,8 +10,8 @@ import { clients } from "./schema";
  * Technique Effectiveness Tracking
  * Track which coaching techniques work best for which situations
  */
-export const techniqueEffectiveness = mysqlTable("techniqueEffectiveness", {
-  id: int("id").autoincrement().primaryKey(),
+export const techniqueEffectiveness = pgTable("techniqueEffectiveness", {
+  id: serial("id").primaryKey(),
   
   // Technique details
   techniqueName: varchar("techniqueName", { length: 255 }).notNull(),
@@ -23,15 +23,15 @@ export const techniqueEffectiveness = mysqlTable("techniqueEffectiveness", {
   clientDemographic: text("clientDemographic"), // JSON: age range, background, etc.
   
   // Effectiveness metrics
-  timesRecommended: int("timesRecommended").default(0).notNull(),
-  timesUsed: int("timesUsed").default(0).notNull(),
-  successCount: int("successCount").default(0).notNull(),
-  failureCount: int("failureCount").default(0).notNull(),
-  averageRating: int("averageRating"), // 1-10 scale
+  timesRecommended: integer("timesRecommended").default(0).notNull(),
+  timesUsed: integer("timesUsed").default(0).notNull(),
+  successCount: integer("successCount").default(0).notNull(),
+  failureCount: integer("failureCount").default(0).notNull(),
+  averageRating: integer("averageRating"), // 1-10 scale
   
   // Learning data
   lastRecommended: timestamp("lastRecommended"),
-  confidenceScore: int("confidenceScore").default(50).notNull(), // 0-100, increases with data
+  confidenceScore: integer("confidenceScore").default(50).notNull(), // 0-100, increases with data
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
@@ -44,8 +44,8 @@ export type InsertTechniqueEffectiveness = typeof techniqueEffectiveness.$inferI
  * Client Pattern Detection
  * Identify patterns across all clients
  */
-export const clientPatterns = mysqlTable("clientPatterns", {
-  id: int("id").autoincrement().primaryKey(),
+export const clientPatterns = pgTable("clientPatterns", {
+  id: serial("id").primaryKey(),
   
   // Pattern details
   patternName: varchar("patternName", { length: 255 }).notNull(),
@@ -53,8 +53,8 @@ export const clientPatterns = mysqlTable("clientPatterns", {
   patternType: varchar("patternType", { length: 100 }).notNull(), // trigger, coping, emotional, behavioral
   
   // Frequency
-  occurrenceCount: int("occurrenceCount").default(1).notNull(),
-  affectedClientCount: int("affectedClientCount").default(1).notNull(),
+  occurrenceCount: integer("occurrenceCount").default(1).notNull(),
+  affectedClientCount: integer("affectedClientCount").default(1).notNull(),
   
   // Associated data
   commonTriggers: text("commonTriggers"), // JSON array
@@ -62,8 +62,8 @@ export const clientPatterns = mysqlTable("clientPatterns", {
   relatedPatterns: text("relatedPatterns"), // JSON array of pattern IDs
   
   // Learning status
-  isValidated: mysqlEnum("isValidated", ["true", "false"]).default("false").notNull(),
-  confidenceScore: int("confidenceScore").default(50).notNull(),
+  isValidated: pgEnum("isValidated", ["true", "false"]).default("false").notNull(),
+  confidenceScore: integer("confidenceScore").default(50).notNull(),
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
@@ -76,9 +76,9 @@ export type InsertClientPattern = typeof clientPatterns.$inferInsert;
  * Client Feedback on Recommendations
  * Track whether AI recommendations actually helped
  */
-export const recommendationFeedback = mysqlTable("recommendationFeedback", {
-  id: int("id").autoincrement().primaryKey(),
-  clientId: int("clientId").notNull().references(() => clients.id),
+export const recommendationFeedback = pgTable("recommendationFeedback", {
+  id: serial("id").primaryKey(),
+  clientId: integer("clientId").notNull().references(() => clients.id),
   
   // Recommendation details
   recommendationType: varchar("recommendationType", { length: 100 }).notNull(), // technique, strategy, habit, etc.
@@ -86,14 +86,14 @@ export const recommendationFeedback = mysqlTable("recommendationFeedback", {
   context: text("context"), // What situation prompted this recommendation
   
   // Feedback
-  wasUsed: mysqlEnum("wasUsed", ["yes", "no"]).notNull(),
-  wasHelpful: mysqlEnum("wasHelpful", ["yes", "no", "somewhat"]),
-  rating: int("rating"), // 1-10 scale
+  wasUsed: pgEnum("wasUsed", ["yes", "no"]).notNull(),
+  wasHelpful: pgEnum("wasHelpful", ["yes", "no", "somewhat"]),
+  rating: integer("rating"), // 1-10 scale
   feedbackNotes: text("feedbackNotes"),
   
   // Outcome tracking
-  problemResolved: mysqlEnum("problemResolved", ["yes", "no", "partially"]),
-  timeToResolution: int("timeToResolution"), // minutes or hours
+  problemResolved: pgEnum("problemResolved", ["yes", "no", "partially"]),
+  timeToResolution: integer("timeToResolution"), // minutes or hours
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
@@ -105,34 +105,34 @@ export type InsertRecommendationFeedback = typeof recommendationFeedback.$inferI
  * Outcome Tracking
  * Did the coaching actually improve their life?
  */
-export const adaptiveOutcomeTracking = mysqlTable("adaptiveOutcomeTracking", {
-  id: int("id").autoincrement().primaryKey(),
-  clientId: int("clientId").notNull().references(() => clients.id),
+export const adaptiveOutcomeTracking = pgTable("adaptiveOutcomeTracking", {
+  id: serial("id").primaryKey(),
+  clientId: integer("clientId").notNull().references(() => clients.id),
   
   // Baseline (when they started)
   baselineDate: timestamp("baselineDate").notNull(),
-  baselineEmotionalState: int("baselineEmotionalState").notNull(), // 1-10
-  baselineFunctioning: int("baselineFunctioning").notNull(), // 1-10
+  baselineEmotionalState: integer("baselineEmotionalState").notNull(), // 1-10
+  baselineFunctioning: integer("baselineFunctioning").notNull(), // 1-10
   baselineGoals: text("baselineGoals"), // JSON array
   
   // Current state
-  currentEmotionalState: int("currentEmotionalState"),
-  currentFunctioning: int("currentFunctioning"),
+  currentEmotionalState: integer("currentEmotionalState"),
+  currentFunctioning: integer("currentFunctioning"),
   goalsAchieved: text("goalsAchieved"), // JSON array
   
   // Improvement metrics
-  emotionalImprovement: int("emotionalImprovement"), // Calculated: current - baseline
-  functioningImprovement: int("functioningImprovement"),
-  daysInCoaching: int("daysInCoaching"),
+  emotionalImprovement: integer("emotionalImprovement"), // Calculated: current - baseline
+  functioningImprovement: integer("functioningImprovement"),
+  daysInCoaching: integer("daysInCoaching"),
   
   // Specific improvements
-  sleepImproved: mysqlEnum("sleepImproved", ["yes", "no", "unknown"]),
-  relationshipsImproved: mysqlEnum("relationshipsImproved", ["yes", "no", "unknown"]),
-  workPerformanceImproved: mysqlEnum("workPerformanceImproved", ["yes", "no", "unknown"]),
-  physicalHealthImproved: mysqlEnum("physicalHealthImproved", ["yes", "no", "unknown"]),
+  sleepImproved: pgEnum("sleepImproved", ["yes", "no", "unknown"]),
+  relationshipsImproved: pgEnum("relationshipsImproved", ["yes", "no", "unknown"]),
+  workPerformanceImproved: pgEnum("workPerformanceImproved", ["yes", "no", "unknown"]),
+  physicalHealthImproved: pgEnum("physicalHealthImproved", ["yes", "no", "unknown"]),
   
   // Attribution
-  attributedToCoaching: mysqlEnum("attributedToCoaching", ["yes", "no", "partially"]),
+  attributedToCoaching: pgEnum("attributedToCoaching", ["yes", "no", "partially"]),
   mostHelpfulAspect: text("mostHelpfulAspect"),
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -146,8 +146,8 @@ export type InsertAdaptiveOutcomeTracking = typeof adaptiveOutcomeTracking.$infe
  * Trend Detection
  * Platform notices "80% of clients struggle with X"
  */
-export const trendDetection = mysqlTable("trendDetection", {
-  id: int("id").autoincrement().primaryKey(),
+export const trendDetection = pgTable("trendDetection", {
+  id: serial("id").primaryKey(),
   
   // Trend details
   trendName: varchar("trendName", { length: 255 }).notNull(),
@@ -155,17 +155,17 @@ export const trendDetection = mysqlTable("trendDetection", {
   trendCategory: varchar("trendCategory", { length: 100 }).notNull(), // struggle, success, pattern, etc.
   
   // Statistics
-  affectedPercentage: int("affectedPercentage").notNull(), // 0-100
-  totalClientsAnalyzed: int("totalClientsAnalyzed").notNull(),
-  affectedClientCount: int("affectedClientCount").notNull(),
+  affectedPercentage: integer("affectedPercentage").notNull(), // 0-100
+  totalClientsAnalyzed: integer("totalClientsAnalyzed").notNull(),
+  affectedClientCount: integer("affectedClientCount").notNull(),
   
   // Recommendations
   suggestedContent: text("suggestedContent"), // New tools/content to create
   suggestedApproach: text("suggestedApproach"), // How to address this trend
   
   // Status
-  isActive: mysqlEnum("isActive", ["true", "false"]).default("true").notNull(),
-  isAddressed: mysqlEnum("isAddressed", ["true", "false"]).default("false").notNull(),
+  isActive: pgEnum("isActive", ["true", "false"]).default("true").notNull(),
+  isAddressed: pgEnum("isAddressed", ["true", "false"]).default("false").notNull(),
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
@@ -178,8 +178,8 @@ export type InsertTrendDetection = typeof trendDetection.$inferInsert;
  * Strategy Adjustments
  * AI automatically changes its approach based on what's working
  */
-export const strategyAdjustments = mysqlTable("strategyAdjustments", {
-  id: int("id").autoincrement().primaryKey(),
+export const strategyAdjustments = pgTable("strategyAdjustments", {
+  id: serial("id").primaryKey(),
   
   // Adjustment details
   adjustmentType: varchar("adjustmentType", { length: 100 }).notNull(), // technique_priority, approach_change, etc.
@@ -191,11 +191,11 @@ export const strategyAdjustments = mysqlTable("strategyAdjustments", {
   
   // Implementation
   implementedAt: timestamp("implementedAt").defaultNow().notNull(),
-  isActive: mysqlEnum("isActive", ["true", "false"]).default("true").notNull(),
+  isActive: pgEnum("isActive", ["true", "false"]).default("true").notNull(),
   
   // Results
   measuredImprovement: text("measuredImprovement"), // JSON: Actual results
-  wasSuccessful: mysqlEnum("wasSuccessful", ["yes", "no", "unknown"]),
+  wasSuccessful: pgEnum("wasSuccessful", ["yes", "no", "unknown"]),
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),

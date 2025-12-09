@@ -4,19 +4,19 @@
  * Research sources: Search Institute (40 Developmental Assets), Big Brothers Big Sisters research, APA Guidelines for Boys and Men
  */
 
-import { mysqlTable, varchar, text, int, timestamp, boolean, decimal, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
 
 // Young Men Profiles
-export const youngMenProfiles = mysqlTable("young_men_profiles", {
+export const youngMenProfiles = pgTable("young_men_profiles", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  age: int("age").notNull(),
+  age: integer("age").notNull(),
   
   // Life Situation
-  livingSituation: mysqlEnum("living_situation", ["with_parents", "single_parent_home", "foster_care", "independent", "homeless", "other"]),
-  educationStatus: mysqlEnum("education_status", ["in_school", "dropped_out", "graduated_hs", "in_college", "working"]),
-  employmentStatus: mysqlEnum("employment_status", ["student", "employed", "unemployed", "seeking_work"]),
+  livingSituation: pgEnum("living_situation", ["with_parents", "single_parent_home", "foster_care", "independent", "homeless", "other"]),
+  educationStatus: pgEnum("education_status", ["in_school", "dropped_out", "graduated_hs", "in_college", "working"]),
+  employmentStatus: pgEnum("employment_status", ["student", "employed", "unemployed", "seeking_work"]),
   
   // Role Model Situation
   hasFatherFigure: boolean("has_father_figure").default(false),
@@ -30,7 +30,7 @@ export const youngMenProfiles = mysqlTable("young_men_profiles", {
   primaryNeeds: text("primary_needs"), // JSON array: ["guidance", "emotional_support", "life_skills", "career_advice", etc.]
   
   // Goals
-  primaryGoal: mysqlEnum("primary_goal", [
+  primaryGoal: pgEnum("primary_goal", [
     "find_direction",
     "build_confidence",
     "learn_life_skills",
@@ -55,82 +55,82 @@ export const youngMenProfiles = mysqlTable("young_men_profiles", {
 });
 
 // Developmental Assets Tracking (Search Institute's 40 Assets)
-export const developmentalAssets = mysqlTable("developmental_assets", {
+export const developmentalAssets = pgTable("developmental_assets", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // EXTERNAL ASSETS
   // Support (4 assets)
-  familySupport: int("family_support"), // 1-10
-  positiveFamilyCommunication: int("positive_family_communication"),
-  otherAdultRelationships: int("other_adult_relationships"),
-  caringNeighborhood: int("caring_neighborhood"),
+  familySupport: integer("family_support"), // 1-10
+  positiveFamilyCommunication: integer("positive_family_communication"),
+  otherAdultRelationships: integer("other_adult_relationships"),
+  caringNeighborhood: integer("caring_neighborhood"),
   
   // Empowerment (4 assets)
-  communityValuesYouth: int("community_values_youth"),
-  youthAsResources: int("youth_as_resources"),
-  serviceToOthers: int("service_to_others"),
-  safety: int("safety"),
+  communityValuesYouth: integer("community_values_youth"),
+  youthAsResources: integer("youth_as_resources"),
+  serviceToOthers: integer("service_to_others"),
+  safety: integer("safety"),
   
   // Boundaries & Expectations (6 assets)
-  familyBoundaries: int("family_boundaries"),
-  schoolBoundaries: int("school_boundaries"),
-  neighborhoodBoundaries: int("neighborhood_boundaries"),
-  adultRoleModels: int("adult_role_models"),
-  positiveInfluence: int("positive_peer_influence"),
-  highExpectations: int("high_expectations"),
+  familyBoundaries: integer("family_boundaries"),
+  schoolBoundaries: integer("school_boundaries"),
+  neighborhoodBoundaries: integer("neighborhood_boundaries"),
+  adultRoleModels: integer("adult_role_models"),
+  positiveInfluence: integer("positive_peer_influence"),
+  highExpectations: integer("high_expectations"),
   
   // Constructive Use of Time (4 assets)
-  creativeActivities: int("creative_activities"),
-  youthPrograms: int("youth_programs"),
-  religiousCommunity: int("religious_community"),
-  timeAtHome: int("time_at_home"),
+  creativeActivities: integer("creative_activities"),
+  youthPrograms: integer("youth_programs"),
+  religiousCommunity: integer("religious_community"),
+  timeAtHome: integer("time_at_home"),
   
   // INTERNAL ASSETS
   // Commitment to Learning (5 assets)
-  achievementMotivation: int("achievement_motivation"),
-  schoolEngagement: int("school_engagement"),
-  homework: int("homework"),
-  bondingToSchool: int("bonding_to_school"),
-  readingForPleasure: int("reading_for_pleasure"),
+  achievementMotivation: integer("achievement_motivation"),
+  schoolEngagement: integer("school_engagement"),
+  homework: integer("homework"),
+  bondingToSchool: integer("bonding_to_school"),
+  readingForPleasure: integer("reading_for_pleasure"),
   
   // Positive Values (6 assets)
-  caring: int("caring"),
-  equality: int("equality"),
-  socialJustice: int("social_justice"),
-  integrity: int("integrity"),
-  honesty: int("honesty"),
-  responsibility: int("responsibility"),
-  restraint: int("restraint"),
+  caring: integer("caring"),
+  equality: integer("equality"),
+  socialJustice: integer("social_justice"),
+  integrity: integer("integrity"),
+  honesty: integer("honesty"),
+  responsibility: integer("responsibility"),
+  restraint: integer("restraint"),
   
   // Social Competencies (5 assets)
-  planningDecisionMaking: int("planning_decision_making"),
-  interpersonalCompetence: int("interpersonal_competence"),
-  culturalCompetence: int("cultural_competence"),
-  resistanceSkills: int("resistance_skills"),
-  peacefulConflictResolution: int("peaceful_conflict_resolution"),
+  planningDecisionMaking: integer("planning_decision_making"),
+  interpersonalCompetence: integer("interpersonal_competence"),
+  culturalCompetence: integer("cultural_competence"),
+  resistanceSkills: integer("resistance_skills"),
+  peacefulConflictResolution: integer("peaceful_conflict_resolution"),
   
   // Positive Identity (4 assets)
-  personalPower: int("personal_power"),
-  selfEsteem: int("self_esteem"),
-  senseOfPurpose: int("sense_of_purpose"),
-  positiveViewOfFuture: int("positive_view_of_future"),
+  personalPower: integer("personal_power"),
+  selfEsteem: integer("self_esteem"),
+  senseOfPurpose: integer("sense_of_purpose"),
+  positiveViewOfFuture: integer("positive_view_of_future"),
   
   // Overall Score
-  totalAssets: int("total_assets"), // Sum of all assets
+  totalAssets: integer("total_assets"), // Sum of all assets
   
   assessmentDate: timestamp("assessment_date").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Life Skills Development
-export const lifeSkillsDevelopment = mysqlTable("life_skills_development", {
+export const lifeSkillsDevelopment = pgTable("life_skills_development", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  skillCategory: mysqlEnum("skill_category", [
+  skillCategory: pgEnum("skill_category", [
     "financial_literacy",
     "cooking_nutrition",
     "personal_hygiene",
@@ -146,34 +146,34 @@ export const lifeSkillsDevelopment = mysqlTable("life_skills_development", {
   skillName: varchar("skill_name", { length: 255 }).notNull(),
   
   // Current Level
-  currentLevel: mysqlEnum("current_level", ["none", "beginner", "intermediate", "proficient"]),
-  targetLevel: mysqlEnum("target_level", ["beginner", "intermediate", "proficient", "expert"]),
+  currentLevel: pgEnum("current_level", ["none", "beginner", "intermediate", "proficient"]),
+  targetLevel: pgEnum("target_level", ["beginner", "intermediate", "proficient", "expert"]),
   
   // Learning Resources
-  learningMethod: mysqlEnum("learning_method", ["video_tutorial", "mentor_teaching", "practice", "course", "reading"]),
+  learningMethod: pgEnum("learning_method", ["video_tutorial", "mentor_teaching", "practice", "course", "reading"]),
   resources: text("resources"), // JSON array
   
   // Practice Log
-  practiceCount: int("practice_count").default(0),
+  practiceCount: integer("practice_count").default(0),
   lastPracticed: timestamp("last_practiced"),
   
   // Mastery
   masteryAchieved: boolean("mastery_achieved").default(false),
   masteryDate: timestamp("mastery_date"),
   
-  status: mysqlEnum("status", ["not_started", "learning", "practicing", "mastered"]),
+  status: pgEnum("status", ["not_started", "learning", "practicing", "mastered"]),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Mentorship Connections (virtual or real)
-export const mentorshipConnections = mysqlTable("mentorship_connections", {
+export const mentorshipConnections = pgTable("mentorship_connections", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  mentorType: mysqlEnum("mentor_type", [
+  mentorType: pgEnum("mentor_type", [
     "platform_mentor", // Matched through platform
     "real_life_mentor", // External mentor they're tracking
     "virtual_role_model", // Public figure they follow
@@ -185,35 +185,35 @@ export const mentorshipConnections = mysqlTable("mentorship_connections", {
   
   // Connection Details
   connectionDate: timestamp("connection_date"),
-  meetingFrequency: mysqlEnum("meeting_frequency", ["weekly", "biweekly", "monthly", "as_needed"]),
+  meetingFrequency: pgEnum("meeting_frequency", ["weekly", "biweekly", "monthly", "as_needed"]),
   
   // Focus Areas
   focusAreas: text("focus_areas"), // JSON array
   
   // Progress
-  sessionsCompleted: int("sessions_completed").default(0),
+  sessionsCompleted: integer("sessions_completed").default(0),
   lastMeeting: timestamp("last_meeting"),
   nextMeeting: timestamp("next_meeting"),
   
   // Impact
-  impactRating: int("impact_rating"), // 1-10
+  impactRating: integer("impact_rating"), // 1-10
   keyLearnings: text("key_learnings"), // JSON array
   
-  status: mysqlEnum("status", ["active", "on_hold", "completed"]),
+  status: pgEnum("status", ["active", "on_hold", "completed"]),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Masculine Identity Development (healthy masculinity)
-export const masculinityReflections = mysqlTable("masculinity_reflections", {
+export const masculinityReflections = pgTable("masculinity_reflections", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   reflectionDate: timestamp("reflection_date").notNull(),
   
   // Reflection Prompts (evidence-based)
-  promptType: mysqlEnum("prompt_type", [
+  promptType: pgEnum("prompt_type", [
     "what_is_a_man", // Defining healthy masculinity
     "role_models", // Who do you look up to and why?
     "emotions", // How do you handle emotions?
@@ -234,12 +234,12 @@ export const masculinityReflections = mysqlTable("masculinity_reflections", {
 });
 
 // Challenge Completions (rite of passage style)
-export const challengeCompletions = mysqlTable("challenge_completions", {
+export const challengeCompletions = pgTable("challenge_completions", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  challengeCategory: mysqlEnum("challenge_category", [
+  challengeCategory: pgEnum("challenge_category", [
     "physical", // Fitness challenge
     "mental", // Learning challenge
     "emotional", // Vulnerability challenge
@@ -263,18 +263,18 @@ export const challengeCompletions = mysqlTable("challenge_completions", {
   // Recognition
   badgeEarned: varchar("badge_earned", { length: 255 }),
   
-  status: mysqlEnum("status", ["in_progress", "completed", "abandoned"]),
+  status: pgEnum("status", ["in_progress", "completed", "abandoned"]),
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Milestones (Rites of Passage)
-export const youngMenMilestones = mysqlTable("young_men_milestones", {
+export const youngMenMilestones = pgTable("young_men_milestones", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  milestoneType: mysqlEnum("milestone_type", [
+  milestoneType: pgEnum("milestone_type", [
     "first_job",
     "financial_independence",
     "moved_out",

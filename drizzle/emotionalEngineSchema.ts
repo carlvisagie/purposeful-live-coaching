@@ -10,27 +10,27 @@
  * - Adapts interventions based on effectiveness
  */
 
-import { mysqlTable, varchar, text, int, timestamp, boolean, decimal, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
 
 // Emotional Profiles
-export const emotionalProfiles = mysqlTable("emotional_profiles", {
+export const emotionalProfiles = pgTable("emotional_profiles", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Baseline Emotional State
   baselineEmotionalState: varchar("baseline_emotional_state", { length: 100 }),
-  emotionalRange: mysqlEnum("emotional_range", ["narrow", "moderate", "wide"]), // How much do emotions fluctuate?
-  emotionalIntensity: mysqlEnum("emotional_intensity", ["low", "moderate", "high"]),
+  emotionalRange: pgEnum("emotional_range", ["narrow", "moderate", "wide"]), // How much do emotions fluctuate?
+  emotionalIntensity: pgEnum("emotional_intensity", ["low", "moderate", "high"]),
   
   // Regulation Ability
-  regulationSkillLevel: int("regulation_skill_level"), // 1-10
-  awarenessLevel: int("awareness_level"), // 1-10 (how aware are you of your emotions?)
+  regulationSkillLevel: integer("regulation_skill_level"), // 1-10
+  awarenessLevel: integer("awareness_level"), // 1-10 (how aware are you of your emotions?)
   
   // Challenges
   primaryChallenges: text("primary_challenges"), // JSON: overwhelm, numbness, mood_swings, anger, anxiety, etc.
   
   // Goals
-  primaryGoal: mysqlEnum("primary_goal", [
+  primaryGoal: pgEnum("primary_goal", [
     "regulate_emotions",
     "reduce_reactivity",
     "increase_awareness",
@@ -55,7 +55,7 @@ export const emotionalProfiles = mysqlTable("emotional_profiles", {
 });
 
 // Emotion Tracking (Mood Logging)
-export const emotionEntries = mysqlTable("emotion_entries", {
+export const emotionEntries = pgTable("emotion_entries", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -66,11 +66,11 @@ export const emotionEntries = mysqlTable("emotion_entries", {
   secondaryEmotions: text("secondary_emotions"), // JSON array
   
   // Intensity
-  intensity: int("intensity"), // 1-10
+  intensity: integer("intensity"), // 1-10
   
   // Valence & Arousal (circumplex model)
-  valence: int("valence"), // -5 to +5 (negative to positive)
-  arousal: int("arousal"), // 1-10 (low energy to high energy)
+  valence: integer("valence"), // -5 to +5 (negative to positive)
+  arousal: integer("arousal"), // 1-10 (low energy to high energy)
   
   // Context
   trigger: text("trigger"), // What caused this emotion?
@@ -85,25 +85,25 @@ export const emotionEntries = mysqlTable("emotion_entries", {
   actualBehavior: text("actual_behavior"), // What did you actually do?
   
   // Duration
-  durationMinutes: int("duration_minutes"),
+  durationMinutes: integer("duration_minutes"),
   
   // Regulation Attempted
   regulationUsed: boolean("regulation_used"),
   regulationStrategy: varchar("regulation_strategy", { length: 255 }),
-  regulationEffectiveness: int("regulation_effectiveness"), // 1-10
+  regulationEffectiveness: integer("regulation_effectiveness"), // 1-10
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // DBT Skills Practice
-export const dbtSkillsPractice = mysqlTable("dbt_skills_practice", {
+export const dbtSkillsPractice = pgTable("dbt_skills_practice", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   practiceDate: timestamp("practice_date").notNull(),
   
   // DBT Module
-  dbtModule: mysqlEnum("dbt_module", [
+  dbtModule: pgEnum("dbt_module", [
     "mindfulness",
     "distress_tolerance",
     "emotion_regulation",
@@ -111,7 +111,7 @@ export const dbtSkillsPractice = mysqlTable("dbt_skills_practice", {
   ]).notNull(),
   
   // Specific Skill
-  skillUsed: mysqlEnum("skill_used", [
+  skillUsed: pgEnum("skill_used", [
     // Mindfulness
     "observe",
     "describe",
@@ -145,17 +145,17 @@ export const dbtSkillsPractice = mysqlTable("dbt_skills_practice", {
   // Context
   situation: text("situation"),
   emotionBefore: varchar("emotion_before", { length: 100 }),
-  intensityBefore: int("intensity_before"), // 1-10
+  intensityBefore: integer("intensity_before"), // 1-10
   
   // Practice
   howUsed: text("how_used"),
   
   // Outcome
   emotionAfter: varchar("emotion_after", { length: 100 }),
-  intensityAfter: int("intensity_after"), // 1-10
+  intensityAfter: integer("intensity_after"), // 1-10
   
   // Effectiveness
-  effectiveness: int("effectiveness"), // 1-10
+  effectiveness: integer("effectiveness"), // 1-10
   wouldUseAgain: boolean("would_use_again"),
   
   // Challenges
@@ -165,14 +165,14 @@ export const dbtSkillsPractice = mysqlTable("dbt_skills_practice", {
 });
 
 // ACT (Acceptance & Commitment Therapy) Practices
-export const actPractices = mysqlTable("act_practices", {
+export const actPractices = pgTable("act_practices", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   practiceDate: timestamp("practice_date").notNull(),
   
   // ACT Process
-  actProcess: mysqlEnum("act_process", [
+  actProcess: pgEnum("act_process", [
     "acceptance", // Willingness to have difficult emotions
     "cognitive_defusion", // Separating from thoughts
     "present_moment", // Mindfulness
@@ -190,29 +190,29 @@ export const actPractices = mysqlTable("act_practices", {
   difficultEmotion: varchar("difficult_emotion", { length: 100 }),
   
   // ACT Response
-  acceptanceLevel: int("acceptance_level"), // 1-10 (how much did you accept vs. struggle?)
-  defusionLevel: int("defusion_level"), // 1-10 (how much did you separate from the thought?)
+  acceptanceLevel: integer("acceptance_level"), // 1-10 (how much did you accept vs. struggle?)
+  defusionLevel: integer("defusion_level"), // 1-10 (how much did you separate from the thought?)
   
   // Values Alignment
   valueIdentified: varchar("value_identified", { length: 255 }),
   actionTaken: text("action_taken"), // Values-based action
   
   // Outcome
-  psychologicalFlexibility: int("psychological_flexibility"), // 1-10 (how flexible were you?)
-  effectiveness: int("effectiveness"), // 1-10
+  psychologicalFlexibility: integer("psychological_flexibility"), // 1-10 (how flexible were you?)
+  effectiveness: integer("effectiveness"), // 1-10
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Emotion Regulation Strategies
-export const emotionRegulationStrategies = mysqlTable("emotion_regulation_strategies", {
+export const emotionRegulationStrategies = pgTable("emotion_regulation_strategies", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   useDate: timestamp("use_date").notNull(),
   
   // Strategy Type (evidence-based)
-  strategyType: mysqlEnum("strategy_type", [
+  strategyType: pgEnum("strategy_type", [
     "reappraisal", // Cognitive reframing
     "suppression", // Inhibiting emotion (generally unhelpful)
     "distraction", // Shifting attention
@@ -228,20 +228,20 @@ export const emotionRegulationStrategies = mysqlTable("emotion_regulation_strate
   
   // Context
   emotion: varchar("emotion", { length: 100 }).notNull(),
-  intensityBefore: int("intensity_before"), // 1-10
+  intensityBefore: integer("intensity_before"), // 1-10
   trigger: text("trigger"),
   
   // Strategy Application
   whatYouDid: text("what_you_did"),
-  duration: int("duration"), // minutes
+  duration: integer("duration"), // minutes
   
   // Outcome
-  intensityAfter: int("intensity_after"), // 1-10
+  intensityAfter: integer("intensity_after"), // 1-10
   emotionChanged: boolean("emotion_changed"),
   newEmotion: varchar("new_emotion", { length: 100 }),
   
   // Effectiveness
-  immediateEffectiveness: int("immediate_effectiveness"), // 1-10
+  immediateEffectiveness: integer("immediate_effectiveness"), // 1-10
   longTermHelpful: boolean("long_term_helpful"), // Did this actually help or just avoid?
   
   // Side Effects
@@ -251,14 +251,14 @@ export const emotionRegulationStrategies = mysqlTable("emotion_regulation_strate
 });
 
 // Resilience Building Activities
-export const resilienceActivities = mysqlTable("resilience_activities", {
+export const resilienceActivities = pgTable("resilience_activities", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   activityDate: timestamp("activity_date").notNull(),
   
   // Activity Type (evidence-based resilience factors)
-  activityType: mysqlEnum("activity_type", [
+  activityType: pgEnum("activity_type", [
     "social_connection", // Building relationships
     "meaning_making", // Finding purpose in adversity
     "optimism_practice", // Realistic optimism
@@ -275,17 +275,17 @@ export const resilienceActivities = mysqlTable("resilience_activities", {
   activity: varchar("activity", { length: 255 }).notNull(),
   description: text("description"),
   
-  duration: int("duration"), // minutes
+  duration: integer("duration"), // minutes
   
   // Impact
-  resilienceImpact: int("resilience_impact"), // 1-10
-  emotionalImpact: int("emotional_impact"), // 1-10
+  resilienceImpact: integer("resilience_impact"), // 1-10
+  emotionalImpact: integer("emotional_impact"), // 1-10
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Emotional Processing (for difficult emotions)
-export const emotionalProcessing = mysqlTable("emotional_processing", {
+export const emotionalProcessing = pgTable("emotional_processing", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -296,7 +296,7 @@ export const emotionalProcessing = mysqlTable("emotional_processing", {
   relatedEvent: text("related_event"),
   
   // Processing Method
-  processingMethod: mysqlEnum("processing_method", [
+  processingMethod: pgEnum("processing_method", [
     "journaling",
     "talking_to_someone",
     "therapy_session",
@@ -314,11 +314,11 @@ export const emotionalProcessing = mysqlTable("emotional_processing", {
   physicalSensations: text("physical_sensations"),
   
   // Depth
-  processingDepth: mysqlEnum("processing_depth", ["surface", "moderate", "deep"]),
+  processingDepth: pgEnum("processing_depth", ["surface", "moderate", "deep"]),
   
   // Outcome
   feelingAfter: varchar("feeling_after", { length: 100 }),
-  resolutionLevel: int("resolution_level"), // 1-10 (how resolved does this feel?)
+  resolutionLevel: integer("resolution_level"), // 1-10 (how resolved does this feel?)
   
   // Integration
   insights: text("insights"),
@@ -328,13 +328,13 @@ export const emotionalProcessing = mysqlTable("emotional_processing", {
 });
 
 // Emotional Wins & Breakthroughs
-export const emotionalWins = mysqlTable("emotional_wins", {
+export const emotionalWins = pgTable("emotional_wins", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   winDate: timestamp("win_date").notNull(),
   
-  winType: mysqlEnum("win_type", [
+  winType: pgEnum("win_type", [
     "regulated_successfully",
     "felt_emotion_fully",
     "set_boundary",
@@ -356,7 +356,7 @@ export const emotionalWins = mysqlTable("emotional_wins", {
 });
 
 // Emotional Engine Self-Learning Analytics
-export const emotionalEngineAnalytics = mysqlTable("emotional_engine_analytics", {
+export const emotionalEngineAnalytics = pgTable("emotional_engine_analytics", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Strategy Effectiveness (aggregated)
@@ -369,14 +369,14 @@ export const emotionalEngineAnalytics = mysqlTable("emotional_engine_analytics",
   successRate: decimal("success_rate", { precision: 5, scale: 2 }), // % of times it helped
   
   // Optimal Parameters
-  optimalDuration: int("optimal_duration"), // minutes
+  optimalDuration: integer("optimal_duration"), // minutes
   
   // User Segments
   mostEffectiveFor: text("most_effective_for"), // JSON: different emotional profiles
   
   // Sample Size
-  useCount: int("use_count"),
-  userCount: int("user_count"),
+  useCount: integer("use_count"),
+  userCount: integer("user_count"),
   
   lastCalculated: timestamp("last_calculated").defaultNow(),
   

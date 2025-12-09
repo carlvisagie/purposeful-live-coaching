@@ -10,22 +10,22 @@
  * - Predicts health outcomes based on current trajectory
  */
 
-import { mysqlTable, varchar, text, int, timestamp, boolean, decimal, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
 
 // Health Optimization Profiles
-export const healthOptimizationProfiles = mysqlTable("health_optimization_profiles", {
+export const healthOptimizationProfiles = pgTable("health_optimization_profiles", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Current Health Status
-  overallHealth: int("overall_health"), // 1-10 self-assessment
+  overallHealth: integer("overall_health"), // 1-10 self-assessment
   
   // Age & Biological Age
-  chronologicalAge: int("chronological_age"),
-  estimatedBiologicalAge: int("estimated_biological_age"), // Based on biomarkers
+  chronologicalAge: integer("chronological_age"),
+  estimatedBiologicalAge: integer("estimated_biological_age"), // Based on biomarkers
   
   // Health Goals
-  primaryGoal: mysqlEnum("primary_goal", [
+  primaryGoal: pgEnum("primary_goal", [
     "longevity",
     "disease_prevention",
     "optimize_biomarkers",
@@ -44,8 +44,8 @@ export const healthOptimizationProfiles = mysqlTable("health_optimization_profil
   currentMedications: text("current_medications"), // JSON array
   
   // Lifestyle
-  smokingStatus: mysqlEnum("smoking_status", ["never", "former", "current"]),
-  alcoholConsumption: mysqlEnum("alcohol_consumption", ["none", "light", "moderate", "heavy"]),
+  smokingStatus: pgEnum("smoking_status", ["never", "former", "current"]),
+  alcoholConsumption: pgEnum("alcohol_consumption", ["none", "light", "moderate", "heavy"]),
   
   // Health Optimization Protocols
   activeProtocols: text("active_protocols"), // JSON: protocols currently following
@@ -53,14 +53,14 @@ export const healthOptimizationProfiles = mysqlTable("health_optimization_profil
   // Self-Learning Data
   mostEffectiveInterventions: text("most_effective_interventions"), // JSON
   biomarkerTrends: text("biomarker_trends"), // JSON: improving, stable, declining
-  healthTrajectory: mysqlEnum("health_trajectory", ["improving", "stable", "declining"]),
+  healthTrajectory: pgEnum("health_trajectory", ["improving", "stable", "declining"]),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Biomarker Tracking
-export const biomarkers = mysqlTable("biomarkers", {
+export const biomarkers = pgTable("biomarkers", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -73,25 +73,25 @@ export const biomarkers = mysqlTable("biomarkers", {
   homaIR: decimal("homa_ir", { precision: 5, scale: 2 }), // Insulin resistance
   
   // Lipid Panel
-  totalCholesterol: int("total_cholesterol"), // mg/dL
-  ldlCholesterol: int("ldl_cholesterol"), // mg/dL
-  hdlCholesterol: int("hdl_cholesterol"), // mg/dL
-  triglycerides: int("triglycerides"), // mg/dL
-  apoB: int("apo_b"), // mg/dL (best predictor of cardiovascular risk)
-  lpA: int("lp_a"), // mg/dL (genetic risk factor)
+  totalCholesterol: integer("total_cholesterol"), // mg/dL
+  ldlCholesterol: integer("ldl_cholesterol"), // mg/dL
+  hdlCholesterol: integer("hdl_cholesterol"), // mg/dL
+  triglycerides: integer("triglycerides"), // mg/dL
+  apoB: integer("apo_b"), // mg/dL (best predictor of cardiovascular risk)
+  lpA: integer("lp_a"), // mg/dL (genetic risk factor)
   
   // Inflammation
   hsCRP: decimal("hs_crp", { precision: 5, scale: 2 }), // mg/L (high-sensitivity C-reactive protein)
   
   // Liver Function
-  alt: int("alt"), // U/L
-  ast: int("ast"), // U/L
-  ggt: int("ggt"), // U/L
+  alt: integer("alt"), // U/L
+  ast: integer("ast"), // U/L
+  ggt: integer("ggt"), // U/L
   
   // Kidney Function
   creatinine: decimal("creatinine", { precision: 4, scale: 2 }), // mg/dL
-  eGFR: int("egfr"), // mL/min/1.73m² (kidney filtration rate)
-  bun: int("bun"), // mg/dL
+  eGFR: integer("egfr"), // mL/min/1.73m² (kidney filtration rate)
+  bun: integer("bun"), // mg/dL
   
   // Thyroid
   tsh: decimal("tsh", { precision: 5, scale: 3 }), // mIU/L
@@ -99,17 +99,17 @@ export const biomarkers = mysqlTable("biomarkers", {
   freeT4: decimal("free_t4", { precision: 4, scale: 2 }), // ng/dL
   
   // Hormones
-  testosterone: int("testosterone"), // ng/dL
-  estradiol: int("estradiol"), // pg/mL
+  testosterone: integer("testosterone"), // ng/dL
+  estradiol: integer("estradiol"), // pg/mL
   cortisol: decimal("cortisol", { precision: 5, scale: 2 }), // μg/dL
-  dhea: int("dhea"), // μg/dL
+  dhea: integer("dhea"), // μg/dL
   
   // Vitamins & Minerals
   vitaminD: decimal("vitamin_d", { precision: 5, scale: 2 }), // ng/mL
-  vitaminB12: int("vitamin_b12"), // pg/mL
+  vitaminB12: integer("vitamin_b12"), // pg/mL
   folate: decimal("folate", { precision: 5, scale: 2 }), // ng/mL
-  iron: int("iron"), // μg/dL
-  ferritin: int("ferritin"), // ng/mL
+  iron: integer("iron"), // μg/dL
+  ferritin: integer("ferritin"), // ng/mL
   magnesium: decimal("magnesium", { precision: 4, scale: 2 }), // mg/dL
   
   // Complete Blood Count
@@ -117,7 +117,7 @@ export const biomarkers = mysqlTable("biomarkers", {
   rbc: decimal("rbc", { precision: 4, scale: 2 }), // M/μL (red blood cells)
   hemoglobin: decimal("hemoglobin", { precision: 4, scale: 1 }), // g/dL
   hematocrit: decimal("hematocrit", { precision: 4, scale: 1 }), // %
-  platelets: int("platelets"), // K/μL
+  platelets: integer("platelets"), // K/μL
   
   // Advanced Longevity Markers
   homocysteine: decimal("homocysteine", { precision: 5, scale: 2 }), // μmol/L (cardiovascular & cognitive risk)
@@ -133,7 +133,7 @@ export const biomarkers = mysqlTable("biomarkers", {
 });
 
 // Health Protocols (Interventions)
-export const healthProtocols = mysqlTable("health_protocols", {
+export const healthProtocols = pgTable("health_protocols", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -141,7 +141,7 @@ export const healthProtocols = mysqlTable("health_protocols", {
   protocolName: varchar("protocol_name", { length: 255 }).notNull(),
   
   // Protocol Type
-  protocolType: mysqlEnum("protocol_type", [
+  protocolType: pgEnum("protocol_type", [
     "supplement_stack",
     "dietary_intervention",
     "exercise_protocol",
@@ -165,7 +165,7 @@ export const healthProtocols = mysqlTable("health_protocols", {
   
   // Duration
   startDate: timestamp("start_date"),
-  plannedDuration: int("planned_duration"), // days
+  plannedDuration: integer("planned_duration"), // days
   endDate: timestamp("end_date"),
   
   // Baseline
@@ -175,32 +175,32 @@ export const healthProtocols = mysqlTable("health_protocols", {
   endMeasurement: text("end_measurement"), // JSON: biomarkers after
   
   // Effectiveness
-  effectiveness: int("effectiveness"), // 1-10
+  effectiveness: integer("effectiveness"), // 1-10
   sideEffects: text("side_effects"),
   
   // Decision
   willContinue: boolean("will_continue"),
   
   // Status
-  status: mysqlEnum("status", ["active", "completed", "discontinued"]).default("active"),
+  status: pgEnum("status", ["active", "completed", "discontinued"]).default("active"),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Daily Health Metrics
-export const dailyHealthMetrics = mysqlTable("daily_health_metrics", {
+export const dailyHealthMetrics = pgTable("daily_health_metrics", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   metricDate: timestamp("metric_date").notNull(),
   
   // Vitals
-  restingHeartRate: int("resting_heart_rate"), // bpm
-  hrv: int("hrv"), // ms (Heart Rate Variability - autonomic nervous system health)
-  bloodPressureSystolic: int("blood_pressure_systolic"), // mmHg
-  bloodPressureDiastolic: int("blood_pressure_diastolic"), // mmHg
-  oxygenSaturation: int("oxygen_saturation"), // % (SpO2)
+  restingHeartRate: integer("resting_heart_rate"), // bpm
+  hrv: integer("hrv"), // ms (Heart Rate Variability - autonomic nervous system health)
+  bloodPressureSystolic: integer("blood_pressure_systolic"), // mmHg
+  bloodPressureDiastolic: integer("blood_pressure_diastolic"), // mmHg
+  oxygenSaturation: integer("oxygen_saturation"), // % (SpO2)
   bodyTemperature: decimal("body_temperature", { precision: 4, scale: 2 }), // °C
   
   // Weight & Composition
@@ -209,18 +209,18 @@ export const dailyHealthMetrics = mysqlTable("daily_health_metrics", {
   
   // Sleep
   sleepDuration: decimal("sleep_duration", { precision: 3, scale: 1 }), // hours
-  sleepQuality: int("sleep_quality"), // 1-10
-  deepSleepMinutes: int("deep_sleep_minutes"),
-  remSleepMinutes: int("rem_sleep_minutes"),
+  sleepQuality: integer("sleep_quality"), // 1-10
+  deepSleepMinutes: integer("deep_sleep_minutes"),
+  remSleepMinutes: integer("rem_sleep_minutes"),
   
   // Energy & Performance
-  energyLevel: int("energy_level"), // 1-10
-  mentalClarity: int("mental_clarity"), // 1-10
-  physicalPerformance: int("physical_performance"), // 1-10
+  energyLevel: integer("energy_level"), // 1-10
+  mentalClarity: integer("mental_clarity"), // 1-10
+  physicalPerformance: integer("physical_performance"), // 1-10
   
   // Stress & Recovery
-  stressLevel: int("stress_level"), // 1-10
-  recoveryScore: int("recovery_score"), // 1-10
+  stressLevel: integer("stress_level"), // 1-10
+  recoveryScore: integer("recovery_score"), // 1-10
   
   // Symptoms
   symptoms: text("symptoms"), // JSON array: headache, fatigue, pain, etc.
@@ -229,7 +229,7 @@ export const dailyHealthMetrics = mysqlTable("daily_health_metrics", {
 });
 
 // Sleep Tracking (Detailed)
-export const sleepSessions = mysqlTable("sleep_sessions", {
+export const sleepSessions = pgTable("sleep_sessions", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -238,35 +238,35 @@ export const sleepSessions = mysqlTable("sleep_sessions", {
   // Duration
   bedTime: timestamp("bed_time"),
   wakeTime: timestamp("wake_time"),
-  totalTimeInBed: int("total_time_in_bed"), // minutes
-  totalSleepTime: int("total_sleep_time"), // minutes
-  sleepEfficiency: int("sleep_efficiency"), // % (sleep time / time in bed)
+  totalTimeInBed: integer("total_time_in_bed"), // minutes
+  totalSleepTime: integer("total_sleep_time"), // minutes
+  sleepEfficiency: integer("sleep_efficiency"), // % (sleep time / time in bed)
   
   // Sleep Stages
-  awakeDuration: int("awake_duration"), // minutes
-  lightSleepDuration: int("light_sleep_duration"), // minutes
-  deepSleepDuration: int("deep_sleep_duration"), // minutes
-  remSleepDuration: int("rem_sleep_duration"), // minutes
+  awakeDuration: integer("awake_duration"), // minutes
+  lightSleepDuration: integer("light_sleep_duration"), // minutes
+  deepSleepDuration: integer("deep_sleep_duration"), // minutes
+  remSleepDuration: integer("rem_sleep_duration"), // minutes
   
   // Quality
-  sleepQuality: int("sleep_quality"), // 1-10
-  timesToWake: int("times_to_wake"),
-  timeToFallAsleep: int("time_to_fall_asleep"), // minutes (sleep latency)
+  sleepQuality: integer("sleep_quality"), // 1-10
+  timesToWake: integer("times_to_wake"),
+  timeToFallAsleep: integer("time_to_fall_asleep"), // minutes (sleep latency)
   
   // Factors
   caffeineAfter2pm: boolean("caffeine_after_2pm"),
   alcoholBeforeBed: boolean("alcohol_before_bed"),
-  screenTimeBeforeBed: int("screen_time_before_bed"), // minutes
+  screenTimeBeforeBed: integer("screen_time_before_bed"), // minutes
   exerciseToday: boolean("exercise_today"),
-  stressLevel: int("stress_level"), // 1-10
+  stressLevel: integer("stress_level"), // 1-10
   
   // Environment
-  roomTemperature: int("room_temperature"), // °C
-  noiseLevel: mysqlEnum("noise_level", ["silent", "quiet", "moderate", "loud"]),
-  lightLevel: mysqlEnum("light_level", ["dark", "dim", "moderate", "bright"]),
+  roomTemperature: integer("room_temperature"), // °C
+  noiseLevel: pgEnum("noise_level", ["silent", "quiet", "moderate", "loud"]),
+  lightLevel: pgEnum("light_level", ["dark", "dim", "moderate", "bright"]),
   
   // Morning Metrics
-  morningEnergy: int("morning_energy"), // 1-10
+  morningEnergy: integer("morning_energy"), // 1-10
   morningMood: varchar("morning_mood", { length: 100 }),
   
   // Source
@@ -276,22 +276,22 @@ export const sleepSessions = mysqlTable("sleep_sessions", {
 });
 
 // Stress & Recovery
-export const stressRecoveryLogs = mysqlTable("stress_recovery_logs", {
+export const stressRecoveryLogs = pgTable("stress_recovery_logs", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   logDate: timestamp("log_date").notNull(),
   
   // Stress Metrics
-  perceivedStress: int("perceived_stress"), // 1-10
+  perceivedStress: integer("perceived_stress"), // 1-10
   stressSources: text("stress_sources"), // JSON array
   
   // HRV (Heart Rate Variability - stress indicator)
-  morningHRV: int("morning_hrv"), // ms
+  morningHRV: integer("morning_hrv"), // ms
   
   // Recovery Metrics
-  recoveryScore: int("recovery_score"), // 1-10
-  restingHeartRate: int("resting_heart_rate"), // bpm
+  recoveryScore: integer("recovery_score"), // 1-10
+  restingHeartRate: integer("resting_heart_rate"), // bpm
   
   // Strain (if tracking like Whoop)
   dailyStrain: decimal("daily_strain", { precision: 4, scale: 1 }), // Cardiovascular load
@@ -303,14 +303,14 @@ export const stressRecoveryLogs = mysqlTable("stress_recovery_logs", {
 });
 
 // Health Screenings & Tests
-export const healthScreenings = mysqlTable("health_screenings", {
+export const healthScreenings = pgTable("health_screenings", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   screeningDate: timestamp("screening_date").notNull(),
   
   // Screening Type
-  screeningType: mysqlEnum("screening_type", [
+  screeningType: pgEnum("screening_type", [
     "blood_work",
     "DEXA_scan", // Body composition
     "VO2_max", // Cardio fitness
@@ -345,14 +345,14 @@ export const healthScreenings = mysqlTable("health_screenings", {
 });
 
 // Longevity Practices
-export const longevityPractices = mysqlTable("longevity_practices", {
+export const longevityPractices = pgTable("longevity_practices", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   practiceDate: timestamp("practice_date").notNull(),
   
   // Practice Type (evidence-based longevity interventions)
-  practiceType: mysqlEnum("practice_type", [
+  practiceType: pgEnum("practice_type", [
     "time_restricted_eating", // Intermittent fasting
     "caloric_restriction",
     "cold_exposure", // Cold showers, ice baths
@@ -368,8 +368,8 @@ export const longevityPractices = mysqlTable("longevity_practices", {
   ]).notNull(),
   
   // Details
-  duration: int("duration"), // minutes
-  intensity: mysqlEnum("intensity", ["low", "moderate", "high"]),
+  duration: integer("duration"), // minutes
+  intensity: pgEnum("intensity", ["low", "moderate", "high"]),
   
   // Specific Metrics
   specificMetrics: text("specific_metrics"), // JSON: temperature, heart rate, etc.
@@ -381,12 +381,12 @@ export const longevityPractices = mysqlTable("longevity_practices", {
 });
 
 // Health Milestones
-export const healthMilestones = mysqlTable("health_milestones", {
+export const healthMilestones = pgTable("health_milestones", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  milestoneType: mysqlEnum("milestone_type", [
+  milestoneType: pgEnum("milestone_type", [
     "biomarker_optimized",
     "disease_reversed",
     "medication_reduced",
@@ -407,7 +407,7 @@ export const healthMilestones = mysqlTable("health_milestones", {
 });
 
 // Health Optimization Engine Self-Learning Analytics
-export const healthOptimizationAnalytics = mysqlTable("health_optimization_analytics", {
+export const healthOptimizationAnalytics = pgTable("health_optimization_analytics", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Intervention Effectiveness (aggregated)
@@ -419,15 +419,15 @@ export const healthOptimizationAnalytics = mysqlTable("health_optimization_analy
   successRate: decimal("success_rate", { precision: 5, scale: 2 }), // % of users who improved
   
   // Optimal Parameters
-  optimalDuration: int("optimal_duration"), // days
+  optimalDuration: integer("optimal_duration"), // days
   optimalDosage: varchar("optimal_dosage", { length: 255 }),
   
   // User Segments
   mostEffectiveFor: text("most_effective_for"), // JSON: different health profiles
   
   // Sample Size
-  protocolCount: int("protocol_count"),
-  userCount: int("user_count"),
+  protocolCount: integer("protocol_count"),
+  userCount: integer("user_count"),
   
   lastCalculated: timestamp("last_calculated").defaultNow(),
   

@@ -4,10 +4,10 @@
  * Research sources: NIMH, APA, SAMHSA guidelines
  */
 
-import { mysqlTable, varchar, text, int, timestamp, boolean, decimal, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
 
 // Mental Health Profiles - Core user mental health data
-export const mentalHealthProfiles = mysqlTable("mental_health_profiles", {
+export const mentalHealthProfiles = pgTable("mental_health_profiles", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
@@ -18,38 +18,38 @@ export const mentalHealthProfiles = mysqlTable("mental_health_profiles", {
   treatmentHistory: text("treatment_history"), // JSON array of past treatments
   
   // Current Status
-  currentSeverity: mysqlEnum("current_severity", ["mild", "moderate", "severe", "crisis"]),
+  currentSeverity: pgEnum("current_severity", ["mild", "moderate", "severe", "crisis"]),
   inTreatment: boolean("in_treatment").default(false),
   medicationList: text("medication_list"), // JSON array
   therapyType: varchar("therapy_type", { length: 255 }), // CBT, DBT, EMDR, etc.
   
   // Risk Assessment
   suicidalIdeation: boolean("suicidal_ideation").default(false),
-  selfHarmRisk: mysqlEnum("self_harm_risk", ["none", "low", "moderate", "high"]),
+  selfHarmRisk: pgEnum("self_harm_risk", ["none", "low", "moderate", "high"]),
   crisisContactInfo: text("crisis_contact_info"), // JSON
   
   // Goals & Progress
   recoveryGoals: text("recovery_goals"), // JSON array
-  currentPhase: mysqlEnum("current_phase", ["crisis_stabilization", "active_treatment", "maintenance", "recovery"]),
+  currentPhase: pgEnum("current_phase", ["crisis_stabilization", "active_treatment", "maintenance", "recovery"]),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Daily Mood & Symptom Tracking - Evidence-based mood monitoring
-export const moodLogs = mysqlTable("mood_logs", {
+export const moodLogs = pgTable("mood_logs", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   logDate: timestamp("log_date").notNull(),
   
   // Mood Ratings (1-10 scale, evidence-based)
-  overallMood: int("overall_mood"), // 1=worst, 10=best
-  anxiety: int("anxiety"), // 1=none, 10=severe
-  depression: int("depression"),
-  irritability: int("irritability"),
-  energy: int("energy"),
-  sleep_quality: int("sleep_quality"),
+  overallMood: integer("overall_mood"), // 1=worst, 10=best
+  anxiety: integer("anxiety"), // 1=none, 10=severe
+  depression: integer("depression"),
+  irritability: integer("irritability"),
+  energy: integer("energy"),
+  sleep_quality: integer("sleep_quality"),
   
   // Symptom Checklist (based on DSM-5 criteria)
   symptoms: text("symptoms"), // JSON array: ["racing_thoughts", "loss_of_interest", etc.]
@@ -63,7 +63,7 @@ export const moodLogs = mysqlTable("mood_logs", {
   // Triggers & Coping
   triggers: text("triggers"), // JSON array
   copingStrategiesUsed: text("coping_strategies_used"), // JSON array
-  copingEffectiveness: int("coping_effectiveness"), // 1-10
+  copingEffectiveness: integer("coping_effectiveness"), // 1-10
   
   // Notes
   notes: text("notes"),
@@ -72,7 +72,7 @@ export const moodLogs = mysqlTable("mood_logs", {
 });
 
 // CBT Thought Records - Evidence-based cognitive restructuring
-export const thoughtRecords = mysqlTable("thought_records", {
+export const thoughtRecords = pgTable("thought_records", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -96,20 +96,20 @@ export const thoughtRecords = mysqlTable("thought_records", {
   
   // Outcome
   behavioralResponse: text("behavioral_response"),
-  effectiveness: int("effectiveness"), // 1-10
+  effectiveness: integer("effectiveness"), // 1-10
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // DBT Skills Practice - Evidence-based dialectical behavior therapy
-export const dbtSkillsPractice = mysqlTable("dbt_skills_practice", {
+export const dbtSkillsPractice = pgTable("dbt_skills_practice", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   practiceDate: timestamp("practice_date").notNull(),
   
   // DBT Module
-  module: mysqlEnum("module", ["mindfulness", "distress_tolerance", "emotion_regulation", "interpersonal_effectiveness"]).notNull(),
+  module: pgEnum("module", ["mindfulness", "distress_tolerance", "emotion_regulation", "interpersonal_effectiveness"]).notNull(),
   
   // Specific Skill
   skillName: varchar("skill_name", { length: 255 }).notNull(), // e.g., "TIPP", "DEAR MAN", "Opposite Action"
@@ -117,14 +117,14 @@ export const dbtSkillsPractice = mysqlTable("dbt_skills_practice", {
   // Practice Details
   situation: text("situation"),
   emotionBefore: varchar("emotion_before", { length: 255 }),
-  intensityBefore: int("intensity_before"), // 1-10
+  intensityBefore: integer("intensity_before"), // 1-10
   
   // Skill Application
   skillStepsUsed: text("skill_steps_used"), // JSON array
-  effectiveness: int("effectiveness"), // 1-10
+  effectiveness: integer("effectiveness"), // 1-10
   
   emotionAfter: varchar("emotion_after", { length: 255 }),
-  intensityAfter: int("intensity_after"), // 1-10
+  intensityAfter: integer("intensity_after"), // 1-10
   
   // Reflection
   whatWorked: text("what_worked"),
@@ -135,7 +135,7 @@ export const dbtSkillsPractice = mysqlTable("dbt_skills_practice", {
 });
 
 // Safety Plans - Evidence-based suicide prevention
-export const safetyPlans = mysqlTable("safety_plans", {
+export const safetyPlans = pgTable("safety_plans", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -167,12 +167,12 @@ export const safetyPlans = mysqlTable("safety_plans", {
 });
 
 // Recovery Milestones - Track progress markers
-export const recoveryMilestones = mysqlTable("recovery_milestones", {
+export const recoveryMilestones = pgTable("recovery_milestones", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  milestoneType: mysqlEnum("milestone_type", [
+  milestoneType: pgEnum("milestone_type", [
     "symptom_free_days",
     "therapy_completion",
     "medication_stabilization",
@@ -188,8 +188,8 @@ export const recoveryMilestones = mysqlTable("recovery_milestones", {
   targetDate: timestamp("target_date"),
   achievedDate: timestamp("achieved_date"),
   
-  progress: int("progress"), // 0-100%
-  status: mysqlEnum("status", ["not_started", "in_progress", "achieved", "on_hold"]),
+  progress: integer("progress"), // 0-100%
+  status: pgEnum("status", ["not_started", "in_progress", "achieved", "on_hold"]),
   
   notes: text("notes"),
   

@@ -1,13 +1,13 @@
-import { mysqlTable, int, varchar, text, timestamp, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, int, varchar, text, timestamp, pgEnum } from "drizzle-orm/pg-core";
 import { clients } from "./schema";
 
 /**
  * Identity Profiles - Track user's evolving identity
  * Based on Master Prompt: Identity over motivation
  */
-export const identityProfiles = mysqlTable("identityProfiles", {
-  id: int("id").autoincrement().primaryKey(),
-  clientId: int("clientId").notNull().references(() => clients.id),
+export const identityProfiles = pgTable("identityProfiles", {
+  id: serial("id").primaryKey(),
+  clientId: integer("clientId").notNull().references(() => clients.id),
   
   // Current identity markers
   currentIdentity: text("currentIdentity"), // JSON: ["disciplined", "resilient", etc.]
@@ -33,25 +33,25 @@ export type InsertIdentityProfile = typeof identityProfiles.$inferInsert;
 /**
  * Daily Check-ins - Minimal cognitive load tracking
  */
-export const dailyCheckins = mysqlTable("dailyCheckins", {
-  id: int("id").autoincrement().primaryKey(),
-  clientId: int("clientId").notNull().references(() => clients.id),
+export const dailyCheckins = pgTable("dailyCheckins", {
+  id: serial("id").primaryKey(),
+  clientId: integer("clientId").notNull().references(() => clients.id),
   checkinDate: timestamp("checkinDate").defaultNow().notNull(),
   
   // Physical health (minimal questions)
-  sleptWell: mysqlEnum("sleptWell", ["yes", "no"]).notNull(),
-  ateWell: mysqlEnum("ateWell", ["yes", "no"]).notNull(),
-  movedBody: mysqlEnum("movedBody", ["yes", "no"]).notNull(),
+  sleptWell: pgEnum("sleptWell", ["yes", "no"]).notNull(),
+  ateWell: pgEnum("ateWell", ["yes", "no"]).notNull(),
+  movedBody: pgEnum("movedBody", ["yes", "no"]).notNull(),
   
   // Emotional state (single rating)
-  emotionalState: int("emotionalState").notNull(), // 1-10 scale
+  emotionalState: integer("emotionalState").notNull(), // 1-10 scale
   
   // Discipline tracking
-  followedPlan: mysqlEnum("followedPlan", ["yes", "no"]).notNull(),
-  controlledImpulses: mysqlEnum("controlledImpulses", ["yes", "no"]).notNull(),
+  followedPlan: pgEnum("followedPlan", ["yes", "no"]).notNull(),
+  controlledImpulses: pgEnum("controlledImpulses", ["yes", "no"]).notNull(),
   
   // Identity reinforcement
-  actedLikeTargetIdentity: mysqlEnum("actedLikeTargetIdentity", ["yes", "no"]).notNull(),
+  actedLikeTargetIdentity: pgEnum("actedLikeTargetIdentity", ["yes", "no"]).notNull(),
   
   // Optional notes (not required)
   notes: text("notes"),
@@ -67,11 +67,11 @@ export type InsertDailyCheckin = typeof dailyCheckins.$inferInsert;
 /**
  * Habit Completions - Track daily execution
  */
-export const habitCompletions = mysqlTable("habitCompletions", {
-  id: int("id").autoincrement().primaryKey(),
-  habitId: int("habitId").notNull().references(() => habits.id),
+export const habitCompletions = pgTable("habitCompletions", {
+  id: serial("id").primaryKey(),
+  habitId: integer("habitId").notNull().references(() => habits.id),
   completionDate: timestamp("completionDate").defaultNow().notNull(),
-  completed: mysqlEnum("completed", ["yes", "no"]).notNull(),
+  completed: pgEnum("completed", ["yes", "no"]).notNull(),
   notes: text("notes"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
@@ -82,19 +82,19 @@ export type InsertHabitCompletion = typeof habitCompletions.$inferInsert;
 /**
  * Discipline Events - Track impulse control and discipline moments
  */
-export const disciplineEvents = mysqlTable("disciplineEvents", {
-  id: int("id").autoincrement().primaryKey(),
-  clientId: int("clientId").notNull().references(() => clients.id),
+export const disciplineEvents = pgTable("disciplineEvents", {
+  id: serial("id").primaryKey(),
+  clientId: integer("clientId").notNull().references(() => clients.id),
   eventDate: timestamp("eventDate").defaultNow().notNull(),
   
   // Event details
-  eventType: mysqlEnum("eventType", ["impulse_controlled", "impulse_failed", "discipline_win", "discipline_fail"]).notNull(),
+  eventType: pgEnum("eventType", ["impulse_controlled", "impulse_failed", "discipline_win", "discipline_fail"]).notNull(),
   situation: text("situation"), // What happened
   response: text("response"), // How they responded
   outcome: text("outcome"), // Result
   
   // Identity impact
-  reinforcedIdentity: mysqlEnum("reinforcedIdentity", ["yes", "no"]).notNull(),
+  reinforcedIdentity: pgEnum("reinforcedIdentity", ["yes", "no"]).notNull(),
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
@@ -105,9 +105,9 @@ export type InsertDisciplineEvent = typeof disciplineEvents.$inferInsert;
 /**
  * Micro-Habits - Tiny, stackable behaviors
  */
-export const microHabits = mysqlTable("microHabits", {
-  id: int("id").autoincrement().primaryKey(),
-  clientId: int("clientId").notNull().references(() => clients.id),
+export const microHabits = pgTable("microHabits", {
+  id: serial("id").primaryKey(),
+  clientId: integer("clientId").notNull().references(() => clients.id),
   
   // Micro-habit definition (must be < 2 minutes)
   microHabitName: varchar("microHabitName", { length: 255 }).notNull(),
@@ -118,7 +118,7 @@ export const microHabits = mysqlTable("microHabits", {
   identityReinforcement: text("identityReinforcement"), // "This makes me [identity]"
   
   // Status
-  isActive: mysqlEnum("isActive", ["true", "false"]).default("true").notNull(),
+  isActive: pgEnum("isActive", ["true", "false"]).default("true").notNull(),
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),

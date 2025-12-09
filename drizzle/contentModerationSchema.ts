@@ -19,17 +19,17 @@
  * 5. Auditable: Complete trail for legal protection
  */
 
-import { mysqlTable, varchar, text, int, timestamp, boolean, decimal, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
 
 // ============================================================================
 // FORBIDDEN CONTENT DICTIONARY (Self-Learning)
 // ============================================================================
 
-export const forbiddenContentDictionary = mysqlTable("forbidden_content_dictionary", {
+export const forbiddenContentDictionary = pgTable("forbidden_content_dictionary", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Content Details
-  contentType: mysqlEnum("content_type", [
+  contentType: pgEnum("content_type", [
     "word",
     "phrase",
     "pattern",
@@ -42,7 +42,7 @@ export const forbiddenContentDictionary = mysqlTable("forbidden_content_dictiona
   pattern: text("pattern"), // Regex pattern for matching
   
   // Risk Category
-  riskCategory: mysqlEnum("risk_category", [
+  riskCategory: pgEnum("risk_category", [
     "legal_liability",
     "medical_advice",
     "psychiatric_advice",
@@ -65,7 +65,7 @@ export const forbiddenContentDictionary = mysqlTable("forbidden_content_dictiona
   ]).notNull(),
   
   // Severity
-  severityLevel: mysqlEnum("severity_level", [
+  severityLevel: pgEnum("severity_level", [
     "critical", // Immediate block, legal risk
     "high", // Block, professional risk
     "medium", // Flag for review
@@ -73,7 +73,7 @@ export const forbiddenContentDictionary = mysqlTable("forbidden_content_dictiona
   ]).notNull(),
   
   // Action
-  action: mysqlEnum("action", [
+  action: pgEnum("action", [
     "hard_block", // Prevent message entirely
     "soft_block", // Warn and redirect
     "flag_review", // Allow but flag for human review
@@ -81,7 +81,7 @@ export const forbiddenContentDictionary = mysqlTable("forbidden_content_dictiona
   ]).notNull(),
   
   // Source
-  source: mysqlEnum("source", [
+  source: pgEnum("source", [
     "manual", // Added by admin
     "ai_detected", // Detected by AI
     "user_report", // Reported by user
@@ -91,9 +91,9 @@ export const forbiddenContentDictionary = mysqlTable("forbidden_content_dictiona
   ]).notNull(),
   
   // Learning Data
-  detectionCount: int("detection_count").default(0), // How many times detected
-  falsePositiveCount: int("false_positive_count").default(0), // How many false positives
-  truePositiveCount: int("true_positive_count").default(0), // How many true positives
+  detectionCount: integer("detection_count").default(0), // How many times detected
+  falsePositiveCount: integer("false_positive_count").default(0), // How many false positives
+  truePositiveCount: integer("true_positive_count").default(0), // How many true positives
   accuracy: decimal("accuracy", { precision: 5, scale: 2 }), // % accuracy
   
   // Status
@@ -105,7 +105,7 @@ export const forbiddenContentDictionary = mysqlTable("forbidden_content_dictiona
   redirectMessage: text("redirect_message"), // What to tell user
   
   // Version Control
-  version: int("version").default(1),
+  version: integer("version").default(1),
   replacedBy: varchar("replaced_by", { length: 255 }), // If updated
   
   createdAt: timestamp("created_at").defaultNow(),
@@ -117,7 +117,7 @@ export const forbiddenContentDictionary = mysqlTable("forbidden_content_dictiona
 // CONTENT MODERATION LOGS
 // ============================================================================
 
-export const contentModerationLogs = mysqlTable("content_moderation_logs", {
+export const contentModerationLogs = pgTable("content_moderation_logs", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // User & Session
@@ -133,12 +133,12 @@ export const contentModerationLogs = mysqlTable("content_moderation_logs", {
   matchedRules: text("matched_rules"), // JSON: which rules triggered
   
   // Risk Assessment
-  riskScore: int("risk_score"), // 0-100
+  riskScore: integer("risk_score"), // 0-100
   riskCategory: varchar("risk_category", { length: 100 }),
-  severityLevel: mysqlEnum("severity_level", ["critical", "high", "medium", "low"]),
+  severityLevel: pgEnum("severity_level", ["critical", "high", "medium", "low"]),
   
   // Action Taken
-  actionTaken: mysqlEnum("action_taken", [
+  actionTaken: pgEnum("action_taken", [
     "blocked",
     "redirected",
     "flagged",
@@ -157,7 +157,7 @@ export const contentModerationLogs = mysqlTable("content_moderation_logs", {
   requiresHumanReview: boolean("requires_human_review").default(false),
   reviewedBy: varchar("reviewed_by", { length: 255 }),
   reviewedAt: timestamp("reviewed_at"),
-  reviewDecision: mysqlEnum("review_decision", [
+  reviewDecision: pgEnum("review_decision", [
     "confirmed_violation",
     "false_positive",
     "needs_escalation",
@@ -176,12 +176,12 @@ export const contentModerationLogs = mysqlTable("content_moderation_logs", {
 // AI SAFETY RULES (Dynamic System Prompts)
 // ============================================================================
 
-export const aiSafetyRules = mysqlTable("ai_safety_rules", {
+export const aiSafetyRules = pgTable("ai_safety_rules", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Rule Details
   ruleName: varchar("rule_name", { length: 255 }).notNull(),
-  ruleType: mysqlEnum("rule_type", [
+  ruleType: pgEnum("rule_type", [
     "boundary_enforcement",
     "crisis_detection",
     "compliance_check",
@@ -195,7 +195,7 @@ export const aiSafetyRules = mysqlTable("ai_safety_rules", {
   validationLogic: text("validation_logic"), // How to validate
   
   // Scope
-  appliesTo: mysqlEnum("applies_to", [
+  appliesTo: pgEnum("applies_to", [
     "all_ai_interactions",
     "coaching_sessions",
     "ai_coach_only",
@@ -205,13 +205,13 @@ export const aiSafetyRules = mysqlTable("ai_safety_rules", {
   ]).notNull(),
   
   // Priority
-  priority: int("priority").default(100), // Higher = more important
+  priority: integer("priority").default(100), // Higher = more important
   
   // Status
   active: boolean("active").default(true),
   
   // Effectiveness
-  violationsPrevented: int("violations_prevented").default(0),
+  violationsPrevented: integer("violations_prevented").default(0),
   effectiveness: decimal("effectiveness", { precision: 5, scale: 2 }), // %
   
   createdAt: timestamp("created_at").defaultNow(),
@@ -222,12 +222,12 @@ export const aiSafetyRules = mysqlTable("ai_safety_rules", {
 // BRAND SAFETY KEYWORDS
 // ============================================================================
 
-export const brandSafetyKeywords = mysqlTable("brand_safety_keywords", {
+export const brandSafetyKeywords = pgTable("brand_safety_keywords", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Keyword
   keyword: varchar("keyword", { length: 500 }).notNull(),
-  keywordType: mysqlEnum("keyword_type", [
+  keywordType: pgEnum("keyword_type", [
     "brand_damaging",
     "competitor_mention",
     "negative_sentiment",
@@ -239,7 +239,7 @@ export const brandSafetyKeywords = mysqlTable("brand_safety_keywords", {
   ]).notNull(),
   
   // Risk
-  riskLevel: mysqlEnum("risk_level", ["critical", "high", "medium", "low"]).notNull(),
+  riskLevel: pgEnum("risk_level", ["critical", "high", "medium", "low"]).notNull(),
   
   // Action
   alertTeam: boolean("alert_team").default(false),
@@ -257,12 +257,12 @@ export const brandSafetyKeywords = mysqlTable("brand_safety_keywords", {
 // COMPLIANCE CHECKPOINTS
 // ============================================================================
 
-export const complianceCheckpoints = mysqlTable("compliance_checkpoints", {
+export const complianceCheckpoints = pgTable("compliance_checkpoints", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Checkpoint Details
   checkpointName: varchar("checkpoint_name", { length: 255 }).notNull(),
-  complianceFramework: mysqlEnum("compliance_framework", [
+  complianceFramework: pgEnum("compliance_framework", [
     "hipaa",
     "gdpr",
     "professional_liability",
@@ -279,7 +279,7 @@ export const complianceCheckpoints = mysqlTable("compliance_checkpoints", {
   mandatory: boolean("mandatory").default(true),
   
   // Violation Handling
-  violationSeverity: mysqlEnum("violation_severity", ["critical", "high", "medium", "low"]),
+  violationSeverity: pgEnum("violation_severity", ["critical", "high", "medium", "low"]),
   violationAction: text("violation_action"), // What to do if violated
   
   // Documentation
@@ -289,7 +289,7 @@ export const complianceCheckpoints = mysqlTable("compliance_checkpoints", {
   // Audit
   lastAuditDate: timestamp("last_audit_date"),
   nextAuditDate: timestamp("next_audit_date"),
-  auditFrequency: mysqlEnum("audit_frequency", ["daily", "weekly", "monthly", "quarterly", "annually"]),
+  auditFrequency: pgEnum("audit_frequency", ["daily", "weekly", "monthly", "quarterly", "annually"]),
   
   active: boolean("active").default(true),
   
@@ -301,11 +301,11 @@ export const complianceCheckpoints = mysqlTable("compliance_checkpoints", {
 // PATTERN LEARNING ENGINE
 // ============================================================================
 
-export const patternLearning = mysqlTable("pattern_learning", {
+export const patternLearning = pgTable("pattern_learning", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Pattern Details
-  patternType: mysqlEnum("pattern_type", [
+  patternType: pgEnum("pattern_type", [
     "violation_pattern",
     "user_behavior_pattern",
     "crisis_indicator_pattern",
@@ -318,7 +318,7 @@ export const patternLearning = mysqlTable("pattern_learning", {
   detectionAlgorithm: text("detection_algorithm"), // How to detect
   
   // Learning Metrics
-  occurrences: int("occurrences").default(0),
+  occurrences: integer("occurrences").default(0),
   accuracy: decimal("accuracy", { precision: 5, scale: 2 }),
   confidence: decimal("confidence", { precision: 5, scale: 2 }),
   
@@ -338,14 +338,14 @@ export const patternLearning = mysqlTable("pattern_learning", {
 // CRISIS INTERVENTION LOGS
 // ============================================================================
 
-export const crisisInterventionLogs = mysqlTable("crisis_intervention_logs", {
+export const crisisInterventionLogs = pgTable("crisis_intervention_logs", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // User
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Crisis Details
-  crisisType: mysqlEnum("crisis_type", [
+  crisisType: pgEnum("crisis_type", [
     "suicide_ideation",
     "self_harm",
     "violence_threat",
@@ -357,7 +357,7 @@ export const crisisInterventionLogs = mysqlTable("crisis_intervention_logs", {
   // Detection
   detectedContent: text("detected_content"),
   crisisIndicators: text("crisis_indicators"), // JSON: what triggered
-  riskLevel: mysqlEnum("risk_level", ["imminent", "high", "moderate", "low"]).notNull(),
+  riskLevel: pgEnum("risk_level", ["imminent", "high", "moderate", "low"]).notNull(),
   
   // Response
   responseProvided: text("response_provided"),
@@ -374,7 +374,7 @@ export const crisisInterventionLogs = mysqlTable("crisis_intervention_logs", {
   followUpNotes: text("follow_up_notes"),
   
   // Outcome
-  outcome: mysqlEnum("outcome", [
+  outcome: pgEnum("outcome", [
     "user_safe",
     "emergency_services_contacted",
     "referred_to_professional",
@@ -390,11 +390,11 @@ export const crisisInterventionLogs = mysqlTable("crisis_intervention_logs", {
 // PROFESSIONAL BOUNDARY VIOLATIONS
 // ============================================================================
 
-export const professionalBoundaryViolations = mysqlTable("professional_boundary_violations", {
+export const professionalBoundaryViolations = pgTable("professional_boundary_violations", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Violation Details
-  violationType: mysqlEnum("violation_type", [
+  violationType: pgEnum("violation_type", [
     "therapy_vs_coaching",
     "medical_advice",
     "legal_advice",
@@ -415,10 +415,10 @@ export const professionalBoundaryViolations = mysqlTable("professional_boundary_
   context: text("context"),
   
   // Detection
-  detectedBy: mysqlEnum("detected_by", ["ai", "human_review", "user_report", "compliance_audit"]),
+  detectedBy: pgEnum("detected_by", ["ai", "human_review", "user_report", "compliance_audit"]),
   
   // Severity
-  severity: mysqlEnum("severity", ["critical", "high", "medium", "low"]).notNull(),
+  severity: pgEnum("severity", ["critical", "high", "medium", "low"]).notNull(),
   
   // Response
   correctionProvided: text("correction_provided"),
@@ -436,7 +436,7 @@ export const professionalBoundaryViolations = mysqlTable("professional_boundary_
 // SAFETY ANALYTICS
 // ============================================================================
 
-export const safetyAnalytics = mysqlTable("safety_analytics", {
+export const safetyAnalytics = pgTable("safety_analytics", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Time Period
@@ -444,29 +444,29 @@ export const safetyAnalytics = mysqlTable("safety_analytics", {
   periodEnd: timestamp("period_end").notNull(),
   
   // Metrics
-  totalInteractions: int("total_interactions"),
-  violationsDetected: int("violations_detected"),
+  totalInteractions: integer("total_interactions"),
+  violationsDetected: integer("violations_detected"),
   violationRate: decimal("violation_rate", { precision: 5, scale: 2 }), // %
   
   // By Category
-  legalViolations: int("legal_violations"),
-  ethicalViolations: int("ethical_violations"),
-  brandSafetyIssues: int("brand_safety_issues"),
-  crisisInterventions: int("crisis_interventions"),
+  legalViolations: integer("legal_violations"),
+  ethicalViolations: integer("ethical_violations"),
+  brandSafetyIssues: integer("brand_safety_issues"),
+  crisisInterventions: integer("crisis_interventions"),
   
   // Actions
-  contentBlocked: int("content_blocked"),
-  contentFlagged: int("content_flagged"),
-  usersEscalated: int("users_escalated"),
+  contentBlocked: integer("content_blocked"),
+  contentFlagged: integer("content_flagged"),
+  usersEscalated: integer("users_escalated"),
   
   // Accuracy
   falsePositiveRate: decimal("false_positive_rate", { precision: 5, scale: 2 }),
   falseNegativeRate: decimal("false_negative_rate", { precision: 5, scale: 2 }),
   
   // Learning
-  newPatternsDetected: int("new_patterns_detected"),
-  rulesUpdated: int("rules_updated"),
-  dictionaryExpanded: int("dictionary_expanded"),
+  newPatternsDetected: integer("new_patterns_detected"),
+  rulesUpdated: integer("rules_updated"),
+  dictionaryExpanded: integer("dictionary_expanded"),
   
   generatedAt: timestamp("generated_at").defaultNow(),
 });

@@ -26,15 +26,15 @@
  * - Bug reporting
  */
 
-import { mysqlTable, varchar, text, int, timestamp, boolean, decimal, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
 
 // Admin Users
-export const adminUsers = mysqlTable("admin_users", {
+export const adminUsers = pgTable("admin_users", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull().unique(),
   
   // Role
-  role: mysqlEnum("role", [
+  role: pgEnum("role", [
     "super_admin",
     "admin",
     "moderator",
@@ -57,13 +57,13 @@ export const adminUsers = mysqlTable("admin_users", {
 });
 
 // Admin Actions (Audit Trail)
-export const adminActions = mysqlTable("admin_actions", {
+export const adminActions = pgTable("admin_actions", {
   id: varchar("id", { length: 255 }).primaryKey(),
   adminUserId: varchar("admin_user_id", { length: 255 }).notNull(),
   
   // Action Details
   actionType: varchar("action_type", { length: 100 }).notNull(),
-  actionCategory: mysqlEnum("action_category", [
+  actionCategory: pgEnum("action_category", [
     "user_management",
     "content_moderation",
     "system_configuration",
@@ -87,7 +87,7 @@ export const adminActions = mysqlTable("admin_actions", {
 });
 
 // Support Tickets
-export const supportTickets = mysqlTable("support_tickets", {
+export const supportTickets = pgTable("support_tickets", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
@@ -97,7 +97,7 @@ export const supportTickets = mysqlTable("support_tickets", {
   description: text("description"),
   
   // Category
-  category: mysqlEnum("category", [
+  category: pgEnum("category", [
     "technical_issue",
     "billing",
     "feature_request",
@@ -109,10 +109,10 @@ export const supportTickets = mysqlTable("support_tickets", {
   ]).notNull(),
   
   // Priority
-  priority: mysqlEnum("priority", ["low", "medium", "high", "urgent"]).default("medium"),
+  priority: pgEnum("priority", ["low", "medium", "high", "urgent"]).default("medium"),
   
   // Status
-  status: mysqlEnum("status", [
+  status: pgEnum("status", [
     "new",
     "open",
     "in_progress",
@@ -132,13 +132,13 @@ export const supportTickets = mysqlTable("support_tickets", {
   resolutionNotes: text("resolution_notes"),
   
   // Satisfaction
-  satisfactionRating: int("satisfaction_rating"), // 1-5
+  satisfactionRating: integer("satisfaction_rating"), // 1-5
   satisfactionFeedback: text("satisfaction_feedback"),
   
   // SLA
   firstResponseAt: timestamp("first_response_at"),
-  firstResponseSLA: int("first_response_sla"), // minutes
-  resolutionSLA: int("resolution_sla"), // minutes
+  firstResponseSLA: integer("first_response_sla"), // minutes
+  resolutionSLA: integer("resolution_sla"), // minutes
   slaBreached: boolean("sla_breached").default(false),
   
   createdAt: timestamp("created_at").defaultNow(),
@@ -147,13 +147,13 @@ export const supportTickets = mysqlTable("support_tickets", {
 });
 
 // Ticket Messages
-export const ticketMessages = mysqlTable("ticket_messages", {
+export const ticketMessages = pgTable("ticket_messages", {
   id: varchar("id", { length: 255 }).primaryKey(),
   ticketId: varchar("ticket_id", { length: 255 }).notNull(),
   
   // Sender
   senderId: varchar("sender_id", { length: 255 }).notNull(),
-  senderType: mysqlEnum("sender_type", ["user", "admin", "system"]).notNull(),
+  senderType: pgEnum("sender_type", ["user", "admin", "system"]).notNull(),
   
   // Message
   message: text("message").notNull(),
@@ -168,7 +168,7 @@ export const ticketMessages = mysqlTable("ticket_messages", {
 });
 
 // Knowledge Base Articles
-export const knowledgeBaseArticles = mysqlTable("knowledge_base_articles", {
+export const knowledgeBaseArticles = pgTable("knowledge_base_articles", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Article Details
@@ -185,7 +185,7 @@ export const knowledgeBaseArticles = mysqlTable("knowledge_base_articles", {
   metaDescription: text("meta_description"),
   
   // Status
-  status: mysqlEnum("status", ["draft", "published", "archived"]).default("draft"),
+  status: pgEnum("status", ["draft", "published", "archived"]).default("draft"),
   
   // Author
   authorId: varchar("author_id", { length: 255 }),
@@ -194,11 +194,11 @@ export const knowledgeBaseArticles = mysqlTable("knowledge_base_articles", {
   public: boolean("public").default(true),
   
   // Helpfulness
-  helpfulCount: int("helpful_count").default(0),
-  notHelpfulCount: int("not_helpful_count").default(0),
+  helpfulCount: integer("helpful_count").default(0),
+  notHelpfulCount: integer("not_helpful_count").default(0),
   
   // Views
-  viewCount: int("view_count").default(0),
+  viewCount: integer("view_count").default(0),
   
   publishedAt: timestamp("published_at"),
   
@@ -207,7 +207,7 @@ export const knowledgeBaseArticles = mysqlTable("knowledge_base_articles", {
 });
 
 // Article Feedback
-export const articleFeedback = mysqlTable("article_feedback", {
+export const articleFeedback = pgTable("article_feedback", {
   id: varchar("id", { length: 255 }).primaryKey(),
   articleId: varchar("article_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }),
@@ -220,12 +220,12 @@ export const articleFeedback = mysqlTable("article_feedback", {
 });
 
 // User Feedback
-export const userFeedback = mysqlTable("user_feedback", {
+export const userFeedback = pgTable("user_feedback", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Feedback Type
-  feedbackType: mysqlEnum("feedback_type", [
+  feedbackType: pgEnum("feedback_type", [
     "feature_request",
     "bug_report",
     "general_feedback",
@@ -245,7 +245,7 @@ export const userFeedback = mysqlTable("user_feedback", {
   attachments: text("attachments"), // JSON: screenshots, etc.
   
   // Status
-  status: mysqlEnum("status", [
+  status: pgEnum("status", [
     "new",
     "under_review",
     "planned",
@@ -255,7 +255,7 @@ export const userFeedback = mysqlTable("user_feedback", {
   ]).default("new"),
   
   // Votes
-  upvotes: int("upvotes").default(0),
+  upvotes: integer("upvotes").default(0),
   
   // Response
   adminResponse: text("admin_response"),
@@ -266,7 +266,7 @@ export const userFeedback = mysqlTable("user_feedback", {
 });
 
 // Bug Reports
-export const bugReports = mysqlTable("bug_reports", {
+export const bugReports = pgTable("bug_reports", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }),
   
@@ -278,7 +278,7 @@ export const bugReports = mysqlTable("bug_reports", {
   actualBehavior: text("actual_behavior"),
   
   // Severity
-  severity: mysqlEnum("severity", ["low", "medium", "high", "critical"]).default("medium"),
+  severity: pgEnum("severity", ["low", "medium", "high", "critical"]).default("medium"),
   
   // Environment
   browser: varchar("browser", { length: 100 }),
@@ -290,7 +290,7 @@ export const bugReports = mysqlTable("bug_reports", {
   logs: text("logs"),
   
   // Status
-  status: mysqlEnum("status", [
+  status: pgEnum("status", [
     "new",
     "confirmed",
     "in_progress",
@@ -311,7 +311,7 @@ export const bugReports = mysqlTable("bug_reports", {
 });
 
 // Feature Flags (Admin-Controlled)
-export const featureFlags = mysqlTable("feature_flags", {
+export const featureFlags = pgTable("feature_flags", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Flag Details
@@ -322,7 +322,7 @@ export const featureFlags = mysqlTable("feature_flags", {
   enabled: boolean("enabled").default(false),
   
   // Rollout
-  rolloutPercentage: int("rollout_percentage").default(0), // 0-100
+  rolloutPercentage: integer("rollout_percentage").default(0), // 0-100
   
   // Targeting
   targetUserIds: text("target_user_ids"), // JSON: specific users
@@ -339,7 +339,7 @@ export const featureFlags = mysqlTable("feature_flags", {
 });
 
 // System Announcements
-export const systemAnnouncements = mysqlTable("system_announcements", {
+export const systemAnnouncements = pgTable("system_announcements", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Announcement Details
@@ -347,7 +347,7 @@ export const systemAnnouncements = mysqlTable("system_announcements", {
   message: text("message").notNull(),
   
   // Type
-  announcementType: mysqlEnum("announcement_type", [
+  announcementType: pgEnum("announcement_type", [
     "maintenance",
     "new_feature",
     "update",
@@ -356,10 +356,10 @@ export const systemAnnouncements = mysqlTable("system_announcements", {
   ]).notNull(),
   
   // Severity
-  severity: mysqlEnum("severity", ["info", "warning", "critical"]).default("info"),
+  severity: pgEnum("severity", ["info", "warning", "critical"]).default("info"),
   
   // Visibility
-  targetAudience: mysqlEnum("target_audience", ["all_users", "specific_users", "admins"]).default("all_users"),
+  targetAudience: pgEnum("target_audience", ["all_users", "specific_users", "admins"]).default("all_users"),
   targetUserIds: text("target_user_ids"), // JSON
   
   // Display
@@ -380,12 +380,12 @@ export const systemAnnouncements = mysqlTable("system_announcements", {
 });
 
 // User Reports (Content Moderation)
-export const userReports = mysqlTable("user_reports", {
+export const userReports = pgTable("user_reports", {
   id: varchar("id", { length: 255 }).primaryKey(),
   reportedBy: varchar("reported_by", { length: 255 }).notNull(),
   
   // Reported Content
-  reportedType: mysqlEnum("reported_type", [
+  reportedType: pgEnum("reported_type", [
     "user",
     "post",
     "comment",
@@ -395,7 +395,7 @@ export const userReports = mysqlTable("user_reports", {
   reportedId: varchar("reported_id", { length: 255 }).notNull(),
   
   // Reason
-  reason: mysqlEnum("reason", [
+  reason: pgEnum("reason", [
     "spam",
     "harassment",
     "inappropriate_content",
@@ -407,7 +407,7 @@ export const userReports = mysqlTable("user_reports", {
   description: text("description"),
   
   // Status
-  status: mysqlEnum("status", [
+  status: pgEnum("status", [
     "pending",
     "under_review",
     "action_taken",
@@ -427,34 +427,34 @@ export const userReports = mysqlTable("user_reports", {
 });
 
 // Platform Metrics (Admin Dashboard)
-export const platformMetrics = mysqlTable("platform_metrics", {
+export const platformMetrics = pgTable("platform_metrics", {
   id: varchar("id", { length: 255 }).primaryKey(),
   metricDate: timestamp("metric_date").notNull(),
   
   // User Metrics
-  totalUsers: int("total_users"),
-  activeUsers: int("active_users"),
-  newUsers: int("new_users"),
-  churnedUsers: int("churned_users"),
+  totalUsers: integer("total_users"),
+  activeUsers: integer("active_users"),
+  newUsers: integer("new_users"),
+  churnedUsers: integer("churned_users"),
   
   // Engagement Metrics
   avgSessionDuration: decimal("avg_session_duration", { precision: 10, scale: 2 }), // seconds
-  avgDailyActiveUsers: int("avg_daily_active_users"),
-  avgWeeklyActiveUsers: int("avg_weekly_active_users"),
-  avgMonthlyActiveUsers: int("avg_monthly_active_users"),
+  avgDailyActiveUsers: integer("avg_daily_active_users"),
+  avgWeeklyActiveUsers: integer("avg_weekly_active_users"),
+  avgMonthlyActiveUsers: integer("avg_monthly_active_users"),
   
   // Content Metrics
-  totalGoals: int("total_goals"),
-  totalHabits: int("total_habits"),
-  totalJournalEntries: int("total_journal_entries"),
+  totalGoals: integer("total_goals"),
+  totalHabits: integer("total_habits"),
+  totalJournalEntries: integer("total_journal_entries"),
   
   // Support Metrics
-  openTickets: int("open_tickets"),
+  openTickets: integer("open_tickets"),
   avgTicketResolutionTime: decimal("avg_ticket_resolution_time", { precision: 10, scale: 2 }), // hours
   avgSatisfactionRating: decimal("avg_satisfaction_rating", { precision: 4, scale: 2 }),
   
   // System Metrics
-  apiRequests: int("api_requests"),
+  apiRequests: integer("api_requests"),
   avgResponseTime: decimal("avg_response_time", { precision: 8, scale: 2 }), // milliseconds
   errorRate: decimal("error_rate", { precision: 5, scale: 2 }), // %
   
@@ -462,11 +462,11 @@ export const platformMetrics = mysqlTable("platform_metrics", {
 });
 
 // Admin Notifications
-export const adminNotifications = mysqlTable("admin_notifications", {
+export const adminNotifications = pgTable("admin_notifications", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Notification Type
-  notificationType: mysqlEnum("notification_type", [
+  notificationType: pgEnum("notification_type", [
     "new_ticket",
     "urgent_ticket",
     "security_alert",
@@ -484,7 +484,7 @@ export const adminNotifications = mysqlTable("admin_notifications", {
   actionUrl: varchar("action_url", { length: 500 }),
   
   // Priority
-  priority: mysqlEnum("priority", ["low", "medium", "high", "urgent"]).default("medium"),
+  priority: pgEnum("priority", ["low", "medium", "high", "urgent"]).default("medium"),
   
   // Status
   read: boolean("read").default(false),

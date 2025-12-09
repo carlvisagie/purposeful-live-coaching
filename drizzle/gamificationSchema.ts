@@ -28,30 +28,30 @@
  * - Personalizes achievement timing
  */
 
-import { mysqlTable, varchar, text, int, timestamp, boolean, decimal, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
 
 // User Gamification Profiles
-export const gamificationProfiles = mysqlTable("gamification_profiles", {
+export const gamificationProfiles = pgTable("gamification_profiles", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Overall Progress
-  totalExperiencePoints: int("total_experience_points").default(0),
-  currentLevel: int("current_level").default(1),
-  experienceToNextLevel: int("experience_to_next_level").default(100),
+  totalExperiencePoints: integer("total_experience_points").default(0),
+  currentLevel: integer("current_level").default(1),
+  experienceToNextLevel: integer("experience_to_next_level").default(100),
   
   // Engagement
-  currentStreak: int("current_streak").default(0), // Days
-  longestStreak: int("longest_streak").default(0),
-  totalDaysActive: int("total_days_active").default(0),
+  currentStreak: integer("current_streak").default(0), // Days
+  longestStreak: integer("longest_streak").default(0),
+  totalDaysActive: integer("total_days_active").default(0),
   
   // Achievements
-  totalAchievements: int("total_achievements").default(0),
-  totalBadges: int("total_badges").default(0),
-  totalMilestones: int("total_milestones").default(0),
+  totalAchievements: integer("total_achievements").default(0),
+  totalBadges: integer("total_badges").default(0),
+  totalMilestones: integer("total_milestones").default(0),
   
   // Motivation Type (Self-Determination Theory)
-  motivationType: mysqlEnum("motivation_type", [
+  motivationType: pgEnum("motivation_type", [
     "autonomy_driven", // Wants control & choice
     "competence_driven", // Wants mastery & skill
     "relatedness_driven", // Wants connection & belonging
@@ -66,7 +66,7 @@ export const gamificationProfiles = mysqlTable("gamification_profiles", {
   
   // Self-Learning Data
   mostMotivatingRewards: text("most_motivating_rewards"), // JSON: which rewards drive action
-  optimalChallengeDifficulty: int("optimal_challenge_difficulty"), // 1-10
+  optimalChallengeDifficulty: integer("optimal_challenge_difficulty"), // 1-10
   motivationPatterns: text("motivation_patterns"), // JSON: when motivation dips/peaks
   
   createdAt: timestamp("created_at").defaultNow(),
@@ -74,13 +74,13 @@ export const gamificationProfiles = mysqlTable("gamification_profiles", {
 });
 
 // Experience Points Log
-export const experiencePointsLog = mysqlTable("experience_points_log", {
+export const experiencePointsLog = pgTable("experience_points_log", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Source
-  source: mysqlEnum("source", [
+  source: pgEnum("source", [
     "habit_completion",
     "daily_check_in",
     "goal_achievement",
@@ -94,7 +94,7 @@ export const experiencePointsLog = mysqlTable("experience_points_log", {
   sourceId: varchar("source_id", { length: 255 }), // ID of the habit, goal, etc.
   
   // Points
-  pointsEarned: int("points_earned").notNull(),
+  pointsEarned: integer("points_earned").notNull(),
   
   // Context
   description: varchar("description", { length: 255 }),
@@ -103,7 +103,7 @@ export const experiencePointsLog = mysqlTable("experience_points_log", {
 });
 
 // Achievements
-export const achievements = mysqlTable("achievements", {
+export const achievements = pgTable("achievements", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Achievement Details
@@ -112,7 +112,7 @@ export const achievements = mysqlTable("achievements", {
   icon: varchar("icon", { length: 255 }),
   
   // Category
-  category: mysqlEnum("category", [
+  category: pgEnum("category", [
     "habits",
     "goals",
     "streaks",
@@ -123,32 +123,32 @@ export const achievements = mysqlTable("achievements", {
   ]).notNull(),
   
   // Difficulty
-  difficulty: mysqlEnum("difficulty", ["bronze", "silver", "gold", "platinum", "legendary"]),
+  difficulty: pgEnum("difficulty", ["bronze", "silver", "gold", "platinum", "legendary"]),
   
   // Requirements
   requirements: text("requirements"), // JSON: what needs to be done
   
   // Rewards
-  experiencePoints: int("experience_points").notNull(),
+  experiencePoints: integer("experience_points").notNull(),
   
   // Rarity
-  rarity: mysqlEnum("rarity", ["common", "uncommon", "rare", "epic", "legendary"]),
+  rarity: pgEnum("rarity", ["common", "uncommon", "rare", "epic", "legendary"]),
   
   // Stats
-  totalUnlocked: int("total_unlocked").default(0), // How many users have this?
+  totalUnlocked: integer("total_unlocked").default(0), // How many users have this?
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // User Achievements
-export const userAchievements = mysqlTable("user_achievements", {
+export const userAchievements = pgTable("user_achievements", {
   id: varchar("id", { length: 255 }).primaryKey(),
   achievementId: varchar("achievement_id", { length: 255 }).notNull(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Progress
-  progress: int("progress").default(0), // % or count
+  progress: integer("progress").default(0), // % or count
   completed: boolean("completed").default(false),
   
   // Unlock
@@ -161,7 +161,7 @@ export const userAchievements = mysqlTable("user_achievements", {
 });
 
 // Challenges (Quests)
-export const challenges = mysqlTable("challenges", {
+export const challenges = pgTable("challenges", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Challenge Details
@@ -169,7 +169,7 @@ export const challenges = mysqlTable("challenges", {
   description: text("description"),
   
   // Type
-  challengeType: mysqlEnum("challenge_type", [
+  challengeType: pgEnum("challenge_type", [
     "daily", // Complete today
     "weekly", // Complete this week
     "one_time", // Complete once
@@ -177,13 +177,13 @@ export const challenges = mysqlTable("challenges", {
   ]).notNull(),
   
   // Difficulty
-  difficulty: int("difficulty"), // 1-10
+  difficulty: integer("difficulty"), // 1-10
   
   // Requirements
   requirements: text("requirements"), // JSON: what needs to be done
   
   // Rewards
-  experiencePoints: int("experience_points"),
+  experiencePoints: integer("experience_points"),
   badgeId: varchar("badge_id", { length: 255 }),
   
   // Availability
@@ -191,8 +191,8 @@ export const challenges = mysqlTable("challenges", {
   endDate: timestamp("end_date"),
   
   // Stats
-  totalAttempts: int("total_attempts").default(0),
-  totalCompletions: int("total_completions").default(0),
+  totalAttempts: integer("total_attempts").default(0),
+  totalCompletions: integer("total_completions").default(0),
   successRate: decimal("success_rate", { precision: 5, scale: 2 }),
   
   // Status
@@ -203,14 +203,14 @@ export const challenges = mysqlTable("challenges", {
 });
 
 // User Challenges
-export const userChallenges = mysqlTable("user_challenges", {
+export const userChallenges = pgTable("user_challenges", {
   id: varchar("id", { length: 255 }).primaryKey(),
   challengeId: varchar("challenge_id", { length: 255 }).notNull(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Progress
-  progress: int("progress").default(0),
+  progress: integer("progress").default(0),
   completed: boolean("completed").default(false),
   
   // Dates
@@ -218,13 +218,13 @@ export const userChallenges = mysqlTable("user_challenges", {
   completedAt: timestamp("completed_at"),
   
   // Attempts
-  attempts: int("attempts").default(1),
+  attempts: integer("attempts").default(1),
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Badges
-export const badges = mysqlTable("badges", {
+export const badges = pgTable("badges", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Badge Details
@@ -236,19 +236,19 @@ export const badges = mysqlTable("badges", {
   category: varchar("category", { length: 100 }),
   
   // Rarity
-  rarity: mysqlEnum("rarity", ["common", "uncommon", "rare", "epic", "legendary"]),
+  rarity: pgEnum("rarity", ["common", "uncommon", "rare", "epic", "legendary"]),
   
   // How to Earn
   howToEarn: text("how_to_earn"),
   
   // Stats
-  totalAwarded: int("total_awarded").default(0),
+  totalAwarded: integer("total_awarded").default(0),
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // User Badges
-export const userBadges = mysqlTable("user_badges", {
+export const userBadges = pgTable("user_badges", {
   id: varchar("id", { length: 255 }).primaryKey(),
   badgeId: varchar("badge_id", { length: 255 }).notNull(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
@@ -264,13 +264,13 @@ export const userBadges = mysqlTable("user_badges", {
 });
 
 // Milestones
-export const milestones = mysqlTable("milestones", {
+export const milestones = pgTable("milestones", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Milestone Details
-  milestoneType: mysqlEnum("milestone_type", [
+  milestoneType: pgEnum("milestone_type", [
     "first_day",
     "first_week",
     "first_month",
@@ -287,7 +287,7 @@ export const milestones = mysqlTable("milestones", {
   description: text("description"),
   
   // Rewards
-  experiencePoints: int("experience_points"),
+  experiencePoints: integer("experience_points"),
   
   // Context
   relatedTo: varchar("related_to", { length: 255 }), // What module/feature?
@@ -296,7 +296,7 @@ export const milestones = mysqlTable("milestones", {
 });
 
 // Leaderboards
-export const leaderboards = mysqlTable("leaderboards", {
+export const leaderboards = pgTable("leaderboards", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Leaderboard Details
@@ -304,7 +304,7 @@ export const leaderboards = mysqlTable("leaderboards", {
   description: text("description"),
   
   // Type
-  leaderboardType: mysqlEnum("leaderboard_type", [
+  leaderboardType: pgEnum("leaderboard_type", [
     "overall_xp", // Total experience points
     "current_streak", // Longest current streak
     "goals_achieved", // Most goals completed
@@ -314,7 +314,7 @@ export const leaderboards = mysqlTable("leaderboards", {
   ]).notNull(),
   
   // Time Period
-  timePeriod: mysqlEnum("time_period", ["all_time", "monthly", "weekly"]),
+  timePeriod: pgEnum("time_period", ["all_time", "monthly", "weekly"]),
   
   // Privacy
   optInOnly: boolean("opt_in_only").default(true), // Users must opt-in to appear
@@ -327,14 +327,14 @@ export const leaderboards = mysqlTable("leaderboards", {
 });
 
 // Leaderboard Entries
-export const leaderboardEntries = mysqlTable("leaderboard_entries", {
+export const leaderboardEntries = pgTable("leaderboard_entries", {
   id: varchar("id", { length: 255 }).primaryKey(),
   leaderboardId: varchar("leaderboard_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Ranking
-  rank: int("rank"),
-  score: int("score"), // The metric being measured
+  rank: integer("rank"),
+  score: integer("score"), // The metric being measured
   
   // Opt-In
   optedIn: boolean("opted_in").default(false),
@@ -345,22 +345,22 @@ export const leaderboardEntries = mysqlTable("leaderboard_entries", {
 });
 
 // Daily Rewards
-export const dailyRewards = mysqlTable("daily_rewards", {
+export const dailyRewards = pgTable("daily_rewards", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   rewardDate: timestamp("reward_date").notNull(),
   
   // Streak Bonus
-  consecutiveDays: int("consecutive_days"),
-  streakBonus: int("streak_bonus"), // Extra XP for streak
+  consecutiveDays: integer("consecutive_days"),
+  streakBonus: integer("streak_bonus"), // Extra XP for streak
   
   // Completion Bonus
-  tasksCompleted: int("tasks_completed"),
-  completionBonus: int("completion_bonus"),
+  tasksCompleted: integer("tasks_completed"),
+  completionBonus: integer("completion_bonus"),
   
   // Total
-  totalExperiencePoints: int("total_experience_points"),
+  totalExperiencePoints: integer("total_experience_points"),
   
   // Claimed
   claimed: boolean("claimed").default(false),
@@ -370,13 +370,13 @@ export const dailyRewards = mysqlTable("daily_rewards", {
 });
 
 // Motivation Boosts (AI-Triggered)
-export const motivationBoosts = mysqlTable("motivation_boosts", {
+export const motivationBoosts = pgTable("motivation_boosts", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Trigger
-  triggerType: mysqlEnum("trigger_type", [
+  triggerType: pgEnum("trigger_type", [
     "streak_at_risk", // About to lose streak
     "low_engagement", // Haven't logged in for days
     "goal_stalled", // No progress on goal
@@ -385,7 +385,7 @@ export const motivationBoosts = mysqlTable("motivation_boosts", {
   ]).notNull(),
   
   // Boost Type
-  boostType: mysqlEnum("boost_type", [
+  boostType: pgEnum("boost_type", [
     "encouragement", // Motivational message
     "reminder", // Gentle nudge
     "challenge", // New challenge offered
@@ -405,7 +405,7 @@ export const motivationBoosts = mysqlTable("motivation_boosts", {
 });
 
 // Gamification Analytics (Self-Learning)
-export const gamificationAnalytics = mysqlTable("gamification_analytics", {
+export const gamificationAnalytics = pgTable("gamification_analytics", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Element Type
@@ -417,14 +417,14 @@ export const gamificationAnalytics = mysqlTable("gamification_analytics", {
   avgGoalCompletionImpact: decimal("avg_goal_completion_impact", { precision: 5, scale: 2 }), // %
   
   // Optimal Parameters
-  optimalDifficulty: int("optimal_difficulty"), // 1-10
+  optimalDifficulty: integer("optimal_difficulty"), // 1-10
   optimalRewardTiming: varchar("optimal_reward_timing", { length: 100 }),
   
   // User Segments
   mostEffectiveFor: text("most_effective_for"), // JSON: different user types
   
   // Sample Size
-  userCount: int("user_count"),
+  userCount: integer("user_count"),
   
   lastCalculated: timestamp("last_calculated").defaultNow(),
   

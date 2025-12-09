@@ -35,10 +35,10 @@
  * - Personalizes frequency & channels
  */
 
-import { mysqlTable, varchar, text, int, timestamp, boolean, decimal, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
 
 // Notification Profiles
-export const notificationProfiles = mysqlTable("notification_profiles", {
+export const notificationProfiles = pgTable("notification_profiles", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
@@ -58,28 +58,28 @@ export const notificationProfiles = mysqlTable("notification_profiles", {
   
   // Batching
   batchingEnabled: boolean("batching_enabled").default(true),
-  batchingWindow: int("batching_window").default(60), // minutes
+  batchingWindow: integer("batching_window").default(60), // minutes
   
   // Frequency
-  maxNotificationsPerDay: int("max_notifications_per_day").default(10),
+  maxNotificationsPerDay: integer("max_notifications_per_day").default(10),
   
   // Self-Learning Data
   optimalTimes: text("optimal_times"), // JSON: best times to send notifications
   effectiveChannels: text("effective_channels"), // JSON: which channels drive action
-  notificationFatigueRisk: int("notification_fatigue_risk"), // 0-100
+  notificationFatigueRisk: integer("notification_fatigue_risk"), // 0-100
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Notification Preferences (By Type)
-export const notificationPreferences = mysqlTable("notification_preferences", {
+export const notificationPreferences = pgTable("notification_preferences", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Notification Type
-  notificationType: mysqlEnum("notification_type", [
+  notificationType: pgEnum("notification_type", [
     "habit_reminder",
     "goal_reminder",
     "task_reminder",
@@ -101,20 +101,20 @@ export const notificationPreferences = mysqlTable("notification_preferences", {
   inAppEnabled: boolean("in_app_enabled").default(true),
   
   // Frequency
-  frequency: mysqlEnum("frequency", ["realtime", "daily_digest", "weekly_digest", "never"]).default("realtime"),
+  frequency: pgEnum("frequency", ["realtime", "daily_digest", "weekly_digest", "never"]).default("realtime"),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Notifications
-export const notifications = mysqlTable("notifications", {
+export const notifications = pgTable("notifications", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Notification Details
-  notificationType: mysqlEnum("notification_type", [
+  notificationType: pgEnum("notification_type", [
     "habit_reminder",
     "goal_reminder",
     "task_reminder",
@@ -135,7 +135,7 @@ export const notifications = mysqlTable("notifications", {
   actionText: varchar("action_text", { length: 100 }), // Button text
   
   // Priority
-  priority: mysqlEnum("priority", ["low", "medium", "high", "urgent"]).default("medium"),
+  priority: pgEnum("priority", ["low", "medium", "high", "urgent"]).default("medium"),
   
   // Delivery
   channels: text("channels"), // JSON: which channels to use
@@ -144,7 +144,7 @@ export const notifications = mysqlTable("notifications", {
   scheduledFor: timestamp("scheduled_for"),
   
   // Status
-  status: mysqlEnum("status", [
+  status: pgEnum("status", [
     "pending",
     "scheduled",
     "sent",
@@ -180,13 +180,13 @@ export const notifications = mysqlTable("notifications", {
 });
 
 // Reminders
-export const reminders = mysqlTable("reminders", {
+export const reminders = pgTable("reminders", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Reminder Details
-  reminderType: mysqlEnum("reminder_type", [
+  reminderType: pgEnum("reminder_type", [
     "habit",
     "goal",
     "task",
@@ -204,7 +204,7 @@ export const reminders = mysqlTable("reminders", {
   relatedType: varchar("related_type", { length: 100 }),
   
   // Schedule
-  scheduleType: mysqlEnum("schedule_type", [
+  scheduleType: pgEnum("schedule_type", [
     "once", // One-time reminder
     "daily", // Every day
     "weekly", // Specific days of week
@@ -215,17 +215,17 @@ export const reminders = mysqlTable("reminders", {
   // Timing
   reminderTime: varchar("reminder_time", { length: 10 }), // "14:30"
   daysOfWeek: text("days_of_week"), // JSON: [1,3,5] for Mon, Wed, Fri
-  dayOfMonth: int("day_of_month"), // 1-31
+  dayOfMonth: integer("day_of_month"), // 1-31
   
   // Custom Recurrence
   customRecurrence: text("custom_recurrence"), // JSON: complex recurrence rules
   
   // Lead Time
-  leadTimeMinutes: int("lead_time_minutes"), // Remind X minutes before
+  leadTimeMinutes: integer("lead_time_minutes"), // Remind X minutes before
   
   // Snooze
   snoozeEnabled: boolean("snooze_enabled").default(true),
-  snoozeDurationMinutes: int("snooze_duration_minutes").default(10),
+  snoozeDurationMinutes: integer("snooze_duration_minutes").default(10),
   
   // Status
   active: boolean("active").default(true),
@@ -234,9 +234,9 @@ export const reminders = mysqlTable("reminders", {
   nextOccurrence: timestamp("next_occurrence"),
   
   // Stats
-  totalSent: int("total_sent").default(0),
-  totalCompleted: int("total_completed").default(0),
-  totalSnoozed: int("total_snoozed").default(0),
+  totalSent: integer("total_sent").default(0),
+  totalCompleted: integer("total_completed").default(0),
+  totalSnoozed: integer("total_snoozed").default(0),
   completionRate: decimal("completion_rate", { precision: 5, scale: 2 }), // %
   
   createdAt: timestamp("created_at").defaultNow(),
@@ -244,7 +244,7 @@ export const reminders = mysqlTable("reminders", {
 });
 
 // Reminder Occurrences
-export const reminderOccurrences = mysqlTable("reminder_occurrences", {
+export const reminderOccurrences = pgTable("reminder_occurrences", {
   id: varchar("id", { length: 255 }).primaryKey(),
   reminderId: varchar("reminder_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -253,7 +253,7 @@ export const reminderOccurrences = mysqlTable("reminder_occurrences", {
   scheduledFor: timestamp("scheduled_for").notNull(),
   
   // Status
-  status: mysqlEnum("status", [
+  status: pgEnum("status", [
     "pending",
     "sent",
     "completed",
@@ -264,7 +264,7 @@ export const reminderOccurrences = mysqlTable("reminder_occurrences", {
   
   // Snooze
   snoozedUntil: timestamp("snoozed_until"),
-  snoozeCount: int("snooze_count").default(0),
+  snoozeCount: integer("snooze_count").default(0),
   
   // Completion
   completedAt: timestamp("completed_at"),
@@ -277,39 +277,39 @@ export const reminderOccurrences = mysqlTable("reminder_occurrences", {
 });
 
 // Notification Batches
-export const notificationBatches = mysqlTable("notification_batches", {
+export const notificationBatches = pgTable("notification_batches", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Batch Details
-  batchType: mysqlEnum("batch_type", ["daily_digest", "weekly_digest", "smart_batch"]).notNull(),
+  batchType: pgEnum("batch_type", ["daily_digest", "weekly_digest", "smart_batch"]).notNull(),
   
   // Content
   title: varchar("title", { length: 255 }).notNull(),
   summary: text("summary"),
   
   // Notifications
-  notificationCount: int("notification_count").default(0),
+  notificationCount: integer("notification_count").default(0),
   
   // Delivery
   scheduledFor: timestamp("scheduled_for"),
   sentAt: timestamp("sent_at"),
   
   // Status
-  status: mysqlEnum("status", ["pending", "sent", "failed"]).default("pending"),
+  status: pgEnum("status", ["pending", "sent", "failed"]).default("pending"),
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Push Tokens (for mobile push notifications)
-export const pushTokens = mysqlTable("push_tokens", {
+export const pushTokens = pgTable("push_tokens", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Token Details
   token: varchar("token", { length: 500 }).notNull(),
-  platform: mysqlEnum("platform", ["ios", "android", "web"]).notNull(),
+  platform: pgEnum("platform", ["ios", "android", "web"]).notNull(),
   
   // Device Info
   deviceId: varchar("device_id", { length: 255 }),
@@ -328,7 +328,7 @@ export const pushTokens = mysqlTable("push_tokens", {
 });
 
 // Email Queue
-export const emailQueue = mysqlTable("email_queue", {
+export const emailQueue = pgTable("email_queue", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   notificationId: varchar("notification_id", { length: 255 }),
@@ -340,10 +340,10 @@ export const emailQueue = mysqlTable("email_queue", {
   bodyHtml: text("body_html"),
   
   // Priority
-  priority: mysqlEnum("priority", ["low", "medium", "high"]).default("medium"),
+  priority: pgEnum("priority", ["low", "medium", "high"]).default("medium"),
   
   // Status
-  status: mysqlEnum("status", ["pending", "sending", "sent", "failed"]).default("pending"),
+  status: pgEnum("status", ["pending", "sending", "sent", "failed"]).default("pending"),
   
   // Delivery
   sentAt: timestamp("sent_at"),
@@ -357,14 +357,14 @@ export const emailQueue = mysqlTable("email_queue", {
   
   // Error
   errorMessage: text("error_message"),
-  retryCount: int("retry_count").default(0),
+  retryCount: integer("retry_count").default(0),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // SMS Queue
-export const smsQueue = mysqlTable("sms_queue", {
+export const smsQueue = pgTable("sms_queue", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   notificationId: varchar("notification_id", { length: 255 }),
@@ -374,7 +374,7 @@ export const smsQueue = mysqlTable("sms_queue", {
   message: text("message").notNull(),
   
   // Status
-  status: mysqlEnum("status", ["pending", "sending", "sent", "failed"]).default("pending"),
+  status: pgEnum("status", ["pending", "sending", "sent", "failed"]).default("pending"),
   
   // Delivery
   sentAt: timestamp("sent_at"),
@@ -382,14 +382,14 @@ export const smsQueue = mysqlTable("sms_queue", {
   
   // Error
   errorMessage: text("error_message"),
-  retryCount: int("retry_count").default(0),
+  retryCount: integer("retry_count").default(0),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Notification Analytics (Self-Learning)
-export const notificationAnalytics = mysqlTable("notification_analytics", {
+export const notificationAnalytics = pgTable("notification_analytics", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Notification Type
@@ -413,11 +413,11 @@ export const notificationAnalytics = mysqlTable("notification_analytics", {
   avgBehaviorChange: decimal("avg_behavior_change", { precision: 5, scale: 2 }), // %
   
   // Fatigue
-  fatigueThreshold: int("fatigue_threshold"), // Max per day before fatigue
+  fatigueThreshold: integer("fatigue_threshold"), // Max per day before fatigue
   
   // Sample Size
-  userCount: int("user_count"),
-  totalSent: int("total_sent"),
+  userCount: integer("user_count"),
+  totalSent: integer("total_sent"),
   
   lastCalculated: timestamp("last_calculated").defaultNow(),
   
@@ -426,13 +426,13 @@ export const notificationAnalytics = mysqlTable("notification_analytics", {
 });
 
 // User Notification Feedback
-export const userNotificationFeedback = mysqlTable("user_notification_feedback", {
+export const userNotificationFeedback = pgTable("user_notification_feedback", {
   id: varchar("id", { length: 255 }).primaryKey(),
   notificationId: varchar("notification_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Feedback Type
-  feedbackType: mysqlEnum("feedback_type", [
+  feedbackType: pgEnum("feedback_type", [
     "helpful",
     "not_helpful",
     "too_frequent",

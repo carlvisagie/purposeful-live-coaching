@@ -1,5 +1,6 @@
 import { eq, desc } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/mysql2";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 import { videoTestimonials, InsertVideoTestimonial, VideoTestimonial } from "../../drizzle/schema";
 import { ENV } from "../_core/env";
 
@@ -8,7 +9,8 @@ let _db: ReturnType<typeof drizzle> | null = null;
 async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
-      _db = drizzle(process.env.DATABASE_URL);
+      const client = postgres(process.env.DATABASE_URL);
+      _db = drizzle(client);
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
       _db = null;
@@ -27,14 +29,8 @@ export async function createVideoTestimonial(
   }
 
   try {
-    const result = await db.insert(videoTestimonials).values(testimonial);
-    const id = result[0].insertId;
-    const created = await db
-      .select()
-      .from(videoTestimonials)
-      .where(eq(videoTestimonials.id, Number(id)))
-      .limit(1);
-    return created[0] || null;
+    const result = await db.insert(videoTestimonials).values(testimonial).returning();
+    return result[0] || null;
   } catch (error) {
     console.error("[Database] Failed to create testimonial:", error);
     throw error;

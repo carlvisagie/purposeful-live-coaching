@@ -4,34 +4,34 @@
  * Research sources: Gottman Institute, Sue Johnson (EFT), John Bowlby (Attachment Theory)
  */
 
-import { mysqlTable, varchar, text, int, timestamp, boolean, decimal, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
 
 // Relationship Profiles
-export const relationshipProfiles = mysqlTable("relationship_profiles", {
+export const relationshipProfiles = pgTable("relationship_profiles", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Relationship Type & Status
-  relationshipType: mysqlEnum("relationship_type", ["dating", "committed", "engaged", "married", "separated", "divorced", "post_breakup"]).notNull(),
-  relationshipStatus: mysqlEnum("relationship_status", ["active", "on_break", "ending", "ended"]).notNull(),
-  relationshipDuration: int("relationship_duration"), // months
+  relationshipType: pgEnum("relationship_type", ["dating", "committed", "engaged", "married", "separated", "divorced", "post_breakup"]).notNull(),
+  relationshipStatus: pgEnum("relationship_status", ["active", "on_break", "ending", "ended"]).notNull(),
+  relationshipDuration: integer("relationship_duration"), // months
   
   // Partner Information (optional, for privacy)
   partnerInvolved: boolean("partner_involved").default(false), // Is partner also using platform?
   partnerUserId: varchar("partner_user_id", { length: 255 }),
   
   // Attachment Style (evidence-based assessment)
-  attachmentStyle: mysqlEnum("attachment_style", ["secure", "anxious", "avoidant", "fearful_avoidant"]),
-  partnerAttachmentStyle: mysqlEnum("partner_attachment_style", ["secure", "anxious", "avoidant", "fearful_avoidant", "unknown"]),
+  attachmentStyle: pgEnum("attachment_style", ["secure", "anxious", "avoidant", "fearful_avoidant"]),
+  partnerAttachmentStyle: pgEnum("partner_attachment_style", ["secure", "anxious", "avoidant", "fearful_avoidant", "unknown"]),
   
   // Love Languages (Gary Chapman's 5 Love Languages)
-  primaryLoveLanguage: mysqlEnum("primary_love_language", ["words_of_affirmation", "quality_time", "receiving_gifts", "acts_of_service", "physical_touch"]),
-  secondaryLoveLanguage: mysqlEnum("secondary_love_language", ["words_of_affirmation", "quality_time", "receiving_gifts", "acts_of_service", "physical_touch"]),
-  partnerPrimaryLoveLanguage: mysqlEnum("partner_primary_love_language", ["words_of_affirmation", "quality_time", "receiving_gifts", "acts_of_service", "physical_touch", "unknown"]),
-  partnerSecondaryLoveLanguage: mysqlEnum("partner_secondary_love_language", ["words_of_affirmation", "quality_time", "receiving_gifts", "acts_of_service", "physical_touch", "unknown"]),
+  primaryLoveLanguage: pgEnum("primary_love_language", ["words_of_affirmation", "quality_time", "receiving_gifts", "acts_of_service", "physical_touch"]),
+  secondaryLoveLanguage: pgEnum("secondary_love_language", ["words_of_affirmation", "quality_time", "receiving_gifts", "acts_of_service", "physical_touch"]),
+  partnerPrimaryLoveLanguage: pgEnum("partner_primary_love_language", ["words_of_affirmation", "quality_time", "receiving_gifts", "acts_of_service", "physical_touch", "unknown"]),
+  partnerSecondaryLoveLanguage: pgEnum("partner_secondary_love_language", ["words_of_affirmation", "quality_time", "receiving_gifts", "acts_of_service", "physical_touch", "unknown"]),
   
   // Relationship Goals
-  primaryGoal: mysqlEnum("primary_goal", [
+  primaryGoal: pgEnum("primary_goal", [
     "improve_communication",
     "rebuild_trust",
     "increase_intimacy",
@@ -46,27 +46,27 @@ export const relationshipProfiles = mysqlTable("relationship_profiles", {
   
   // Current Challenges
   mainChallenges: text("main_challenges"), // JSON array
-  conflictFrequency: mysqlEnum("conflict_frequency", ["rare", "occasional", "frequent", "constant"]),
+  conflictFrequency: pgEnum("conflict_frequency", ["rare", "occasional", "frequent", "constant"]),
   
   // Gottman Four Horsemen Assessment
-  criticismLevel: int("criticism_level"), // 1-10
-  contemptLevel: int("contempt_level"),
-  defensivenessLevel: int("defensiveness_level"),
-  stonewallinglevel: int("stonewalling_level"),
+  criticismLevel: integer("criticism_level"), // 1-10
+  contemptLevel: integer("contempt_level"),
+  defensivenessLevel: integer("defensiveness_level"),
+  stonewallinglevel: integer("stonewalling_level"),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Communication Logs - Track conversations & conflicts
-export const communicationLogs = mysqlTable("communication_logs", {
+export const communicationLogs = pgTable("communication_logs", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   logDate: timestamp("log_date").notNull(),
   
   // Conversation Type
-  conversationType: mysqlEnum("conversation_type", ["conflict", "difficult_topic", "check_in", "quality_time", "repair_attempt"]).notNull(),
+  conversationType: pgEnum("conversation_type", ["conflict", "difficult_topic", "check_in", "quality_time", "repair_attempt"]).notNull(),
   
   // Topic & Context
   topic: varchar("topic", { length: 255 }).notNull(),
@@ -74,7 +74,7 @@ export const communicationLogs = mysqlTable("communication_logs", {
   
   // Emotional State
   emotionBefore: varchar("emotion_before", { length: 255 }),
-  intensityBefore: int("intensity_before"), // 1-10
+  intensityBefore: integer("intensity_before"), // 1-10
   
   // Communication Quality (Gottman-based)
   usedSoftStartup: boolean("used_soft_startup"), // Did you start gently?
@@ -90,9 +90,9 @@ export const communicationLogs = mysqlTable("communication_logs", {
   usedStonewalling: boolean("used_stonewalling"),
   
   // Outcome
-  outcome: mysqlEnum("outcome", ["resolved", "partially_resolved", "unresolved", "escalated"]),
+  outcome: pgEnum("outcome", ["resolved", "partially_resolved", "unresolved", "escalated"]),
   emotionAfter: varchar("emotion_after", { length: 255 }),
-  intensityAfter: int("intensity_after"),
+  intensityAfter: integer("intensity_after"),
   
   // Reflection
   whatWorked: text("what_worked"),
@@ -102,7 +102,7 @@ export const communicationLogs = mysqlTable("communication_logs", {
 });
 
 // Gottman Love Maps - Know your partner deeply
-export const loveMaps = mysqlTable("love_maps", {
+export const loveMaps = pgTable("love_maps", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -132,29 +132,29 @@ export const loveMaps = mysqlTable("love_maps", {
 });
 
 // Bids for Connection - Gottman's turning toward/away/against
-export const connectionBids = mysqlTable("connection_bids", {
+export const connectionBids = pgTable("connection_bids", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   bidDate: timestamp("bid_date").notNull(),
   
   // Bid Details
-  bidType: mysqlEnum("bid_type", ["conversation", "affection", "humor", "help", "quality_time"]).notNull(),
+  bidType: pgEnum("bid_type", ["conversation", "affection", "humor", "help", "quality_time"]).notNull(),
   bidDescription: text("bid_description"),
   
   // Response
-  response: mysqlEnum("response", ["turned_toward", "turned_away", "turned_against"]).notNull(),
+  response: pgEnum("response", ["turned_toward", "turned_away", "turned_against"]).notNull(),
   responseDescription: text("response_description"),
   
   // Impact
-  emotionalImpact: int("emotional_impact"), // 1-10 (positive or negative)
-  connectionStrength: int("connection_strength"), // 1-10
+  emotionalImpact: integer("emotional_impact"), // 1-10 (positive or negative)
+  connectionStrength: integer("connection_strength"), // 1-10
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Repair Attempts - Track efforts to heal & reconnect
-export const repairAttempts = mysqlTable("repair_attempts", {
+export const repairAttempts = pgTable("repair_attempts", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -164,7 +164,7 @@ export const repairAttempts = mysqlTable("repair_attempts", {
   conflictDescription: text("conflict_description"),
   
   // Repair Strategy
-  repairStrategy: mysqlEnum("repair_strategy", [
+  repairStrategy: pgEnum("repair_strategy", [
     "apology",
     "taking_responsibility",
     "expressing_needs",
@@ -177,26 +177,26 @@ export const repairAttempts = mysqlTable("repair_attempts", {
   repairDetails: text("repair_details"),
   
   // Partner Response
-  partnerResponse: mysqlEnum("partner_response", ["accepted", "rejected", "mixed", "no_response"]),
+  partnerResponse: pgEnum("partner_response", ["accepted", "rejected", "mixed", "no_response"]),
   
   // Outcome
   conflictResolved: boolean("conflict_resolved"),
   connectionRestored: boolean("connection_restored"),
   
   // Learning
-  effectiveness: int("effectiveness"), // 1-10
+  effectiveness: integer("effectiveness"), // 1-10
   whatLearned: text("what_learned"),
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Relationship Rituals - Build connection through routines
-export const relationshipRituals = mysqlTable("relationship_rituals", {
+export const relationshipRituals = pgTable("relationship_rituals", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  ritualType: mysqlEnum("ritual_type", [
+  ritualType: pgEnum("ritual_type", [
     "daily_check_in",
     "weekly_date",
     "monthly_adventure",
@@ -208,16 +208,16 @@ export const relationshipRituals = mysqlTable("relationship_rituals", {
   
   ritualName: varchar("ritual_name", { length: 255 }).notNull(),
   description: text("description"),
-  frequency: mysqlEnum("frequency", ["daily", "weekly", "monthly", "as_needed"]),
+  frequency: pgEnum("frequency", ["daily", "weekly", "monthly", "as_needed"]),
   
   // Tracking
   lastCompleted: timestamp("last_completed"),
-  completionCount: int("completion_count").default(0),
-  currentStreak: int("current_streak").default(0),
-  longestStreak: int("longest_streak").default(0),
+  completionCount: integer("completion_count").default(0),
+  currentStreak: integer("current_streak").default(0),
+  longestStreak: integer("longest_streak").default(0),
   
   // Impact
-  connectionImpact: int("connection_impact"), // 1-10 average
+  connectionImpact: integer("connection_impact"), // 1-10 average
   
   active: boolean("active").default(true),
   
@@ -226,34 +226,34 @@ export const relationshipRituals = mysqlTable("relationship_rituals", {
 });
 
 // Breakup Recovery (if applicable)
-export const breakupRecovery = mysqlTable("breakup_recovery", {
+export const breakupRecovery = pgTable("breakup_recovery", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   breakupDate: timestamp("breakup_date"),
-  relationshipDuration: int("relationship_duration"), // months
+  relationshipDuration: integer("relationship_duration"), // months
   
   // Breakup Context
-  initiator: mysqlEnum("initiator", ["me", "them", "mutual"]),
+  initiator: pgEnum("initiator", ["me", "them", "mutual"]),
   reason: text("reason"),
   
   // Recovery Phase (evidence-based stages of grief)
-  currentPhase: mysqlEnum("current_phase", ["denial", "anger", "bargaining", "depression", "acceptance", "growth"]),
+  currentPhase: pgEnum("current_phase", ["denial", "anger", "bargaining", "depression", "acceptance", "growth"]),
   
   // No Contact
   noContactActive: boolean("no_contact_active").default(false),
   noContactStartDate: timestamp("no_contact_start_date"),
-  noContactDuration: int("no_contact_duration"), // days
+  noContactDuration: integer("no_contact_duration"), // days
   
   // Healing Activities
   healingActivities: text("healing_activities"), // JSON array
   supportSystem: text("support_system"), // JSON array
   
   // Progress Markers
-  daysWithoutContact: int("days_without_contact").default(0),
-  goodDaysCount: int("good_days_count").default(0),
-  badDaysCount: int("bad_days_count").default(0),
+  daysWithoutContact: integer("days_without_contact").default(0),
+  goodDaysCount: integer("good_days_count").default(0),
+  badDaysCount: integer("bad_days_count").default(0),
   
   // Growth & Lessons
   lessonsLearned: text("lessons_learned"), // JSON array
@@ -266,17 +266,17 @@ export const breakupRecovery = mysqlTable("breakup_recovery", {
 
 
 // Love Language Actions - Track how you express & receive love (Gary Chapman's 5 Love Languages)
-export const loveLanguageActions = mysqlTable("love_language_actions", {
+export const loveLanguageActions = pgTable("love_language_actions", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   actionDate: timestamp("action_date").notNull(),
   
   // Action Type
-  actionType: mysqlEnum("action_type", ["given", "received"]).notNull(),
+  actionType: pgEnum("action_type", ["given", "received"]).notNull(),
   
   // Love Language
-  loveLanguage: mysqlEnum("love_language", [
+  loveLanguage: pgEnum("love_language", [
     "words_of_affirmation",
     "quality_time",
     "receiving_gifts",
@@ -295,8 +295,8 @@ export const loveLanguageActions = mysqlTable("love_language_actions", {
   // Physical Touch: "Long hug", "Held hands during movie", "Back massage"
   
   // Impact
-  emotionalImpact: int("emotional_impact"), // 1-10
-  connectionFelt: int("connection_felt"), // 1-10
+  emotionalImpact: integer("emotional_impact"), // 1-10
+  connectionFelt: integer("connection_felt"), // 1-10
   
   // Partner Response (if given)
   partnerResponse: text("partner_response"),

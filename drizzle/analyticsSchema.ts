@@ -27,22 +27,22 @@
  * - Personalizes dashboard priorities
  */
 
-import { mysqlTable, varchar, text, int, timestamp, boolean, decimal, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
 
 // Analytics Profiles
-export const analyticsProfiles = mysqlTable("analytics_profiles", {
+export const analyticsProfiles = pgTable("analytics_profiles", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Dashboard Preferences
-  preferredView: mysqlEnum("preferred_view", ["overview", "detailed", "minimal"]).default("overview"),
-  preferredChartType: mysqlEnum("preferred_chart_type", ["line", "bar", "area", "mixed"]).default("line"),
+  preferredView: pgEnum("preferred_view", ["overview", "detailed", "minimal"]).default("overview"),
+  preferredChartType: pgEnum("preferred_chart_type", ["line", "bar", "area", "mixed"]).default("line"),
   
   // Tracking Preferences
-  trackingFrequency: mysqlEnum("tracking_frequency", ["daily", "weekly", "monthly"]),
+  trackingFrequency: pgEnum("tracking_frequency", ["daily", "weekly", "monthly"]),
   
   // Insights Preferences
-  insightFrequency: mysqlEnum("insight_frequency", ["daily", "weekly", "monthly"]),
+  insightFrequency: pgEnum("insight_frequency", ["daily", "weekly", "monthly"]),
   insightTypes: text("insight_types"), // JSON: which types of insights to show
   
   // Self-Learning Data
@@ -54,53 +54,53 @@ export const analyticsProfiles = mysqlTable("analytics_profiles", {
 });
 
 // Daily Snapshots (Overall Progress)
-export const dailySnapshots = mysqlTable("daily_snapshots", {
+export const dailySnapshots = pgTable("daily_snapshots", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   snapshotDate: timestamp("snapshot_date").notNull(),
   
   // Overall Scores
-  overallWellnessScore: int("overall_wellness_score"), // 0-100
-  physicalScore: int("physical_score"), // 0-100
-  mentalScore: int("mental_score"), // 0-100
-  emotionalScore: int("emotional_score"), // 0-100
-  spiritualScore: int("spiritual_score"), // 0-100
+  overallWellnessScore: integer("overall_wellness_score"), // 0-100
+  physicalScore: integer("physical_score"), // 0-100
+  mentalScore: integer("mental_score"), // 0-100
+  emotionalScore: integer("emotional_score"), // 0-100
+  spiritualScore: integer("spiritual_score"), // 0-100
   
   // Habit Completion
-  habitsCompleted: int("habits_completed"),
-  habitsTotal: int("habits_total"),
+  habitsCompleted: integer("habits_completed"),
+  habitsTotal: integer("habits_total"),
   habitCompletionRate: decimal("habit_completion_rate", { precision: 5, scale: 2 }), // %
   
   // Sleep
   sleepDuration: decimal("sleep_duration", { precision: 4, scale: 2 }), // hours
-  sleepQuality: int("sleep_quality"), // 1-10
+  sleepQuality: integer("sleep_quality"), // 1-10
   
   // Mood & Energy
-  avgMood: int("avg_mood"), // 1-10
-  avgEnergy: int("avg_energy"), // 1-10
+  avgMood: integer("avg_mood"), // 1-10
+  avgEnergy: integer("avg_energy"), // 1-10
   
   // Productivity
-  productivityScore: int("productivity_score"), // 0-100
+  productivityScore: integer("productivity_score"), // 0-100
   
   // Stress
-  stressLevel: int("stress_level"), // 1-10
+  stressLevel: integer("stress_level"), // 1-10
   
   // Recovery
-  recoveryScore: int("recovery_score"), // 0-100
+  recoveryScore: integer("recovery_score"), // 0-100
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Weekly Reports
-export const weeklyReports = mysqlTable("weekly_reports", {
+export const weeklyReports = pgTable("weekly_reports", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   weekStartDate: timestamp("week_start_date").notNull(),
   
   // Overall Performance
-  overallScore: int("overall_score"), // 0-100
+  overallScore: integer("overall_score"), // 0-100
   scoreChange: decimal("score_change", { precision: 6, scale: 2 }), // % vs last week
   
   // Habits
@@ -118,8 +118,8 @@ export const weeklyReports = mysqlTable("weekly_reports", {
   moodStability: decimal("mood_stability", { precision: 5, scale: 2 }), // Low variance = stable
   
   // Goals
-  goalsAchieved: int("goals_achieved"),
-  goalsInProgress: int("goals_in_progress"),
+  goalsAchieved: integer("goals_achieved"),
+  goalsInProgress: integer("goals_in_progress"),
   
   // Wins
   biggestWins: text("biggest_wins"), // JSON array
@@ -137,43 +137,43 @@ export const weeklyReports = mysqlTable("weekly_reports", {
 });
 
 // Monthly Reports
-export const monthlyReports = mysqlTable("monthly_reports", {
+export const monthlyReports = pgTable("monthly_reports", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   monthStartDate: timestamp("month_start_date").notNull(),
   
   // Transformation Summary
-  transformationScore: int("transformation_score"), // 0-100
+  transformationScore: integer("transformation_score"), // 0-100
   
   // Habits
-  habitsStarted: int("habits_started"),
-  habitsMastered: int("habits_mastered"),
-  habitsAbandoned: int("habits_abandoned"),
+  habitsStarted: integer("habits_started"),
+  habitsMastered: integer("habits_mastered"),
+  habitsAbandoned: integer("habits_abandoned"),
   avgHabitSuccessRate: decimal("avg_habit_success_rate", { precision: 5, scale: 2 }),
   
   // Goals
-  goalsSet: int("goals_set"),
-  goalsAchieved: int("goals_achieved"),
+  goalsSet: integer("goals_set"),
+  goalsAchieved: integer("goals_achieved"),
   goalAchievementRate: decimal("goal_achievement_rate", { precision: 5, scale: 2 }),
   
   // Wellness Trends
-  physicalTrend: mysqlEnum("physical_trend", ["improving", "stable", "declining"]),
-  mentalTrend: mysqlEnum("mental_trend", ["improving", "stable", "declining"]),
-  emotionalTrend: mysqlEnum("emotional_trend", ["improving", "stable", "declining"]),
-  spiritualTrend: mysqlEnum("spiritual_trend", ["improving", "stable", "declining"]),
+  physicalTrend: pgEnum("physical_trend", ["improving", "stable", "declining"]),
+  mentalTrend: pgEnum("mental_trend", ["improving", "stable", "declining"]),
+  emotionalTrend: pgEnum("emotional_trend", ["improving", "stable", "declining"]),
+  spiritualTrend: pgEnum("spiritual_trend", ["improving", "stable", "declining"]),
   
   // Community
-  communityEngagement: int("community_engagement"), // 0-100
-  supportsGiven: int("supports_given"),
-  supportsReceived: int("supports_received"),
+  communityEngagement: integer("community_engagement"), // 0-100
+  supportsGiven: integer("supports_given"),
+  supportsReceived: integer("supports_received"),
   
   // Achievements
-  achievementsUnlocked: int("achievements_unlocked"),
-  milestonesReached: int("milestones_reached"),
+  achievementsUnlocked: integer("achievements_unlocked"),
+  milestonesReached: integer("milestones_reached"),
   
   // Identity Shift
-  identityShiftScore: int("identity_shift_score"), // 0-100 (how much have you become who you want to be?)
+  identityShiftScore: integer("identity_shift_score"), // 0-100 (how much have you become who you want to be?)
   
   // Narrative Summary
   monthSummary: text("month_summary"), // AI-generated narrative
@@ -182,7 +182,7 @@ export const monthlyReports = mysqlTable("monthly_reports", {
 });
 
 // Correlations (Cross-Module Insights)
-export const correlations = mysqlTable("correlations", {
+export const correlations = pgTable("correlations", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -196,7 +196,7 @@ export const correlations = mysqlTable("correlations", {
   pValue: decimal("p_value", { precision: 6, scale: 5 }), // Statistical significance
   
   // Interpretation
-  relationship: mysqlEnum("relationship", [
+  relationship: pgEnum("relationship", [
     "strong_positive",
     "moderate_positive",
     "weak_positive",
@@ -211,7 +211,7 @@ export const correlations = mysqlTable("correlations", {
   actionable: boolean("actionable").default(false), // Can user do something with this?
   
   // Sample Size
-  dataPoints: int("data_points"),
+  dataPoints: integer("data_points"),
   
   // Confidence
   confidenceLevel: decimal("confidence_level", { precision: 5, scale: 2 }), // %
@@ -223,13 +223,13 @@ export const correlations = mysqlTable("correlations", {
 });
 
 // Predictions
-export const predictions = mysqlTable("predictions", {
+export const predictions = pgTable("predictions", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Prediction Type
-  predictionType: mysqlEnum("prediction_type", [
+  predictionType: pgEnum("prediction_type", [
     "goal_achievement", // Will you achieve this goal?
     "habit_sustainability", // Will this habit stick?
     "wellness_trajectory", // Where are you headed?
@@ -263,13 +263,13 @@ export const predictions = mysqlTable("predictions", {
 });
 
 // Insights (AI-Generated)
-export const insights = mysqlTable("insights", {
+export const insights = pgTable("insights", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Insight Type
-  insightType: mysqlEnum("insight_type", [
+  insightType: pgEnum("insight_type", [
     "pattern_detected", // "You always sleep better after exercise"
     "correlation_found", // "Sleep affects your mood"
     "trend_alert", // "Your stress is increasing"
@@ -291,7 +291,7 @@ export const insights = mysqlTable("insights", {
   suggestedAction: text("suggested_action"),
   
   // Priority
-  priority: mysqlEnum("priority", ["low", "medium", "high", "urgent"]).default("medium"),
+  priority: pgEnum("priority", ["low", "medium", "high", "urgent"]).default("medium"),
   
   // User Response
   viewed: boolean("viewed").default(false),
@@ -307,13 +307,13 @@ export const insights = mysqlTable("insights", {
 });
 
 // Progress Milestones (Auto-Detected)
-export const progressMilestones = mysqlTable("progress_milestones", {
+export const progressMilestones = pgTable("progress_milestones", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Milestone Type
-  milestoneType: mysqlEnum("milestone_type", [
+  milestoneType: pgEnum("milestone_type", [
     "first_improvement",
     "10_percent_improvement",
     "50_percent_improvement",
@@ -342,13 +342,13 @@ export const progressMilestones = mysqlTable("progress_milestones", {
 });
 
 // Comparative Analytics
-export const comparativeAnalytics = mysqlTable("comparative_analytics", {
+export const comparativeAnalytics = pgTable("comparative_analytics", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Comparison Type
-  comparisonType: mysqlEnum("comparison_type", [
+  comparisonType: pgEnum("comparison_type", [
     "week_over_week",
     "month_over_month",
     "quarter_over_quarter",
@@ -369,7 +369,7 @@ export const comparativeAnalytics = mysqlTable("comparative_analytics", {
   percentChange: decimal("percent_change", { precision: 6, scale: 2 }),
   
   // Interpretation
-  trend: mysqlEnum("trend", ["improving", "stable", "declining"]),
+  trend: pgEnum("trend", ["improving", "stable", "declining"]),
   
   lastCalculated: timestamp("last_calculated").defaultNow(),
   
@@ -377,7 +377,7 @@ export const comparativeAnalytics = mysqlTable("comparative_analytics", {
 });
 
 // Analytics Events (User Interactions)
-export const analyticsEvents = mysqlTable("analytics_events", {
+export const analyticsEvents = pgTable("analytics_events", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
@@ -394,7 +394,7 @@ export const analyticsEvents = mysqlTable("analytics_events", {
 });
 
 // Analytics Self-Learning
-export const analyticsLearning = mysqlTable("analytics_learning", {
+export const analyticsLearning = pgTable("analytics_learning", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Insight Type Effectiveness
@@ -416,7 +416,7 @@ export const analyticsLearning = mysqlTable("analytics_learning", {
   mostEffectiveFor: text("most_effective_for"), // JSON: different user types
   
   // Sample Size
-  userCount: int("user_count"),
+  userCount: integer("user_count"),
   
   lastCalculated: timestamp("last_calculated").defaultNow(),
   

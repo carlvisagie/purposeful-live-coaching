@@ -4,17 +4,17 @@
  * Research sources: Dan Ariely (behavioral economics), Financial Therapy Association, Dave Ramsey's debt snowball research
  */
 
-import { mysqlTable, varchar, text, int, timestamp, boolean, decimal, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
 
 // Financial Profiles
-export const financialProfiles = mysqlTable("financial_profiles", {
+export const financialProfiles = pgTable("financial_profiles", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Current Financial Situation
-  employmentStatus: mysqlEnum("employment_status", ["employed", "self_employed", "unemployed", "underemployed", "student", "retired"]),
+  employmentStatus: pgEnum("employment_status", ["employed", "self_employed", "unemployed", "underemployed", "student", "retired"]),
   monthlyIncome: decimal("monthly_income", { precision: 10, scale: 2 }),
-  incomeStability: mysqlEnum("income_stability", ["stable", "variable", "unstable"]),
+  incomeStability: pgEnum("income_stability", ["stable", "variable", "unstable"]),
   
   // Debt Situation
   totalDebt: decimal("total_debt", { precision: 10, scale: 2 }),
@@ -22,15 +22,15 @@ export const financialProfiles = mysqlTable("financial_profiles", {
   
   // Financial Health
   hasEmergencyFund: boolean("has_emergency_fund").default(false),
-  emergencyFundMonths: int("emergency_fund_months"), // How many months of expenses covered
+  emergencyFundMonths: integer("emergency_fund_months"), // How many months of expenses covered
   hasBudget: boolean("has_budget").default(false),
   tracksSpending: boolean("tracks_spending").default(false),
   
   // Financial Stress Level
-  financialStressLevel: int("financial_stress_level"), // 1-10
+  financialStressLevel: integer("financial_stress_level"), // 1-10
   
   // Primary Financial Goal
-  primaryGoal: mysqlEnum("primary_goal", [
+  primaryGoal: pgEnum("primary_goal", [
     "get_out_of_debt",
     "build_emergency_fund",
     "increase_income",
@@ -56,12 +56,12 @@ export const financialProfiles = mysqlTable("financial_profiles", {
 });
 
 // Debt Tracking (Debt Snowball/Avalanche Method)
-export const debtAccounts = mysqlTable("debt_accounts", {
+export const debtAccounts = pgTable("debt_accounts", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  debtType: mysqlEnum("debt_type", [
+  debtType: pgEnum("debt_type", [
     "credit_card",
     "student_loan",
     "car_loan",
@@ -81,8 +81,8 @@ export const debtAccounts = mysqlTable("debt_accounts", {
   minimumPayment: decimal("minimum_payment", { precision: 10, scale: 2 }),
   
   // Payoff Strategy
-  payoffMethod: mysqlEnum("payoff_method", ["snowball", "avalanche", "custom"]), // Snowball = smallest first, Avalanche = highest interest first
-  payoffPriority: int("payoff_priority"), // 1 = pay off first
+  payoffMethod: pgEnum("payoff_method", ["snowball", "avalanche", "custom"]), // Snowball = smallest first, Avalanche = highest interest first
+  payoffPriority: integer("payoff_priority"), // 1 = pay off first
   
   // Tracking
   lastPaymentDate: timestamp("last_payment_date"),
@@ -93,7 +93,7 @@ export const debtAccounts = mysqlTable("debt_accounts", {
   totalInterestPaid: decimal("total_interest_paid", { precision: 10, scale: 2 }).default("0"),
   
   // Status
-  status: mysqlEnum("status", ["active", "in_collections", "paid_off", "settled"]),
+  status: pgEnum("status", ["active", "in_collections", "paid_off", "settled"]),
   paidOffDate: timestamp("paid_off_date"),
   
   createdAt: timestamp("created_at").defaultNow(),
@@ -101,7 +101,7 @@ export const debtAccounts = mysqlTable("debt_accounts", {
 });
 
 // Debt Payments Log
-export const debtPayments = mysqlTable("debt_payments", {
+export const debtPayments = pgTable("debt_payments", {
   id: varchar("id", { length: 255 }).primaryKey(),
   debtAccountId: varchar("debt_account_id", { length: 255 }).notNull(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
@@ -116,8 +116,8 @@ export const debtPayments = mysqlTable("debt_payments", {
   balanceAfterPayment: decimal("balance_after_payment", { precision: 10, scale: 2 }),
   
   // Emotional Impact (behavioral economics)
-  emotionalImpact: int("emotional_impact"), // 1-10 (how good did it feel?)
-  motivationBoost: int("motivation_boost"), // 1-10
+  emotionalImpact: integer("emotional_impact"), // 1-10 (how good did it feel?)
+  motivationBoost: integer("motivation_boost"), // 1-10
   
   notes: text("notes"),
   
@@ -125,12 +125,12 @@ export const debtPayments = mysqlTable("debt_payments", {
 });
 
 // Budget Tracking (Zero-Based Budgeting)
-export const budgetCategories = mysqlTable("budget_categories", {
+export const budgetCategories = pgTable("budget_categories", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  categoryType: mysqlEnum("category_type", [
+  categoryType: pgEnum("category_type", [
     "housing",
     "utilities",
     "food",
@@ -164,7 +164,7 @@ export const budgetCategories = mysqlTable("budget_categories", {
 });
 
 // Expense Tracking
-export const expenses = mysqlTable("expenses", {
+export const expenses = pgTable("expenses", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -187,14 +187,14 @@ export const expenses = mysqlTable("expenses", {
   trigger: varchar("trigger", { length: 255 }), // What triggered this purchase?
   
   // Regret/Satisfaction
-  satisfactionLevel: int("satisfaction_level"), // 1-10
-  regretLevel: int("regret_level"), // 1-10
+  satisfactionLevel: integer("satisfaction_level"), // 1-10
+  regretLevel: integer("regret_level"), // 1-10
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Income Tracking
-export const incomeEntries = mysqlTable("income_entries", {
+export const incomeEntries = pgTable("income_entries", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
@@ -202,7 +202,7 @@ export const incomeEntries = mysqlTable("income_entries", {
   incomeDate: timestamp("income_date").notNull(),
   amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
   
-  incomeType: mysqlEnum("income_type", [
+  incomeType: pgEnum("income_type", [
     "salary",
     "hourly_wages",
     "freelance",
@@ -223,12 +223,12 @@ export const incomeEntries = mysqlTable("income_entries", {
 });
 
 // Savings Goals
-export const savingsGoals = mysqlTable("savings_goals", {
+export const savingsGoals = pgTable("savings_goals", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  goalType: mysqlEnum("goal_type", [
+  goalType: pgEnum("goal_type", [
     "emergency_fund",
     "down_payment",
     "vacation",
@@ -254,13 +254,13 @@ export const savingsGoals = mysqlTable("savings_goals", {
   monthlyContribution: decimal("monthly_contribution", { precision: 10, scale: 2 }),
   
   // Progress
-  percentComplete: int("percent_complete").default(0),
+  percentComplete: integer("percent_complete").default(0),
   
   // Motivation
   whyItMatters: text("why_it_matters"),
   visualReminder: varchar("visual_reminder", { length: 255 }), // Image URL
   
-  status: mysqlEnum("status", ["active", "paused", "completed", "abandoned"]),
+  status: pgEnum("status", ["active", "paused", "completed", "abandoned"]),
   completedDate: timestamp("completed_date"),
   
   createdAt: timestamp("created_at").defaultNow(),
@@ -268,14 +268,14 @@ export const savingsGoals = mysqlTable("savings_goals", {
 });
 
 // Financial Wins (Celebrate Progress)
-export const financialWins = mysqlTable("financial_wins", {
+export const financialWins = pgTable("financial_wins", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   winDate: timestamp("win_date").notNull(),
   
-  winType: mysqlEnum("win_type", [
+  winType: pgEnum("win_type", [
     "debt_paid_off",
     "emergency_fund_milestone",
     "savings_goal_reached",
@@ -291,7 +291,7 @@ export const financialWins = mysqlTable("financial_wins", {
   
   // Impact
   amountInvolved: decimal("amount_involved", { precision: 10, scale: 2 }),
-  emotionalImpact: int("emotional_impact"), // 1-10
+  emotionalImpact: integer("emotional_impact"), // 1-10
   
   // Reflection
   whatYouLearned: text("what_you_learned"),
@@ -301,14 +301,14 @@ export const financialWins = mysqlTable("financial_wins", {
 });
 
 // Money Mindset Reflections
-export const moneyMindsetReflections = mysqlTable("money_mindset_reflections", {
+export const moneyMindsetReflections = pgTable("money_mindset_reflections", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   reflectionDate: timestamp("reflection_date").notNull(),
   
   // Reflection Prompts
-  promptType: mysqlEnum("prompt_type", [
+  promptType: pgEnum("prompt_type", [
     "money_scripts", // What did you learn about money growing up?
     "scarcity_vs_abundance", // Do you operate from scarcity or abundance?
     "self_worth", // How is your self-worth tied to money?
@@ -331,12 +331,12 @@ export const moneyMindsetReflections = mysqlTable("money_mindset_reflections", {
 });
 
 // Financial Education Progress
-export const financialEducation = mysqlTable("financial_education", {
+export const financialEducation = pgTable("financial_education", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
-  topic: mysqlEnum("topic", [
+  topic: pgEnum("topic", [
     "budgeting_basics",
     "debt_payoff_strategies",
     "emergency_fund",
@@ -349,7 +349,7 @@ export const financialEducation = mysqlTable("financial_education", {
     "behavioral_finance"
   ]).notNull(),
   
-  resourceType: mysqlEnum("resource_type", ["article", "video", "course", "book", "podcast"]),
+  resourceType: pgEnum("resource_type", ["article", "video", "course", "book", "podcast"]),
   resourceName: varchar("resource_name", { length: 255 }),
   resourceUrl: text("resource_url"),
   
@@ -359,7 +359,7 @@ export const financialEducation = mysqlTable("financial_education", {
   keyTakeaways: text("key_takeaways"), // JSON array
   appliedLearning: text("applied_learning"), // How did you use this?
   
-  status: mysqlEnum("status", ["not_started", "in_progress", "completed"]),
+  status: pgEnum("status", ["not_started", "in_progress", "completed"]),
   
   createdAt: timestamp("created_at").defaultNow(),
 });

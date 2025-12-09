@@ -25,10 +25,10 @@
  * - Predicts when users need extra support
  */
 
-import { mysqlTable, varchar, text, int, timestamp, boolean, decimal, mysqlEnum } from "drizzle-orm/mysql-core";
+import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
 
 // User Community Profiles
-export const communityProfiles = mysqlTable("community_profiles", {
+export const communityProfiles = pgTable("community_profiles", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
@@ -47,20 +47,20 @@ export const communityProfiles = mysqlTable("community_profiles", {
   primaryGoals: text("primary_goals"), // JSON array
   
   // Community Role
-  role: mysqlEnum("role", ["member", "mentor", "moderator", "admin"]).default("member"),
+  role: pgEnum("role", ["member", "mentor", "moderator", "admin"]).default("member"),
   
   // Mentor Availability (if mentor)
   availableAsMentor: boolean("available_as_mentor").default(false),
   mentorshipAreas: text("mentorship_areas"), // JSON array: what can they help with?
   
   // Engagement
-  totalPosts: int("total_posts").default(0),
-  totalComments: int("total_comments").default(0),
-  totalSupportsGiven: int("total_supports_given").default(0), // Likes, encouragements
-  totalSupportsReceived: int("total_supports_received").default(0),
+  totalPosts: integer("total_posts").default(0),
+  totalComments: integer("total_comments").default(0),
+  totalSupportsGiven: integer("total_supports_given").default(0), // Likes, encouragements
+  totalSupportsReceived: integer("total_supports_received").default(0),
   
   // Reputation
-  helpfulnessScore: int("helpfulness_score").default(0), // Community-voted
+  helpfulnessScore: integer("helpfulness_score").default(0), // Community-voted
   
   // Status
   active: boolean("active").default(true),
@@ -70,7 +70,7 @@ export const communityProfiles = mysqlTable("community_profiles", {
 });
 
 // Communities (Groups)
-export const communities = mysqlTable("communities", {
+export const communities = pgTable("communities", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Community Info
@@ -79,7 +79,7 @@ export const communities = mysqlTable("communities", {
   coverImage: varchar("cover_image", { length: 500 }),
   
   // Type
-  communityType: mysqlEnum("community_type", [
+  communityType: pgEnum("community_type", [
     "mental_health_recovery",
     "addiction_recovery",
     "autism_parents",
@@ -92,7 +92,7 @@ export const communities = mysqlTable("communities", {
   ]).notNull(),
   
   // Privacy
-  privacy: mysqlEnum("privacy", ["public", "private", "invite_only"]).default("public"),
+  privacy: pgEnum("privacy", ["public", "private", "invite_only"]).default("public"),
   
   // Moderation
   moderatorIds: text("moderator_ids"), // JSON array of user IDs
@@ -101,9 +101,9 @@ export const communities = mysqlTable("communities", {
   guidelines: text("guidelines"),
   
   // Stats
-  memberCount: int("member_count").default(0),
-  activeMembers: int("active_members").default(0), // Active in last 30 days
-  totalPosts: int("total_posts").default(0),
+  memberCount: integer("member_count").default(0),
+  activeMembers: integer("active_members").default(0), // Active in last 30 days
+  totalPosts: integer("total_posts").default(0),
   
   // Status
   active: boolean("active").default(true),
@@ -113,18 +113,18 @@ export const communities = mysqlTable("communities", {
 });
 
 // Community Memberships
-export const communityMemberships = mysqlTable("community_memberships", {
+export const communityMemberships = pgTable("community_memberships", {
   id: varchar("id", { length: 255 }).primaryKey(),
   communityId: varchar("community_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Role in Community
-  role: mysqlEnum("role", ["member", "moderator", "admin"]).default("member"),
+  role: pgEnum("role", ["member", "moderator", "admin"]).default("member"),
   
   // Engagement
   lastActiveAt: timestamp("last_active_at"),
-  postsCount: int("posts_count").default(0),
-  commentsCount: int("comments_count").default(0),
+  postsCount: integer("posts_count").default(0),
+  commentsCount: integer("comments_count").default(0),
   
   // Notifications
   notificationsEnabled: boolean("notifications_enabled").default(true),
@@ -133,13 +133,13 @@ export const communityMemberships = mysqlTable("community_memberships", {
 });
 
 // Posts
-export const communityPosts = mysqlTable("community_posts", {
+export const communityPosts = pgTable("community_posts", {
   id: varchar("id", { length: 255 }).primaryKey(),
   communityId: varchar("community_id", { length: 255 }).notNull(),
   authorId: varchar("author_id", { length: 255 }).notNull(),
   
   // Post Type
-  postType: mysqlEnum("post_type", [
+  postType: pgEnum("post_type", [
     "win", // Celebrating a victory
     "struggle", // Asking for support
     "question", // Seeking advice
@@ -159,9 +159,9 @@ export const communityPosts = mysqlTable("community_posts", {
   tags: text("tags"), // JSON array
   
   // Engagement
-  likesCount: int("likes_count").default(0),
-  commentsCount: int("comments_count").default(0),
-  supportsCount: int("supports_count").default(0), // "You got this!" reactions
+  likesCount: integer("likes_count").default(0),
+  commentsCount: integer("comments_count").default(0),
+  supportsCount: integer("supports_count").default(0), // "You got this!" reactions
   
   // Moderation
   flagged: boolean("flagged").default(false),
@@ -175,7 +175,7 @@ export const communityPosts = mysqlTable("community_posts", {
 });
 
 // Comments
-export const communityComments = mysqlTable("community_comments", {
+export const communityComments = pgTable("community_comments", {
   id: varchar("id", { length: 255 }).primaryKey(),
   postId: varchar("post_id", { length: 255 }).notNull(),
   authorId: varchar("author_id", { length: 255 }).notNull(),
@@ -184,7 +184,7 @@ export const communityComments = mysqlTable("community_comments", {
   content: text("content").notNull(),
   
   // Engagement
-  likesCount: int("likes_count").default(0),
+  likesCount: integer("likes_count").default(0),
   
   // Moderation
   flagged: boolean("flagged").default(false),
@@ -197,32 +197,32 @@ export const communityComments = mysqlTable("community_comments", {
 });
 
 // Accountability Partners
-export const accountabilityPartnerships = mysqlTable("accountability_partnerships", {
+export const accountabilityPartnerships = pgTable("accountability_partnerships", {
   id: varchar("id", { length: 255 }).primaryKey(),
   user1Id: varchar("user1_id", { length: 255 }).notNull(),
   user2Id: varchar("user2_id", { length: 255 }).notNull(),
   
   // Partnership Details
   sharedGoals: text("shared_goals"), // JSON array: what are they working on together?
-  checkInFrequency: mysqlEnum("check_in_frequency", ["daily", "weekly", "biweekly", "monthly"]),
+  checkInFrequency: pgEnum("check_in_frequency", ["daily", "weekly", "biweekly", "monthly"]),
   
   // Communication
   lastCheckIn: timestamp("last_check_in"),
-  totalCheckIns: int("total_check_ins").default(0),
+  totalCheckIns: integer("total_check_ins").default(0),
   
   // Effectiveness
-  partnershipSatisfaction: int("partnership_satisfaction"), // 1-10 (from both partners)
-  helpfulnessRating: int("helpfulness_rating"), // 1-10
+  partnershipSatisfaction: integer("partnership_satisfaction"), // 1-10 (from both partners)
+  helpfulnessRating: integer("helpfulness_rating"), // 1-10
   
   // Status
-  status: mysqlEnum("status", ["active", "paused", "ended"]).default("active"),
+  status: pgEnum("status", ["active", "paused", "ended"]).default("active"),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Check-Ins (Accountability Partner)
-export const partnerCheckIns = mysqlTable("partner_check_ins", {
+export const partnerCheckIns = pgTable("partner_check_ins", {
   id: varchar("id", { length: 255 }).primaryKey(),
   partnershipId: varchar("partnership_id", { length: 255 }).notNull(),
   initiatorId: varchar("initiator_id", { length: 255 }).notNull(),
@@ -244,13 +244,13 @@ export const partnerCheckIns = mysqlTable("partner_check_ins", {
   encouragementGiven: text("encouragement_given"), // What they said to each other
   
   // Effectiveness
-  helpfulness: int("helpfulness"), // 1-10
+  helpfulness: integer("helpfulness"), // 1-10
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Mentorship Relationships
-export const mentorships = mysqlTable("mentorships", {
+export const mentorships = pgTable("mentorships", {
   id: varchar("id", { length: 255 }).primaryKey(),
   mentorId: varchar("mentor_id", { length: 255 }).notNull(),
   menteeId: varchar("mentee_id", { length: 255 }).notNull(),
@@ -259,32 +259,32 @@ export const mentorships = mysqlTable("mentorships", {
   focusArea: varchar("focus_area", { length: 255 }).notNull(), // What is the mentorship about?
   
   // Frequency
-  meetingFrequency: mysqlEnum("meeting_frequency", ["weekly", "biweekly", "monthly"]),
+  meetingFrequency: pgEnum("meeting_frequency", ["weekly", "biweekly", "monthly"]),
   
   // Progress
-  totalSessions: int("total_sessions").default(0),
+  totalSessions: integer("total_sessions").default(0),
   lastSession: timestamp("last_session"),
   
   // Effectiveness
-  menteeProgress: int("mentee_progress"), // 1-10: How much has mentee improved?
-  menteeSatisfaction: int("mentee_satisfaction"), // 1-10
+  menteeProgress: integer("mentee_progress"), // 1-10: How much has mentee improved?
+  menteeSatisfaction: integer("mentee_satisfaction"), // 1-10
   
   // Status
-  status: mysqlEnum("status", ["active", "paused", "completed"]).default("active"),
+  status: pgEnum("status", ["active", "paused", "completed"]).default("active"),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Daily Check-Ins (Community-wide)
-export const dailyCheckIns = mysqlTable("daily_check_ins", {
+export const dailyCheckIns = pgTable("daily_check_ins", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   checkInDate: timestamp("check_in_date").notNull(),
   
   // How Are You?
   mood: varchar("mood", { length: 100 }),
-  energy: int("energy"), // 1-10
+  energy: integer("energy"), // 1-10
   
   // Today's Focus
   todayGoals: text("today_goals"), // JSON array
@@ -303,14 +303,14 @@ export const dailyCheckIns = mysqlTable("daily_check_ins", {
   shareWithCommunity: boolean("share_with_community").default(true),
   
   // Engagement
-  supportsReceived: int("supports_received").default(0),
-  commentsReceived: int("comments_received").default(0),
+  supportsReceived: integer("supports_received").default(0),
+  commentsReceived: integer("comments_received").default(0),
   
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Community Challenges
-export const communityChallenges = mysqlTable("community_challenges", {
+export const communityChallenges = pgTable("community_challenges", {
   id: varchar("id", { length: 255 }).primaryKey(),
   communityId: varchar("community_id", { length: 255 }),
   
@@ -319,7 +319,7 @@ export const communityChallenges = mysqlTable("community_challenges", {
   description: text("description"),
   
   // Type
-  challengeType: mysqlEnum("challenge_type", [
+  challengeType: pgEnum("challenge_type", [
     "habit_building", // 30-day habit challenge
     "goal_achievement", // Specific goal
     "streak", // Longest streak wins
@@ -329,27 +329,27 @@ export const communityChallenges = mysqlTable("community_challenges", {
   // Duration
   startDate: timestamp("start_date"),
   endDate: timestamp("end_date"),
-  duration: int("duration"), // days
+  duration: integer("duration"), // days
   
   // Participation
-  participantCount: int("participant_count").default(0),
+  participantCount: integer("participant_count").default(0),
   
   // Status
-  status: mysqlEnum("status", ["upcoming", "active", "completed"]).default("upcoming"),
+  status: pgEnum("status", ["upcoming", "active", "completed"]).default("upcoming"),
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Challenge Participants
-export const challengeParticipants = mysqlTable("challenge_participants", {
+export const challengeParticipants = pgTable("challenge_participants", {
   id: varchar("id", { length: 255 }).primaryKey(),
   challengeId: varchar("challenge_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   
   // Progress
-  currentStreak: int("current_streak").default(0),
-  longestStreak: int("longest_streak").default(0),
+  currentStreak: integer("current_streak").default(0),
+  longestStreak: integer("longest_streak").default(0),
   completionRate: decimal("completion_rate", { precision: 5, scale: 2 }), // %
   
   // Updates
@@ -362,7 +362,7 @@ export const challengeParticipants = mysqlTable("challenge_participants", {
 });
 
 // Community Analytics (Self-Learning)
-export const communityAnalytics = mysqlTable("community_analytics", {
+export const communityAnalytics = pgTable("community_analytics", {
   id: varchar("id", { length: 255 }).primaryKey(),
   
   // Support Type Effectiveness
@@ -375,13 +375,13 @@ export const communityAnalytics = mysqlTable("community_analytics", {
   
   // Optimal Parameters
   optimalCheckInFrequency: varchar("optimal_check_in_frequency", { length: 50 }),
-  optimalGroupSize: int("optimal_group_size"),
+  optimalGroupSize: integer("optimal_group_size"),
   
   // User Segments
   mostEffectiveFor: text("most_effective_for"), // JSON: different user types
   
   // Sample Size
-  userCount: int("user_count"),
+  userCount: integer("user_count"),
   
   lastCalculated: timestamp("last_calculated").defaultNow(),
   
