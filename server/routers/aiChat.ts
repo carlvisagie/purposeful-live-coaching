@@ -187,12 +187,12 @@ export const aiChatRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      // Demo mode: allow guest users (use null for userId if not authenticated)
-      const userId = ctx.user?.id || null;
+      // Demo mode: allow guest users (omit userId for guest users)
+      const userId = ctx.user?.id;
       
       const conversationId = await createConversation({
-        userId,
-        clientId: input.clientId,
+        ...(userId ? { userId } : {}),
+        ...(input.clientId ? { clientId: input.clientId } : {}),
         title: input.title || "New Conversation",
       });
 
