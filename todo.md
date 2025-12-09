@@ -962,7 +962,7 @@ Remove all signup forms. User just enters email/password and immediately starts 
 ## 🔧 COMPLETE PLATFORM AUDIT (Dec 9, 2025)
 
 ### Critical Navigation Fixes
-- [x] Fix purple "Start Talking to Your AI Coach Now" button - change from /chat to /ai-coach (line 212 in IndividualLanding.tsx)
+- [x] Fix purple "Start Talking to Your AI Coach Now" button - change from /chat to /ai-coach (DEPLOYED)
 - [ ] Test all 29 routes to ensure pages load correctly
 - [ ] Check for any other broken links throughout the site
 
@@ -1045,8 +1045,9 @@ Remove all signup forms. User just enters email/password and immediately starts 
 
 ### P0 - Blocking Issues
 - [x] AI Coach page (/ai-coach) - Blank page or redirecting to homepage (FIXED - page works, navigation issue)
-- [x] Homepage purple button - Not navigating (FIXED - changed to window.location.href, deploying)
-- [x] Need to investigate authentication/subscription gate causing redirect (RESOLVED - gate disabled for demo)
+- [x] Homepage purple button - Not navigating (DEPLOYED - changed to window.location.href)
+- [x] Frontend auth gate disabled (DEPLOYED)
+- [x] Backend auth requirements removed (DEPLOYING - commit 44f2cc3)
 
 ### Investigation Needed
 - [ ] Check if subscription gate is blocking access
