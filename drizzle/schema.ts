@@ -78,7 +78,7 @@ export const users = pgTable("users", {
   profileCompleteness: integer("profileCompleteness").default(0), // 0-100%
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
 });
 
@@ -97,7 +97,7 @@ export const coaches = pgTable("coaches", {
   yearsExperience: integer("yearsExperience"),
   isActive: pgEnum("isActive", ["true", "false"]).default("true").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type Coach = typeof coaches.$inferSelect;
@@ -177,7 +177,7 @@ export const clients = pgTable("clients", {
   lastProfileUpdate: timestamp("lastProfileUpdate"),
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type Client = typeof clients.$inferSelect;
@@ -200,7 +200,7 @@ export const journalEntries = pgTable("journalEntries", {
   resilienceScore: integer("resilienceScore"), // Calculated resilience score
   isPrivate: pgEnum("isPrivate", ["true", "false"]).default("false").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type JournalEntry = typeof journalEntries.$inferSelect;
@@ -240,7 +240,7 @@ export const copingStrategies = pgTable("copingStrategies", {
   lastUsed: timestamp("lastUsed"),
   isRecommended: pgEnum("isRecommended", ["true", "false"]).default("false").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type CopingStrategy = typeof copingStrategies.$inferSelect;
@@ -281,7 +281,7 @@ export const sessionTypes = pgTable("sessionTypes", {
   isActive: pgEnum("isActive", ["true", "false"]).default("true").notNull(),
   displayOrder: integer("displayOrder").default(0).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type SessionType = typeof sessionTypes.$inferSelect;
@@ -305,7 +305,7 @@ export const sessions = pgTable("sessions", {
   stripePaymentIntentId: varchar("stripePaymentIntentId", { length: 255 }),
   stripeSessionId: varchar("stripeSessionId", { length: 255 }), // Stripe checkout session ID
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type Session = typeof sessions.$inferSelect;
@@ -331,7 +331,7 @@ export const subscriptions = pgTable("subscriptions", {
   trialEnd: timestamp("trialEnd"),
   cancelledAt: timestamp("cancelledAt"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type Subscription = typeof subscriptions.$inferSelect;
@@ -350,7 +350,7 @@ export const usageTracking = pgTable("usage_tracking", {
   humanSessionsUsed: integer("humanSessionsUsed").default(0).notNull(),
   humanSessionsIncluded: integer("humanSessionsIncluded").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type UsageTracking = typeof usageTracking.$inferSelect;
@@ -372,7 +372,7 @@ export const humanSessionBookings = pgTable("human_session_bookings", {
   coachNotes: text("coachNotes"),
   recordingUrl: text("recordingUrl"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type HumanSessionBooking = typeof humanSessionBookings.$inferSelect;
@@ -388,7 +388,7 @@ export const coachAvailability = pgTable("coachAvailability", {
   endTime: varchar("endTime", { length: 5 }).notNull(), // HH:MM format (e.g., "17:00")
   isActive: pgEnum("isActive", ["true", "false"]).default("true").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type CoachAvailability = typeof coachAvailability.$inferSelect;
@@ -404,7 +404,7 @@ export const availabilityExceptions = pgTable("availabilityExceptions", {
   endDate: timestamp("endDate").notNull(),
   reason: varchar("reason", { length: 255 }), // vacation, holiday, personal, etc.
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type AvailabilityException = typeof availabilityExceptions.$inferSelect;
@@ -478,7 +478,7 @@ export const aiChatConversations = pgTable("aiChatConversations", {
   
   lastMessageAt: timestamp("lastMessageAt").defaultNow().notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type AiChatConversation = typeof aiChatConversations.$inferSelect;
@@ -507,7 +507,7 @@ export const platformSettings = pgTable("platformSettings", {
   id: serial("id").primaryKey(),
   aiCoachingEnabled: pgEnum("aiCoachingEnabled", ["true", "false"]).default("false").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type PlatformSetting = typeof platformSettings.$inferSelect;
@@ -533,7 +533,7 @@ export const videoTestimonials = pgTable("videoTestimonials", {
   isPublished: pgEnum("isPublished", ["true", "false"]).default("false").notNull(),
   displayOrder: integer("displayOrder").default(0).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type VideoTestimonial = typeof videoTestimonials.$inferSelect;
@@ -579,7 +579,7 @@ export const escalationQueue = pgTable("escalationQueue", {
   resolutionNotes: text("resolutionNotes"),
   notificationSent: pgEnum("notificationSent", ["true", "false"]).default("false").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type EscalationQueue = typeof escalationQueue.$inferSelect;
@@ -602,7 +602,7 @@ export const similarCases = pgTable("similarCases", {
   isPublic: pgEnum("isPublic", ["true", "false"]).default("false").notNull(), // Share with other coaches
   createdBy: integer("createdBy").notNull().references(() => coaches.id),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type SimilarCase = typeof similarCases.$inferSelect;
@@ -672,7 +672,7 @@ export const sessionRecordings = pgTable("sessionRecordings", {
   recordedAt: timestamp("recordedAt").notNull(),
   expiresAt: timestamp("expiresAt"), // Retention policy
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type SessionRecording = typeof sessionRecordings.$inferSelect;
@@ -713,7 +713,7 @@ export const coachPrivateNotes = pgTable("coachPrivateNotes", {
   clinicalObservations: text("clinicalObservations"), // Private clinical notes
   reminders: text("reminders"), // Reminders for next session
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type CoachPrivateNote = typeof coachPrivateNotes.$inferSelect;
@@ -779,7 +779,7 @@ export const clientPatterns = pgTable("clientPatterns", {
   relatedSessions: text("relatedSessions"), // JSON array of session IDs
   actionable: text("actionable"), // What coach should do about this pattern
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type ClientPattern = typeof clientPatterns.$inferSelect;
@@ -799,7 +799,7 @@ export const clientPreferences = pgTable("clientPreferences", {
   lastUsed: timestamp("lastUsed").notNull(),
   notes: text("notes"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type ClientPreference = typeof clientPreferences.$inferSelect;
@@ -820,7 +820,7 @@ export const clientPredictions = pgTable("clientPredictions", {
   wasAccurate: pgEnum("wasAccurate", ["true", "false", "unknown"]).default("unknown").notNull(),
   actualOutcome: text("actualOutcome"), // What actually happened
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type ClientPrediction = typeof clientPredictions.$inferSelect;
@@ -928,7 +928,7 @@ export const clientFiles = pgTable("client_files", {
   
   uploadedAt: timestamp("uploadedAt").defaultNow().notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type ClientFile = typeof clientFiles.$inferSelect;

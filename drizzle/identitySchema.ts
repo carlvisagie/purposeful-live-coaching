@@ -24,7 +24,7 @@ export const identityProfiles = pgTable("identityProfiles", {
   identityContradictions: text("identityContradictions"), // JSON: Actions that contradicted identity
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type IdentityProfile = typeof identityProfiles.$inferSelect;
@@ -121,7 +121,7 @@ export const microHabits = pgTable("microHabits", {
   isActive: pgEnum("isActive", ["true", "false"]).default("true").notNull(),
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type MicroHabit = typeof microHabits.$inferSelect;

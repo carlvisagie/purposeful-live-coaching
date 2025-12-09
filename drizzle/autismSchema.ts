@@ -33,7 +33,7 @@ export const autismProfiles = pgTable("autismProfiles", {
   treatmentPriorities: text("treatmentPriorities"), // JSON: ["communication", "behavior", "independence"]
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type AutismProfile = typeof autismProfiles.$inferSelect;
@@ -56,7 +56,7 @@ export const interventionPlans = pgTable("interventionPlans", {
   providerDirectory: text("providerDirectory"), // JSON: {"ABA": "provider_name", "OT": "provider_name"}
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type InterventionPlan = typeof interventionPlans.$inferSelect;
@@ -80,7 +80,7 @@ export const supplementTracking = pgTable("supplementTracking", {
   perceivedBenefit: integer("perceivedBenefit"), // 1-10 scale
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type SupplementTracking = typeof supplementTracking.$inferSelect;
@@ -101,7 +101,7 @@ export const dietaryInterventions = pgTable("dietaryInterventions", {
   behaviorChanges: text("behaviorChanges"), // JSON: {"attention": "improved", "sleep": "improved"}
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type DietaryIntervention = typeof dietaryInterventions.$inferSelect;
@@ -202,7 +202,7 @@ export const autismProviders = pgTable("autismProviders", {
   costRange: varchar("costRange", { length: 100 }), // "$100-$200/session"
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type AutismProvider = typeof autismProviders.$inferSelect;

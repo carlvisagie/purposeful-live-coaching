@@ -34,7 +34,7 @@ export const techniqueEffectiveness = pgTable("techniqueEffectiveness", {
   confidenceScore: integer("confidenceScore").default(50).notNull(), // 0-100, increases with data
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type TechniqueEffectiveness = typeof techniqueEffectiveness.$inferSelect;
@@ -66,7 +66,7 @@ export const clientPatterns = pgTable("clientPatterns", {
   confidenceScore: integer("confidenceScore").default(50).notNull(),
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type ClientPattern = typeof clientPatterns.$inferSelect;
@@ -136,7 +136,7 @@ export const adaptiveOutcomeTracking = pgTable("adaptiveOutcomeTracking", {
   mostHelpfulAspect: text("mostHelpfulAspect"),
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type AdaptiveOutcomeTracking = typeof adaptiveOutcomeTracking.$inferSelect;
@@ -168,7 +168,7 @@ export const trendDetection = pgTable("trendDetection", {
   isAddressed: pgEnum("isAddressed", ["true", "false"]).default("false").notNull(),
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type TrendDetection = typeof trendDetection.$inferSelect;
@@ -198,7 +198,7 @@ export const strategyAdjustments = pgTable("strategyAdjustments", {
   wasSuccessful: pgEnum("wasSuccessful", ["yes", "no", "unknown"]),
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type StrategyAdjustment = typeof strategyAdjustments.$inferSelect;
