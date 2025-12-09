@@ -209,7 +209,7 @@ export default function IndividualLanding() {
           <Button
             size="lg"
             className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-12 py-8 text-xl font-semibold shadow-2xl hover:shadow-purple-500/50 transition-all mb-4"
-            onClick={() => setLocation("/ai-coach")}
+            onClick={() => window.location.href = "/ai-coach"}
           >
             <Sparkles className="h-6 w-6 mr-3" />
             Start Talking to Your AI Coach Now
