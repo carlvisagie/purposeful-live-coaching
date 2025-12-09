@@ -431,7 +431,7 @@ export type InsertDiscountCodeUsage = typeof discountCodeUsage.$inferInsert;
  */
 export const aiChatConversations = mysqlTable("aiChatConversations", {
   id: int("id").autoincrement().primaryKey(),
-  userId: int("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
+  userId: int("userId").references(() => users.id, { onDelete: "cascade" }), // Nullable for guest users
   clientId: int("clientId").references(() => clients.id, { onDelete: "cascade" }), // Optional link to client profile
   subscriptionId: int("subscriptionId").references(() => subscriptions.id, { onDelete: "set null" }), // Link to subscription for usage tracking
   sessionDuration: int("sessionDuration").default(0), // Duration in minutes
