@@ -28,7 +28,7 @@
  * - Learns which content types benefit from which techniques
  */
 
-import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Memory Mastery Profiles
 export const memoryMasteryProfiles = pgTable("memory_mastery_profiles", {

@@ -4,7 +4,7 @@
  * Research sources: Stanford Career Development, Positive Psychology, Purpose Research (Damon, Bronk)
  */
 
-import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Career Profiles
 export const careerProfiles = pgTable("career_profiles", {

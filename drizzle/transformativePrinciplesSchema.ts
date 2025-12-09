@@ -27,7 +27,7 @@
  * - Adapts reminders and prompts based on engagement
  */
 
-import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Transformative Principles Profiles
 export const transformativePrinciplesProfiles = pgTable("transformative_principles_profiles", {

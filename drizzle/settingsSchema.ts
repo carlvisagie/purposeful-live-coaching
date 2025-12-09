@@ -21,7 +21,7 @@
  * - AI & Automation (AI features, automation)
  */
 
-import { pgTable, varchar, text, int, timestamp, boolean, pgEnum } from "drizzle-orm/pg-core";
+import { boolean, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // User Settings
 export const userSettings = pgTable("user_settings", {

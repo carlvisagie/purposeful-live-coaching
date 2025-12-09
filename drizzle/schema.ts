@@ -1,4 +1,4 @@
-import { date, decimal, int, pgEnum, pgTable, text, timestamp, varchar, serial } from "drizzle-orm/pg-core";
+import { date, decimal, int, integer, pgEnum, pgTable, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Export identity schema tables
 export * from "./identitySchema";

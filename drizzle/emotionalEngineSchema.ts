@@ -10,7 +10,7 @@
  * - Adapts interventions based on effectiveness
  */
 
-import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Emotional Profiles
 export const emotionalProfiles = pgTable("emotional_profiles", {

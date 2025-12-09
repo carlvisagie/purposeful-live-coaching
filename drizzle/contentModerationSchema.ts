@@ -19,7 +19,7 @@
  * 5. Auditable: Complete trail for legal protection
  */
 
-import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // ============================================================================
 // FORBIDDEN CONTENT DICTIONARY (Self-Learning)

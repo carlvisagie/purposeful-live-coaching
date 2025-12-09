@@ -26,7 +26,7 @@
  * - ISO 27001 (Information Security Management)
  */
 
-import { pgTable, varchar, text, int, timestamp, boolean, pgEnum } from "drizzle-orm/pg-core";
+import { boolean, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Security Profiles
 export const securityProfiles = pgTable("security_profiles", {

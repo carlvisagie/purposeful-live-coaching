@@ -4,7 +4,7 @@
  * Research sources: Search Institute (40 Developmental Assets), Big Brothers Big Sisters research, APA Guidelines for Boys and Men
  */
 
-import { pgTable, varchar, text, int, timestamp, boolean, decimal, pgEnum } from "drizzle-orm/pg-core";
+import { boolean, decimal, int, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Young Men Profiles
 export const youngMenProfiles = pgTable("young_men_profiles", {
