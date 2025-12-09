@@ -9,11 +9,21 @@ import { TRPCError } from "@trpc/server";
 import { getDb } from "../db";
 import { subscriptions, usageTracking, emailLogs, users } from "../../drizzle/schema";
 import { eq, and, gte, lte, desc } from "drizzle-orm";
-import { notifyOwner } from "../_core/notification";
+import nodemailer from "nodemailer";
+
+// Create reusable transporter
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST || "smtp.gmail.com",
+  port: parseInt(process.env.SMTP_PORT || "587"),
+  secure: false,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
 
 /**
- * Send email using Manus notification API
- * In future, can be replaced with Resend/SendGrid for better templates
+ * Send email using standard SMTP (Nodemailer)
  */
 async function sendEmail(params: {
   userId: number;
@@ -24,12 +34,32 @@ async function sendEmail(params: {
 }) {
   const { userId, emailType, subject, content, metadata } = params;
 
-  // For now, use owner notification as email delivery
-  // In production, replace with actual email service (Resend, SendGrid, etc.)
-  const success = await notifyOwner({
-    title: `📧 ${subject}`,
-    content: `**Email Type:** ${emailType}\n**User ID:** ${userId}\n\n${content}`,
-  });
+  // Get user email from database
+  const db = await getDb();
+  if (!db) return false;
+
+  const user = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+  if (!user.length || !user[0].email) {
+    console.warn(`[EMAIL] No email found for user ${userId}`);
+    return false;
+  }
+
+  const recipient = user[0].email;
+  let success = false;
+
+  try {
+    await transporter.sendMail({
+      from: `"Purposeful Live Coaching" <${process.env.SMTP_USER}>`,
+      to: recipient,
+      subject,
+      text: content,
+      html: `<div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">${content.replace(/\n/g, '<br>')}</div>`,
+    });
+    success = true;
+    console.log(`[EMAIL] Sent ${emailType} to ${recipient}`);
+  } catch (error) {
+    console.error(`[EMAIL] Failed to send ${emailType}:`, error);
+  }
 
   // Log email
   const db = await getDb();

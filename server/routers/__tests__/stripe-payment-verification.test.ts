@@ -100,7 +100,7 @@ describe('Stripe Payment Verification', () => {
 /**
  * MANUAL TESTING INSTRUCTIONS:
  * 
- * 1. Go to published site: https://purposelc-4hfqx8wg.manus.space/book-session
+ * 1. Go to published site: https://purposeful-live-backend.onrender.com/book-session
  * 2. Select "Breakthrough Discovery Session" ($1.00)
  * 3. Pick any available date/time
  * 4. Click "Book & Pay Now"

@@ -16,6 +16,37 @@ export * from "./physicalEngineSchema";
 export * from "./nutritionEngineSchema";
 export * from "./spiritualEngineSchema";
 
+// Export admin & platform schemas
+export * from "./adminSchema";
+export * from "./aiCoachSchema";
+export * from "./analyticsSchema";
+export * from "./contentModerationSchema";
+export * from "./notificationsSchema";
+export * from "./securitySchema";
+export * from "./settingsSchema";
+
+// Export wellness & lifestyle schemas
+export * from "./careerSchema";
+export * from "./communitySchema";
+export * from "./financialSchema";
+export * from "./goalsSchema";
+export * from "./habitFormationSchema";
+export * from "./healthOptimizationSchema";
+export * from "./journalSchema";
+export * from "./mentalHealthSchema";
+export * from "./relationshipSchema";
+export * from "./sleepOptimizationSchema";
+export * from "./stressSchema";
+
+// Export advanced features
+export * from "./gamificationSchema";
+export * from "./integrationsSchema";
+export * from "./memoryMasterySchema";
+export * from "./transformativePrinciplesSchema";
+export * from "./truthKeepersSchema";
+export * from "./visualizationSchema";
+export * from "./youngMenSchema";
+
 /**
  * Core user table backing auth flow.
  * Extend this file with additional tables as your product grows.
