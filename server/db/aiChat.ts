@@ -60,9 +60,9 @@ export async function createConversation(data: InsertAiChatConversation) {
   if (!db) throw new Error("Database not available");
 
   try {
-    console.log('[createConversation] Inserting with data:', JSON.stringify(data));
+    console.error('[createConversation] Inserting with data:', JSON.stringify(data));
     const [result] = await db.insert(aiChatConversations).values(data).returning();
-    console.log('[createConversation] Result:', JSON.stringify(result));
+    console.error('[createConversation] Result:', JSON.stringify(result));
     if (!result || !result.id) {
       throw new Error('Insert succeeded but no result returned');
     }

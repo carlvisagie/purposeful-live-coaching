@@ -189,14 +189,20 @@ export const aiChatRouter = router({
     .mutation(async ({ input, ctx }) => {
       // Demo mode: allow guest users (omit userId for guest users)
       const userId = ctx.user?.id;
+      console.error('[tRPC createConversation] userId:', userId, 'input:', JSON.stringify(input));
       
-      const conversationId = await createConversation({
-        ...(userId ? { userId } : {}),
-        ...(input.clientId ? { clientId: input.clientId } : {}),
-        title: input.title || "New Conversation",
-      });
-
-      return { conversationId };
+      try {
+        const conversationId = await createConversation({
+          ...(userId ? { userId } : {}),
+          ...(input.clientId ? { clientId: input.clientId } : {}),
+          title: input.title || "New Conversation",
+        });
+        console.error('[tRPC createConversation] Success! conversationId:', conversationId);
+        return { conversationId };
+      } catch (error) {
+        console.error('[tRPC createConversation] ERROR:', error);
+        throw error;
+      }
     }),
 
   /**
