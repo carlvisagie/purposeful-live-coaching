@@ -105,3 +105,9 @@ temp/
 *.db
 *.sqlite
 *.sqlite3
+
+# Credentials and sensitive documentation
+RENDER_CREDENTIALS.md
+*_CREDENTIALS.md
+*.credentials
+*.secret
