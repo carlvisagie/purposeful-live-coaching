@@ -157,6 +157,9 @@ export default function Pricing() {
         "Custom coaching & life plans",
         "Custom family resources & workshops",
         "Spouse/partner sessions included (2/month)",
+        "Quarterly family wellness workshops",
+        "Annual comprehensive wellness assessment",
+        "Lifetime access to all resources & recordings",
       ],
     },
   ];
