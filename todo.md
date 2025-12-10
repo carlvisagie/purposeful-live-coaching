@@ -1246,3 +1246,39 @@ Remove all signup forms. User just enters email/password and immediately starts 
 - [ ] Fix Stripe checkout flow
 - [ ] Test end-to-end signup → payment → AI access
 - [ ] Deploy and verify revenue-ready
+
+
+---
+
+## 🔥 CRITICAL BUG FIXES (Dec 10, 2025)
+
+### Revenue-Blocking Bugs - URGENT
+- [x] AI Chat shows "I'm having trouble connecting" error
+  - Added detailed error logging to diagnose root cause
+  - Deployed commit: 42f2417
+  - Status: Waiting for logs to reveal actual error
+  
+- [x] Payment buttons show "Error" toast when clicked
+  - Root cause: Hardcoded fake Stripe Price IDs
+  - Fix: Changed to environment variables
+  - Deployed commits: 5a0d01d, da62291
+  - Status: Needs Stripe env vars to be fully functional
+
+### Stripe Setup Required (Manual Step)
+- [ ] Create Stripe account (if not exists)
+- [ ] Create 6 products in Stripe ($29, $149, $299, $800, $1200, $2000)
+- [ ] Copy 6 Price IDs from Stripe dashboard
+- [ ] Add STRIPE_SECRET_KEY to Render environment
+- [ ] Add 6 STRIPE_PRICE_* variables to Render environment
+- [ ] Test payment flow end-to-end
+- [ ] Verify test payment in Stripe dashboard
+
+### Testing & Verification
+- [ ] Test AI Chat after deployment completes
+- [ ] Check Render logs for actual AI Chat error
+- [ ] Test payment button (should show "Price ID not configured")
+- [ ] After Stripe setup: test full payment flow
+- [ ] Verify platform is revenue-ready
+
+**Setup Guide:** See `STRIPE_SETUP_RENDER.md` for step-by-step instructions
+**Fix Summary:** See `FIXES_APPLIED.md` for technical details
