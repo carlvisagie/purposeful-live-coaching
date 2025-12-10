@@ -29,15 +29,8 @@ import { LOGIN_URL } from "@/const";
 
 export default function Dashboard() {
   const { data: user } = trpc.auth.me.useQuery();
-  const { data: identityStatement } = trpc.masterSystems.identity.getCurrent.useQuery(undefined, { enabled: !!user });
-  const { data: healthToday } = trpc.health.getToday.useQuery(undefined, { enabled: !!user });
-  const { data: healthStats } = trpc.health.getStats.useQuery({ days: 7 }, { enabled: !!user });
-  const { data: morningStreak } = trpc.dailyOS.morning.getStreak.useQuery(undefined, { enabled: !!user });
-  const { data: stressStats } = trpc.stress.getStats.useQuery({ days: 7 }, { enabled: !!user });
-  const { data: gamificationData } = trpc.gamification.getPoints.useQuery(undefined, { enabled: !!user });
-  const { data: activeMilestones } = trpc.masterSystems.milestones.getActive.useQuery(undefined, { enabled: !!user });
   
-  // Coaching-specific queries
+  // Coaching-specific queries (using only existing routers)
   const { data: subscription } = trpc.subscriptions.getMySubscription.useQuery(undefined, { enabled: !!user });
   const { data: upcomingSessions } = trpc.scheduling.getUpcomingClientSessions.useQuery(
     { clientId: user?.id || 0 },
@@ -67,44 +60,32 @@ export default function Dashboard() {
     );
   }
 
-  // Calculate identity alignment score (0-100)
-  const identityAlignment = identityStatement ? 100 : 0; // Simplified - would be more complex in production
-  
-  // Determine next action based on current state
+  // Determine next action based on available data
   const getNextAction = () => {
-    if (!identityStatement) {
+    if (!subscription) {
       return {
-        title: "Build Your Identity Statement",
-        description: "Foundation for all transformation. Takes 10 minutes.",
-        link: "/identity/builder",
+        title: "Choose Your Plan",
+        description: "Start your transformation journey with the right coaching plan.",
+        link: "/pricing",
         icon: Target,
         priority: "critical"
       };
     }
-    if (!healthToday) {
+    if (!upcomingSessions || upcomingSessions.length === 0) {
       return {
-        title: "Log Today's Health",
-        description: "Track movement, nutrition, sleep, and hydration.",
-        link: "/health",
-        icon: Heart,
-        priority: "high"
-      };
-    }
-    if (!morningStreak || morningStreak.current === 0) {
-      return {
-        title: "Complete Morning Routine",
-        description: "5 non-negotiable items to start your day right.",
-        link: "/daily-os/morning",
-        icon: Zap,
+        title: "Book Your First Session",
+        description: "Schedule a session with your coach to get started.",
+        link: "/my-sessions",
+        icon: Calendar,
         priority: "high"
       };
     }
     return {
       title: "Talk to AI Coach",
-      description: "Get personalized guidance based on your current state.",
+      description: "Get 24/7 support and guidance between coaching sessions.",
       link: "/ai-coach",
       icon: Brain,
-      priority: "medium"
+        priority: "medium"
     };
   };
 
@@ -119,14 +100,11 @@ export default function Dashboard() {
           <div>
             <h1 className="text-4xl font-bold">Welcome back, {user.name?.split(' ')[0] || 'Champion'}</h1>
             <p className="text-muted-foreground mt-2">
-              {identityStatement 
-                ? `You are ${identityStatement.statement}` 
-                : "Let's build your identity foundation"}
+              Your path to freedom starts here
             </p>
           </div>
-          <Badge variant={nextAction.priority === "critical" ? "destructive" : "default"} className="text-lg px-4 py-2">
-            <Sparkles className="mr-2 h-4 w-4" />
-            Level {gamificationData?.level || 1}
+          <Badge variant={subscription ? "default" : "destructive"} className="text-lg px-4 py-2">
+            {subscription ? `${subscription.tier} Plan` : "No Active Plan"}
           </Badge>
         </div>
 
