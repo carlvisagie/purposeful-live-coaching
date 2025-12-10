@@ -11,15 +11,26 @@ const stripe = new Stripe(ENV.stripeSecretKey || process.env.STRIPE_SECRET_KEY |
   apiVersion: "2025-10-29.clover",
 });
 
-// Real Stripe Price IDs from live products
+// Stripe Price IDs from environment variables
+// Set these in Render: STRIPE_PRICE_AI_BASIC, STRIPE_PRICE_AI_PREMIUM, etc.
 const STRIPE_PRICE_IDS = {
-  ai_basic: 'price_1ScBLlCoewQKHsplOoYSMraW', // $29/month
-  ai_premium: 'price_1ScBLlCoewQKHsplhQPwTppM', // $149/month
-  ai_elite: 'price_1ScBLmCoewQKHsplFU27FCJU', // $299/month
-  human_basic: 'price_1ScBLmCoewQKHsplsWrQUuOt', // $800/month
-  human_premium: 'price_1ScBLnCoewQKHspleJO6p8XJ', // $1200/month
-  human_elite: 'price_1ScBLnCoewQKHspl9iyjwFJ8', // $2000/month
+  ai_basic: process.env.STRIPE_PRICE_AI_BASIC || '',
+  ai_premium: process.env.STRIPE_PRICE_AI_PREMIUM || '',
+  ai_elite: process.env.STRIPE_PRICE_AI_ELITE || '',
+  human_basic: process.env.STRIPE_PRICE_HUMAN_BASIC || '',
+  human_premium: process.env.STRIPE_PRICE_HUMAN_PREMIUM || '',
+  human_elite: process.env.STRIPE_PRICE_HUMAN_ELITE || '',
 };
+
+// Validate that all required price IDs are configured
+const missingPriceIds = Object.entries(STRIPE_PRICE_IDS)
+  .filter(([_, value]) => !value)
+  .map(([key]) => key);
+
+if (missingPriceIds.length > 0) {
+  console.warn('[Stripe] Missing price IDs for tiers:', missingPriceIds.join(', '));
+  console.warn('[Stripe] Set these environment variables: ' + missingPriceIds.map(k => `STRIPE_PRICE_${k.toUpperCase()}`).join(', '));
+}
 
 // Subscription tier configuration
 const TIER_CONFIG = {
@@ -165,6 +176,21 @@ export const subscriptionsRouter = router({
       console.log('[createCheckoutSession] Starting checkout for tier:', input.tier);
       console.log('[createCheckoutSession] Price ID:', priceId);
       console.log('[createCheckoutSession] Stripe key configured:', ENV.stripeSecretKey ? 'YES' : 'NO');
+
+      // Validate Stripe configuration
+      if (!ENV.stripeSecretKey && !process.env.STRIPE_SECRET_KEY) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Payment system not configured. Please contact support.',
+        });
+      }
+
+      if (!priceId) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: `Price ID not configured for ${input.tier}. Please contact support.`,
+        });
+      }
 
       try {
         // Create Stripe checkout session (guest checkout - no login required)
