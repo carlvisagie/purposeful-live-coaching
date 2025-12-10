@@ -61,6 +61,9 @@ export default function CoachView() {
     setSelectedClient(client);
   };
 
+  // Mutation for getting or creating session
+  const getOrCreateSessionMutation = trpc.sessions.getOrCreateSession.useMutation();
+
   // Mutation for saving notes
   const saveNoteMutation = trpc.sessions.saveNote.useMutation({
     onSuccess: () => {
@@ -72,19 +75,27 @@ export default function CoachView() {
     },
   });
 
-  const handleAddNote = () => {
+  const handleAddNote = async () => {
     if (!quickNote.trim()) return;
-    
-    // TODO: Get or create active session for this client
-    // For now, just show the note would be saved
-    alert(`Note: ${quickNote}\n\n(Session notes will be saved once session management is connected)`);
-    setQuickNote("");
-    
-    // Future implementation:
-    // 1. Fetch latest session for this client
-    // 2. OR create a new session if none exists
-    // 3. Then save the note to that session
-    // saveNoteMutation.mutate({ sessionId, note: quickNote });
+    if (!selectedClient) {
+      alert("Please select a client first");
+      return;
+    }
+
+    try {
+      // Get or create active session for this client
+      const session = await getOrCreateSessionMutation.mutateAsync({
+        clientId: selectedClient.id,
+      });
+
+      // Save note to the session
+      await saveNoteMutation.mutateAsync({
+        sessionId: session.id,
+        note: quickNote,
+      });
+    } catch (error: any) {
+      alert(`Failed to save note: ${error.message}`);
+    }
   };
 
   if (clientsLoading) {

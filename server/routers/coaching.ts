@@ -867,6 +867,62 @@ export const sessionsRouter = router({
       return session;
     }),
 
+  // Get or create active session for a client
+  getOrCreateSession: protectedProcedure
+    .input(z.object({
+      clientId: z.number(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const coach = await db.query.coaches.findFirst({
+        where: eq(coaches.userId, ctx.user.id),
+      });
+
+      if (!coach) {
+        throw new Error("Coach profile not found");
+      }
+
+      // Check if client belongs to this coach
+      const client = await db.query.clients.findFirst({
+        where: and(
+          eq(clients.id, input.clientId),
+          eq(clients.coachId, coach.id)
+        ),
+      });
+
+      if (!client) {
+        throw new Error("Client not found or access denied");
+      }
+
+      // Look for an active session (scheduled or in-progress) for this client
+      const activeSession = await db.query.sessions.findFirst({
+        where: and(
+          eq(sessions.clientId, input.clientId),
+          eq(sessions.coachId, coach.id),
+          sql`${sessions.status} IN ('scheduled', 'in-progress')`
+        ),
+        orderBy: [desc(sessions.scheduledDate)],
+      });
+
+      if (activeSession) {
+        return activeSession;
+      }
+
+      // No active session found, create a new one
+      const [newSession] = await db.insert(sessions).values({
+        clientId: input.clientId,
+        coachId: coach.id,
+        scheduledDate: new Date(),
+        duration: 60, // Default 60 minutes
+        sessionType: "coaching",
+        status: "in-progress",
+        notes: "",
+        price: 0, // Default price
+        paymentStatus: "pending",
+      }).returning();
+
+      return newSession;
+    }),
+
   // Save session note (quick note during coaching)
   saveNote: protectedProcedure
     .input(z.object({
