@@ -16,7 +16,7 @@ import {
   User,
 } from "lucide-react";
 import { useAuth } from "@/_core/hooks/useAuth";
-import { getLoginUrl } from "@/const";
+import { LOGIN_URL } from "@/const";
 import { Streamdown } from "streamdown";
 import { useLocation } from "wouter";
 import { ConversationRating } from "@/components/ConversationRating";
@@ -174,7 +174,7 @@ export default function AICoach() {
 
   // Auth requirement disabled for demo mode
   // if (!authLoading && !user) {
-  //   window.location.href = getLoginUrl();
+  //   window.location.href = LOGIN_URL;
   //   return null;
   // }
 

@@ -16,7 +16,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useAuth } from "@/_core/hooks/useAuth";
-import { getLoginUrl } from "@/const";
+import { LOGIN_URL } from "@/const";
 import { Badge } from "@/components/ui/badge";
 
 /**
@@ -63,7 +63,7 @@ export default function InsightsDashboard() {
   };
 
   if (!authLoading && !user) {
-    window.location.href = getLoginUrl();
+    window.location.href = LOGIN_URL();
     return null;
   }
 

@@ -15,7 +15,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { useAuth } from "@/_core/hooks/useAuth";
-import { getLoginUrl } from "@/const";
+import { LOGIN_URL } from "@/const";
 import {
   Select,
   SelectContent,
@@ -93,7 +93,7 @@ export default function EmotionTracker() {
 
   // Redirect to login if not authenticated
   if (!authLoading && !user) {
-    window.location.href = getLoginUrl();
+    window.location.href = LOGIN_URL();
     return null;
   }
 
