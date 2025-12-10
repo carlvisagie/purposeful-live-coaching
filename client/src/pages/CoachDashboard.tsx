@@ -70,23 +70,7 @@ export default function CoachDashboard() {
     })) || [])
   ];
 
-  if (!user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Card className="w-96">
-          <CardHeader>
-            <CardTitle>Authentication Required</CardTitle>
-            <CardDescription>Please sign in to access the coach dashboard</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button className="w-full" onClick={() => window.location.href = LOGIN_URL}>
-              Sign In
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  // NO AUTH REQUIRED - Carl has full access
 
   // Filter clients based on search
   const filteredClients = allClients?.filter((client: any) =>

@@ -91,11 +91,7 @@ export default function EmotionTracker() {
     });
   };
 
-  // Redirect to login if not authenticated
-  if (!authLoading && !user) {
-    window.location.href = LOGIN_URL();
-    return null;
-  }
+  // NO AUTH REQUIRED - Carl has full access
 
   if (authLoading) {
     return (
