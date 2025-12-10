@@ -1237,3 +1237,12 @@ Remove all signup forms. User just enters email/password and immediately starts 
 - [ ] Optimize images
 - [ ] Add more documentation
 - [ ] Create admin tools
+
+
+## 🚨 CRITICAL REVENUE-BLOCKING BUGS (FIX NOW)
+- [ ] Debug AI Chat connection error (still showing "I'm having trouble connecting")
+- [ ] Fix OPENAI_API_KEY configuration issue
+- [ ] Debug payment button "Error" toast
+- [ ] Fix Stripe checkout flow
+- [ ] Test end-to-end signup → payment → AI access
+- [ ] Deploy and verify revenue-ready

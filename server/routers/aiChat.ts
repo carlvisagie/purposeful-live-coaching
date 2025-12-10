@@ -352,6 +352,10 @@ export const aiChatRouter = router({
         aiResponse = typeof content === 'string' ? content : "I'm here to help. Could you tell me more?";
       } catch (error) {
         console.error("[AI Chat] LLM error:", error);
+        console.error("[AI Chat] Error stack:", error instanceof Error ? error.stack : 'N/A');
+        console.error("[AI Chat] Error message:", error instanceof Error ? error.message : String(error));
+        console.error("[AI Chat] OPENAI_API_KEY exists:", !!process.env.OPENAI_API_KEY);
+        console.error("[AI Chat] OPENAI_API_KEY length:", process.env.OPENAI_API_KEY?.length || 0);
         aiResponse = "I'm having trouble connecting right now. Please try again in a moment, or reach out to your coach directly if this is urgent.";
       }
 
