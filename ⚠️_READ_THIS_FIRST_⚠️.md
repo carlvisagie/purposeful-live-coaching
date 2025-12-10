@@ -1,10 +1,58 @@
 # ⚠️⚠️⚠️ STOP! READ THIS BEFORE TOUCHING ANYTHING ⚠️⚠️⚠️
 
+## 🚨 RULE #1: ZERO MANUS CODE ALLOWED 🚨
+
+### THIS IS THE #1 RULE - VIOLATE THIS AND YOU'LL BREAK EVERYTHING
+
+**THIS PLATFORM IS 100% INDEPENDENT - ABSOLUTELY NO MANUS CODE ALLOWED**
+
+❌ **NEVER EVER DO THIS:**
+- Import ANYTHING from Manus templates or webdev tools
+- Use Manus-specific utilities, helpers, or components
+- Add Manus OAuth code (we just spent HOURS removing it)
+- Reference Manus APIs (except standard storage/LLM if absolutely needed)
+- Use Manus command-line utilities in the application code
+- Copy code from Manus examples or templates
+- Use `getLoginUrl()` or any Manus OAuth functions
+- Add `redirectToLoginIfUnauthorized()` or similar interceptors
+
+✅ **ALWAYS DO THIS INSTEAD:**
+- Use standard npm packages from npmjs.com
+- Use industry-standard tools (React, tRPC, Stripe, OpenAI, etc.)
+- Deploy to Render.com (NOT Manus hosting)
+- Use simple `/login` routes (NOT Manus OAuth)
+- Use user's OPENAI_API_KEY (NOT Manus LLM endpoints)
+- Use PostgreSQL on Render (NOT Manus database)
+- Check if standard solutions exist before adding dependencies
+
+**WHY THIS MATTERS:**
+- We just removed ALL Manus OAuth code (commits 639e715 + 50d6dc0)
+- Manus code causes OAuth redirects that block guest checkout
+- Manus code makes platform dependent on Manus infrastructure
+- Owner explicitly requires 100% independent platform
+- Every time an agent adds Manus code, we waste hours removing it
+
+**CURRENT STATUS:**
+- ✅ Frontend: 100% Manus-free (verified December 10, 2025)
+- ⏳ Backend: Still has some Manus OAuth code (needs cleanup)
+- ✅ Database: Independent PostgreSQL on Render
+- ✅ Deployment: Independent Render.com deployment
+
+**IF YOU ADD MANUS CODE, YOU WILL:**
+1. Break guest checkout (pricing page will redirect to Manus OAuth)
+2. Break AI Coach (will try to use Manus LLM instead of user's OpenAI)
+3. Create dependencies on Manus infrastructure
+4. Waste hours of work that will need to be undone
+5. Frustrate the project owner (this is a recurring problem)
+
+---
+
 ## 🚨 MANDATORY FOR ALL AGENTS - NO EXCEPTIONS 🚨
 
 **If you are a new agent starting work on this project, you MUST read this entire file before making ANY changes.**
 
 **Failure to read this will cause you to:**
+- Add Manus code we just removed (BIGGEST PROBLEM)
 - Break working features
 - Waste hours of work
 - Frustrate the project owner

@@ -4,6 +4,26 @@
 
 ---
 
+## 🚨 RULE #1: ZERO MANUS CODE ALLOWED 🚨
+
+### THIS PLATFORM IS 100% INDEPENDENT - NO MANUS CODE
+
+**❌ NEVER ADD:**
+- Manus templates, utilities, or components
+- Manus OAuth code (we just removed it)
+- Manus LLM endpoints (use user's OpenAI API)
+- Any Manus-specific dependencies
+
+**✅ ALWAYS USE:**
+- Standard npm packages
+- Industry-standard tools (React, tRPC, Stripe, OpenAI)
+- Render.com deployment
+- User's OPENAI_API_KEY
+
+**STATUS:** Frontend 100% Manus-free (commits 639e715 + 50d6dc0)
+
+---
+
 ## ⚠️ MANDATORY: READ BEFORE STARTING ⚠️
 
 **If you are a new agent working on this project:**
@@ -12,6 +32,8 @@
 **[⚠️_READ_THIS_FIRST_⚠️.md](./⚠️_READ_THIS_FIRST_⚠️.md)**
 
 **This is NOT optional. Reading this file will save you hours of wasted work.**
+
+**The #1 mistake new agents make:** Adding Manus code we just spent hours removing.
 
 ---
 
