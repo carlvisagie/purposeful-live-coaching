@@ -19,7 +19,10 @@ export default function Pricing() {
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
   const [coachingType, setCoachingType] = useState<"ai" | "human">("ai");
 
-  const { data: currentSub } = trpc.subscriptions.getMySubscription.useQuery();
+  // Disable subscription check for guest users (causes 401 errors)
+  const { data: currentSub } = trpc.subscriptions.getMySubscription.useQuery(undefined, {
+    enabled: false, // Always disabled - guests don't need to see "Current Plan"
+  });
   const createCheckout = trpc.subscriptions.createCheckoutSession.useMutation();
 
   const handleSubscribe = async (tier: string, price: number) => {
