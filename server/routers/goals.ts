@@ -23,7 +23,7 @@ import {
   implementationIntentions
 } from "../../drizzle/schema";
 import { eq, and, desc, gte, lte, sql } from "drizzle-orm";
-import { db } from "../_core/db";
+import { db } from "../db";
 
 // ============================================================================
 // GOAL PROFILE

@@ -3,6 +3,9 @@ import { date, decimal, int, integer, pgTable, serial, text, timestamp, varchar 
 // Export identity schema tables
 export * from "./identitySchema";
 
+// Export client recognition schema tables
+export * from "./clientRecognitionSchema";
+
 // Export adaptive learning schema tables
 export * from "./adaptiveLearningSchema";
 

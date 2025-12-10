@@ -1127,3 +1127,48 @@ Remove all signup forms. User just enters email/password and immediately starts 
 - [ ] Test Live Session audio recording
 - [ ] Verify transcription service works
 - [ ] Consider adding video recording for human sessions
+
+## 🎯 Client Recognition System (Voice/Face/Feature)
+
+### Database Schema
+- [ ] Design voice_prints table (userId, voicePrint, enrolledAt, lastVerifiedAt)
+- [ ] Design face_embeddings table (userId, faceEmbedding, enrolledAt, lastVerifiedAt)
+- [ ] Design client_features table (userId, features JSON, updatedAt)
+- [ ] Add recognition fields to sessions table
+
+### Voice Recognition Backend
+- [ ] Implement voice print enrollment endpoint
+- [ ] Implement voice verification endpoint
+- [ ] Integrate voice biometrics API (Azure/AWS/Deepgram)
+- [ ] Store encrypted voice prints in database
+- [ ] Build voice matching algorithm
+
+### Face Recognition Backend
+- [ ] Implement face embedding enrollment endpoint
+- [ ] Implement face verification endpoint
+- [ ] Integrate face recognition API (AWS Rekognition/Azure Face)
+- [ ] Store encrypted face embeddings in database
+- [ ] Build face matching algorithm
+
+### Client Enrollment UI
+- [ ] Build voice enrollment flow (record 3 samples)
+- [ ] Build face enrollment flow (capture 3 photos)
+- [ ] Add enrollment to client onboarding
+- [ ] Build re-enrollment flow for updates
+- [ ] Add enrollment status to client profile
+
+### LiveSessionAssistant Integration
+- [ ] Add voice recognition to session start
+- [ ] Add face recognition to session start (when video enabled)
+- [ ] Auto-load client profile on recognition
+- [ ] Show "Welcome back, [Name]!" on successful recognition
+- [ ] Alert coach if unrecognized voice/face (security)
+- [ ] Track recognition accuracy metrics
+
+### Testing & Deployment
+- [ ] Test voice recognition accuracy (>95% target)
+- [ ] Test face recognition accuracy (>95% target)
+- [ ] Test with different lighting conditions
+- [ ] Test with different microphones
+- [ ] Test privacy/encryption compliance
+- [ ] Deploy recognition system to production
