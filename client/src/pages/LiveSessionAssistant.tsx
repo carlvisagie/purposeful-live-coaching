@@ -103,12 +103,35 @@ export default function LiveSessionAssistant() {
     }
   }, [sessionStartTime, isRecording]);
 
-  // Format elapsed time
+   // Format time helper
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
+
+  // Helper: Convert Blob to Base64
+  const blobToBase64 = (blob: Blob): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64 = (reader.result as string).split(',')[1];
+        resolve(base64);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  };
+
+  // Client recognition state
+  const [recognizedClient, setRecognizedClient] = useState<{id: number, name: string, confidence: number} | null>(null);
+  const [recognitionAttempted, setRecognitionAttempted] = useState(false);
+
+  // Voice recognition mutation
+  const identifyByVoice = trpc.voiceRecognition.identifyClient.useMutation();
+  
+  // Face recognition mutation (when video is enabled)
+  const identifyByFace = trpc.faceRecognition.identifyClient.useMutation();
 
   // Start audio capture
   const startRecording = async () => {
@@ -122,6 +145,50 @@ export default function LiveSessionAssistant() {
       });
 
       setAudioStream(stream);
+      
+      // VOICE RECOGNITION: Capture first 5 seconds for identification
+      if (!recognitionAttempted) {
+        setTimeout(async () => {
+          try {
+            // Get first audio chunk for voice recognition
+            const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+            const audioBase64 = await blobToBase64(audioBlob);
+            
+            const result = await identifyByVoice.mutateAsync({ audioData: audioBase64 });
+            
+            if (result.identified && result.client) {
+              setRecognizedClient({
+                id: result.client.id,
+                name: result.client.name,
+                confidence: result.confidence
+              });
+              
+              toast.success(`Welcome back, ${result.client.name}! 👋`, {
+                description: `Recognized with ${Math.round(result.confidence * 100)}% confidence`
+              });
+              
+              // Load client profile
+              setSessionData({
+                sessionId: 0,
+                clientId: result.client.id,
+                clientName: result.client.name,
+                sessionType: 'coaching',
+                startTime: new Date(),
+                duration: 0
+              });
+            } else {
+              toast.warning('Client not recognized', {
+                description: 'Please verify client identity manually'
+              });
+            }
+            
+            setRecognitionAttempted(true);
+          } catch (error) {
+            console.error('Voice recognition failed:', error);
+            toast.error('Voice recognition unavailable');
+          }
+        }, 5000); // Wait 5 seconds to collect voice sample
+      }
       
       const mediaRecorder = new MediaRecorder(stream, {
         mimeType: "audio/webm",
@@ -451,6 +518,17 @@ export default function LiveSessionAssistant() {
               Live Session AI Assistant
             </h1>
             <p className="text-gray-600 mt-1">Real-time coaching guidance & documentation</p>
+            {recognizedClient && (
+              <div className="mt-2 flex items-center gap-2">
+                <Badge variant="default" className="bg-green-600">
+                  <User className="h-3 w-3 mr-1" />
+                  {recognizedClient.name}
+                </Badge>
+                <span className="text-sm text-gray-500">
+                  Recognized with {Math.round(recognizedClient.confidence * 100)}% confidence
+                </span>
+              </div>
+            )}
           </div>
           
           {/* Session Timer */}

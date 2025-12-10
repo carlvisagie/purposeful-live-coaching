@@ -1172,3 +1172,12 @@ Remove all signup forms. User just enters email/password and immediately starts 
 - [ ] Test with different microphones
 - [ ] Test privacy/encryption compliance
 - [ ] Deploy recognition system to production
+
+## LiveSessionAssistant Recognition Integration
+- [x] Add voice recognition at session start
+- [ ] Add face recognition at session start (when video enabled)
+- [x] Auto-load client profile on successful recognition
+- [x] Show "Welcome back, [Name]!" greeting
+- [ ] Alert coach if unrecognized voice/face (security)
+- [ ] Track recognition accuracy in sessions
+- [ ] Test recognition flow end-to-end
