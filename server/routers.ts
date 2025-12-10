@@ -39,6 +39,8 @@ import { coachDashboardRouter } from "./routers/coachDashboard";
 import { adminRouter } from "./routers/admin";
 import { goalsRouter } from "./routers/goals";
 import { habitFormationRouter } from "./routers/habitFormation";
+import { audioUploadRouter } from "./routers/audioUpload";
+import { ttsRouter } from "./routers/tts";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -90,6 +92,8 @@ export const appRouter = router({
   admin: adminRouter,
   goals: goalsRouter,
   habits: habitFormationRouter,
+  audioUpload: audioUploadRouter,
+  tts: ttsRouter,
 });
 
 export type AppRouter = typeof appRouter;

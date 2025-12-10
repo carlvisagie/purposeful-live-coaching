@@ -169,16 +169,68 @@ export default function LiveSessionAssistant() {
 
   // Process audio chunk for transcription
   const processAudioChunk = async (audioBlob: Blob) => {
+    if (!sessionData) {
+      console.error("No session data available");
+      return;
+    }
+
     setIsTranscribing(true);
     
     try {
-      // TODO: Integrate with speech-to-text API
-      // For now, simulate transcription
-      await simulateTranscription(audioBlob);
+      // Convert audio blob to base64
+      const arrayBuffer = await audioBlob.arrayBuffer();
+      const base64Audio = Buffer.from(arrayBuffer).toString('base64');
+
+      // Upload audio to storage
+      const uploadResult = await trpc.audioUpload.uploadAudioChunk.mutate({
+        sessionId: sessionData.sessionId,
+        audioData: base64Audio,
+        mimeType: audioBlob.type,
+      });
+
+      // Transcribe audio using the uploaded URL
+      await transcribeMutation.mutateAsync({
+        sessionId: sessionData.sessionId,
+        audioUrl: uploadResult.audioUrl,
+        speaker: "client", // TODO: Add speaker detection
+      });
     } catch (error) {
-      console.error("Transcription error:", error);
+      console.error("Audio processing error:", error);
+      toast.error("Failed to process audio");
     } finally {
       setIsTranscribing(false);
+    }
+  };
+
+  // Play audio guidance in coach headset
+  const playCoachAudio = async (text: string) => {
+    try {
+      const result = await trpc.tts.generateSpeech.mutate({
+        text,
+        voice: "nova", // Calm, professional female voice
+        speed: 1.1, // Slightly faster for real-time guidance
+      });
+
+      // Convert base64 to audio and play
+      const audioData = atob(result.audioData);
+      const arrayBuffer = new ArrayBuffer(audioData.length);
+      const view = new Uint8Array(arrayBuffer);
+      for (let i = 0; i < audioData.length; i++) {
+        view[i] = audioData.charCodeAt(i);
+      }
+
+      const audioBlob = new Blob([arrayBuffer], { type: result.mimeType });
+      const audioUrl = URL.createObjectURL(audioBlob);
+      const audio = new Audio(audioUrl);
+      
+      // Play in coach headset (right channel if stereo)
+      audio.play();
+      
+      // Clean up
+      audio.onended = () => URL.revokeObjectURL(audioUrl);
+    } catch (error) {
+      console.error("Failed to play coach audio:", error);
+      // Silently fail - don't disrupt session
     }
   };
 
@@ -234,6 +286,14 @@ export default function LiveSessionAssistant() {
           timestamp: new Date(),
         }));
         setCoachingPrompts((prev) => [...prev, ...newPrompts]);
+        
+        // Play audio for high/critical priority prompts in coach headset
+        const urgentPrompts = newPrompts.filter(p => 
+          p.priority === 'high' || p.priority === 'critical'
+        );
+        if (urgentPrompts.length > 0) {
+          playCoachAudio(urgentPrompts[0].content);
+        }
       }
     },
   });

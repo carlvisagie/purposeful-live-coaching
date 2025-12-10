@@ -1,21 +1,14 @@
 import { useEffect, useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Bot, X, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Bot, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 
 /**
- * AI Disclosure Dialog
+ * AI Disclosure Banner (Non-Blocking)
  * 
  * Complies with California SB 243 and New York AI Companion Models law:
- * - Shows disclosure at conversation start
+ * - Shows disclosure banner at conversation start
+ * - Non-blocking - users can still use the app
  * - Repeats every 3 hours during active conversations
  * - Persists state across page refreshes
  */
@@ -24,7 +17,7 @@ const DISCLOSURE_INTERVAL_MS = 3 * 60 * 60 * 1000; // 3 hours in milliseconds
 const STORAGE_KEY = "ai_disclosure_last_shown";
 
 export function AIDisclosureDialog() {
-  const [showDisclosure, setShowDisclosure] = useState(false);
+  const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
     // Check if we need to show disclosure
@@ -33,19 +26,19 @@ export function AIDisclosureDialog() {
 
     if (!lastShown) {
       // First time - show immediately
-      setShowDisclosure(true);
+      setShowBanner(true);
     } else {
       const lastShownTime = parseInt(lastShown, 10);
       const timeSinceLastShown = now - lastShownTime;
 
       if (timeSinceLastShown >= DISCLOSURE_INTERVAL_MS) {
         // 3 hours have passed - show again
-        setShowDisclosure(true);
+        setShowBanner(true);
       } else {
         // Schedule next disclosure
         const timeUntilNext = DISCLOSURE_INTERVAL_MS - timeSinceLastShown;
         const timer = setTimeout(() => {
-          setShowDisclosure(true);
+          setShowBanner(true);
         }, timeUntilNext);
 
         return () => clearTimeout(timer);
@@ -56,84 +49,47 @@ export function AIDisclosureDialog() {
   // Set up recurring 3-hour reminders
   useEffect(() => {
     const interval = setInterval(() => {
-      setShowDisclosure(true);
+      setShowBanner(true);
     }, DISCLOSURE_INTERVAL_MS);
 
     return () => clearInterval(interval);
   }, []);
 
-  const handleAcknowledge = () => {
+  const handleDismiss = () => {
     // Record that disclosure was shown
     localStorage.setItem(STORAGE_KEY, Date.now().toString());
-    setShowDisclosure(false);
-    
-    // Show toast reminder
-    toast.info("Reminder: You are chatting with AI, not a human", {
-      duration: 5000,
-      icon: <Bot className="h-4 w-4" />,
-    });
+    setShowBanner(false);
   };
 
+  if (!showBanner) return null;
+
   return (
-    <Dialog open={showDisclosure} onOpenChange={setShowDisclosure}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <div className="flex items-center gap-2 mb-2">
-            <Bot className="h-6 w-6 text-blue-600" />
-            <DialogTitle>You Are Talking to AI</DialogTitle>
-          </div>
-          <DialogDescription className="space-y-3 text-left">
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-              <div className="flex items-start gap-2">
-                <AlertCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                <div className="space-y-2 text-sm text-gray-700">
-                  <p className="font-medium">
-                    You are chatting with an AI coach, not a human therapist.
-                  </p>
-                  <p>
-                    This AI provides wellness support and emotional coaching, but it is <strong>not a replacement for professional mental health care</strong>.
-                  </p>
-                </div>
-              </div>
+    <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg">
+      <div className="container mx-auto px-4 py-3">
+        <div className="flex items-start gap-3">
+          <Bot className="h-5 w-5 flex-shrink-0 mt-0.5" />
+          <div className="flex-1 space-y-1">
+            <div className="flex items-center gap-2">
+              <p className="font-semibold text-sm">You're Chatting with AI</p>
+              <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full">Not a Human Therapist</span>
             </div>
-
-            <div className="space-y-2 text-sm text-gray-600">
-              <p><strong>What this AI can do:</strong></p>
-              <ul className="list-disc list-inside space-y-1 ml-2">
-                <li>Provide 24/7 emotional support and wellness coaching</li>
-                <li>Help you develop coping strategies and healthy habits</li>
-                <li>Guide you through mindfulness and self-reflection</li>
-                <li>Detect crisis situations and connect you to help</li>
-              </ul>
-            </div>
-
-            <div className="space-y-2 text-sm text-gray-600">
-              <p><strong>What this AI cannot do:</strong></p>
-              <ul className="list-disc list-inside space-y-1 ml-2">
-                <li>Provide therapy, diagnosis, or medical treatment</li>
-                <li>Replace professional mental health care</li>
-                <li>Handle immediate crisis situations</li>
-              </ul>
-            </div>
-
-            <div className="bg-rose-50 border border-rose-200 rounded-lg p-3">
-              <p className="text-sm text-gray-700">
-                <strong>If you're in crisis:</strong> Call <strong>988</strong> (Suicide & Crisis Lifeline) or <strong>911</strong> for immediate help.
-              </p>
-            </div>
-
-            <p className="text-xs text-gray-500 italic">
-              This disclosure will appear again in 3 hours as required by law.
+            <p className="text-xs text-blue-100">
+              This AI provides wellness support but is <strong>not a replacement for professional mental health care</strong>. 
+              <span className="mx-1">•</span>
+              <strong>Crisis?</strong> Call <strong>988</strong> (Suicide & Crisis Lifeline) or <strong>911</strong>.
             </p>
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <Button onClick={handleAcknowledge} className="w-full">
-            I Understand
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleDismiss}
+            className="text-white hover:bg-white/20 h-8 w-8 p-0 flex-shrink-0"
+          >
+            <X className="h-4 w-4" />
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </div>
+      </div>
+    </div>
   );
 }
 
