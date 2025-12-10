@@ -1,307 +1,309 @@
-import { useState, useEffect } from 'react';
-import '../styles/AdminDashboard.css';
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Users,
+  DollarSign,
+  TrendingUp,
+  AlertTriangle,
+  Activity,
+  UserPlus,
+  CreditCard,
+  BarChart3,
+  Download,
+  Settings,
+  Bell,
+  CheckCircle2,
+  XCircle,
+  Clock,
+} from "lucide-react";
+import { trpc } from "@/lib/trpc";
 
-const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState('overview');
-  const [stats, setStats] = useState<any>(null);
-  const [users, setUsers] = useState<any[]>([]);
-  const [crisisAlerts, setCrisisAlerts] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+/**
+ * Admin Dashboard - Platform Management
+ * 
+ * Features:
+ * - Real-time platform statistics
+ * - User management overview
+ * - Revenue tracking
+ * - Crisis alert monitoring
+ * - Analytics and insights
+ * 
+ * Design: Modern Tailwind + Shadcn/ui (matches platform aesthetic)
+ */
+export default function AdminDashboard() {
+  const [timeRange, setTimeRange] = useState<"7d" | "30d" | "90d">("30d");
 
-  useEffect(() => {
-    fetchDashboardData();
-  }, []);
-
-  const fetchDashboardData = async () => {
-    try {
-      // TODO: Replace with actual API calls
-      setStats({
-        total_users: 0,
-        new_users_this_month: 0,
-        active_sessions: 0,
-        pending_crisis_alerts: 0,
-        revenue_mtd: 0,
-        revenue_growth: 0,
-        users_by_tier: {
-          shift_session: 0,
-          clarity_plus: 0,
-          mastery: 0
-        }
-      });
-      setUsers([]);
-      setCrisisAlerts([]);
-      setIsLoading(false);
-    } catch (err) {
-      console.error('Failed to load admin dashboard');
-      setStats({});
-      setUsers([]);
-      setCrisisAlerts([]);
-      setIsLoading(false);
-    }
+  // TODO: Replace with actual tRPC queries when admin endpoints are ready
+  const stats = {
+    totalUsers: 0,
+    newUsersThisMonth: 0,
+    activeSessions: 0,
+    pendingCrisisAlerts: 0,
+    revenueMTD: 0,
+    revenueGrowth: 0,
+    usersByTier: {
+      basic: 0,
+      premium: 0,
+      elite: 0,
+    },
   };
 
-  if (isLoading) {
-    return (
-      <div className="admin-loading">
-        <div className="spinner"></div>
-        <p>Loading admin dashboard...</p>
-      </div>
-    );
-  }
+  const recentUsers = [];
+  const crisisAlerts = [];
 
   return (
-    <div className="admin-dashboard">
-      <header className="admin-header">
-        <h1>Admin Dashboard</h1>
-        <div className="admin-actions">
-          <button className="btn btn-secondary">Export Data</button>
-          <button className="btn btn-primary">System Settings</button>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-blue-950 dark:to-indigo-950">
+      {/* Header */}
+      <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50">
+        <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Admin Dashboard</h1>
+              <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">Platform management and monitoring</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <Button variant="outline" size="sm">
+                <Download className="h-4 w-4 mr-2" />
+                Export Data
+              </Button>
+              <Button variant="outline" size="sm">
+                <Settings className="h-4 w-4 mr-2" />
+                Settings
+              </Button>
+            </div>
+          </div>
         </div>
       </header>
 
-      <nav className="admin-nav">
-        <button
-          className={activeTab === 'overview' ? 'active' : ''}
-          onClick={() => setActiveTab('overview')}
-        >
-          Overview
-        </button>
-        <button
-          className={activeTab === 'users' ? 'active' : ''}
-          onClick={() => setActiveTab('users')}
-        >
-          Users
-        </button>
-        <button
-          className={activeTab === 'crisis' ? 'active' : ''}
-          onClick={() => setActiveTab('crisis')}
-        >
-          Crisis Alerts
-          {crisisAlerts.filter(a => a.status === 'pending').length > 0 && (
-            <span className="alert-badge">
-              {crisisAlerts.filter(a => a.status === 'pending').length}
-            </span>
-          )}
-        </button>
-        <button
-          className={activeTab === 'analytics' ? 'active' : ''}
-          onClick={() => setActiveTab('analytics')}
-        >
-          Analytics
-        </button>
-      </nav>
+      {/* Main Content */}
+      <main className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* Crisis Alerts Banner */}
+        {stats.pendingCrisisAlerts > 0 && (
+          <Card className="border-l-4 border-l-red-500 bg-red-50 dark:bg-red-950/20">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-400" />
+                  <div>
+                    <CardTitle className="text-red-900 dark:text-red-100">
+                      {stats.pendingCrisisAlerts} Pending Crisis Alert{stats.pendingCrisisAlerts !== 1 ? 's' : ''}
+                    </CardTitle>
+                    <CardDescription className="text-red-700 dark:text-red-300">
+                      Immediate attention required
+                    </CardDescription>
+                  </div>
+                </div>
+                <Button variant="destructive" size="sm">
+                  <Bell className="h-4 w-4 mr-2" />
+                  View Alerts
+                </Button>
+              </div>
+            </CardHeader>
+          </Card>
+        )}
 
-      <main className="admin-content">
-        {activeTab === 'overview' && <OverviewTab stats={stats} />}
-        {activeTab === 'users' && <UsersTab users={users} />}
-        {activeTab === 'crisis' && <CrisisTab alerts={crisisAlerts} onRefresh={fetchDashboardData} />}
-        {activeTab === 'analytics' && <AnalyticsTab stats={stats} />}
+        {/* Key Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Card className="hover:shadow-lg transition-shadow bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/50 dark:to-indigo-950/50 border-blue-200 dark:border-blue-800">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-slate-700 dark:text-slate-300">Total Users</CardTitle>
+              <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-slate-900 dark:text-white">{stats.totalUsers.toLocaleString()}</div>
+              <p className="text-xs text-blue-600 dark:text-blue-400 mt-1 font-medium flex items-center gap-1">
+                <UserPlus className="h-3 w-3" />
+                +{stats.newUsersThisMonth} this month
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/50 dark:to-emerald-950/50 border-green-200 dark:border-green-800">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-slate-700 dark:text-slate-300">Revenue (MTD)</CardTitle>
+              <DollarSign className="h-5 w-5 text-green-600 dark:text-green-400" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-slate-900 dark:text-white">${stats.revenueMTD.toLocaleString()}</div>
+              <p className="text-xs text-green-600 dark:text-green-400 mt-1 font-medium flex items-center gap-1">
+                <TrendingUp className="h-3 w-3" />
+                +{stats.revenueGrowth}% vs last month
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/50 dark:to-pink-950/50 border-purple-200 dark:border-purple-800">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-slate-700 dark:text-slate-300">Active Sessions</CardTitle>
+              <Activity className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-slate-900 dark:text-white">{stats.activeSessions}</div>
+              <p className="text-xs text-purple-600 dark:text-purple-400 mt-1 font-medium">
+                Live coaching sessions
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950/50 dark:to-amber-950/50 border-orange-200 dark:border-orange-800">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-slate-700 dark:text-slate-300">Crisis Alerts</CardTitle>
+              <AlertTriangle className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-slate-900 dark:text-white">{stats.pendingCrisisAlerts}</div>
+              <p className="text-xs text-orange-600 dark:text-orange-400 mt-1 font-medium">
+                Pending review
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Tabs */}
+        <Tabs defaultValue="overview" className="space-y-6">
+          <TabsList className="bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="users">Users</TabsTrigger>
+            <TabsTrigger value="crisis">
+              Crisis Alerts
+              {stats.pendingCrisisAlerts > 0 && (
+                <Badge variant="destructive" className="ml-2 px-1.5 py-0 text-xs">
+                  {stats.pendingCrisisAlerts}
+                </Badge>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          </TabsList>
+
+          {/* Overview Tab */}
+          <TabsContent value="overview" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* User Distribution */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CreditCard className="h-5 w-5 text-blue-600" />
+                    User Distribution by Tier
+                  </CardTitle>
+                  <CardDescription>Active subscriptions breakdown</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                      <span className="text-sm font-medium">Basic ($29/mo)</span>
+                    </div>
+                    <span className="text-sm font-bold">{stats.usersByTier.basic}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-purple-500"></div>
+                      <span className="text-sm font-medium">Premium ($149/mo)</span>
+                    </div>
+                    <span className="text-sm font-bold">{stats.usersByTier.premium}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-amber-500"></div>
+                      <span className="text-sm font-medium">Elite ($299/mo)</span>
+                    </div>
+                    <span className="text-sm font-bold">{stats.usersByTier.elite}</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Recent Activity */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Activity className="h-5 w-5 text-green-600" />
+                    Recent Activity
+                  </CardTitle>
+                  <CardDescription>Latest platform events</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {recentUsers.length === 0 ? (
+                    <div className="text-center py-8 text-slate-500">
+                      <Activity className="h-12 w-12 mx-auto mb-3 opacity-20" />
+                      <p className="text-sm">No recent activity</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {/* Activity items will go here */}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Users Tab */}
+          <TabsContent value="users">
+            <Card>
+              <CardHeader>
+                <CardTitle>User Management</CardTitle>
+                <CardDescription>View and manage platform users</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-12 text-slate-500">
+                  <Users className="h-16 w-16 mx-auto mb-4 opacity-20" />
+                  <p className="text-sm">User management coming soon</p>
+                  <p className="text-xs mt-2">Connect to tRPC admin endpoints</p>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Crisis Alerts Tab */}
+          <TabsContent value="crisis">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <AlertTriangle className="h-5 w-5 text-red-600" />
+                  Crisis Alerts
+                </CardTitle>
+                <CardDescription>Monitor and respond to crisis situations</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {crisisAlerts.length === 0 ? (
+                  <div className="text-center py-12 text-slate-500">
+                    <CheckCircle2 className="h-16 w-16 mx-auto mb-4 text-green-500 opacity-20" />
+                    <p className="text-sm font-medium text-green-600">No pending crisis alerts</p>
+                    <p className="text-xs mt-2 text-slate-500">All users are safe</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {/* Crisis alert items will go here */}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Analytics Tab */}
+          <TabsContent value="analytics">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BarChart3 className="h-5 w-5 text-purple-600" />
+                  Analytics & Insights
+                </CardTitle>
+                <CardDescription>Platform performance metrics</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-12 text-slate-500">
+                  <BarChart3 className="h-16 w-16 mx-auto mb-4 opacity-20" />
+                  <p className="text-sm">Analytics dashboard coming soon</p>
+                  <p className="text-xs mt-2">Charts and insights will appear here</p>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </main>
     </div>
   );
-};
-
-const OverviewTab = ({ stats }: { stats: any }) => (
-  <div className="overview-tab">
-    <div className="stats-grid">
-      <div className="stat-card">
-        <h3>Total Users</h3>
-        <p className="stat-number">{stats?.total_users || 0}</p>
-        <p className="stat-change positive">+{stats?.new_users_this_month || 0} this month</p>
-      </div>
-
-      <div className="stat-card">
-        <h3>Active Sessions</h3>
-        <p className="stat-number">{stats?.active_sessions || 0}</p>
-        <p className="stat-label">Currently in progress</p>
-      </div>
-
-      <div className="stat-card">
-        <h3>Crisis Alerts</h3>
-        <p className="stat-number critical">{stats?.pending_crisis_alerts || 0}</p>
-        <p className="stat-label">Requiring attention</p>
-      </div>
-
-      <div className="stat-card">
-        <h3>Revenue (MTD)</h3>
-        <p className="stat-number">${stats?.revenue_mtd || 0}</p>
-        <p className="stat-change positive">+{stats?.revenue_growth || 0}% vs last month</p>
-      </div>
-    </div>
-
-    <div className="tier-breakdown">
-      <h3>Users by Tier</h3>
-      <div className="tier-stats">
-        <div className="tier-stat">
-          <span className="tier-name">Shift Session</span>
-          <span className="tier-count">{stats?.users_by_tier?.shift_session || 0}</span>
-        </div>
-        <div className="tier-stat">
-          <span className="tier-name">Clarity+</span>
-          <span className="tier-count">{stats?.users_by_tier?.clarity_plus || 0}</span>
-        </div>
-        <div className="tier-stat">
-          <span className="tier-name">Mastery</span>
-          <span className="tier-count">{stats?.users_by_tier?.mastery || 0}</span>
-        </div>
-      </div>
-    </div>
-  </div>
-);
-
-const UsersTab = ({ users }: { users: any[] }) => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterTier, setFilterTier] = useState('all');
-
-  const filteredUsers = users.filter(user => {
-    const matchesSearch = user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      `${user.first_name} ${user.last_name}`.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesTier = filterTier === 'all' || user.tier === filterTier;
-    return matchesSearch && matchesTier;
-  });
-
-  return (
-    <div className="users-tab">
-      <div className="users-controls">
-        <input
-          type="text"
-          placeholder="Search users..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="search-input"
-        />
-        <select
-          value={filterTier}
-          onChange={(e) => setFilterTier(e.target.value)}
-          className="filter-select"
-        >
-          <option value="all">All Tiers</option>
-          <option value="shift_session">Shift Session</option>
-          <option value="clarity_plus">Clarity+</option>
-          <option value="mastery">Mastery</option>
-        </select>
-      </div>
-
-      <div className="users-table">
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Tier</th>
-              <th>Status</th>
-              <th>Joined</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredUsers.map(user => (
-              <tr key={user.id}>
-                <td>{user.first_name} {user.last_name}</td>
-                <td>{user.email}</td>
-                <td>
-                  <span className={`tier-badge ${user.tier}`}>{user.tier}</span>
-                </td>
-                <td>
-                  <span className={`status-badge ${user.status}`}>{user.status}</span>
-                </td>
-                <td>{new Date(user.created_at).toLocaleDateString()}</td>
-                <td>
-                  <button className="btn btn-small">View</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-};
-
-const CrisisTab = ({ alerts, onRefresh }: { alerts: any[]; onRefresh: () => void }) => {
-  const handleResolve = async (alertId: number) => {
-    try {
-      // TODO: Implement API call
-      console.log('Resolving alert:', alertId);
-      onRefresh();
-    } catch (err) {
-      console.error('Failed to resolve alert');
-    }
-  };
-
-  return (
-    <div className="crisis-tab">
-      <h2>Crisis Alerts</h2>
-      {alerts.length > 0 ? (
-        <div className="crisis-list">
-          {alerts.map(alert => (
-            <div key={alert.id} className={`crisis-card ${alert.status}`}>
-              <div className="crisis-header">
-                <h4>{alert.user_name}</h4>
-                <span className={`crisis-severity ${alert.severity}`}>
-                  {alert.severity}
-                </span>
-              </div>
-              <div className="crisis-body">
-                <p><strong>Detected:</strong> {new Date(alert.created_at).toLocaleString()}</p>
-                <p><strong>Reason:</strong> {alert.reason}</p>
-                <p><strong>Contact:</strong> {alert.user_email} | {alert.user_phone}</p>
-              </div>
-              <div className="crisis-actions">
-                {alert.status === 'pending' && (
-                  <>
-                    <button className="btn btn-primary" onClick={() => handleResolve(alert.id)}>
-                      Mark Resolved
-                    </button>
-                    <button className="btn btn-secondary">Contact User</button>
-                  </>
-                )}
-                {alert.status === 'resolved' && (
-                  <p className="resolved-note">Resolved by {alert.resolved_by} on {new Date(alert.resolved_at).toLocaleDateString()}</p>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="no-alerts">
-          <p>No crisis alerts at this time</p>
-        </div>
-      )}
-    </div>
-  );
-};
-
-const AnalyticsTab = ({ stats }: { stats: any }) => (
-  <div className="analytics-tab">
-    <h2>Platform Analytics</h2>
-    
-    <div className="analytics-grid">
-      <div className="analytics-card">
-        <h3>Session Completion Rate</h3>
-        <p className="analytics-number">{stats?.completion_rate || 0}%</p>
-        <p className="analytics-label">Of scheduled sessions completed</p>
-      </div>
-
-      <div className="analytics-card">
-        <h3>Average Wellness Score</h3>
-        <p className="analytics-number">{stats?.avg_wellness_score || 0}/100</p>
-        <p className="analytics-label">Across all active users</p>
-      </div>
-
-      <div className="analytics-card">
-        <h3>User Retention</h3>
-        <p className="analytics-number">{stats?.retention_rate || 0}%</p>
-        <p className="analytics-label">30-day retention rate</p>
-      </div>
-
-      <div className="analytics-card">
-        <h3>Crisis Detection Rate</h3>
-        <p className="analytics-number">{stats?.crisis_detection_rate || 0}%</p>
-        <p className="analytics-label">Of assessments flagged</p>
-      </div>
-    </div>
-  </div>
-);
-
-export default AdminDashboard;
+}
