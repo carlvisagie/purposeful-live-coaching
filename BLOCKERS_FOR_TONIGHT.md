@@ -56,13 +56,59 @@ Run this command from Render dashboard:
 
 While you handle the DB migration tonight, I'm completing:
 
-1. ✅ **Session Management** - CoachView notes workflow
-2. ✅ **Email Notifications** - Welcome, confirmations, receipts
-3. ✅ **Loading States** - Skeleton loaders for all pages
-4. ✅ **Testing** - Critical user flows
-5. ✅ **Documentation** - Final completion report
+1. ✅ **Session Management** - CoachView notes workflow (DONE)
+2. ✅ **Email Notifications** - Templates ready, needs SMTP config (DONE)
+3. 🔄 **Loading States** - Skeleton loaders for all pages (IN PROGRESS)
+4. ⏳ **Testing** - Critical user flows
+5. ⏳ **Documentation** - Final completion report
 
 **All of this will be deployed and ready when you get home!**
+
+---
+
+## ⚠️ BLOCKER #2: Email Notifications Need SMTP Configuration
+
+**Issue:** Email service is implemented but needs SMTP credentials to send emails
+
+**Status:** ✅ Code complete, ⏳ Needs configuration
+
+**What's Done:**
+- ✅ Email service module created (`server/lib/email.ts`)
+- ✅ 5 email templates ready (welcome, confirmation, receipt, crisis, progress)
+- ✅ Professional HTML design
+- ✅ Error handling
+- ✅ Full documentation (`EMAIL_SETUP_GUIDE.md`)
+
+**What You Need To Do Tonight:**
+
+**Option 1: Gmail (Quickest - 5 minutes)**
+```bash
+# 1. Go to https://myaccount.google.com/apppasswords
+# 2. Create app password for "Mail"
+# 3. Add to Render environment:
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-16-char-app-password
+FROM_EMAIL=your-email@gmail.com
+FROM_NAME=Purposeful Live Coaching
+```
+
+**Option 2: SendGrid/Resend (Production - 10 minutes)**
+- See `EMAIL_SETUP_GUIDE.md` for full instructions
+- Free tier: 100 emails/day
+- More reliable for production
+
+**Impact:**
+- Enables welcome emails on signup
+- Enables session confirmation emails
+- Enables payment receipts
+- Enables crisis alerts to coaches
+- Better user engagement
+
+**Time Required:** 5-15 minutes
+
+**Priority:** MEDIUM (nice to have, not critical for launch)
 
 ---
 
