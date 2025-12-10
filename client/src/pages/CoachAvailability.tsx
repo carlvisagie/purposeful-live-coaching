@@ -20,7 +20,8 @@ const DAYS_OF_WEEK = [
 ];
 
 export default function CoachAvailability() {
-  const [coachId, setCoachId] = useState(1); // TODO: Get from auth context
+  const { data: user } = trpc.auth.me.useQuery();
+  const coachId = user?.id || 0;
   const [selectedDay, setSelectedDay] = useState<number>(1);
   const [startTime, setStartTime] = useState("09:00");
   const [endTime, setEndTime] = useState("17:00");

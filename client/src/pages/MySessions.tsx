@@ -10,7 +10,8 @@ import { Calendar, Clock, Video, XCircle, AlertCircle } from "lucide-react";
 import { useLocation } from "wouter";
 
 export default function MySessions() {
-  const [clientId] = useState(1); // TODO: Get from auth context
+  const { data: user } = trpc.auth.me.useQuery();
+  const clientId = user?.id || 0;
   const [cancellingSession, setCancellingSession] = useState<number | null>(null);
   const [, setLocation] = useLocation();
 

@@ -11,7 +11,8 @@ import { toast } from "sonner";
 import { Plus, Edit, Trash2, DollarSign, Clock } from "lucide-react";
 
 export default function ManageSessionTypes() {
-  const [coachId] = useState(1); // TODO: Get from auth context
+  const { data: user } = trpc.auth.me.useQuery();
+  const coachId = user?.id || 0;
   const [showDialog, setShowDialog] = useState(false);
   const [editingType, setEditingType] = useState<any>(null);
   
