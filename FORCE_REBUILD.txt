@@ -1,0 +1,13 @@
+Force rebuild timestamp: 2025-12-10 14:05:00 EST
+
+This file triggers a fresh Render deployment to ensure the latest code (without Manus OAuth) is deployed.
+
+Commits to deploy:
+- 119c3eb: Remove all Manus OAuth code
+- 4dfbe2d: Update todo
+- d464e0f: Add deployment summary
+
+Expected result:
+- No Manus OAuth redirects
+- Guest checkout works
+- Payment flow functional
