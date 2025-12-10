@@ -61,11 +61,28 @@ export default function CoachView() {
     setSelectedClient(client);
   };
 
+  // Mutation for saving notes
+  const saveNoteMutation = trpc.sessions.saveNote.useMutation({
+    onSuccess: () => {
+      alert(`Note saved successfully!`);
+      setQuickNote("");
+    },
+    onError: (error) => {
+      alert(`Failed to save note: ${error.message}`);
+    },
+  });
+
   const handleAddNote = () => {
     if (!quickNote.trim()) return;
-    // TODO: Save note to database
-    alert(`Note saved: ${quickNote}`);
-    setQuickNote("");
+    if (!selectedClient?.lastSessionId) {
+      alert("No active session found for this client");
+      return;
+    }
+    
+    saveNoteMutation.mutate({
+      sessionId: selectedClient.lastSessionId,
+      note: quickNote,
+    });
   };
 
   if (clientsLoading) {

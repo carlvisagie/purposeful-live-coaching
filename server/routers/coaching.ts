@@ -867,6 +867,44 @@ export const sessionsRouter = router({
       return session;
     }),
 
+  // Save session note (quick note during coaching)
+  saveNote: protectedProcedure
+    .input(z.object({
+      sessionId: z.number(),
+      note: z.string().min(1, "Note cannot be empty"),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const session = await db.query.sessions.findFirst({
+        where: eq(sessions.id, input.sessionId),
+      });
+
+      if (!session) {
+        throw new Error("Session not found");
+      }
+
+      const coach = await db.query.coaches.findFirst({
+        where: eq(coaches.userId, ctx.user.id),
+      });
+
+      if (!coach || session.coachId !== coach.id) {
+        throw new Error("Access denied");
+      }
+
+      // Append note to existing notes with timestamp
+      const timestamp = new Date().toISOString();
+      const existingNotes = session.notes || "";
+      const newNote = `[${timestamp}] ${input.note}`;
+      const updatedNotes = existingNotes 
+        ? `${existingNotes}\n\n${newNote}` 
+        : newNote;
+
+      await db.update(sessions)
+        .set({ notes: updatedNotes })
+        .where(eq(sessions.id, input.sessionId));
+
+      return { success: true, note: newNote };
+    }),
+
   // Update session
   update: protectedProcedure
     .input(z.object({

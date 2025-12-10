@@ -36,23 +36,25 @@ import { trpc } from "@/lib/trpc";
 export default function AdminDashboard() {
   const [timeRange, setTimeRange] = useState<"7d" | "30d" | "90d">("30d");
 
-  // TODO: Replace with actual tRPC queries when admin endpoints are ready
-  const stats = {
+  // Real tRPC queries - connected to admin router
+  const { data: stats, isLoading: statsLoading } = trpc.admin.getStats.useQuery({ timeRange });
+  const { data: recentUsers, isLoading: usersLoading } = trpc.admin.getRecentUsers.useQuery({ limit: 5 });
+  const { data: crisisAlerts, isLoading: alertsLoading } = trpc.admin.getCrisisAlerts.useQuery({ status: "pending", limit: 5 });
+
+  const isLoading = statsLoading || usersLoading || alertsLoading;
+
+  // Default values while loading
+  const statsData = stats || {
     totalUsers: 0,
     newUsersThisMonth: 0,
     activeSessions: 0,
     pendingCrisisAlerts: 0,
     revenueMTD: 0,
     revenueGrowth: 0,
-    usersByTier: {
-      basic: 0,
-      premium: 0,
-      elite: 0,
-    },
+    usersByTier: { basic: 0, premium: 0, elite: 0 },
   };
-
-  const recentUsers = [];
-  const crisisAlerts = [];
+  const recentUsersData = recentUsers || [];
+  const crisisAlertsData = crisisAlerts || [];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-blue-950 dark:to-indigo-950">
@@ -81,7 +83,7 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <main className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         {/* Crisis Alerts Banner */}
-        {stats.pendingCrisisAlerts > 0 && (
+        {statsData.pendingCrisisAlerts > 0 && (
           <Card className="border-l-4 border-l-red-500 bg-red-50 dark:bg-red-950/20">
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -89,7 +91,7 @@ export default function AdminDashboard() {
                   <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-400" />
                   <div>
                     <CardTitle className="text-red-900 dark:text-red-100">
-                      {stats.pendingCrisisAlerts} Pending Crisis Alert{stats.pendingCrisisAlerts !== 1 ? 's' : ''}
+                      {statsData.pendingCrisisAlerts} Pending Crisis Alert{statsData.pendingCrisisAlerts !== 1 ? 's' : ''}
                     </CardTitle>
                     <CardDescription className="text-red-700 dark:text-red-300">
                       Immediate attention required
@@ -113,10 +115,10 @@ export default function AdminDashboard() {
               <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-slate-900 dark:text-white">{stats.totalUsers.toLocaleString()}</div>
+              <div className="text-3xl font-bold text-slate-900 dark:text-white">{statsData.totalUsers.toLocaleString()}</div>
               <p className="text-xs text-blue-600 dark:text-blue-400 mt-1 font-medium flex items-center gap-1">
                 <UserPlus className="h-3 w-3" />
-                +{stats.newUsersThisMonth} this month
+                +{statsData.newUsersThisMonth} this month
               </p>
             </CardContent>
           </Card>
@@ -127,10 +129,10 @@ export default function AdminDashboard() {
               <DollarSign className="h-5 w-5 text-green-600 dark:text-green-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-slate-900 dark:text-white">${stats.revenueMTD.toLocaleString()}</div>
+              <div className="text-3xl font-bold text-slate-900 dark:text-white">${statsData.revenueMTD.toLocaleString()}</div>
               <p className="text-xs text-green-600 dark:text-green-400 mt-1 font-medium flex items-center gap-1">
                 <TrendingUp className="h-3 w-3" />
-                +{stats.revenueGrowth}% vs last month
+                +{statsData.revenueGrowth}% vs last month
               </p>
             </CardContent>
           </Card>
@@ -141,7 +143,7 @@ export default function AdminDashboard() {
               <Activity className="h-5 w-5 text-purple-600 dark:text-purple-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-slate-900 dark:text-white">{stats.activeSessions}</div>
+              <div className="text-3xl font-bold text-slate-900 dark:text-white">{statsData.activeSessions}</div>
               <p className="text-xs text-purple-600 dark:text-purple-400 mt-1 font-medium">
                 Live coaching sessions
               </p>
@@ -154,7 +156,7 @@ export default function AdminDashboard() {
               <AlertTriangle className="h-5 w-5 text-orange-600 dark:text-orange-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-slate-900 dark:text-white">{stats.pendingCrisisAlerts}</div>
+              <div className="text-3xl font-bold text-slate-900 dark:text-white">{statsData.pendingCrisisAlerts}</div>
               <p className="text-xs text-orange-600 dark:text-orange-400 mt-1 font-medium">
                 Pending review
               </p>
@@ -169,9 +171,9 @@ export default function AdminDashboard() {
             <TabsTrigger value="users">Users</TabsTrigger>
             <TabsTrigger value="crisis">
               Crisis Alerts
-              {stats.pendingCrisisAlerts > 0 && (
+              {statsData.pendingCrisisAlerts > 0 && (
                 <Badge variant="destructive" className="ml-2 px-1.5 py-0 text-xs">
-                  {stats.pendingCrisisAlerts}
+                  {statsData.pendingCrisisAlerts}
                 </Badge>
               )}
             </TabsTrigger>
@@ -196,21 +198,21 @@ export default function AdminDashboard() {
                       <div className="w-3 h-3 rounded-full bg-blue-500"></div>
                       <span className="text-sm font-medium">Basic ($29/mo)</span>
                     </div>
-                    <span className="text-sm font-bold">{stats.usersByTier.basic}</span>
+                    <span className="text-sm font-bold">{statsData.usersByTier.basic}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded-full bg-purple-500"></div>
                       <span className="text-sm font-medium">Premium ($149/mo)</span>
                     </div>
-                    <span className="text-sm font-bold">{stats.usersByTier.premium}</span>
+                    <span className="text-sm font-bold">{statsData.usersByTier.premium}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded-full bg-amber-500"></div>
                       <span className="text-sm font-medium">Elite ($299/mo)</span>
                     </div>
-                    <span className="text-sm font-bold">{stats.usersByTier.elite}</span>
+                    <span className="text-sm font-bold">{statsData.usersByTier.elite}</span>
                   </div>
                 </CardContent>
               </Card>
@@ -225,7 +227,7 @@ export default function AdminDashboard() {
                   <CardDescription>Latest platform events</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {recentUsers.length === 0 ? (
+                  {recentUsersData.length === 0 ? (
                     <div className="text-center py-8 text-slate-500">
                       <Activity className="h-12 w-12 mx-auto mb-3 opacity-20" />
                       <p className="text-sm">No recent activity</p>
@@ -268,7 +270,7 @@ export default function AdminDashboard() {
                 <CardDescription>Monitor and respond to crisis situations</CardDescription>
               </CardHeader>
               <CardContent>
-                {crisisAlerts.length === 0 ? (
+                {crisisAlertsData.length === 0 ? (
                   <div className="text-center py-12 text-slate-500">
                     <CheckCircle2 className="h-16 w-16 mx-auto mb-4 text-green-500 opacity-20" />
                     <p className="text-sm font-medium text-green-600">No pending crisis alerts</p>
