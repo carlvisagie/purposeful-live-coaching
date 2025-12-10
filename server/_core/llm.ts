@@ -209,13 +209,10 @@ const normalizeToolChoice = (
   return toolChoice;
 };
 
-const resolveApiUrl = () =>
-  ENV.forgeApiUrl && ENV.forgeApiUrl.trim().length > 0
-    ? `${ENV.forgeApiUrl.replace(/\/$/, "")}/v1/chat/completions`
-    : "https://api.openai.com/v1/chat/completions";
+const resolveApiUrl = () => "https://api.openai.com/v1/chat/completions";
 
 const assertApiKey = () => {
-  const apiKey = ENV.forgeApiKey || process.env.OPENAI_API_KEY;
+  const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
     throw new Error("OPENAI_API_KEY is not configured");
   }

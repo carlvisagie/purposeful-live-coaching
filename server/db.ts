@@ -5,14 +5,33 @@ import * as schema from "../drizzle/schema";
 import { InsertUser, users } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
+/**
+ * Database Connection Pool Configuration
+ * 
+ * CRITICAL FOR SCALING:
+ * - Render free tier: 25 max connections
+ * - Reserve 5 for admin/monitoring
+ * - Pool max: 20 connections
+ * - Requests queue when pool is full (prevents crashes)
+ * - Idle connections close after 30s to free resources
+ * - Connection timeout: 5s (fail fast if DB unavailable)
+ */
+
 let _db: ReturnType<typeof drizzle> | null = null;
+let _client: postgres.Sql | null = null;
 
 // Lazily create the drizzle instance so local tooling can run without a DB.
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
-      const client = postgres(process.env.DATABASE_URL);
+      const client = postgres(process.env.DATABASE_URL, {
+        max: 20, // Max 20 connections (reserve 5 for admin)
+        idle_timeout: 30, // Close idle connections after 30s
+        connect_timeout: 5, // Fail fast if DB unavailable
+        max_lifetime: 60 * 30, // Recycle connections every 30 minutes
+      });
       _db = drizzle(client, { schema });
+      _client = client;
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
       _db = null;
@@ -22,8 +41,45 @@ export async function getDb() {
 }
 
 // Synchronous db instance for use in routers (assumes DB is already initialized)
-const client = postgres(process.env.DATABASE_URL || '');
+// Uses connection pooling to prevent crashes
+const client = postgres(process.env.DATABASE_URL || '', {
+  max: 20, // Max 20 connections (reserve 5 for admin/monitoring)
+  idle_timeout: 30, // Close idle connections after 30 seconds
+  connect_timeout: 5, // Fail fast if database unavailable
+  max_lifetime: 60 * 30, // Recycle connections every 30 minutes
+  // Requests queue when pool is full (prevents "too many connections" crashes)
+});
+
 export const db = drizzle(client, { schema });
+
+// Graceful shutdown: close all database connections
+process.on('SIGTERM', async () => {
+  console.log('[Database] SIGTERM received, closing connections...');
+  try {
+    await client.end({ timeout: 5 });
+    if (_client) {
+      await _client.end({ timeout: 5 });
+    }
+    console.log('[Database] All connections closed');
+  } catch (error) {
+    console.error('[Database] Error closing connections:', error);
+  }
+  process.exit(0);
+});
+
+process.on('SIGINT', async () => {
+  console.log('[Database] SIGINT received, closing connections...');
+  try {
+    await client.end({ timeout: 5 });
+    if (_client) {
+      await _client.end({ timeout: 5 });
+    }
+    console.log('[Database] All connections closed');
+  } catch (error) {
+    console.error('[Database] Error closing connections:', error);
+  }
+  process.exit(0);
+});
 
 export async function upsertUser(user: InsertUser): Promise<void> {
   if (!user.openId) {

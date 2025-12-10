@@ -34,33 +34,30 @@ export type GenerateImageResponse = {
 export async function generateImage(
   options: GenerateImageOptions
 ): Promise<GenerateImageResponse> {
-  if (!ENV.forgeApiUrl) {
-    throw new Error("BUILT_IN_FORGE_API_URL is not configured");
-  }
-  if (!ENV.forgeApiKey) {
-    throw new Error("BUILT_IN_FORGE_API_KEY is not configured");
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    throw new Error("OPENAI_API_KEY is not configured");
   }
 
-  // Build the full URL by appending the service path to the base URL
-  const baseUrl = ENV.forgeApiUrl.endsWith("/")
-    ? ENV.forgeApiUrl
-    : `${ENV.forgeApiUrl}/`;
+  // Use OpenAI DALL-E API
+  const baseUrl = "https://api.openai.com/";
   const fullUrl = new URL(
-    "images.v1.ImageService/GenerateImage",
+    "v1/images/generations",
     baseUrl
   ).toString();
 
   const response = await fetch(fullUrl, {
     method: "POST",
     headers: {
-      accept: "application/json",
-      "content-type": "application/json",
-      "connect-protocol-version": "1",
-      authorization: `Bearer ${ENV.forgeApiKey}`,
+      "Content-Type": "application/json",
+      authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
+      model: "dall-e-3",
       prompt: options.prompt,
-      original_images: options.originalImages || [],
+      n: 1,
+      size: "1024x1024",
+      response_format: "b64_json",
     }),
   });
 
@@ -71,20 +68,20 @@ export async function generateImage(
     );
   }
 
+  // DALL-E response format: { data: [{ b64_json: string }] }
   const result = (await response.json()) as {
-    image: {
-      b64Json: string;
-      mimeType: string;
-    };
+    data: Array<{
+      b64_json: string;
+    }>;
   };
-  const base64Data = result.image.b64Json;
+  const base64Data = result.data[0].b64_json;
   const buffer = Buffer.from(base64Data, "base64");
 
   // Save to S3
   const { url } = await storagePut(
     `generated/${Date.now()}.png`,
     buffer,
-    result.image.mimeType
+    "image/png"
   );
   return {
     url,
