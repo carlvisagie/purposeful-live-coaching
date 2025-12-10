@@ -1,198 +1,454 @@
-import { useAuth } from "@/_core/hooks/useAuth";
-import ScriptTeleprompter from "@/components/ScriptTeleprompter";
-import { Card } from "@/components/ui/card";
+import { trpc } from "@/lib/trpc";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, Calendar, Users, TrendingUp, Zap } from "lucide-react";
-import { APP_TITLE } from "@/const";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Link } from "wouter";
+import { useState } from "react";
+import {
+  Users,
+  Calendar,
+  Video,
+  DollarSign,
+  MessageCircle,
+  FileText,
+  Clock,
+  TrendingUp,
+  Search,
+  Plus,
+  BarChart3,
+  Settings,
+  Bell,
+  CheckCircle2,
+  AlertCircle,
+  Phone
+} from "lucide-react";
+import { LOGIN_URL } from "@/const";
 
 export default function CoachDashboard() {
-  const { user, loading } = useAuth();
+  const [searchTerm, setSearchTerm] = useState("");
+  const { data: user } = trpc.auth.me.useQuery();
+  
+  // Coach data queries
+  const { data: allClients } = trpc.coachDashboard.getAllClients.useQuery(undefined, { enabled: !!user });
+  const { data: stats } = trpc.coachDashboard.getStats.useQuery(undefined, { enabled: !!user });
+  const { data: activeSessions } = trpc.coachDashboard.getActiveSessions.useQuery(undefined, { enabled: !!user });
+  
+  // Mock data for features not yet implemented
+  const todaysSessions: any[] = [];
+  const revenueStats = {
+    currentMonth: 420000, // $4,200 in cents
+    lastMonth: 380000,
+    yearToDate: 4200000,
+    growthPercent: 10.5,
+    completionRate: 95,
+    byTier: [
+      { name: 'Elite', clientCount: 3, revenue: 180000, percentage: 43 },
+      { name: 'Premium', clientCount: 5, revenue: 150000, percentage: 36 },
+      { name: 'Basic', clientCount: 4, revenue: 90000, percentage: 21 },
+    ]
+  };
+  const upcomingBookings: any[] = [];
+  const recentActivity: any[] = [];
 
-  // Auth disabled for demo/development - useAuth() now returns mock admin user
-  // if (loading) {
-  //   return (
-  //     <div className="min-h-screen flex items-center justify-center">
-  //       <div className="text-center">
-  //         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-  //         <p className="text-muted-foreground">Loading...</p>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Card className="w-96">
+          <CardHeader>
+            <CardTitle>Authentication Required</CardTitle>
+            <CardDescription>Please sign in to access the coach dashboard</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button className="w-full" onClick={() => window.location.href = LOGIN_URL}>
+              Sign In
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
-  // if (!user || user.role !== "admin") {
-  //   return (
-  //     <div className="min-h-screen flex items-center justify-center">
-  //       <Card className="p-8 max-w-md text-center">
-  //         <h2 className="text-2xl font-bold mb-4">Access Denied</h2>
-  //         <p className="text-muted-foreground">
-  //           This page is only accessible to coaches.
-  //         </p>
-  //       </Card>
-  //     </div>
-  //   );
-  // }
+  // Filter clients based on search
+  const filteredClients = allClients?.filter((client: any) =>
+    client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    client.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const activeClients = stats?.activeClients || 0;
+  const sessionsToday = todaysSessions?.length || 0;
+  const monthlyRevenue = revenueStats?.currentMonth || 0;
+  const revenueGrowth = revenueStats?.growthPercent || 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
-      {/* Script Teleprompter (always available) */}
-      <ScriptTeleprompter />
-
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-blue-950 dark:to-indigo-950">
       {/* Header */}
       <div className="border-b bg-background/95 backdrop-blur sticky top-0 z-40">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold">{APP_TITLE} - Coach Dashboard</h1>
-              <p className="text-sm text-muted-foreground">Welcome back, {user.name}</p>
+              <h1 className="text-3xl font-bold">Coach Dashboard</h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                Welcome back, {user.name} • {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+              </p>
             </div>
-            <Badge variant="default" className="gap-1">
-              <Zap className="w-3 h-3" />
-              Script Teleprompter Active
-            </Badge>
+            <div className="flex items-center gap-3">
+              <Button variant="outline" size="icon">
+                <Bell className="h-5 w-5" />
+              </Button>
+              <Link to="/settings">
+                <Button variant="outline" size="icon">
+                  <Settings className="h-5 w-5" />
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
-          {/* Quick Stats */}
-          <Card className="p-6">
-            <div className="flex items-center justify-between mb-2">
-              <Users className="w-8 h-8 text-primary" />
-              <Badge variant="secondary">This Week</Badge>
-            </div>
-            <h3 className="text-3xl font-bold">12</h3>
-            <p className="text-sm text-muted-foreground">Active Clients</p>
+      <div className="container mx-auto px-4 py-8 space-y-8">
+        {/* Key Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm flex items-center gap-2 text-muted-foreground">
+                <Users className="h-4 w-4" />
+                Active Clients
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">{activeClients}</div>
+              <p className="text-xs text-muted-foreground mt-1">
+                {allClients?.length || 0} total clients
+              </p>
+            </CardContent>
           </Card>
 
-          <Card className="p-6">
-            <div className="flex items-center justify-between mb-2">
-              <Calendar className="w-8 h-8 text-blue-600" />
-              <Badge variant="secondary">Today</Badge>
-            </div>
-            <h3 className="text-3xl font-bold">3</h3>
-            <p className="text-sm text-muted-foreground">Sessions Scheduled</p>
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm flex items-center gap-2 text-muted-foreground">
+                <Calendar className="h-4 w-4" />
+                Sessions Today
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">{sessionsToday}</div>
+              <p className="text-xs text-muted-foreground mt-1">
+                {upcomingBookings?.length || 0} upcoming bookings
+              </p>
+            </CardContent>
           </Card>
 
-          <Card className="p-6">
-            <div className="flex items-center justify-between mb-2">
-              <TrendingUp className="w-8 h-8 text-green-600" />
-              <Badge variant="secondary">30 Days</Badge>
-            </div>
-            <h3 className="text-3xl font-bold">85%</h3>
-            <p className="text-sm text-muted-foreground">Success Rate</p>
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm flex items-center gap-2 text-muted-foreground">
+                <DollarSign className="h-4 w-4" />
+                Revenue (MTD)
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">${(monthlyRevenue / 100).toLocaleString()}</div>
+              <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                <TrendingUp className="h-3 w-3" />
+                {revenueGrowth > 0 ? '+' : ''}{revenueGrowth}% vs last month
+              </p>
+            </CardContent>
           </Card>
 
-          <Card className="p-6">
-            <div className="flex items-center justify-between mb-2">
-              <BookOpen className="w-8 h-8 text-purple-600" />
-              <Badge variant="secondary">Library</Badge>
-            </div>
-            <h3 className="text-3xl font-bold">50+</h3>
-            <p className="text-sm text-muted-foreground">Scripts Available</p>
-          </Card>
-        </div>
-
-        {/* Quick Actions */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-              <Zap className="w-5 h-5 text-primary" />
-              Script Teleprompter
-            </h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              Access research-backed scripts during live calls. Type trigger words or browse the library.
-            </p>
-            <div className="space-y-2 text-sm">
-              <div className="flex items-center gap-2">
-                <kbd className="px-2 py-1 bg-muted rounded text-xs">Ctrl+Shift+S</kbd>
-                <span className="text-muted-foreground">Open script search</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <kbd className="px-2 py-1 bg-muted rounded text-xs">ESC</kbd>
-                <span className="text-muted-foreground">Close teleprompter</span>
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-blue-600" />
-              Today's Sessions
-            </h3>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                <div>
-                  <p className="font-medium">Sarah J.</p>
-                  <p className="text-xs text-muted-foreground">Growth Coaching</p>
-                </div>
-                <Badge variant="outline">6:00 PM</Badge>
-              </div>
-              <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                <div>
-                  <p className="font-medium">Michael T.</p>
-                  <p className="text-xs text-muted-foreground">Discovery Call</p>
-                </div>
-                <Badge variant="outline">7:00 PM</Badge>
-              </div>
-              <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                <div>
-                  <p className="font-medium">Emily C.</p>
-                  <p className="text-xs text-muted-foreground">Transformation</p>
-                </div>
-                <Badge variant="outline">8:00 PM</Badge>
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-              <BookOpen className="w-5 h-5 text-purple-600" />
-              Quick Script Access
-            </h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              Common trigger words for fast access:
-            </p>
-            <div className="grid grid-cols-2 gap-2">
-              <Button variant="outline" size="sm" className="justify-start">COST</Button>
-              <Button variant="outline" size="sm" className="justify-start">TIME</Button>
-              <Button variant="outline" size="sm" className="justify-start">DOUBT</Button>
-              <Button variant="outline" size="sm" className="justify-start">THINK</Button>
-              <Button variant="outline" size="sm" className="justify-start">CRISIS</Button>
-              <Button variant="outline" size="sm" className="justify-start">UPGRADE</Button>
-            </div>
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm flex items-center gap-2 text-muted-foreground">
+                <BarChart3 className="h-4 w-4" />
+                Completion Rate
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">{revenueStats?.completionRate || 0}%</div>
+              <p className="text-xs text-muted-foreground mt-1">
+                Last 30 days
+              </p>
+            </CardContent>
           </Card>
         </div>
 
-        {/* Instructions */}
-        <Card className="p-6 mt-8 bg-gradient-to-r from-primary/5 to-purple/5 border-primary/20">
-          <h3 className="text-lg font-bold mb-4">🎯 How to Use the Script Teleprompter</h3>
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <h4 className="font-semibold mb-2">During Live Calls:</h4>
-              <ol className="space-y-2 text-sm text-muted-foreground">
-                <li>1. Client raises an objection (e.g., "I can't afford it")</li>
-                <li>2. Say: "I understand how you feel, however let me point out <strong>COST</strong>"</li>
-                <li>3. Type "COST" in the Quick Trigger box (bottom-right)</li>
-                <li>4. Script appears instantly with your response</li>
-                <li>5. Read naturally, client never knows</li>
-              </ol>
+        {/* Today's Schedule */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <Clock className="h-5 w-5" />
+                  Today's Schedule
+                </CardTitle>
+                <CardDescription>Your sessions for today</CardDescription>
+              </div>
+              <Link to="/sessions/schedule">
+                <Button variant="outline" size="sm">
+                  <Calendar className="mr-2 h-4 w-4" />
+                  View Calendar
+                </Button>
+              </Link>
             </div>
-            <div>
-              <h4 className="font-semibold mb-2">Practice Mode:</h4>
-              <ol className="space-y-2 text-sm text-muted-foreground">
-                <li>1. Press <kbd className="px-1 py-0.5 bg-muted rounded text-xs">Ctrl+Shift+S</kbd> to open script library</li>
-                <li>2. Browse scripts by category or search</li>
-                <li>3. Click any script to view full details</li>
-                <li>4. Rehearse before your first call</li>
-                <li>5. Build muscle memory for common objections</li>
-              </ol>
-            </div>
-          </div>
+          </CardHeader>
+          <CardContent>
+            {todaysSessions && todaysSessions.length > 0 ? (
+              <div className="space-y-3">
+                {todaysSessions.map((session: any) => (
+                  <div key={session.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent transition-colors">
+                    <div className="flex items-center gap-4">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold">
+                          {new Date(session.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {session.duration} min
+                        </div>
+                      </div>
+                      <div>
+                        <p className="font-semibold">{session.clientName}</p>
+                        <p className="text-sm text-muted-foreground">{session.type}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Badge variant={session.status === 'confirmed' ? 'default' : 'secondary'} className="text-xs">
+                            {session.status}
+                          </Badge>
+                          {session.isFirstSession && (
+                            <Badge variant="outline" className="text-xs">First Session</Badge>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Link to={`/clients/${session.clientId}`}>
+                        <Button variant="outline" size="sm">
+                          <FileText className="mr-2 h-4 w-4" />
+                          Notes
+                        </Button>
+                      </Link>
+                      {session.meetingLink ? (
+                        <a href={session.meetingLink} target="_blank" rel="noopener noreferrer">
+                          <Button size="sm">
+                            <Video className="mr-2 h-4 w-4" />
+                            Start Session
+                          </Button>
+                        </a>
+                      ) : (
+                        <Button size="sm" variant="outline">
+                          <Phone className="mr-2 h-4 w-4" />
+                          Call Client
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12 text-muted-foreground">
+                <Calendar className="h-16 w-16 mx-auto mb-4 opacity-20" />
+                <p className="text-lg font-medium">No sessions scheduled for today</p>
+                <p className="text-sm mt-2">Enjoy your day off or use this time to prepare for upcoming sessions</p>
+              </div>
+            )}
+          </CardContent>
         </Card>
+
+        {/* Main Content Tabs */}
+        <Tabs defaultValue="clients" className="space-y-6">
+          <TabsList className="grid w-full max-w-md grid-cols-3">
+            <TabsTrigger value="clients">
+              <Users className="mr-2 h-4 w-4" />
+              Clients
+            </TabsTrigger>
+            <TabsTrigger value="revenue">
+              <DollarSign className="mr-2 h-4 w-4" />
+              Revenue
+            </TabsTrigger>
+            <TabsTrigger value="activity">
+              <BarChart3 className="mr-2 h-4 w-4" />
+              Activity
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Clients Tab */}
+          <TabsContent value="clients" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>All Clients</CardTitle>
+                    <CardDescription>Manage your client relationships</CardDescription>
+                  </div>
+                  <Link to="/clients/new">
+                    <Button>
+                      <Plus className="mr-2 h-4 w-4" />
+                      Add Client
+                    </Button>
+                  </Link>
+                </div>
+                <div className="relative mt-4">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search clients by name or email..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+              </CardHeader>
+              <CardContent>
+                {filteredClients && filteredClients.length > 0 ? (
+                  <div className="space-y-3">
+                    {filteredClients.map((client: any) => (
+                      <Link key={client.id} to={`/clients/${client.id}`}>
+                        <div className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent transition-colors cursor-pointer">
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-lg">
+                              {client.name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)}
+                            </div>
+                            <div>
+                              <p className="font-semibold">{client.name}</p>
+                              <p className="text-sm text-muted-foreground">{client.email}</p>
+                              <div className="flex items-center gap-2 mt-1">
+                                <Badge variant={client.status === 'active' ? 'default' : 'secondary'} className="text-xs">
+                                  {client.status}
+                                </Badge>
+                                <span className="text-xs text-muted-foreground">
+                                  {client.tier} • {client.totalSessions} sessions
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Button variant="outline" size="sm" onClick={(e) => { e.preventDefault(); /* Open message modal */ }}>
+                              <MessageCircle className="h-4 w-4" />
+                            </Button>
+                            <Button variant="outline" size="sm">
+                              View Profile
+                            </Button>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12 text-muted-foreground">
+                    <Users className="h-16 w-16 mx-auto mb-4 opacity-20" />
+                    <p className="text-lg font-medium">
+                      {searchTerm ? 'No clients found' : 'No clients yet'}
+                    </p>
+                    <p className="text-sm mt-2">
+                      {searchTerm ? 'Try a different search term' : 'Add your first client to get started'}
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Revenue Tab */}
+          <TabsContent value="revenue" className="space-y-6">
+            <div className="grid md:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Revenue Overview</CardTitle>
+                  <CardDescription>Your earnings breakdown</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">This Month</span>
+                    <span className="text-2xl font-bold">${(revenueStats?.currentMonth / 100 || 0).toLocaleString()}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Last Month</span>
+                    <span className="text-lg">${(revenueStats?.lastMonth / 100 || 0).toLocaleString()}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Year to Date</span>
+                    <span className="text-lg">${(revenueStats?.yearToDate / 100 || 0).toLocaleString()}</span>
+                  </div>
+                  <div className="pt-4 border-t">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Growth</span>
+                      <span className={`text-lg font-semibold ${revenueGrowth > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {revenueGrowth > 0 ? '+' : ''}{revenueGrowth}%
+                      </span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Revenue by Tier</CardTitle>
+                  <CardDescription>Breakdown by subscription level</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {revenueStats?.byTier?.map((tier: any) => (
+                    <div key={tier.name} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <p className="font-medium">{tier.name}</p>
+                        <p className="text-sm text-muted-foreground">{tier.clientCount} clients</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold">${(tier.revenue / 100).toLocaleString()}</p>
+                        <p className="text-xs text-muted-foreground">{tier.percentage}%</p>
+                      </div>
+                    </div>
+                  )) || (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <DollarSign className="h-12 w-12 mx-auto mb-3 opacity-20" />
+                      <p className="text-sm">No revenue data yet</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Activity Tab */}
+          <TabsContent value="activity" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Recent Activity</CardTitle>
+                <CardDescription>Latest updates and actions</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {recentActivity && recentActivity.length > 0 ? (
+                  <div className="space-y-4">
+                    {recentActivity.map((activity: any) => (
+                      <div key={activity.id} className="flex items-start gap-4 pb-4 border-b last:border-0">
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                          activity.type === 'session_completed' ? 'bg-green-100 dark:bg-green-900' :
+                          activity.type === 'new_client' ? 'bg-blue-100 dark:bg-blue-900' :
+                          activity.type === 'payment_received' ? 'bg-purple-100 dark:bg-purple-900' :
+                          'bg-gray-100 dark:bg-gray-900'
+                        }`}>
+                          {activity.type === 'session_completed' && <CheckCircle2 className="h-5 w-5 text-green-600" />}
+                          {activity.type === 'new_client' && <Users className="h-5 w-5 text-blue-600" />}
+                          {activity.type === 'payment_received' && <DollarSign className="h-5 w-5 text-purple-600" />}
+                          {activity.type === 'alert' && <AlertCircle className="h-5 w-5 text-orange-600" />}
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-medium">{activity.title}</p>
+                          <p className="text-sm text-muted-foreground">{activity.description}</p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {new Date(activity.createdAt).toLocaleString()}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12 text-muted-foreground">
+                    <BarChart3 className="h-16 w-16 mx-auto mb-4 opacity-20" />
+                    <p className="text-lg font-medium">No recent activity</p>
+                    <p className="text-sm mt-2">Activity will appear here as you work with clients</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

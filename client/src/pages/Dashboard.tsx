@@ -17,7 +17,13 @@ import {
   Activity,
   Calendar,
   ArrowRight,
-  Sparkles
+  Sparkles,
+  Video,
+  MessageCircle,
+  BookOpen,
+  Clock,
+  FileText,
+  CreditCard
 } from "lucide-react";
 import { LOGIN_URL } from "@/const";
 
@@ -30,6 +36,14 @@ export default function Dashboard() {
   const { data: stressStats } = trpc.stress.getStats.useQuery({ days: 7 }, { enabled: !!user });
   const { data: gamificationData } = trpc.gamification.getPoints.useQuery(undefined, { enabled: !!user });
   const { data: activeMilestones } = trpc.masterSystems.milestones.getActive.useQuery(undefined, { enabled: !!user });
+  
+  // Coaching-specific queries
+  const { data: subscription } = trpc.subscriptions.getMySubscription.useQuery(undefined, { enabled: false }); // Disabled for now
+  
+  // Mock data for features not yet implemented in backend
+  const upcomingSessions: any[] = [];
+  const sessionHistory: any[] = [];
+  const resources: any[] = [];
 
   if (!user) {
     return (
@@ -110,6 +124,152 @@ export default function Dashboard() {
             <Sparkles className="mr-2 h-4 w-4" />
             Level {gamificationData?.level || 1}
           </Badge>
+        </div>
+
+        {/* Quick Actions Bar */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Link to="/ai-coach">
+            <Button className="w-full h-20 text-lg" variant="default" size="lg">
+              <MessageCircle className="mr-3 h-6 w-6" />
+              Chat with AI Coach
+            </Button>
+          </Link>
+          <Link to="/sessions/book">
+            <Button className="w-full h-20 text-lg" variant="outline" size="lg">
+              <Calendar className="mr-3 h-6 w-6" />
+              Book a Session
+            </Button>
+          </Link>
+          <Link to="/pricing">
+            <Button className="w-full h-20 text-lg" variant="outline" size="lg">
+              <CreditCard className="mr-3 h-6 w-6" />
+              {subscription ? 'Manage Plan' : 'View Plans'}
+            </Button>
+          </Link>
+        </div>
+
+        {/* Upcoming Sessions */}
+        {upcomingSessions && upcomingSessions.length > 0 && (
+          <Card className="border-2 border-blue-500 bg-blue-50 dark:bg-blue-950">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Video className="h-6 w-6 text-blue-600" />
+                  <div>
+                    <CardTitle>Your Next Session</CardTitle>
+                    <CardDescription>
+                      {upcomingSessions[0].coachName} • {new Date(upcomingSessions[0].scheduledAt).toLocaleDateString()}
+                    </CardDescription>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-blue-600">
+                    {Math.ceil((new Date(upcomingSessions[0].scheduledAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24))} days
+                  </div>
+                  <div className="text-sm text-muted-foreground">until session</div>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium">{upcomingSessions[0].type}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {new Date(upcomingSessions[0].scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </p>
+                </div>
+                {upcomingSessions[0].meetingLink && (
+                  <a href={upcomingSessions[0].meetingLink} target="_blank" rel="noopener noreferrer">
+                    <Button size="lg">
+                      <Video className="mr-2 h-5 w-5" />
+                      Join Session
+                    </Button>
+                  </a>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Session History & Resources Grid */}
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Recent Sessions */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Clock className="h-5 w-5" />
+                Recent Sessions
+              </CardTitle>
+              <CardDescription>Your coaching journey</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {sessionHistory && sessionHistory.length > 0 ? (
+                <div className="space-y-3">
+                  {sessionHistory.map((session: any) => (
+                    <div key={session.id} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <p className="font-medium">{session.type}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {new Date(session.completedAt).toLocaleDateString()}
+                        </p>
+                      </div>
+                      <Link to={`/sessions/${session.id}`}>
+                        <Button size="sm" variant="outline">
+                          <FileText className="mr-2 h-4 w-4" />
+                          Notes
+                        </Button>
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Clock className="h-12 w-12 mx-auto mb-3 opacity-20" />
+                  <p className="text-sm">No sessions yet</p>
+                  <Link to="/sessions/book">
+                    <Button size="sm" variant="outline" className="mt-3">
+                      Book Your First Session
+                    </Button>
+                  </Link>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Resources */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BookOpen className="h-5 w-5" />
+                Your Resources
+              </CardTitle>
+              <CardDescription>Materials from your coach</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {resources && resources.length > 0 ? (
+                <div className="space-y-3">
+                  {resources.map((resource: any) => (
+                    <a key={resource.id} href={resource.url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between p-3 border rounded-lg hover:bg-accent transition-colors">
+                      <div className="flex items-center gap-3">
+                        <FileText className="h-5 w-5 text-blue-600" />
+                        <div>
+                          <p className="font-medium">{resource.title}</p>
+                          <p className="text-sm text-muted-foreground">{resource.type}</p>
+                        </div>
+                      </div>
+                      <ArrowRight className="h-4 w-4" />
+                    </a>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <BookOpen className="h-12 w-12 mx-auto mb-3 opacity-20" />
+                  <p className="text-sm">No resources yet</p>
+                  <p className="text-xs mt-2">Your coach will share materials here</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </div>
 
         {/* NO-DECISION MODE: Next Action Card */}

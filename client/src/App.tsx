@@ -15,13 +15,11 @@ import CoachAvailability from "./pages/CoachAvailability";
 import ManageSessionTypes from "./pages/ManageSessionTypes";
 import AICoach from "./pages/AICoach";
 import EmotionTracker from "./pages/EmotionTracker";
-import InsightsDashboard from "./pages/InsightsDashboard";
 import CoachDashboard from "./pages/CoachDashboard";
 import AutismDashboard from "./pages/AutismDashboard";
 import CreateAutismProfile from "./pages/CreateAutismProfile";
 import LiveSessionAssistant from "./pages/LiveSessionAssistant";
 import Pricing from "./pages/Pricing";
-import SubscriptionDashboard from "./pages/SubscriptionDashboard";
 import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 import SessionPurchaseSuccess from "./pages/SessionPurchaseSuccess";
 import AdminAIMonitoring from "./pages/AdminAIMonitoring";
@@ -49,13 +47,13 @@ function Router() {
       <Route path="/coach/session-types" component={ManageSessionTypes} />
       <Route path="/ai-coach" component={AICoach} />
       <Route path="/emotions" component={EmotionTracker} />
-      <Route path="/insights" component={InsightsDashboard} />
+
       <Route path="/coach/dashboard" component={CoachDashboard} />
       <Route path="/autism" component={AutismDashboard} />
       <Route path="/autism/create-profile" component={CreateAutismProfile} />
       <Route path="/live-session" component={LiveSessionAssistant} />
       <Route path="/pricing" component={Pricing} />
-      <Route path="/subscription" component={SubscriptionDashboard} />
+
       <Route path="/subscription/success" component={SubscriptionSuccess} />
       <Route path="/subscription/session-success" component={SessionPurchaseSuccess} />
       <Route path="/admin" component={AdminDashboard} />
