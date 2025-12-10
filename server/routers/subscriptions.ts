@@ -162,8 +162,13 @@ export const subscriptionsRouter = router({
       const tierConfig = TIER_CONFIG[input.tier];
       const priceId = tierConfig.stripePriceId;
 
-      // Create Stripe checkout session (guest checkout - no login required)
-      const session = await stripe.checkout.sessions.create({
+      console.log('[createCheckoutSession] Starting checkout for tier:', input.tier);
+      console.log('[createCheckoutSession] Price ID:', priceId);
+      console.log('[createCheckoutSession] Stripe key configured:', ENV.stripeSecretKey ? 'YES' : 'NO');
+
+      try {
+        // Create Stripe checkout session (guest checkout - no login required)
+        const session = await stripe.checkout.sessions.create({
         customer_email: input.email || undefined,
         mode: "subscription",
         payment_method_types: ["card"],
@@ -186,10 +191,19 @@ export const subscriptionsRouter = router({
         cancel_url: input.cancelUrl,
       });
 
-      return {
-        sessionId: session.id,
-        url: session.url,
-      };
+        console.log('[createCheckoutSession] Session created successfully:', session.id);
+        return {
+          sessionId: session.id,
+          url: session.url,
+        };
+      } catch (error: any) {
+        console.error('[createCheckoutSession] Stripe API error:', error.message);
+        console.error('[createCheckoutSession] Full error:', JSON.stringify(error, null, 2));
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: `Stripe checkout failed: ${error.message}`,
+        });
+      }
     }),
 
   /**
