@@ -1311,6 +1311,6 @@ Remove all signup forms. User just enters email/password and immediately starts 
 
 
 ### AI Chat max_tokens Bug (Dec 10, 11:02 AM)
-- [ ] Fix max_tokens in server/_core/llm.ts (32768 → 16384)
-- [ ] Deploy fix to Render
+- [x] Fix max_tokens in server/_core/llm.ts (32768 → 16384)
+- [x] Deploy fix to Render (commit 641baf9)
 - [ ] Test AI Chat with user
