@@ -353,7 +353,234 @@ Train new coaches to become experts by providing real-time:
 
 ---
 
-### 5. UNIFIED CLIENT PROFILE SYSTEM
+### 5. AUDIO COACHING CHANNEL (PRIVATE HEADSET)
+
+#### 5.1 Real-Time Voice Guidance
+**Purpose:** AI speaks directly to coach through headset (client can't hear)
+
+**Game-Changing Feature:**
+Coach wears headset with:
+- **Left ear:** Client audio (what client is saying)
+- **Right ear:** AI coach audio (guidance, warnings, prompts)
+- **OR:** Mix both in stereo with AI at lower volume
+
+**AI Voice Guidance Types:**
+
+**1. Immediate Warnings (Interrupts)**
+- "STOP - You just used 'should' - rephrase"
+- "WARNING - You're talking too much, let them speak"
+- "ALERT - Client showing signs of dissociation"
+- "DANGER - Scope violation, refer to therapist"
+
+**2. Coaching Prompts (Between client sentences)**
+- "Ask: 'What would that look like for you?'"
+- "Reflect: 'It sounds like you're feeling overwhelmed'"
+- "Silence - let them process for 5 seconds"
+- "Follow up: 'Tell me more about that'"
+
+**3. Behavioral Observations**
+- "Client just showed micro-expression of contempt - possible deception"
+- "Voice stress increasing - anxiety rising"
+- "Body language closed - they're defensive right now"
+- "Eye contact dropped - shame or discomfort"
+
+**4. Strategic Guidance**
+- "This is a good time to summarize what you've heard"
+- "Client is ready for a deeper question"
+- "You've been on this topic for 10 minutes - consider transitioning"
+- "Session goal: Remember to address their career concern"
+
+**5. Compliance Reminders**
+- "You're at 35% talk time - let them speak more"
+- "This is therapy territory - stay in coaching scope"
+- "You've asked 3 closed questions in a row - use open questions"
+- "Remember: Don't give advice, facilitate their own insights"
+
+#### 5.2 Voice Synthesis
+**Requirements:**
+- **Natural voice** - Not robotic, calm, supportive tone
+- **Low latency** - <500ms from trigger to speech
+- **Volume control** - Adjustable, doesn't overpower client
+- **Interrupt capability** - Can speak over AI if needed
+- **Mute option** - Coach can disable if needed
+
+**Technical Options:**
+- **ElevenLabs** - Most natural voice, $0.30/1000 chars (~$0.15/session)
+- **OpenAI TTS** - Good quality, $0.015/1000 chars (~$0.01/session)
+- **Azure Speech** - Good quality, $0.016/1000 chars (~$0.01/session)
+- **Google Cloud TTS** - Decent quality, $0.016/1000 chars (~$0.01/session)
+
+**Recommendation:** OpenAI TTS (best balance of quality + cost + integration)
+
+#### 5.3 Audio Routing Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                   AUDIO INPUTS                           │
+├─────────────────────────────────────────────────────────┤
+│  Client Microphone  →  [Audio Track 1]                  │
+│  Coach Microphone   →  [Audio Track 2]                  │
+└────────────────┬────────────────────────────────────────┘
+                 │
+                 ▼
+┌─────────────────────────────────────────────────────────┐
+│              AUDIO PROCESSING                            │
+├─────────────────────────────────────────────────────────┤
+│  Track 1 (Client) → Transcription + Analysis            │
+│  Track 2 (Coach)  → Transcription + Compliance Check    │
+└────────────────┬────────────────────────────────────────┘
+                 │
+                 ▼
+┌─────────────────────────────────────────────────────────┐
+│              AI ANALYSIS ENGINE                          │
+│  Generates real-time guidance based on:                  │
+│  - What client just said                                 │
+│  - How coach responded                                   │
+│  - Behavioral indicators                                 │
+│  - Session context                                       │
+└────────────────┬────────────────────────────────────────┘
+                 │
+                 ▼
+┌─────────────────────────────────────────────────────────┐
+│              TEXT-TO-SPEECH                              │
+│  Converts AI guidance to natural voice                   │
+└────────────────┬────────────────────────────────────────┘
+                 │
+                 ▼
+┌─────────────────────────────────────────────────────────┐
+│              AUDIO OUTPUTS                               │
+├─────────────────────────────────────────────────────────┤
+│  To Client:  Coach voice only (Track 2)                 │
+│  To Coach:   Client voice (Track 1) + AI voice (Track 3)│
+│              [Left ear: Client | Right ear: AI]          │
+└─────────────────────────────────────────────────────────┘
+```
+
+#### 5.4 Timing & Interruption Logic
+
+**When AI Speaks:**
+1. **Immediate (Interrupts):**
+   - Forbidden word detected
+   - Scope violation
+   - Crisis indicator
+   - Ethical boundary crossed
+
+2. **Between Sentences (Waits for pause):**
+   - Coaching prompts
+   - Question suggestions
+   - Behavioral observations
+   - Strategic guidance
+
+3. **End of Client Turn (After 2+ seconds silence):**
+   - "Good question" / "Well done"
+   - Summarization prompts
+   - Transition suggestions
+   - Session time reminders
+
+**Silence Detection:**
+- Monitor audio for pauses
+- Wait 1-2 seconds before speaking (don't interrupt)
+- If coach starts speaking, AI stops immediately
+- Queue messages if multiple insights (deliver one at a time)
+
+#### 5.5 Coach Control Panel
+
+**During Session, Coach Can:**
+- **Mute AI** - Disable voice guidance temporarily
+- **Volume adjust** - Make AI louder/quieter
+- **Guidance level** - Verbose, Normal, Minimal, Warnings Only
+- **Voice speed** - Faster/slower AI speech
+- **Dismiss prompt** - Skip current suggestion
+- **Request help** - "AI, what should I ask next?"
+
+**Hotkeys (For quick access during session):**
+- `F1` - Mute/unmute AI
+- `F2` - Decrease AI volume
+- `F3` - Increase AI volume
+- `F4` - Request coaching prompt
+- `F5` - Dismiss current prompt
+
+#### 5.6 Training Mode vs Expert Mode
+
+**Training Mode (Verbose):**
+- AI speaks frequently
+- Explains WHY suggestions are made
+- Teaches coaching techniques
+- More hand-holding
+- Example: "Ask an open question here to explore their feelings deeper. Try: 'What does that bring up for you?'"
+
+**Expert Mode (Minimal):**
+- AI speaks only when necessary
+- Brief, direct guidance
+- Warnings and critical alerts only
+- Assumes coach knows techniques
+- Example: "Open question" or "Reflect emotion"
+
+**Adaptive Mode (Learns):**
+- Starts verbose
+- Reduces guidance as coach improves
+- Tracks which prompts coach follows
+- Adjusts to coach's style
+
+#### 5.7 Example Session Flow
+
+**Minute 0-5: Opening**
+```
+Client: "I've been feeling really stressed lately..."
+AI (to coach): "Good opening. Reflect the emotion you heard."
+Coach: "It sounds like things have been overwhelming for you."
+AI: "Well done. Now ask an open question to explore."
+Coach: "What's been contributing to that stress?"
+AI: "Excellent question. Listen actively now."
+
+Client: "Well, work has been crazy, and my boss just..."
+AI: "Client showing signs of anxiety - elevated pitch, faster speech."
+
+Client: "...and I just don't know what to do."
+AI: "WARNING - Don't give advice here. Ask what they've tried."
+Coach: "What have you tried so far?"
+AI: "Perfect. You're doing great."
+```
+
+**Minute 15: Mid-Session**
+```
+Coach: "You should probably talk to your boss about this."
+AI: "STOP - You used 'should' - that's advice-giving. Rephrase as a question."
+Coach: "What would it be like to have a conversation with your boss?"
+AI: "Much better. That's coaching, not advising."
+
+Client: [Shows micro-expression of fear]
+AI: "ALERT - Client just showed fear expression when you mentioned boss. Explore that."
+Coach: "I noticed something shifted when I mentioned talking to your boss. What came up for you?"
+AI: "Excellent observation. This is important."
+```
+
+**Minute 45: Closing**
+```
+AI: "15 minutes left. Start moving toward action items."
+Coach: "As we wrap up today, what's one thing you want to commit to?"
+AI: "Good transition. Listen for specific, measurable commitment."
+
+Client: "I'll try to be less stressed."
+AI: "That's too vague. Ask for specific action."
+Coach: "What's one specific action you'll take this week?"
+AI: "Perfect. Now you're getting concrete commitment."
+```
+
+#### 5.8 Post-Session Feedback
+
+**After session ends, AI provides:**
+- **Performance score** - Overall coaching effectiveness (1-10)
+- **Talk time ratio** - Coach 28%, Client 72% ✅
+- **Question quality** - 85% open questions ✅
+- **Compliance** - 2 forbidden words used ⚠️
+- **Emotional attunement** - Missed 3 emotional cues ⚠️
+- **Areas to improve** - "Practice reflecting emotions more"
+- **What went well** - "Great use of silence, excellent question at 23:15"
+
+---
+
+### 6. UNIFIED CLIENT PROFILE SYSTEM
 
 #### 5.1 Automatic Profile Updates
 **Purpose:** Update client profile automatically during sessions
@@ -602,7 +829,8 @@ RECOMMENDATION: Consider referral to therapist for depression
 | MediaPipe (body) | $0.00 (free) |
 | Voice stress (custom) | $0.00 (free) |
 | GPT-4o (analysis) | $0.01 |
-| **TOTAL** | **$3.82/session** |
+| **OpenAI TTS (audio coaching)** | **$0.02** |
+| **TOTAL** | **$3.84/session** |
 
 ### Monthly Cost (Assumptions)
 - 2 coaches
@@ -610,9 +838,9 @@ RECOMMENDATION: Consider referral to therapist for depression
 - 20 working days/month
 - = 200 sessions/month
 
-**Monthly Total:** $764
+**Monthly Total:** $768
 
-**Annual Total:** $9,168
+**Annual Total:** $9,216
 
 ### Cost Optimization Options:
 1. **Use open-source alternatives** - Save $3/session (MediaPipe, DeepFace)
