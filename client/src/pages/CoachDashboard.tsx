@@ -34,23 +34,41 @@ export default function CoachDashboard() {
   const { data: allClients } = trpc.coachDashboard.getAllClients.useQuery(undefined, { enabled: !!user });
   const { data: stats } = trpc.coachDashboard.getStats.useQuery(undefined, { enabled: !!user });
   const { data: activeSessions } = trpc.coachDashboard.getActiveSessions.useQuery(undefined, { enabled: !!user });
+  const { data: coachSessions } = trpc.scheduling.getCoachSessions.useQuery(
+    { coachId: user?.id || 0 },
+    { enabled: !!user }
+  );
   
-  // Mock data for features not yet implemented
-  const todaysSessions: any[] = [];
+  // Filter today's sessions from all coach sessions
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  
+  const todaysSessions = coachSessions?.filter((session: any) => {
+    const sessionDate = new Date(session.scheduledDate);
+    return sessionDate >= today && sessionDate < tomorrow;
+  }) || [];
+  
+  // Calculate revenue stats from real data (stats from backend)
   const revenueStats = {
-    currentMonth: 420000, // $4,200 in cents
-    lastMonth: 380000,
-    yearToDate: 4200000,
-    growthPercent: 10.5,
-    completionRate: 95,
-    byTier: [
-      { name: 'Elite', clientCount: 3, revenue: 180000, percentage: 43 },
-      { name: 'Premium', clientCount: 5, revenue: 150000, percentage: 36 },
-      { name: 'Basic', clientCount: 4, revenue: 90000, percentage: 21 },
-    ]
+    currentMonth: stats?.monthlyRevenue || 0,
+    lastMonth: stats?.lastMonthRevenue || 0,
+    yearToDate: stats?.yearlyRevenue || 0,
+    growthPercent: stats?.revenueGrowth || 0,
+    completionRate: stats?.completionRate || 0,
+    byTier: stats?.revenueByTier || []
   };
-  const upcomingBookings: any[] = [];
-  const recentActivity: any[] = [];
+  
+  // Recent activity from sessions and clients
+  const recentActivity = [
+    ...(coachSessions?.slice(0, 5).map((session: any) => ({
+      type: 'session',
+      title: `Session with ${session.clientName}`,
+      time: new Date(session.scheduledDate).toLocaleString(),
+      status: session.status
+    })) || [])
+  ];
 
   if (!user) {
     return (

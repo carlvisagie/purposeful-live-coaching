@@ -38,12 +38,16 @@ export default function Dashboard() {
   const { data: activeMilestones } = trpc.masterSystems.milestones.getActive.useQuery(undefined, { enabled: !!user });
   
   // Coaching-specific queries
-  const { data: subscription } = trpc.subscriptions.getMySubscription.useQuery(undefined, { enabled: false }); // Disabled for now
-  
-  // Mock data for features not yet implemented in backend
-  const upcomingSessions: any[] = [];
-  const sessionHistory: any[] = [];
-  const resources: any[] = [];
+  const { data: subscription } = trpc.subscriptions.getMySubscription.useQuery(undefined, { enabled: !!user });
+  const { data: upcomingSessions } = trpc.scheduling.getUpcomingClientSessions.useQuery(
+    { clientId: user?.id || 0 },
+    { enabled: !!user }
+  );
+  const { data: sessionHistory } = trpc.scheduling.getClientSessions.useQuery(
+    { clientId: user?.id || 0 },
+    { enabled: !!user }
+  );
+  const { data: resources } = trpc.clientFiles.getMyFiles.useQuery(undefined, { enabled: !!user });
 
   if (!user) {
     return (
