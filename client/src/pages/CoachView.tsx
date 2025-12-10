@@ -74,15 +74,17 @@ export default function CoachView() {
 
   const handleAddNote = () => {
     if (!quickNote.trim()) return;
-    if (!selectedClient?.lastSessionId) {
-      alert("No active session found for this client");
-      return;
-    }
     
-    saveNoteMutation.mutate({
-      sessionId: selectedClient.lastSessionId,
-      note: quickNote,
-    });
+    // TODO: Get or create active session for this client
+    // For now, just show the note would be saved
+    alert(`Note: ${quickNote}\n\n(Session notes will be saved once session management is connected)`);
+    setQuickNote("");
+    
+    // Future implementation:
+    // 1. Fetch latest session for this client
+    // 2. OR create a new session if none exists
+    // 3. Then save the note to that session
+    // saveNoteMutation.mutate({ sessionId, note: quickNote });
   };
 
   if (clientsLoading) {
