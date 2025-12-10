@@ -16,7 +16,7 @@ import {
   User,
 } from "lucide-react";
 import { useAuth } from "@/_core/hooks/useAuth";
-import { LOGIN_URL } from "@/const";
+// Guest access enabled - no login required
 import { Streamdown } from "streamdown";
 import { useLocation } from "wouter";
 import { ConversationRating } from "@/components/ConversationRating";

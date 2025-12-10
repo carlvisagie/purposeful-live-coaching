@@ -1318,3 +1318,63 @@ Remove all signup forms. User just enters email/password and immediately starts 
 - [x] No errors, excellent response quality
 
 **Status:** AI Chat is fully functional and revenue-ready!
+
+
+---
+
+## 🚨 CRITICAL BLOCKER: Manus OAuth Still Active (Dec 10, 11:35 AM)
+
+### Issue:
+Payment buttons redirect to Manus OAuth login page (manus.im/app-auth) instead of Stripe checkout.
+
+### Impact:
+- **BLOCKS ALL PAYMENTS** - Users cannot subscribe
+- **BLOCKS ALL REVENUE** - Platform cannot make money
+- More critical than missing Stripe environment variables
+
+### Tasks:
+- [ ] Investigate authentication system
+- [ ] Check if Manus OAuth is still in code
+- [ ] Remove all Manus OAuth references
+- [ ] Implement proper authentication (or guest checkout)
+- [ ] Fix payment flow to go directly to Stripe
+- [ ] Test end-to-end payment without Manus login
+
+**Priority:** CRITICAL - Must fix before any revenue possible
+**Status:** BLOCKING
+
+
+---
+
+## 🚀 FRICTIONLESS GUEST CHECKOUT (Dec 10, 12:30 PM)
+
+### Goal: Zero friction to revenue - no login required
+
+### Implementation Tasks:
+- [ ] Modify createCheckoutSession to work without authentication
+- [ ] Add email collection in Stripe checkout
+- [ ] Update webhook to create user account after payment
+- [ ] Generate random password for new users
+- [ ] Send welcome email with login credentials
+- [ ] Test guest checkout flow end-to-end
+- [ ] Deploy to production
+- [ ] Verify payment works without Manus OAuth
+
+**Priority:** CRITICAL - Unblocks all revenue
+**Estimated Time:** 10-15 minutes
+
+
+---
+
+## 🔥 CRITICAL: COMPLETE MANUS REMOVAL (Dec 10, 12:38 PM)
+**ROOT CAUSE OF ALL PAYMENT FAILURES - Manus OAuth blocking everything!**
+
+- [ ] Find all Manus references (LOGIN_URL, OAuth, manus.im)
+- [ ] Remove LOGIN_URL from DashboardLayout
+- [ ] Remove Manus OAuth redirects
+- [ ] Make Pricing page accessible without auth
+- [ ] Test payment flow (guest checkout)
+- [ ] Deploy to production
+- [ ] Verify payments work end-to-end
+
+**Goal:** Frictionless guest checkout - NO authentication required to subscribe!

@@ -19,7 +19,7 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { APP_LOGO, APP_TITLE, LOGIN_URL } from "@/const";
+import { APP_LOGO, APP_TITLE } from "@/const";
 import { useIsMobile } from "@/hooks/useMobile";
 import { LayoutDashboard, LogOut, PanelLeft, Users } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
@@ -79,12 +79,12 @@ export default function DashboardLayout({
           </div>
           <Button
             onClick={() => {
-              window.location.href = LOGIN_URL;
+              window.location.href = "/pricing";
             }}
             size="lg"
             className="w-full shadow-lg hover:shadow-xl transition-all"
           >
-            Sign in
+            Subscribe to Access
           </Button>
         </div>
       </div>
