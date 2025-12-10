@@ -41,6 +41,8 @@ import { goalsRouter } from "./routers/goals";
 import { habitFormationRouter } from "./routers/habitFormation";
 import { audioUploadRouter } from "./routers/audioUpload";
 import { ttsRouter } from "./routers/tts";
+import { voiceRecognitionRouter } from "./routers/voiceRecognition";
+import { faceRecognitionRouter } from "./routers/faceRecognition";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -94,6 +96,8 @@ export const appRouter = router({
   habits: habitFormationRouter,
   audioUpload: audioUploadRouter,
   tts: ttsRouter,
+  voiceRecognition: voiceRecognitionRouter,
+  faceRecognition: faceRecognitionRouter,
 });
 
 export type AppRouter = typeof appRouter;
