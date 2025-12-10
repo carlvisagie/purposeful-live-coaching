@@ -30,35 +30,19 @@ import { LOGIN_URL } from "@/const";
 export default function Dashboard() {
   const { data: user } = trpc.auth.me.useQuery();
   
-  // Coaching-specific queries (using only existing routers)
-  const { data: subscription } = trpc.subscriptions.getMySubscription.useQuery(undefined, { enabled: !!user });
+  // Coaching-specific queries (using only existing routers) - disabled auth requirement
+  const { data: subscription } = trpc.subscriptions.getMySubscription.useQuery(undefined, { enabled: false });
   const { data: upcomingSessions } = trpc.scheduling.getUpcomingClientSessions.useQuery(
     { clientId: user?.id || 0 },
-    { enabled: !!user }
+    { enabled: false }
   );
   const { data: sessionHistory } = trpc.scheduling.getClientSessions.useQuery(
     { clientId: user?.id || 0 },
-    { enabled: !!user }
+    { enabled: false }
   );
-  const { data: resources } = trpc.clientFiles.getMyFiles.useQuery(undefined, { enabled: !!user });
+  const { data: resources } = trpc.clientFiles.getMyFiles.useQuery(undefined, { enabled: false });
 
-  if (!user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Card className="w-96">
-          <CardHeader>
-            <CardTitle>Authentication Required</CardTitle>
-            <CardDescription>Please sign in to access your dashboard</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button className="w-full" onClick={() => window.location.href = LOGIN_URL}>
-              Sign In
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  // REMOVED AUTH CHECK - Show dashboard content for all users
 
   // Determine next action based on available data
   const getNextAction = () => {
