@@ -1308,3 +1308,9 @@ Remove all signup forms. User just enters email/password and immediately starts 
 - [x] Include: setup instructions, environment variables, Stripe config, deployment steps
 - [x] Create single source of truth document: MASTER_GUIDE_CONSOLIDATED.md
 - [ ] Archive old documentation files (optional - can do later)
+
+
+### AI Chat max_tokens Bug (Dec 10, 11:02 AM)
+- [ ] Fix max_tokens in server/_core/llm.ts (32768 → 16384)
+- [ ] Deploy fix to Render
+- [ ] Test AI Chat with user

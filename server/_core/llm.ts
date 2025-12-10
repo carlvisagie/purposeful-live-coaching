@@ -295,7 +295,7 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
     payload.tool_choice = normalizedToolChoice;
   }
 
-  payload.max_tokens = 32768
+  payload.max_tokens = 16384  // GPT-4o max completion tokens
 
   const normalizedResponseFormat = normalizeResponseFormat({
     responseFormat,
