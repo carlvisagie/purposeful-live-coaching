@@ -92,7 +92,7 @@ export default function CoachDashboard() {
             <div>
               <h1 className="text-3xl font-bold">Coach Dashboard</h1>
               <p className="text-sm text-muted-foreground mt-1">
-                Welcome back, {user.name} • {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+                Welcome back, {user?.name || 'Coach'} • {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
               </p>
             </div>
             <div className="flex items-center gap-3">

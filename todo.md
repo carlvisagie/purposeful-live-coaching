@@ -1379,3 +1379,11 @@ Payment buttons redirect to Manus OAuth login page (manus.im/app-auth) instead o
 
 **Status:** Code fixed, ready to deploy!
 **Goal:** Frictionless guest checkout - NO authentication required to subscribe!
+
+
+---
+
+## 🚨 URGENT - December 10, 2025 - Revenue Blocker
+- [ ] Fix coach dashboard null error (TypeError: Cannot read properties of null reading 'name')
+- [ ] Test coach dashboard displays paying customers
+- [ ] Verify Carl can schedule sessions for paying customers
