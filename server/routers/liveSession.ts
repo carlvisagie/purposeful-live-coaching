@@ -9,7 +9,7 @@ import { TRPCError } from "@trpc/server";
 import { invokeLLM } from "../_core/llm";
 import { transcribeAudio } from "../_core/voiceTranscription";
 import { db } from "../db";
-import { liveSessionTranscripts, coachGuidance, sessions } from "../../drizzle/schema";
+import { liveSessionTranscripts, coachGuidance, sessions, coaches, clients, users } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
 
 /**
@@ -361,10 +361,53 @@ export const liveSessionRouter = router({
     )
     .mutation(async ({ input }) => {
       try {
+        // Ensure default coach exists (for frictionless demo sessions)
+        let coachId = input.coachId;
+        if (!coachId) {
+          const existingCoaches = await db.select().from(coaches).limit(1);
+          if (existingCoaches.length > 0) {
+            coachId = existingCoaches[0].id;
+          } else {
+            // Create default coach if none exists
+            const [defaultUser] = await db.insert(users).values({
+              openId: 'demo-coach-' + Date.now(),
+              name: 'Demo Coach',
+              email: 'demo@purposeful.coach',
+              role: 'coach',
+            }).returning();
+            
+            const [defaultCoach] = await db.insert(coaches).values({
+              userId: defaultUser.id,
+              specialization: 'General Wellness Coaching',
+              bio: 'Demo coach for testing',
+            }).returning();
+            
+            coachId = defaultCoach.id;
+          }
+        }
+        
+        // Ensure default client exists if not provided
+        let clientId = input.clientId;
+        if (!clientId) {
+          const existingClients = await db.select().from(clients).where(eq(clients.coachId, coachId)).limit(1);
+          if (existingClients.length > 0) {
+            clientId = existingClients[0].id;
+          } else {
+            // Create default anonymous client
+            const [defaultClient] = await db.insert(clients).values({
+              coachId: coachId,
+              name: input.clientName || 'Anonymous Client',
+              status: 'active',
+            }).returning();
+            
+            clientId = defaultClient.id;
+          }
+        }
+        
         // Create session record (no auth required for frictionless use)
         const [session] = await db.insert(sessions).values({
-          coachId: input.coachId || 1, // Default coach ID for demo/testing
-          clientId: input.clientId || null,
+          coachId: coachId,
+          clientId: clientId,
           scheduledDate: new Date(),
           duration: 0,
           sessionType: input.sessionType,

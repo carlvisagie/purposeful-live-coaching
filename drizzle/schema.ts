@@ -296,7 +296,7 @@ export type InsertSessionType = typeof sessionTypes.$inferInsert;
 export const sessions = pgTable("sessions", {
   id: serial("id").primaryKey(),
   coachId: integer("coachId").notNull().references(() => coaches.id),
-  clientId: integer("clientId").notNull().references(() => clients.id),
+  clientId: integer("clientId").references(() => clients.id), // Nullable for anonymous sessions
   sessionTypeId: integer("sessionTypeId").references(() => sessionTypes.id),
   scheduledDate: timestamp("scheduledDate").notNull(),
   duration: integer("duration").notNull(), // in minutes
