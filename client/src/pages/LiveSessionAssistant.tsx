@@ -180,11 +180,33 @@ export default function LiveSessionAssistant() {
       toast.success("Equipment test successful!", {
         description: "Camera and microphone are working properly"
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Equipment test failed:", error);
-      toast.error("Equipment test failed", {
-        description: "Please check camera and microphone permissions"
-      });
+      
+      // Provide specific error messages based on error type
+      if (error.name === 'NotFoundError') {
+        toast.error('Camera or microphone not found', {
+          description: 'Please connect your devices and refresh the page'
+        });
+      } else if (error.name === 'NotAllowedError') {
+        toast.error('Permission denied', {
+          description: 'Please allow camera and microphone access in your browser'
+        });
+      } else if (error.name === 'NotReadableError') {
+        toast.error('Device in use', {
+          description: 'Close other apps using your camera or microphone'
+        });
+      } else if (error.name === 'OverconstrainedError') {
+        toast.error('Device constraints not supported', {
+          description: 'Your camera may not support the requested resolution'
+        });
+      } else {
+        toast.error('Equipment test failed', {
+          description: error.message || 'Please check camera and microphone permissions'
+        });
+      }
+      
+      setIsTestingEquipment(false);
     }
   };
   
@@ -269,6 +291,9 @@ export default function LiveSessionAssistant() {
     }
   };
 
+  // Session creation mutation
+  const createSessionMutation = trpc.liveSession.createSession.useMutation();
+  
   // Voice recognition mutation
   const identifyByVoice = trpc.voiceRecognition.identifyClient.useMutation();
   
@@ -278,6 +303,42 @@ export default function LiveSessionAssistant() {
   // Start audio capture
   const startRecording = async () => {
     try {
+      // Check for available devices first
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const cameras = devices.filter(d => d.kind === 'videoinput');
+      const mics = devices.filter(d => d.kind === 'audioinput');
+
+      if (cameras.length === 0) {
+        toast.error('No camera found', {
+          description: 'Please connect a camera and refresh the page'
+        });
+        return;
+      }
+
+      if (mics.length === 0) {
+        toast.error('No microphone found', {
+          description: 'Please connect a microphone and refresh the page'
+        });
+        return;
+      }
+
+      // Create session in database first
+      const session = await createSessionMutation.mutateAsync({
+        clientId: recognizedClient?.id,
+        clientName: recognizedClient?.name || 'Unknown Client',
+        sessionType: 'coaching'
+      });
+
+      // Set session data with REAL session ID
+      setSessionData({
+        sessionId: session.sessionId,
+        clientId: session.clientId || 0,
+        clientName: session.clientName,
+        sessionType: session.sessionType || 'coaching',
+        startTime: new Date(session.startTime),
+        duration: 0
+      });
+
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: {
           echoCancellation: true,
@@ -328,15 +389,14 @@ export default function LiveSessionAssistant() {
                   description: `Recognized with ${Math.round(result.confidence * 100)}% confidence`
                 });
                 
-                // Load client profile
-                setSessionData({
-                  sessionId: 0,
-                  clientId: result.client.id,
-                  clientName: result.client.name,
-                  sessionType: 'coaching',
-                  startTime: new Date(),
-                  duration: 0
-                });
+                // Update session with recognized client
+                if (sessionData) {
+                  setSessionData({
+                    ...sessionData,
+                    clientId: result.client.id,
+                    clientName: result.client.name,
+                  });
+                }
               } else {
                 toast.warning('Client not recognized', {
                   description: 'Please verify client identity manually'
@@ -360,10 +420,31 @@ export default function LiveSessionAssistant() {
       setIsRecording(true);
       setSessionStartTime(new Date());
       
+      // Setup audio level monitoring
+      setupAudioMonitoring(stream);
+      
       toast.success("Session recording started");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to start recording:", error);
-      toast.error("Failed to access microphone. Please check permissions.");
+      
+      // Provide specific error messages
+      if (error.name === 'NotFoundError') {
+        toast.error('Camera or microphone not found', {
+          description: 'Please connect your devices and refresh the page'
+        });
+      } else if (error.name === 'NotAllowedError') {
+        toast.error('Permission denied', {
+          description: 'Please allow camera and microphone access in your browser'
+        });
+      } else if (error.name === 'NotReadableError') {
+        toast.error('Device in use', {
+          description: 'Close other apps using your camera or microphone'
+        });
+      } else {
+        toast.error('Failed to start recording', {
+          description: error.message || 'Please check your camera and microphone'
+        });
+      }
     }
   };
 

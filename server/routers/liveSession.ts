@@ -9,7 +9,7 @@ import { TRPCError } from "@trpc/server";
 import { invokeLLM } from "../_core/llm";
 import { transcribeAudio } from "../_core/voiceTranscription";
 import { db } from "../db";
-import { liveSessionTranscripts, coachGuidance } from "../../drizzle/schema";
+import { liveSessionTranscripts, coachGuidance, sessions } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
 
 /**
@@ -350,6 +350,45 @@ export const liveSessionRouter = router({
   /**
    * Generate session summary
    */
+  createSession: protectedProcedure
+    .input(
+      z.object({
+        clientId: z.number().optional(),
+        clientName: z.string().optional(),
+        sessionType: z.string().default('coaching'),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      try {
+        // Create session record
+        const [session] = await db.insert(sessions).values({
+          coachId: ctx.user.id,
+          clientId: input.clientId || null,
+          scheduledDate: new Date(),
+          duration: 0,
+          sessionType: input.sessionType,
+          status: 'in_progress',
+          paymentStatus: 'completed', // Live sessions are for existing clients
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }).returning();
+
+        return {
+          sessionId: session.id,
+          clientId: session.clientId,
+          clientName: input.clientName || 'Unknown Client',
+          sessionType: session.sessionType,
+          startTime: session.scheduledDate,
+        };
+      } catch (error) {
+        console.error('[Live Session] Session creation error:', error);
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to create session',
+        });
+      }
+    }),
+
   generateSessionSummary: protectedProcedure
     .input(z.object({ sessionId: z.number() }))
     .mutation(async ({ input }) => {
