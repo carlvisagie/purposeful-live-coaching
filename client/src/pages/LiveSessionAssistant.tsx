@@ -201,8 +201,10 @@ export default function LiveSessionAssistant() {
       audioContextRef.current = audioContext;
       analyserRef.current = analyser;
       
-      // Monitor audio levels
+      // Monitor audio levels continuously
       const dataArray = new Uint8Array(analyser.frequencyBinCount);
+      let animationId: number;
+      
       const monitorAudio = () => {
         if (!analyserRef.current) return;
         
@@ -211,9 +213,8 @@ export default function LiveSessionAssistant() {
         const normalizedLevel = Math.min(100, (average / 255) * 100);
         setAudioLevel(normalizedLevel);
         
-        if (isTestingEquipment || isRecording) {
-          requestAnimationFrame(monitorAudio);
-        }
+        // Continue monitoring as long as analyser exists
+        animationId = requestAnimationFrame(monitorAudio);
       };
       
       monitorAudio();
@@ -297,50 +298,6 @@ export default function LiveSessionAssistant() {
         videoRef.current.srcObject = stream;
       }
       
-      // VOICE RECOGNITION: Capture first 5 seconds for identification
-      if (!recognitionAttempted) {
-        setTimeout(async () => {
-          try {
-            // Get first audio chunk for voice recognition
-            const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-            const audioBase64 = await blobToBase64(audioBlob);
-            
-            const result = await identifyByVoice.mutateAsync({ audioData: audioBase64 });
-            
-            if (result.identified && result.client) {
-              setRecognizedClient({
-                id: result.client.id,
-                name: result.client.name,
-                confidence: result.confidence
-              });
-              
-              toast.success(`Welcome back, ${result.client.name}! 👋`, {
-                description: `Recognized with ${Math.round(result.confidence * 100)}% confidence`
-              });
-              
-              // Load client profile
-              setSessionData({
-                sessionId: 0,
-                clientId: result.client.id,
-                clientName: result.client.name,
-                sessionType: 'coaching',
-                startTime: new Date(),
-                duration: 0
-              });
-            } else {
-              toast.warning('Client not recognized', {
-                description: 'Please verify client identity manually'
-              });
-            }
-            
-            setRecognitionAttempted(true);
-          } catch (error) {
-            console.error('Voice recognition failed:', error);
-            toast.error('Voice recognition unavailable');
-          }
-        }, 5000); // Wait 5 seconds to collect voice sample
-      }
-      
       const mediaRecorder = new MediaRecorder(stream, {
         mimeType: "video/webm;codecs=vp9,opus",
       });
@@ -348,9 +305,52 @@ export default function LiveSessionAssistant() {
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = [];
 
-      mediaRecorder.ondataavailable = (event) => {
+      mediaRecorder.ondataavailable = async (event) => {
         if (event.data.size > 0) {
           audioChunksRef.current.push(event.data);
+          
+          // VOICE RECOGNITION: Use first audio chunk for client identification
+          if (!recognitionAttempted && audioChunksRef.current.length === 1) {
+            try {
+              const audioBlob = new Blob([event.data], { type: 'audio/webm' });
+              const audioBase64 = await blobToBase64(audioBlob);
+              
+              const result = await identifyByVoice.mutateAsync({ audioData: audioBase64 });
+              
+              if (result.identified && result.client) {
+                setRecognizedClient({
+                  id: result.client.id,
+                  name: result.client.name,
+                  confidence: result.confidence
+                });
+                
+                toast.success(`Welcome back, ${result.client.name}! 👋`, {
+                  description: `Recognized with ${Math.round(result.confidence * 100)}% confidence`
+                });
+                
+                // Load client profile
+                setSessionData({
+                  sessionId: 0,
+                  clientId: result.client.id,
+                  clientName: result.client.name,
+                  sessionType: 'coaching',
+                  startTime: new Date(),
+                  duration: 0
+                });
+              } else {
+                toast.warning('Client not recognized', {
+                  description: 'Please verify client identity manually'
+                });
+              }
+              
+              setRecognitionAttempted(true);
+            } catch (error) {
+              console.error('Voice recognition failed:', error);
+              toast.error('Voice recognition unavailable');
+              setRecognitionAttempted(true);
+            }
+          }
+          
           // Process audio chunk for transcription
           processAudioChunk(event.data);
         }
