@@ -4,7 +4,7 @@
  */
 
 import { z } from "zod";
-import { protectedProcedure, router } from "../_core/trpc";
+import { protectedProcedure, publicProcedure, router } from "../_core/trpc";
 import { TRPCError } from "@trpc/server";
 import { invokeLLM } from "../_core/llm";
 import { transcribeAudio } from "../_core/voiceTranscription";
@@ -350,19 +350,20 @@ export const liveSessionRouter = router({
   /**
    * Generate session summary
    */
-  createSession: protectedProcedure
+  createSession: publicProcedure
     .input(
       z.object({
+        coachId: z.number().optional(),
         clientId: z.number().optional(),
         clientName: z.string().optional(),
         sessionType: z.string().default('coaching'),
       })
     )
-    .mutation(async ({ input, ctx }) => {
+    .mutation(async ({ input }) => {
       try {
-        // Create session record
+        // Create session record (no auth required for frictionless use)
         const [session] = await db.insert(sessions).values({
-          coachId: ctx.user.id,
+          coachId: input.coachId || 1, // Default coach ID for demo/testing
           clientId: input.clientId || null,
           scheduledDate: new Date(),
           duration: 0,
