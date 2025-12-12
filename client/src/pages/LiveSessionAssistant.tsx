@@ -20,6 +20,10 @@ import {
   FileText,
   Lightbulb,
   Shield,
+  Video,
+  VideoOff,
+  Settings,
+  Volume2,
 } from "lucide-react";
 import { Streamdown } from "streamdown";
 
@@ -70,10 +74,19 @@ export default function LiveSessionAssistant() {
   const [sessionStartTime, setSessionStartTime] = useState<Date | null>(null);
   const [elapsedTime, setElapsedTime] = useState(0);
 
-  // Audio capture
-  const [audioStream, setAudioStream] = useState<MediaStream | null>(null);
+  // Audio/Video capture
+  const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
+  const [isTestingEquipment, setIsTestingEquipment] = useState(false);
+  const [videoQuality, setVideoQuality] = useState<{resolution: string, fps: number} | null>(null);
+  const [audioLevel, setAudioLevel] = useState<number>(0);
+  const [videoEnabled, setVideoEnabled] = useState(true);
+  const [audioEnabled, setAudioEnabled] = useState(true);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const clientVideoRef = useRef<HTMLVideoElement | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
 
   // Transcript
   const [transcript, setTranscript] = useState<TranscriptSegment[]>([]);
@@ -126,6 +139,134 @@ export default function LiveSessionAssistant() {
   // Client recognition state
   const [recognizedClient, setRecognizedClient] = useState<{id: number, name: string, confidence: number} | null>(null);
   const [recognitionAttempted, setRecognitionAttempted] = useState(false);
+  
+  // Test equipment before session
+  const testEquipment = async () => {
+    try {
+      setIsTestingEquipment(true);
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          sampleRate: 16000,
+        },
+        video: {
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+          facingMode: "user",
+        },
+      });
+
+      setMediaStream(stream);
+      
+      // Attach stream to video preview
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+      
+      // Get video quality info
+      const videoTrack = stream.getVideoTracks()[0];
+      if (videoTrack) {
+        const settings = videoTrack.getSettings();
+        setVideoQuality({
+          resolution: `${settings.width}x${settings.height}`,
+          fps: settings.frameRate || 30
+        });
+      }
+      
+      // Setup audio level monitoring
+      setupAudioMonitoring(stream);
+      
+      toast.success("Equipment test successful!", {
+        description: "Camera and microphone are working properly"
+      });
+    } catch (error) {
+      console.error("Equipment test failed:", error);
+      toast.error("Equipment test failed", {
+        description: "Please check camera and microphone permissions"
+      });
+    }
+  };
+  
+  // Setup audio level monitoring
+  const setupAudioMonitoring = (stream: MediaStream) => {
+    try {
+      const audioContext = new AudioContext();
+      const analyser = audioContext.createAnalyser();
+      const microphone = audioContext.createMediaStreamSource(stream);
+      
+      analyser.fftSize = 256;
+      microphone.connect(analyser);
+      
+      audioContextRef.current = audioContext;
+      analyserRef.current = analyser;
+      
+      // Monitor audio levels
+      const dataArray = new Uint8Array(analyser.frequencyBinCount);
+      const monitorAudio = () => {
+        if (!analyserRef.current) return;
+        
+        analyserRef.current.getByteFrequencyData(dataArray);
+        const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
+        const normalizedLevel = Math.min(100, (average / 255) * 100);
+        setAudioLevel(normalizedLevel);
+        
+        if (isTestingEquipment || isRecording) {
+          requestAnimationFrame(monitorAudio);
+        }
+      };
+      
+      monitorAudio();
+    } catch (error) {
+      console.error("Audio monitoring setup failed:", error);
+    }
+  };
+  
+  // Stop equipment test
+  const stopEquipmentTest = () => {
+    if (mediaStream) {
+      mediaStream.getTracks().forEach((track) => track.stop());
+      setMediaStream(null);
+    }
+    
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+    
+    if (audioContextRef.current) {
+      audioContextRef.current.close();
+      audioContextRef.current = null;
+    }
+    
+    setIsTestingEquipment(false);
+    setVideoQuality(null);
+    setAudioLevel(0);
+    toast.info("Equipment test stopped");
+  };
+  
+  // Toggle video during session
+  const toggleVideo = () => {
+    if (mediaStream) {
+      const videoTrack = mediaStream.getVideoTracks()[0];
+      if (videoTrack) {
+        videoTrack.enabled = !videoTrack.enabled;
+        setVideoEnabled(videoTrack.enabled);
+        toast.info(videoTrack.enabled ? "Video enabled" : "Video disabled");
+      }
+    }
+  };
+  
+  // Toggle audio during session
+  const toggleAudio = () => {
+    if (mediaStream) {
+      const audioTrack = mediaStream.getAudioTracks()[0];
+      if (audioTrack) {
+        audioTrack.enabled = !audioTrack.enabled;
+        setAudioEnabled(audioTrack.enabled);
+        toast.info(audioTrack.enabled ? "Microphone enabled" : "Microphone muted");
+      }
+    }
+  };
 
   // Voice recognition mutation
   const identifyByVoice = trpc.voiceRecognition.identifyClient.useMutation();
@@ -142,9 +283,19 @@ export default function LiveSessionAssistant() {
           noiseSuppression: true,
           sampleRate: 16000,
         },
+        video: {
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+          facingMode: "user",
+        },
       });
 
-      setAudioStream(stream);
+      setMediaStream(stream);
+      
+      // Attach stream to video preview
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
       
       // VOICE RECOGNITION: Capture first 5 seconds for identification
       if (!recognitionAttempted) {
@@ -191,7 +342,7 @@ export default function LiveSessionAssistant() {
       }
       
       const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: "audio/webm",
+        mimeType: "video/webm;codecs=vp9,opus",
       });
 
       mediaRecorderRef.current = mediaRecorder;
@@ -222,9 +373,14 @@ export default function LiveSessionAssistant() {
       mediaRecorderRef.current.stop();
     }
 
-    if (audioStream) {
-      audioStream.getTracks().forEach((track) => track.stop());
-      setAudioStream(null);
+    if (mediaStream) {
+      mediaStream.getTracks().forEach((track) => track.stop());
+      setMediaStream(null);
+    }
+    
+    // Clear video preview
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
     }
 
     setIsRecording(false);
@@ -550,40 +706,129 @@ export default function LiveSessionAssistant() {
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column: Transcript */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Recording Controls */}
+          {/* Video Preview & Equipment Testing */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
-                <span>Session Recording</span>
-                {isRecording && (
-                  <Badge variant="destructive" className="animate-pulse">
-                    <Mic className="h-3 w-3 mr-1" />
-                    Recording
+                <span>Video Preview</span>
+                {videoQuality && (
+                  <Badge variant="outline">
+                    {videoQuality.resolution} @ {videoQuality.fps}fps
                   </Badge>
                 )}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex gap-4">
-                {!isRecording ? (
-                  <Button
-                    onClick={startRecording}
-                    size="lg"
-                    className="flex-1 bg-green-600 hover:bg-green-700"
-                  >
-                    <Play className="mr-2 h-5 w-5" />
-                    Start Session
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={stopRecording}
-                    size="lg"
-                    variant="destructive"
-                    className="flex-1"
-                  >
-                    <Pause className="mr-2 h-5 w-5" />
-                    End Session
-                  </Button>
+              <div className="space-y-4">
+                {/* Video Preview */}
+                <div className="relative bg-gray-900 rounded-lg overflow-hidden aspect-video">
+                  <video
+                    ref={videoRef}
+                    autoPlay
+                    playsInline
+                    muted
+                    className="w-full h-full object-cover"
+                  />
+                  {!mediaStream && (
+                    <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                      <div className="text-center">
+                        <Video className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                        <p>Camera preview will appear here</p>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Video Controls Overlay */}
+                  {mediaStream && (
+                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+                      <Button
+                        size="sm"
+                        variant={videoEnabled ? "default" : "destructive"}
+                        onClick={toggleVideo}
+                      >
+                        {videoEnabled ? <Video className="h-4 w-4" /> : <VideoOff className="h-4 w-4" />}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant={audioEnabled ? "default" : "destructive"}
+                        onClick={toggleAudio}
+                      >
+                        {audioEnabled ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}
+                      </Button>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Audio Level Indicator */}
+                {mediaStream && (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="flex items-center gap-2">
+                        <Volume2 className="h-4 w-4" />
+                        Audio Level
+                      </span>
+                      <span className="font-mono">{Math.round(audioLevel)}%</span>
+                    </div>
+                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full transition-all duration-100 ${
+                          audioLevel > 70 ? 'bg-green-500' : audioLevel > 30 ? 'bg-yellow-500' : 'bg-red-500'
+                        }`}
+                        style={{ width: `${audioLevel}%` }}
+                      />
+                    </div>
+                  </div>
+                )}
+                
+                {/* Equipment Test / Recording Controls */}
+                <div className="flex gap-2">
+                  {!isRecording && !isTestingEquipment && (
+                    <>
+                      <Button
+                        onClick={testEquipment}
+                        variant="outline"
+                        className="flex-1"
+                      >
+                        <Settings className="mr-2 h-4 w-4" />
+                        Test Equipment
+                      </Button>
+                      <Button
+                        onClick={startRecording}
+                        className="flex-1 bg-green-600 hover:bg-green-700"
+                      >
+                        <Play className="mr-2 h-4 w-4" />
+                        Start Session
+                      </Button>
+                    </>
+                  )}
+                  
+                  {isTestingEquipment && (
+                    <Button
+                      onClick={stopEquipmentTest}
+                      variant="outline"
+                      className="flex-1"
+                    >
+                      Stop Test
+                    </Button>
+                  )}
+                  
+                  {isRecording && (
+                    <Button
+                      onClick={stopRecording}
+                      variant="destructive"
+                      className="flex-1"
+                    >
+                      <Pause className="mr-2 h-4 w-4" />
+                      End Session
+                    </Button>
+                  )}
+                </div>
+                
+                {isRecording && (
+                  <Badge variant="destructive" className="w-full justify-center animate-pulse">
+                    <Mic className="h-3 w-3 mr-1" />
+                    Recording in Progress
+                  </Badge>
                 )}
               </div>
             </CardContent>

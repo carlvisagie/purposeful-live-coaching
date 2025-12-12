@@ -1398,3 +1398,39 @@ Payment buttons redirect to Manus OAuth login page (manus.im/app-auth) instead o
 - [ ] Auto-generate meeting links when session booked
 - [ ] Test Zoom link generation
 - [ ] Update session booking flow
+
+
+---
+
+## 🚨 CRITICAL PRE-LAUNCH FIXES - December 11, 2025 (Evening)
+
+### Live Session Assistant - Full Video Implementation (Option 2)
+- [~] Add video to getUserMedia - DONE
+- [~] Create video preview component - IN PROGRESS
+- [ ] Add equipment testing UI (test camera/mic before session)
+- [ ] Add video recording (MediaRecorder with video)
+- [ ] Add client video display during session
+- [ ] Add quality indicators (bandwidth, resolution, audio levels)
+- [ ] Integrate face recognition for client identification
+- [ ] Add video analysis for Chase Hughes observational principles
+- [ ] Add video storage (S3 integration)
+- [ ] Test end-to-end video session flow
+
+### End-to-End Testing
+- [ ] Test complete AI coaching purchase flow
+- [ ] Test complete Human coaching purchase → booking → session flow
+- [ ] Test Live Session Assistant with real video/audio
+- [ ] Test coach dashboard with real customer data
+- [ ] Document what's ACTUALLY broken (honest assessment)
+
+### Master Guide Update
+- [ ] Update with honest assessment of what works vs broken
+- [ ] Remove "100% ready" claims until issues fixed
+- [ ] Add "Known Issues" section with real blockers
+- [ ] Document video/audio limitations
+
+### Sintra Strategy
+- [ ] Create Sintra AI assistant delegation plan
+- [ ] Document which Sintra agents handle which tasks
+- [ ] Create marketing calendar using Sintra
+- [ ] Set up customer support workflows
