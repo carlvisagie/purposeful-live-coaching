@@ -1387,3 +1387,14 @@ Payment buttons redirect to Manus OAuth login page (manus.im/app-auth) instead o
 - [ ] Fix coach dashboard null error (TypeError: Cannot read properties of null reading 'name')
 - [ ] Test coach dashboard displays paying customers
 - [ ] Verify Carl can schedule sessions for paying customers
+
+
+---
+
+## 🎥 ZOOM INTEGRATION - December 11, 2025
+- [x] Get Zoom API credentials - Using Calendly instead (carlhvisagie account found)
+- [ ] Integrate Calendly widget (https://calendly.com/carlhvisagie)
+- [ ] Create Zoom API integration module
+- [ ] Auto-generate meeting links when session booked
+- [ ] Test Zoom link generation
+- [ ] Update session booking flow
