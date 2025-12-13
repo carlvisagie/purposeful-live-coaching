@@ -87,6 +87,9 @@
 - [x] Remove subscription requirement for guest AI chat access
 - [x] Enable guest access to conversation list
 - [x] Fix AI chat button disabled state
+- [x] Fix database column naming (camelCase to snake_case)
+- [x] Drop duplicate columns (conversationId, createdAt, etc.)
+- [x] Test AI Coach messaging end-to-end - WORKING IN PRODUCTION
 - [ ] Implement anonymous client ID generation (browser fingerprint + localStorage)
 - [x] Add voice input button to AI chat interface
 - [ ] Integrate Whisper API for voice transcription
