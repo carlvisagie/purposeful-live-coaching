@@ -74,3 +74,4 @@ Once you've read and understood the complete guide:
 ---
 
 **Remember: This is a real business serving real customers. Treat it with respect.**
+# Trigger deployment Sat Dec 13 10:56:22 EST 2025
