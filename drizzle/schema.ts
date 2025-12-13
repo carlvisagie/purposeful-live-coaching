@@ -464,7 +464,7 @@ export type InsertDiscountCodeUsage = typeof discountCodeUsage.$inferInsert;
 /**
  * AI chat conversations - 24/7 AI coaching chat history
  */
-export const aiChatConversations = pgTable("aiChatConversations", {
+export const aiChatConversations = pgTable("ai_chat_conversations", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id, { onDelete: "cascade" }), // Nullable for guest users
   clientId: integer("client_id").references(() => clients.id, { onDelete: "cascade" }), // Optional link to client profile
@@ -491,7 +491,7 @@ export type InsertAiChatConversation = typeof aiChatConversations.$inferInsert;
 /**
  * AI chat messages - individual messages in conversations
  */
-export const aiChatMessages = pgTable("aiChatMessages", {
+export const aiChatMessages = pgTable("ai_chat_messages", {
   id: serial("id").primaryKey(),
   conversationId: integer("conversation_id").notNull().references(() => aiChatConversations.id, { onDelete: "cascade" }),
   role: varchar("role", { length: 50 }),
