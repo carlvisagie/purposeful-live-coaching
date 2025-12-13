@@ -57,9 +57,9 @@ export const chatRouter = router({
           const [newConv] = await db
             .insert(aiChatConversations)
             .values({
-              user_id: null, // Anonymous for now
-              client_id: null,
-              startedAt: new Date(),
+              userId: null, // Anonymous for now
+              clientId: null,
+              lastMessageAt: new Date(),
             })
             .$returningId();
 

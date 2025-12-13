@@ -81,7 +81,7 @@ export default function IndividualLanding() {
   const aiTiers = [
     {
       id: "ai_basic",
-      name: "AI Chat",
+      name: "Basic",
       price: 29,
       description: "Start your journey 24/7",
       icon: <Sparkles className="h-6 w-6" />,
@@ -97,14 +97,14 @@ export default function IndividualLanding() {
     },
     {
       id: "ai_premium",
-      name: "AI + Monthly Check-in",
+      name: "Premium",
       price: 149,
       description: "AI + 1 human session",
       icon: <Zap className="h-6 w-6" />,
       color: "border-purple-500",
       popular: true,
       features: [
-        "Everything in AI Chat",
+        "Everything in Basic",
         "1 live session per month (30 min)",
         "Priority email support",
         "Personalized action plans",
@@ -113,14 +113,14 @@ export default function IndividualLanding() {
     },
     {
       id: "ai_elite",
-      name: "AI + Weekly Support",
+      name: "Elite",
       price: 299,
       description: "AI + 4 human sessions",
       icon: <Crown className="h-6 w-6" />,
       color: "border-amber-500",
       popular: false,
       features: [
-        "Everything in AI Premium",
+        "Everything in Premium",
         "4 live sessions per month (30 min each)",
         "Priority scheduling",
         "Text & email support",

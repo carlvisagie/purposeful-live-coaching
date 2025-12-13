@@ -102,7 +102,7 @@ export const adaptiveLearningRouter = router({
   recordFeedback: protectedProcedure
     .input(
       z.object({
-        clientId: z.number(),
+        client_id: z.number(),
         recommendationType: z.string(),
         recommendationContent: z.string(),
         context: z.string().optional(),
@@ -140,7 +140,7 @@ export const adaptiveLearningRouter = router({
   updateOutcome: protectedProcedure
     .input(
       z.object({
-        clientId: z.number(),
+        client_id: z.number(),
         currentEmotionalState: z.number().min(1).max(10),
         currentFunctioning: z.number().min(1).max(10),
         goalsAchieved: z.array(z.string()).optional(),
@@ -204,7 +204,7 @@ export const adaptiveLearningRouter = router({
    * Get outcome tracking for client
    */
   getOutcome: protectedProcedure
-    .input(z.object({ clientId: z.number() }))
+    .input(z.object({ client_id: z.number() }))
     .query(async ({ input }) => {
       const outcomes = await db
         .select()
