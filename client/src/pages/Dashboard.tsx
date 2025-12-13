@@ -78,6 +78,12 @@ export default function Dashboard() {
   
   // Placeholder metrics (TODO: fetch from backend)
   const identityAlignment = 75; // Percentage of identity alignment
+  const morningStreak = { current: 0, longest: 0 }; // Morning routine streak
+  const healthStats = { sleep: 0, exercise: 0, nutrition: 0, stress: 0 }; // Health metrics
+  const healthToday = { sleep: 7, exercise: 30, nutrition: 80, stress: 40 }; // Today's health
+  const gamificationData = { level: 1, xp: 0, nextLevelXp: 100, achievements: [] }; // Gamification
+  const activeMilestones = []; // Active milestones
+  const identityStatement = "I am becoming the person I want to be"; // Identity statement
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950 dark:via-blue-950 dark:to-indigo-950">
