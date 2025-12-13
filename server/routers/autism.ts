@@ -46,7 +46,7 @@ export const autismRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       const [profile] = await db.insert(autismProfiles).values({
-        user_id: ctx.user.id,
+        userId: ctx.user.id,
         childName: input.childName,
         dateOfBirth: input.dateOfBirth,
         diagnosisDate: input.diagnosisDate,
@@ -60,8 +60,8 @@ export const autismRouter = router({
         behaviorChallenges: input.behaviorChallenges ? JSON.stringify(input.behaviorChallenges) : null,
         familyResources: input.familyResources ? JSON.stringify(input.familyResources) : null,
         treatmentPriorities: input.treatmentPriorities ? JSON.stringify(input.treatmentPriorities) : null,
-        created_at: new Date(),
-        updated_at: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       });
 
       return { success: true };
@@ -134,8 +134,8 @@ export const autismRouter = router({
         currentPhase: input.currentPhase,
         startDate: new Date(),
         providerDirectory: input.providerDirectory ? JSON.stringify(input.providerDirectory) : null,
-        created_at: new Date(),
-        updated_at: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       });
 
       return { success: true };
@@ -183,8 +183,8 @@ export const autismRouter = router({
         dosage: input.dosage,
         frequency: input.frequency,
         startDate: new Date(),
-        created_at: new Date(),
-        updated_at: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       });
 
       return { success: true };
@@ -206,7 +206,7 @@ export const autismRouter = router({
           adherence: input.adherence,
           sideEffects: input.sideEffects ? JSON.stringify(input.sideEffects) : undefined,
           perceivedBenefit: input.perceivedBenefit,
-          updated_at: new Date(),
+          updatedAt: new Date(),
         })
         .where(eq(supplementTracking.id, input.supplementId));
 
@@ -244,8 +244,8 @@ export const autismRouter = router({
         profileId: input.profileId,
         dietType: input.dietType,
         startDate: new Date(),
-        created_at: new Date(),
-        updated_at: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       });
 
       return { success: true };
@@ -267,7 +267,7 @@ export const autismRouter = router({
           adherence: input.adherence,
           giSymptomChanges: input.giSymptomChanges ? JSON.stringify(input.giSymptomChanges) : undefined,
           behaviorChanges: input.behaviorChanges ? JSON.stringify(input.behaviorChanges) : undefined,
-          updated_at: new Date(),
+          updatedAt: new Date(),
         })
         .where(eq(dietaryInterventions.id, input.dietId));
 
@@ -315,7 +315,7 @@ export const autismRouter = router({
         goalsAddressed: input.goalsAddressed ? JSON.stringify(input.goalsAddressed) : null,
         progress: input.progress ? JSON.stringify(input.progress) : null,
         parentFeedback: input.parentFeedback,
-        created_at: new Date(),
+        createdAt: new Date(),
       });
 
       return { success: true };
@@ -369,7 +369,7 @@ export const autismRouter = router({
         sleepScore: input.sleepScore,
         familyQOL: input.familyQOL,
         parentStress: input.parentStress,
-        created_at: new Date(),
+        createdAt: new Date(),
       });
 
       return { success: true };

@@ -171,7 +171,7 @@ export const subscriptionWebhookRouter = router({
             
             await db.insert(usageTracking).values({
               subscriptionId: subscription.id,
-              user_id: subscription.userId,
+              userId: subscription.userId,
               periodStart: subscription.currentPeriodStart!,
               periodEnd: subscription.currentPeriodEnd!,
               aiSessionsUsed: 0,

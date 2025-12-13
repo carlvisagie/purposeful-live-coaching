@@ -20,7 +20,7 @@ export const aiInsightsRouter = router({
    */
   list: protectedProcedure
     .input(z.object({
-      client_id: z.number(),
+      clientId: z.number(),
     }))
     .query(async ({ input, ctx }) => {
       const db = await getDb();
@@ -41,7 +41,7 @@ export const aiInsightsRouter = router({
    */
   generate: protectedProcedure
     .input(z.object({
-      client_id: z.number(),
+      clientId: z.number(),
     }))
     .mutation(async ({ input, ctx }) => {
       const db = await getDb();
@@ -181,7 +181,7 @@ Provide comprehensive insights focusing on patterns, crisis indicators, and acti
 
         // Save insights to database
         await db.insert(aiInsights).values({
-          client_id: input.clientId,
+          clientId: input.clientId,
           insightType: aiResponse.severity === "critical" ? "crisis_alert" : "pattern_analysis",
           title: `AI Analysis - ${aiResponse.severity.toUpperCase()}`,
           description: aiResponse.summary,
@@ -294,7 +294,7 @@ Provide crisis risk assessment.`
         // If critical, create crisis alert insight
         if (assessment.requiresEscalation) {
           await db.insert(aiInsights).values({
-            client_id: entry.clientId,
+            clientId: entry.clientId,
             insightType: "crisis_alert",
             title: "CRISIS ALERT",
             description: assessment.recommendedAction,

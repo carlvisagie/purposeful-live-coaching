@@ -38,7 +38,7 @@ export const clientFilesRouter = router({
       fileData: z.string(), // Base64 encoded file data
       mimeType: z.string(),
       conversationId: z.number().optional(),
-      session_id: z.number().optional(),
+      sessionId: z.number().optional(),
     }))
     .mutation(async ({ input, ctx }) => {
       // Decode base64 file data
@@ -74,9 +74,9 @@ export const clientFilesRouter = router({
 
       // Create database record
       const [file] = await db.insert(clientFiles).values({
-        user_id: ctx.user.id,
+        userId: ctx.user.id,
         conversationId: input.conversationId || null,
-        session_id: input.sessionId || null,
+        sessionId: input.sessionId || null,
         fileName: input.fileName,
         fileType: input.fileType,
         fileCategory: input.fileCategory,
@@ -152,7 +152,7 @@ export const clientFilesRouter = router({
    */
   getClientFiles: protectedProcedure
     .input(z.object({
-      user_id: z.number(),
+      userId: z.number(),
       fileType: z.enum(["audio", "video", "document", "image", "transcript", "all"]).default("all"),
     }))
     .query(async ({ input, ctx }) => {
