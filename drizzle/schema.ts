@@ -386,7 +386,7 @@ export type InsertHumanSessionBooking = typeof humanSessionBookings.$inferInsert
 /**
  * Coach availability - recurring weekly schedule
  */
-export const coachAvailability = pgTable("coachAvailability", {
+export const coachAvailability = pgTable("coach_availability", {
   id: serial("id").primaryKey(),
   coachId: integer("coach_id").notNull().references(() => coaches.id, { onDelete: "cascade" }),
   dayOfWeek: integer("day_of_week").notNull(), // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
