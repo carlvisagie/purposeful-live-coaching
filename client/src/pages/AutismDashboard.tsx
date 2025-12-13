@@ -24,7 +24,7 @@ export default function AutismDashboard() {
             Evidence-based interventions for your child's development
           </p>
         </div>
-        <Link href="/autism/create-profile">
+        <Link to="/autism/create-profile">
           <Button size="lg">
             <Plus className="mr-2 h-5 w-5" />
             Add Child Profile
@@ -41,7 +41,7 @@ export default function AutismDashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Link href="/autism/create-profile">
+            <Link to="/autism/create-profile">
               <Button>Create First Profile</Button>
             </Link>
           </CardContent>
@@ -76,13 +76,13 @@ export default function AutismDashboard() {
                 )}
 
                 <div className="flex gap-2 pt-4">
-                  <Link href={`/autism/profile/${profile.id}`}>
+                  <Link to={`/autism/profile/${profile.id}`}>
                     <Button variant="outline" size="sm" className="flex-1">
                       <Activity className="mr-2 h-4 w-4" />
                       View Details
                     </Button>
                   </Link>
-                  <Link href={`/autism/interventions/${profile.id}`}>
+                  <Link to={`/autism/interventions/${profile.id}`}>
                     <Button size="sm" className="flex-1">
                       <TrendingUp className="mr-2 h-4 w-4" />
                       Interventions

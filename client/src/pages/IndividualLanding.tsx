@@ -269,7 +269,7 @@ export default function IndividualLanding() {
         </div>
 
         <div className="text-center">
-          <Link href="/wellness-modules">
+          <Link to="/wellness-modules">
             <Button variant="link" className="text-purple-600 text-lg">
               Explore All 31 Wellness Modules →
             </Button>
