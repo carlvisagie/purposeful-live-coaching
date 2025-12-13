@@ -2,7 +2,7 @@
 
 ## 🔴 CRITICAL - REVENUE BLOCKERS
 
-- [x] Fix /daily-os/morning route (404 error)
+- [x] Fix /daily-os/morning route (404 error) - REVERTED (requires backend work)
 - [ ] Implement tier differentiation system
   - [ ] Add subscription tier checks to AI chat router
   - [ ] Enforce message limits per tier (Basic: 100, Premium: 500, Elite: unlimited)
@@ -70,14 +70,14 @@
 
 ## 🟠 UI/UX IMPROVEMENTS
 
-- [ ] Clean up wellness modules UI
-  - [ ] Integrate 33 wellness modules with comprehensive display
-  - [ ] Remove small/obscured buttons
-  - [ ] Create unified, clean wellness modules interface
-  - [ ] Ensure all 33 modules are easily accessible
+- [x] Clean up wellness modules UI
+  - [x] Integrate 33 wellness modules with comprehensive display
+  - [x] Remove small/obscured buttons
+  - [x] Create unified, clean wellness modules interface
+  - [x] Ensure all 33 modules are easily accessible
 
 ## 🔴 URGENT - Deployment Fixes
 
-- [ ] Fix database migration syntax error (PostgreSQL AFTER clause)
-- [ ] Ensure schema changes are compatible with production database
-- [ ] Test migration locally before deploying
+- [x] Fix database migration syntax error (PostgreSQL AFTER clause)
+- [x] Ensure schema changes are compatible with production database
+- [x] Test migration locally before deploying
