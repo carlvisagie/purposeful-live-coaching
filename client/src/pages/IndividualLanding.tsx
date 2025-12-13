@@ -17,7 +17,7 @@ import {
   Users,
   Loader2,
 } from "lucide-react";
-import { useLocation } from "wouter";
+import { Link, useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { useToast } from "@/hooks/use-toast";
 
