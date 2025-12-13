@@ -50,6 +50,12 @@ export default function CoachDashboard() {
     return sessionDate >= today && sessionDate < tomorrow;
   }) || [];
   
+  // Filter upcoming sessions (future sessions)
+  const upcomingBookings = coachSessions?.filter((session: any) => {
+    const sessionDate = new Date(session.scheduledDate);
+    return sessionDate >= tomorrow;
+  }) || [];
+  
   // Calculate revenue stats from real data (stats from backend)
   const revenueStats = {
     currentMonth: stats?.monthlyRevenue || 0,
