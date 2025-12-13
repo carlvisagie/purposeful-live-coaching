@@ -44,8 +44,7 @@ import {
 export default function AICoach() {
   const { user, loading: authLoading } = useAuth();
   
-  // Show AI disclosure dialog (CA/NY law compliance)
-  useAIDisclosureReminder();
+  // Frictionless platform - no compliance dialogs
   const [, setLocation] = useLocation();
   const [selectedConversationId, setSelectedConversationId] = useState<number | null>(null);
   const [message, setMessage] = useState("");
@@ -54,17 +53,13 @@ export default function AICoach() {
   const [conversationToDelete, setConversationToDelete] = useState<number | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Check subscription status
-  const { data: subscription, isLoading: subscriptionLoading } = 
-    trpc.subscriptions.getMySubscription.useQuery(undefined, {
-      enabled: !!user,
-    });
+  // Frictionless - no subscription required for AI chat
+  const subscription = null;
+  const subscriptionLoading = false;
 
-  // Fetch conversations list
+  // Fetch conversations list - guest access enabled
   const { data: conversationsData, refetch: refetchConversations } =
-    trpc.aiChat.listConversations.useQuery(undefined, {
-      enabled: !!user,
-    });
+    trpc.aiChat.listConversations.useQuery();
 
   // Fetch selected conversation messages
   const { data: conversationData, refetch: refetchMessages } =
@@ -258,7 +253,7 @@ export default function AICoach() {
                 <Button
                   size="sm"
                   onClick={handleNewConversation}
-                  disabled={createConversationMutation.isPending}
+                  disabled={false}
                 >
                   <Plus className="h-4 w-4" />
                 </Button>

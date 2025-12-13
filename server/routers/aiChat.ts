@@ -193,8 +193,8 @@ export const aiChatRouter = router({
       
       try {
         const conversationId = await createConversation({
-          ...(userId ? { user_id } : {}),
-          ...(input.clientId ? { client_id: input.clientId } : {}),
+          userId: userId || null,
+          clientId: input.client_id || null,
           title: input.title || "New Conversation",
         });
         console.error('[tRPC createConversation] Success! conversationId:', conversationId);
