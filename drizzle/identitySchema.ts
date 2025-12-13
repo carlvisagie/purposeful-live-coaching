@@ -8,24 +8,24 @@ import { habits } from "./habitFormationSchema";
  */
 export const identityProfiles = pgTable("identityProfiles", {
   id: serial("id").primaryKey(),
-  clientId: integer("clientId").notNull().references(() => clients.id),
+  clientId: integer("client_id").notNull().references(() => clients.id),
   
   // Current identity markers
-  currentIdentity: text("currentIdentity"), // JSON: ["disciplined", "resilient", etc.]
-  targetIdentity: text("targetIdentity"), // JSON: ["unstoppable", "mission-driven", etc.]
-  identityGaps: text("identityGaps"), // JSON: What's missing between current and target
+  currentIdentity: text("current_identity"), // JSON: ["disciplined", "resilient", etc.]
+  targetIdentity: text("target_identity"), // JSON: ["unstoppable", "mission-driven", etc.]
+  identityGaps: text("identity_gaps"), // JSON: What's missing between current and target
   
   // Core values and mission
-  coreValues: text("coreValues"), // JSON array
-  lifeMission: text("lifeMission"),
-  longTermVision: text("longTermVision"),
+  coreValues: text("core_values"), // JSON array
+  lifeMission: text("life_mission"),
+  longTermVision: text("long_term_vision"),
   
   // Identity reinforcement tracking
-  identityWins: text("identityWins"), // JSON: Recent actions that reinforced identity
-  identityContradictions: text("identityContradictions"), // JSON: Actions that contradicted identity
+  identityWins: text("identity_wins"), // JSON: Recent actions that reinforced identity
+  identityContradictions: text("identity_contradictions"), // JSON: Actions that contradicted identity
   
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export type IdentityProfile = typeof identityProfiles.$inferSelect;
@@ -36,28 +36,28 @@ export type InsertIdentityProfile = typeof identityProfiles.$inferInsert;
  */
 export const dailyCheckins = pgTable("dailyCheckins", {
   id: serial("id").primaryKey(),
-  clientId: integer("clientId").notNull().references(() => clients.id),
-  checkinDate: timestamp("checkinDate").defaultNow().notNull(),
+  clientId: integer("client_id").notNull().references(() => clients.id),
+  checkinDate: timestamp("checkin_date").defaultNow().notNull(),
   
   // Physical health (minimal questions)
-  sleptWell: varchar("sleptWell", { length: 50 }),
-  ateWell: varchar("ateWell", { length: 50 }),
-  movedBody: varchar("movedBody", { length: 50 }),
+  sleptWell: varchar("slept_well", { length: 50 }),
+  ateWell: varchar("ate_well", { length: 50 }),
+  movedBody: varchar("moved_body", { length: 50 }),
   
   // Emotional state (single rating)
-  emotionalState: integer("emotionalState").notNull(), // 1-10 scale
+  emotionalState: integer("emotional_state").notNull(), // 1-10 scale
   
   // Discipline tracking
-  followedPlan: varchar("followedPlan", { length: 50 }),
-  controlledImpulses: varchar("controlledImpulses", { length: 50 }),
+  followedPlan: varchar("followed_plan", { length: 50 }),
+  controlledImpulses: varchar("controlled_impulses", { length: 50 }),
   
   // Identity reinforcement
-  actedLikeTargetIdentity: varchar("actedLikeTargetIdentity", { length: 50 }),
+  actedLikeTargetIdentity: varchar("acted_like_target_identity", { length: 50 }),
   
   // Optional notes (not required)
   notes: text("notes"),
   
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export type DailyCheckin = typeof dailyCheckins.$inferSelect;
@@ -70,11 +70,11 @@ export type InsertDailyCheckin = typeof dailyCheckins.$inferInsert;
  */
 export const habitCompletions = pgTable("habitCompletions", {
   id: serial("id").primaryKey(),
-  habitId: integer("habitId").notNull().references(() => habits.id),
-  completionDate: timestamp("completionDate").defaultNow().notNull(),
+  habitId: integer("habit_id").notNull().references(() => habits.id),
+  completionDate: timestamp("completion_date").defaultNow().notNull(),
   completed: varchar("completed", { length: 50 }),
   notes: text("notes"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export type HabitCompletion = typeof habitCompletions.$inferSelect;
@@ -85,19 +85,19 @@ export type InsertHabitCompletion = typeof habitCompletions.$inferInsert;
  */
 export const disciplineEvents = pgTable("disciplineEvents", {
   id: serial("id").primaryKey(),
-  clientId: integer("clientId").notNull().references(() => clients.id),
-  eventDate: timestamp("eventDate").defaultNow().notNull(),
+  clientId: integer("client_id").notNull().references(() => clients.id),
+  eventDate: timestamp("event_date").defaultNow().notNull(),
   
   // Event details
-  eventType: varchar("eventType", { length: 50 }),
+  eventType: varchar("event_type", { length: 50 }),
   situation: text("situation"), // What happened
   response: text("response"), // How they responded
   outcome: text("outcome"), // Result
   
   // Identity impact
-  reinforcedIdentity: varchar("reinforcedIdentity", { length: 50 }),
+  reinforcedIdentity: varchar("reinforced_identity", { length: 50 }),
   
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export type DisciplineEvent = typeof disciplineEvents.$inferSelect;
@@ -108,21 +108,21 @@ export type InsertDisciplineEvent = typeof disciplineEvents.$inferInsert;
  */
 export const microHabits = pgTable("microHabits", {
   id: serial("id").primaryKey(),
-  clientId: integer("clientId").notNull().references(() => clients.id),
+  clientId: integer("client_id").notNull().references(() => clients.id),
   
   // Micro-habit definition (must be < 2 minutes)
-  microHabitName: varchar("microHabitName", { length: 255 }).notNull(),
+  microHabitName: varchar("micro_habit_name", { length: 255 }).notNull(),
   trigger: varchar("trigger", { length: 255 }).notNull(), // "After I [existing habit]"
   action: varchar("action", { length: 255 }).notNull(), // "I will [micro-habit]"
   
   // Identity connection
-  identityReinforcement: text("identityReinforcement"), // "This makes me [identity]"
+  identityReinforcement: text("identity_reinforcement"), // "This makes me [identity]"
   
   // Status
-  isActive: varchar("isActive", { length: 50 }),
+  isActive: varchar("is_active", { length: 50 }),
   
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export type MicroHabit = typeof microHabits.$inferSelect;

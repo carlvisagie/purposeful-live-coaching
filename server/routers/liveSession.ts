@@ -377,7 +377,7 @@ export const liveSessionRouter = router({
             }).returning();
             
             const [defaultCoach] = await db.insert(coaches).values({
-              userId: defaultUser.id,
+              user_id: defaultUser.id,
               specialization: 'General Wellness Coaching',
               bio: 'Demo coach for testing',
             }).returning();
@@ -395,7 +395,7 @@ export const liveSessionRouter = router({
           } else {
             // Create default anonymous client
             const [defaultClient] = await db.insert(clients).values({
-              coachId: coachId,
+              coach_id: coachId,
               name: input.clientName || 'Anonymous Client',
               status: 'active',
             }).returning();
