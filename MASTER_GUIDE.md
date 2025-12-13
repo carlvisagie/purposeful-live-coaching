@@ -1,8 +1,8 @@
 # PURPOSEFUL LIVE COACHING - MASTER GUIDE
 ## Single Source of Truth
 
-**Last Updated:** December 13, 2025 - 6:30 AM UTC  
-**Status:** 🟢 PRODUCTION READY - Database fixed, Link errors resolved, tier differentiation pending  
+**Last Updated:** December 13, 2025 - 11:17 AM EST  
+**Status:** 🟡 IN PROGRESS - Database table names fixed, AI Coach testing in progress  
 **Owner:** Carl Visagie  
 **Production URL:** https://purposeful-live-coaching-production.onrender.com  
 **Repository:** https://github.com/carlvisagie/purposeful-live-coaching
@@ -35,6 +35,27 @@
 ---
 
 ## 🔧 RECENT FIXES (DEC 13) {#recent-fixes}
+
+### ✅ Database Table Name Mismatch - FIXED (11:15 AM EST)
+**Problem:** AI Coach button not working - database tables had camelCase names but schema expected snake_case
+
+**Root Cause:**
+- Database tables: `aiChatConversations`, `aiChatMessages`, `aiInsights`
+- Schema expected: `ai_chat_conversations`, `ai_chat_messages`, `ai_insights`
+- Error: `PostgresError: relation "ai_chat_conversations" does not exist`
+
+**Solution:** Renamed all AI chat tables in production database to snake_case
+```sql
+ALTER TABLE "aiChatConversations" RENAME TO "ai_chat_conversations";
+ALTER TABLE "aiChatMessages" RENAME TO "ai_chat_messages";
+ALTER TABLE "aiInsights" RENAME TO "ai_insights";
+```
+
+**Execution:** December 13, 2025 11:15 EST via Node.js script (fix-table-names.mjs)
+**Status:** ✅ Tables renamed, awaiting deployment test
+
+**Database Type:** PostgreSQL (NOT MySQL/TiDB as initially suspected)
+**Connection:** Render PostgreSQL database with SSL required
 
 ### ✅ Database Schema Migration - COMPLETED
 **Problem:** Production database missing critical columns causing "errorMissingColumn" errors
