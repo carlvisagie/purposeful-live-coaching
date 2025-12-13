@@ -82,7 +82,7 @@ export default function Dashboard() {
         {/* Welcome Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-4xl font-bold">Welcome back, {user.name?.split(' ')[0] || 'Champion'}</h1>
+            <h1 className="text-4xl font-bold">Welcome back, {user?.name?.split(' ')[0] || 'Champion'}</h1>
             <p className="text-muted-foreground mt-2">
               Your path to freedom starts here
             </p>
