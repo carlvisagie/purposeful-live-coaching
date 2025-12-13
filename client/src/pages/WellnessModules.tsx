@@ -208,7 +208,9 @@ export default function WellnessModules() {
           {filteredModules.map((module, idx) => {
             const Icon = module.icon;
             const isLocked = !hasFullAccess && idx >= tierModuleLimit;
-            return (
+            const moduleSlug = module.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+            
+            const cardContent = (
               <Card 
                 key={idx} 
                 className={`hover:shadow-xl transition-all duration-300 cursor-pointer group border-2 hover:border-purple-300 hover:-translate-y-1 ${isLocked ? 'opacity-60' : ''}`}
@@ -239,6 +241,16 @@ export default function WellnessModules() {
                   </CardDescription>
                 </CardHeader>
               </Card>
+            );
+            
+            return isLocked ? (
+              <Link key={idx} to="/pricing">
+                {cardContent}
+              </Link>
+            ) : (
+              <Link key={idx} to={`/wellness-modules/${moduleSlug}`}>
+                {cardContent}
+              </Link>
             );
           })}
         </div>

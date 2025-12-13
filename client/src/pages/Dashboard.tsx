@@ -369,9 +369,9 @@ export default function Dashboard() {
               {healthToday ? (
                 <Badge variant="outline" className="text-green-600">Complete</Badge>
               ) : (
-                <Link to="/health">
-                  <Button size="sm" variant="outline">Do Now</Button>
-                </Link>
+              <Link to="/health-tracker">
+                <Button size="sm" variant="outline">Do Now</Button>
+              </Link>
               )}
             </div>
 
@@ -403,7 +403,7 @@ export default function Dashboard() {
 
         {/* Quick Actions */}
         <div className="grid md:grid-cols-3 gap-6">
-          <Link to="/health">
+          <Link to="/health-tracker">
             <Card className="hover:shadow-lg transition-shadow cursor-pointer">
               <CardHeader>
                 <div className="flex items-center gap-3">
