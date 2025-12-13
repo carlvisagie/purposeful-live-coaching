@@ -99,7 +99,7 @@ export default function WellnessModules() {
             <p className="text-xl text-purple-100 mb-8">
               31 evidence-based modules to transform every area of your life
             </p>
-            <Link href="/pricing">
+            <Link to="/pricing">
               <Button size="lg" variant="secondary" className="gap-2">
                 <Sparkles className="h-5 w-5" />
                 Get Started Today
@@ -160,12 +160,12 @@ export default function WellnessModules() {
               Access all 31 wellness modules with AI-powered coaching and live human support
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/pricing">
+              <Link to="/pricing">
                 <Button size="lg" variant="secondary">
                   View Pricing Plans
                 </Button>
               </Link>
-              <Link href="/dashboard">
+              <Link to="/dashboard">
                 <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white/10">
                   Go to Dashboard
                 </Button>
