@@ -97,3 +97,16 @@
 - [ ] Store client metadata in conversation context
 - [ ] Implement persistent identity across sessions
 - [ ] Add optional account linking for multi-device access
+
+## 🔴 TIER DIFFERENTIATION IMPLEMENTATION (Dec 13, 12:15 PM)
+
+- [x] Add message_count tracking to subscriptions table
+- [x] Add tier_level enum to subscriptions table (already exists as 'tier')
+- [x] Update AI chat router to check subscription tier before processing
+- [x] Enforce message limits (Basic: 100, Premium: 500, Elite: unlimited)
+- [x] Use GPT-4o-mini for Basic tier, GPT-4o for Premium/Elite
+- [ ] Filter wellness modules by tier (Basic: 5, Premium/Elite: 31)
+- [x] Add usage counter display in AI chat UI
+- [x] Add "upgrade to unlock" prompts when limits reached
+- [ ] Test all three AI tiers end-to-end
+- [ ] Document tier differentiation in MASTER_GUIDE.md

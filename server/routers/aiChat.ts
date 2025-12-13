@@ -247,7 +247,7 @@ export const aiChatRouter = router({
             .orderBy(desc(usageTracking.periodStart))
             .limit(1);
 
-          const messagesUsed = usage?.aiSessionsUsed || 0;
+          const messagesUsed = usage?.aiMessagesUsed || 0;
           const tier = subscription.tier;
 
           // Check if user has reached their limit
@@ -264,7 +264,7 @@ export const aiChatRouter = router({
             await db
               .update(usageTracking)
               .set({ 
-                aiSessionsUsed: messagesUsed + 1,
+                aiMessagesUsed: messagesUsed + 1,
                 updatedAt: new Date()
               })
               .where(eq(usageTracking.id, usage.id));

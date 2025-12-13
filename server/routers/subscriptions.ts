@@ -357,7 +357,20 @@ export const subscriptionsRouter = router({
       };
     }
 
-    return usage[0];
+    // Calculate message usage stats
+    const tierKey = sub[0].tier as TierKey;
+    const tierLimits = tierKey ? TIER_CONFIG[tierKey] : TIER_CONFIG.basic;
+    const messagesUsed = usage[0].aiMessagesUsed || 0;
+    const messageLimit = tierLimits.messagesPerMonth;
+    const messagesRemaining = messageLimit === -1 ? -1 : Math.max(0, messageLimit - messagesUsed);
+
+    return {
+      ...usage[0],
+      messagesUsed,
+      messageLimit,
+      messagesRemaining,
+      tierName: tierLimits.name,
+    };
   }),
 
   /**

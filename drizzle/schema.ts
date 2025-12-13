@@ -351,6 +351,7 @@ export const usageTracking = pgTable("usage_tracking", {
   periodStart: timestamp("period_start").notNull(),
   periodEnd: timestamp("period_end").notNull(),
   aiSessionsUsed: integer("ai_sessions_used").default(0).notNull(),
+  aiMessagesUsed: integer("ai_messages_used").default(0).notNull(), // Track message count for tier limits
   humanSessionsUsed: integer("human_sessions_used").default(0).notNull(),
   humanSessionsIncluded: integer("human_sessions_included").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),

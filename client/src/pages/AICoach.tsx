@@ -67,6 +67,12 @@ export default function AICoach() {
   const { data: conversationsData, refetch: refetchConversations } =
     trpc.aiChat.listConversations.useQuery();
 
+  // Fetch usage stats for tier limits
+  const { data: usageData } = trpc.subscriptions.getCurrentUsage.useQuery(
+    undefined,
+    { enabled: !!user } // Only fetch if user is logged in
+  );
+
   // Fetch selected conversation messages
   const { data: conversationData, refetch: refetchMessages } =
     trpc.aiChat.getConversation.useQuery(
@@ -331,6 +337,20 @@ export default function AICoach() {
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
+              {usageData && (
+                <div className="mt-2 text-xs text-muted-foreground">
+                  {usageData.messagesRemaining === -1 ? (
+                    <span className="text-green-600 font-medium">✨ Unlimited messages</span>
+                  ) : (
+                    <span>
+                      {usageData.messagesUsed} / {usageData.messageLimit} messages used
+                      {usageData.messagesRemaining <= 10 && usageData.messagesRemaining > 0 && (
+                        <span className="text-orange-600 ml-1">({usageData.messagesRemaining} left)</span>
+                      )}
+                    </span>
+                  )}
+                </div>
+              )}
             </CardHeader>
             <CardContent className="flex-1 overflow-y-auto p-4 space-y-2">
               {conversations.length === 0 ? (
