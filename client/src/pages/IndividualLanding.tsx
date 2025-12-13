@@ -243,37 +243,65 @@ export default function IndividualLanding() {
         </div>
       </div>
 
-      {/* Wellness Modules */}
-      <div className="container py-16">
-        <div className="text-center mb-12">
-          <h3 className="text-3xl font-bold mb-4 text-gray-900">
-            Comprehensive Wellness Modules
-          </h3>
-          <p className="text-lg text-gray-600">
-            Achieve emotional, mental, physical, nutritional, and spiritual wellness
-          </p>
-        </div>
+      {/* Comprehensive Wellness Modules - Integrated */}
+      <div className="bg-gradient-to-b from-purple-50 to-white py-20">
+        <div className="container">
+          <div className="text-center mb-12">
+            <Badge className="mb-4 bg-purple-100 text-purple-900 text-base px-4 py-2">
+              33 Evidence-Based Modules
+            </Badge>
+            <h3 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
+              Complete Wellness Transformation
+            </h3>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+              Transform every area of your life with our comprehensive, science-backed wellness system. All modules included in every plan.
+            </p>
+            <Link to="/wellness-modules">
+              <Button size="lg" className="gap-2">
+                <Sparkles className="h-5 w-5" />
+                Explore All 33 Modules
+              </Button>
+            </Link>
+          </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto mb-8">
-          {modules.map((module, idx) => (
-            <Card key={idx} className="border-2 hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className={`w-16 h-16 ${module.color} rounded-full flex items-center justify-center mb-4`}>
-                  {module.icon}
-                </div>
-                <CardTitle className="text-xl">{module.title}</CardTitle>
-                <CardDescription>{module.description}</CardDescription>
-              </CardHeader>
-            </Card>
-          ))}
-        </div>
+          {/* Featured Core Modules */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6 max-w-6xl mx-auto">
+            {modules.map((module, idx) => (
+              <Card key={idx} className="border-2 hover:shadow-xl transition-all hover:-translate-y-1">
+                <CardHeader className="text-center">
+                  <div className={`w-16 h-16 ${module.color} rounded-full flex items-center justify-center mb-4 mx-auto`}>
+                    {module.icon}
+                  </div>
+                  <CardTitle className="text-lg">{module.title}</CardTitle>
+                  <CardDescription className="text-sm">{module.description}</CardDescription>
+                </CardHeader>
+              </Card>
+            ))}
+          </div>
 
-        <div className="text-center">
-          <Link to="/wellness-modules">
-            <Button variant="link" className="text-purple-600 text-lg">
-              Explore All 31 Wellness Modules →
-            </Button>
-          </Link>
+          {/* Module Categories Summary */}
+          <div className="grid md:grid-cols-4 gap-6 max-w-5xl mx-auto mt-12">
+            <div className="text-center p-6 bg-white rounded-xl shadow-md">
+              <div className="text-3xl font-bold text-purple-600 mb-2">5</div>
+              <div className="text-sm font-semibold text-gray-700">Core Pillars</div>
+              <div className="text-xs text-gray-500 mt-1">Essential foundation</div>
+            </div>
+            <div className="text-center p-6 bg-white rounded-xl shadow-md">
+              <div className="text-3xl font-bold text-blue-600 mb-2">12</div>
+              <div className="text-sm font-semibold text-gray-700">Lifestyle</div>
+              <div className="text-xs text-gray-500 mt-1">Daily wellness</div>
+            </div>
+            <div className="text-center p-6 bg-white rounded-xl shadow-md">
+              <div className="text-3xl font-bold text-green-600 mb-2">8</div>
+              <div className="text-sm font-semibold text-gray-700">Growth</div>
+              <div className="text-xs text-gray-500 mt-1">Personal development</div>
+            </div>
+            <div className="text-center p-6 bg-white rounded-xl shadow-md">
+              <div className="text-3xl font-bold text-indigo-600 mb-2">8</div>
+              <div className="text-sm font-semibold text-gray-700">Advanced</div>
+              <div className="text-xs text-gray-500 mt-1">Deep transformation</div>
+            </div>
+          </div>
         </div>
       </div>
 
