@@ -131,3 +131,9 @@
 - [x] Create single hub with all features accessible from one place
 - [x] Unified navigation: AI Coach, Sessions, Wellness, Health, Daily OS, Settings
 - [x] Eliminate multiple interfaces that serve no purpose
+
+## 🔴 ADMIN SETUP AUTH FIX (Dec 13, 5:15 PM)
+
+- [ ] Fix "Please login (10001)" error on admin setup page
+- [ ] Make seedDefaultAvailability endpoint accessible without auth OR add proper login flow
+- [ ] Test coach availability seeding works

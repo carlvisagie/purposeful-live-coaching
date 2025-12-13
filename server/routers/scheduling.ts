@@ -564,7 +564,7 @@ export const schedulingRouter = router({
    * ADMIN: Seed default coach availability (Monday-Friday, 9 AM - 5 PM)
    * This is a one-time setup endpoint to populate initial availability
    */
-  seedDefaultAvailability: protectedProcedure
+  seedDefaultAvailability: publicProcedure
     .input(z.object({ coachId: z.number() }))
     .mutation(async ({ input }) => {
       // Check if availability already exists
