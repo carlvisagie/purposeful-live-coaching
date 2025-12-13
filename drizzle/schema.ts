@@ -23,6 +23,7 @@ export * from "./spiritualEngineSchema";
 export * from "./adminSchema";
 export * from "./aiCoachSchema";
 export * from "./analyticsSchema";
+export * from "./usageTrackingSchema";
 export * from "./contentModerationSchema";
 export * from "./notificationsSchema";
 export * from "./securitySchema";
