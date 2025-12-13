@@ -26,7 +26,7 @@ const transporter = nodemailer.createTransport({
  * Send email using standard SMTP (Nodemailer)
  */
 async function sendEmail(params: {
-  userId: number;
+  user_id: number;
   emailType: string;
   subject: string;
   content: string;
@@ -171,7 +171,7 @@ Questions? Just reply to this email.
       `.trim();
 
       const success = await sendEmail({
-        userId: user.id,
+        user_id: user.id,
         emailType: "trial_day5_reminder",
         subject,
         content,
@@ -196,7 +196,7 @@ Questions? Just reply to this email.
    * Send welcome email when trial starts
    */
   sendWelcomeEmail: protectedProcedure
-    .input(z.object({ userId: z.number() }))
+    .input(z.object({ user_id: z.number() }))
     .mutation(async ({ input }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable" });
@@ -237,7 +237,7 @@ Questions? Just reply to this email.
       `.trim();
 
       return await sendEmail({
-        userId: user.id,
+        user_id: user.id,
         emailType: "welcome",
         subject,
         content,
@@ -248,7 +248,7 @@ Questions? Just reply to this email.
    * Send failed payment recovery email
    */
   sendPaymentFailedEmail: publicProcedure
-    .input(z.object({ userId: z.number(), subscriptionId: z.number() }))
+    .input(z.object({ user_id: z.number(), subscriptionId: z.number() }))
     .mutation(async ({ input }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable" });
@@ -281,7 +281,7 @@ If you're having trouble, just reply to this email and we'll help.
       `.trim();
 
       return await sendEmail({
-        userId: user.id,
+        user_id: user.id,
         emailType: "payment_failed",
         subject,
         content,
@@ -293,7 +293,7 @@ If you're having trouble, just reply to this email and we'll help.
    * Send monthly usage summary email
    */
   sendMonthlySummary: publicProcedure
-    .input(z.object({ userId: z.number(), subscriptionId: z.number() }))
+    .input(z.object({ user_id: z.number(), subscriptionId: z.number() }))
     .mutation(async ({ input }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable" });
@@ -337,7 +337,7 @@ Questions or feedback? Just reply to this email.
       `.trim();
 
       return await sendEmail({
-        userId: user.id,
+        user_id: user.id,
         emailType: "monthly_summary",
         subject,
         content,

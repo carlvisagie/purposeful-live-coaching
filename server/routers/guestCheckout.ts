@@ -118,7 +118,7 @@ export const guestCheckoutRouter = router({
 
       return {
         checkoutUrl: checkoutSession.url,
-        sessionId: checkoutSession.id,
+        session_id: checkoutSession.id,
       };
     }),
 
@@ -129,7 +129,7 @@ export const guestCheckoutRouter = router({
   verifyCheckout: publicProcedure
     .input(
       z.object({
-        sessionId: z.string(),
+        session_id: z.string(),
       })
     )
     .query(async ({ input }) => {
@@ -186,7 +186,7 @@ export const guestCheckoutRouter = router({
   getCheckoutStatus: publicProcedure
     .input(
       z.object({
-        sessionId: z.string(),
+        session_id: z.string(),
       })
     )
     .query(async ({ input }) => {

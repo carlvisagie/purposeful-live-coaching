@@ -15,7 +15,7 @@ export const audioUploadRouter = router({
   uploadAudioChunk: protectedProcedure
     .input(
       z.object({
-        sessionId: z.number(),
+        session_id: z.number(),
         audioData: z.string(), // base64 encoded audio
         mimeType: z.string().default("audio/webm"),
       })

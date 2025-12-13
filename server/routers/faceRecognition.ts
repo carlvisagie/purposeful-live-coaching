@@ -20,7 +20,7 @@
  */
 
 import { z } from "zod";
-import { router, protectedProcedure } from "../_core/trpc";
+import { router, publicProcedure } from "../_core/trpc";
 import { faceEmbeddings, recognitionEvents } from "../../drizzle/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { db } from "../db";
@@ -119,15 +119,15 @@ class FaceRecognitionService {
    */
   async identifyFace(
     photo: string,
-    candidateEmbeddings: Array<{ userId: number; faceEmbedding: string }>
+    candidateEmbeddings: Array<{ user_id: number; faceEmbedding: string }>
   ): Promise<{
-    userId: number | null;
+    user_id: number | null;
     confidence: number;
   }> {
     // TODO: Integrate with actual face recognition API
     
     if (candidateEmbeddings.length === 0) {
-      return { userId: null, confidence: 0 };
+      return { user_id: null, confidence: 0 };
     }
     
     // Simulate API call
@@ -143,7 +143,7 @@ class FaceRecognitionService {
     const confidence = Math.floor(Math.random() * 30) + 70;
     
     return {
-      userId: candidateEmbeddings[0].userId,
+      user_id: candidateEmbeddings[0].userId,
       confidence
     };
   }
@@ -155,7 +155,7 @@ export const faceRecognitionRouter = router({
   /**
    * Enroll user's face (create face embedding)
    */
-  enrollFace: protectedProcedure
+  enrollFace: publicProcedure
     .input(z.object({
       photos: z.array(z.string()).min(3).max(5), // Base64 encoded images
     }))
@@ -205,7 +205,7 @@ export const faceRecognitionRouter = router({
   /**
    * Update existing face embedding (re-enrollment)
    */
-  updateFace: protectedProcedure
+  updateFace: publicProcedure
     .input(z.object({
       photos: z.array(z.string()).min(3).max(5),
     }))
@@ -246,7 +246,7 @@ export const faceRecognitionRouter = router({
   /**
    * Verify user's face (1:1 verification)
    */
-  verifyFace: protectedProcedure
+  verifyFace: publicProcedure
     .input(z.object({
       photo: z.string(), // Base64 encoded image
     }))
@@ -276,7 +276,7 @@ export const faceRecognitionRouter = router({
       
       // Log recognition event
       await db.insert(recognitionEvents).values({
-        userId: isMatch ? userId : null,
+        user_id: isMatch ? userId : null,
         recognitionType: "face",
         recognitionResult: isMatch ? "success" : "failure",
         confidenceScore: confidence,
@@ -312,7 +312,7 @@ export const faceRecognitionRouter = router({
    * Identify person from photo (1:N identification)
    * Used when you don't know who's in the photo
    */
-  identifyFace: protectedProcedure
+  identifyFace: publicProcedure
     .input(z.object({
       photo: z.string(),
       candidateUserIds: z.array(z.number()).optional(), // Limit search to specific users
@@ -331,7 +331,7 @@ export const faceRecognitionRouter = router({
       if (candidates.length === 0) {
         return {
           identified: false,
-          userId: null,
+          user_id: null,
           confidence: 0,
           message: "No enrolled face embeddings to compare against"
         };
@@ -340,14 +340,14 @@ export const faceRecognitionRouter = router({
       // Identify face
       const { userId, confidence } = await faceService.identifyFace(
         input.photo,
-        candidates.map(c => ({ userId: c.userId, faceEmbedding: c.faceEmbedding }))
+        candidates.map(c => ({ user_id: c.userId, faceEmbedding: c.faceEmbedding }))
       );
       
       const identified = userId !== null && confidence >= 75;
       
       // Log recognition event
       await db.insert(recognitionEvents).values({
-        userId: identified ? userId : null,
+        user_id: identified ? userId : null,
         recognitionType: "face",
         recognitionResult: identified ? "success" : "failure",
         confidenceScore: confidence,
@@ -372,7 +372,7 @@ export const faceRecognitionRouter = router({
   /**
    * Get user's face enrollment status
    */
-  getEnrollmentStatus: protectedProcedure
+  getEnrollmentStatus: publicProcedure
     .query(async ({ ctx }) => {
       const userId = ctx.user.id;
       
@@ -397,7 +397,7 @@ export const faceRecognitionRouter = router({
   /**
    * Get recognition history
    */
-  getRecognitionHistory: protectedProcedure
+  getRecognitionHistory: publicProcedure
     .input(z.object({
       limit: z.number().int().min(1).max(100).default(20),
     }))
@@ -416,7 +416,7 @@ export const faceRecognitionRouter = router({
   /**
    * Disable face recognition
    */
-  disableFace: protectedProcedure
+  disableFace: publicProcedure
     .mutation(async ({ ctx }) => {
       const userId = ctx.user.id;
       

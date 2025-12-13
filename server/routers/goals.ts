@@ -131,7 +131,7 @@ export const goalsRouter = router({
       await db.update(goalProfiles)
         .set({ 
           totalGoalsSet: sql`${goalProfiles.totalGoalsSet} + 1`,
-          updatedAt: new Date(),
+          updated_at: new Date(),
         })
         .where(eq(goalProfiles.id, profile.id));
       
@@ -248,7 +248,7 @@ export const goalsRouter = router({
       const updateData: any = {
         ...updates,
         progressPercent,
-        updatedAt: new Date(),
+        updated_at: new Date(),
       };
       
       if (updates.targetDate) {
@@ -319,7 +319,7 @@ export const goalsRouter = router({
         .set({
           currentValue: input.currentValue.toString(),
           progressPercent,
-          updatedAt: new Date(),
+          updated_at: new Date(),
         })
         .where(eq(goals.id, input.goalId));
       
@@ -352,7 +352,7 @@ export const goalsRouter = router({
           status: 'completed',
           progressPercent: '100',
           completedAt: new Date(),
-          updatedAt: new Date(),
+          updated_at: new Date(),
         })
         .where(eq(goals.id, input.goalId));
       
@@ -360,7 +360,7 @@ export const goalsRouter = router({
       await db.update(goalProfiles)
         .set({
           totalGoalsAchieved: sql`${goalProfiles.totalGoalsAchieved} + 1`,
-          updatedAt: new Date(),
+          updated_at: new Date(),
         })
         .where(eq(goalProfiles.userId, userId));
       
@@ -394,7 +394,7 @@ export const goalsRouter = router({
           status: 'abandoned',
           abandonedAt: new Date(),
           abandonReason: input.reason,
-          updatedAt: new Date(),
+          updated_at: new Date(),
         })
         .where(eq(goals.id, input.goalId));
       
@@ -402,7 +402,7 @@ export const goalsRouter = router({
       await db.update(goalProfiles)
         .set({
           totalGoalsAbandoned: sql`${goalProfiles.totalGoalsAbandoned} + 1`,
-          updatedAt: new Date(),
+          updated_at: new Date(),
         })
         .where(eq(goalProfiles.userId, userId));
       

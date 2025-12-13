@@ -219,7 +219,7 @@ export const subscriptionsRouter = router({
 
         console.log('[createCheckoutSession] Session created successfully:', session.id);
         return {
-          sessionId: session.id,
+          session_id: session.id,
           url: session.url,
         };
       } catch (error: any) {
@@ -288,7 +288,7 @@ export const subscriptionsRouter = router({
           },
         ],
         metadata: {
-          userId: ctx.user.id.toString(),
+          user_id: ctx.user.id.toString(),
           subscriptionId: sub[0].id.toString(),
           type: "extra_session",
         },
@@ -297,7 +297,7 @@ export const subscriptionsRouter = router({
       });
 
       return {
-        sessionId: session.id,
+        session_id: session.id,
         url: session.url,
       };
     }),
@@ -338,7 +338,7 @@ export const subscriptionsRouter = router({
       const tierKey = sub[0].tier as TierKey;
       const newUsage = await db.insert(usageTracking).values({
         subscriptionId: sub[0].id,
-        userId: ctx.user.id,
+        user_id: ctx.user.id,
         periodStart: sub[0].currentPeriodStart!,
         periodEnd: sub[0].currentPeriodEnd!,
         aiSessionsUsed: 0,
@@ -348,7 +348,7 @@ export const subscriptionsRouter = router({
 
       return {
         subscriptionId: sub[0].id,
-        userId: ctx.user.id,
+        user_id: ctx.user.id,
         periodStart: sub[0].currentPeriodStart!,
         periodEnd: sub[0].currentPeriodEnd!,
         aiSessionsUsed: 0,

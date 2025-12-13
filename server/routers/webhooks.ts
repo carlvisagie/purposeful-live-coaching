@@ -158,7 +158,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 
   // Create subscription record
   await db.insert(subscriptions).values({
-    userId: parseInt(userId),
+    user_id: parseInt(userId),
     productId: productId,
     stripeSubscriptionId: subscriptionId,
     stripeCustomerId: session.customer as string,
@@ -175,7 +175,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
  * Handle session booking from one-time payment
  * Creates coaching session record after successful payment
  */
-async function handleSessionBooking(session: Stripe.Checkout.Session, db: any, userId: number) {
+async function handleSessionBooking(session: Stripe.Checkout.Session, db: any, user_id: number) {
   console.log("[Webhook] Creating session booking for one-time payment");
 
   const sessionTypeId = session.metadata?.session_type_id;
@@ -197,14 +197,14 @@ async function handleSessionBooking(session: Stripe.Checkout.Session, db: any, u
     .where(eq(clients.email, customerEmail))
     .limit(1) : [];
 
-  let clientId: number;
+  let client_id: number;
 
   if (clientRecord.length === 0) {
     // Create client record
     const [newClient] = await db
       .insert(clients)
       .values({
-        coachId: 1, // Default coach ID - adjust if needed
+        coach_id: 1, // Default coach ID - adjust if needed
         name: session.metadata?.customer_name || "New Client",
         email: customerEmail || "",
         phone: "",
@@ -225,8 +225,8 @@ async function handleSessionBooking(session: Stripe.Checkout.Session, db: any, u
 
   // Create session booking
   await db.insert(sessions).values({
-    coachId: 1, // Default coach ID - adjust if needed
-    clientId: clientId,
+    coach_id: 1, // Default coach ID - adjust if needed
+    client_id: clientId,
     sessionTypeId: parseInt(sessionTypeId),
     scheduledDate: new Date(scheduledDate),
     duration: sessionTypeDetails?.duration || 15,
@@ -328,7 +328,7 @@ Thank you,
 
       // Log email to database (actual sending handled by email automation system)
       await db.insert(emailLogs).values({
-        userId: user.id,
+        user_id: user.id,
         emailType: "payment_failed",
         subject,
         status: "sent",

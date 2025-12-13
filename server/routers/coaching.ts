@@ -40,7 +40,7 @@ export const coachesRouter = router({
     }))
     .mutation(async ({ ctx, input }) => {
       const [coach] = await db.insert(coaches).values({
-        userId: ctx.user.id,
+        user_id: ctx.user.id,
         ...input,
       });
       return coach;
@@ -141,7 +141,7 @@ export const clientsRouter = router({
       }
 
       const [client] = await db.insert(clients).values({
-        coachId: coach.id,
+        coach_id: coach.id,
         ...input,
       });
 
@@ -258,7 +258,7 @@ export const journalRouter = router({
   // List journal entries for a client
   list: protectedProcedure
     .input(z.object({ 
-      clientId: z.number(),
+      client_id: z.number(),
       limit: z.number().optional().default(50),
     }))
     .query(async ({ ctx, input }) => {
@@ -329,7 +329,7 @@ export const journalRouter = router({
   // Create journal entry
   create: protectedProcedure
     .input(z.object({
-      clientId: z.number(),
+      client_id: z.number(),
       content: z.string().min(1, "Content is required"),
       mood: z.string().optional(),
       moodIntensity: z.number().min(1).max(10).optional(),
@@ -465,7 +465,7 @@ export const emotionLogsRouter = router({
   // List emotion logs for a client
   list: protectedProcedure
     .input(z.object({ 
-      clientId: z.number(),
+      client_id: z.number(),
       limit: z.number().optional().default(100),
     }))
     .query(async ({ ctx, input }) => {
@@ -501,7 +501,7 @@ export const emotionLogsRouter = router({
   // Create emotion log
   create: protectedProcedure
     .input(z.object({
-      clientId: z.number(),
+      client_id: z.number(),
       journalEntryId: z.number().optional(),
       emotionType: z.string().min(1, "Emotion type is required"),
       intensity: z.number().min(1).max(10),
@@ -539,7 +539,7 @@ export const emotionLogsRouter = router({
   // Get emotion trends for a client
   getTrends: protectedProcedure
     .input(z.object({ 
-      clientId: z.number(),
+      client_id: z.number(),
       days: z.number().optional().default(30),
     }))
     .query(async ({ ctx, input }) => {
@@ -600,7 +600,7 @@ export const emotionLogsRouter = router({
 export const copingStrategiesRouter = router({
   // List coping strategies for a client
   list: protectedProcedure
-    .input(z.object({ clientId: z.number() }))
+    .input(z.object({ client_id: z.number() }))
     .query(async ({ ctx, input }) => {
       const coach = await db.query.coaches.findFirst({
         where: eq(coaches.userId, ctx.user.id),
@@ -633,7 +633,7 @@ export const copingStrategiesRouter = router({
   // Create coping strategy
   create: protectedProcedure
     .input(z.object({
-      clientId: z.number(),
+      client_id: z.number(),
       strategyName: z.string().min(1, "Strategy name is required"),
       description: z.string().optional(),
       category: z.string().optional(),
@@ -724,7 +724,7 @@ export const aiInsightsRouter = router({
   // List AI insights for a client
   list: protectedProcedure
     .input(z.object({ 
-      clientId: z.number(),
+      client_id: z.number(),
       limit: z.number().optional().default(20),
     }))
     .query(async ({ ctx, input }) => {
@@ -805,7 +805,7 @@ export const sessionsRouter = router({
   // List sessions for a client
   list: protectedProcedure
     .input(z.object({ 
-      clientId: z.number(),
+      client_id: z.number(),
       limit: z.number().optional().default(50),
     }))
     .query(async ({ ctx, input }) => {
@@ -832,7 +832,7 @@ export const sessionsRouter = router({
   // Create session
   create: protectedProcedure
     .input(z.object({
-      clientId: z.number(),
+      client_id: z.number(),
       scheduledDate: z.date(),
       duration: z.number().min(15).max(480), // 15 min to 8 hours
       sessionType: z.string().optional(),
@@ -860,7 +860,7 @@ export const sessionsRouter = router({
       }
 
       const [session] = await db.insert(sessions).values({
-        coachId: coach.id,
+        coach_id: coach.id,
         ...input,
       });
 
@@ -870,7 +870,7 @@ export const sessionsRouter = router({
   // Get or create active session for a client
   getOrCreateSession: protectedProcedure
     .input(z.object({
-      clientId: z.number(),
+      client_id: z.number(),
     }))
     .mutation(async ({ ctx, input }) => {
       const coach = await db.query.coaches.findFirst({
@@ -909,8 +909,8 @@ export const sessionsRouter = router({
 
       // No active session found, create a new one
       const [newSession] = await db.insert(sessions).values({
-        clientId: input.clientId,
-        coachId: coach.id,
+        client_id: input.clientId,
+        coach_id: coach.id,
         scheduledDate: new Date(),
         duration: 60, // Default 60 minutes
         sessionType: "coaching",
@@ -926,7 +926,7 @@ export const sessionsRouter = router({
   // Save session note (quick note during coaching)
   saveNote: protectedProcedure
     .input(z.object({
-      sessionId: z.number(),
+      session_id: z.number(),
       note: z.string().min(1, "Note cannot be empty"),
     }))
     .mutation(async ({ ctx, input }) => {

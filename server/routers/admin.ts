@@ -158,7 +158,7 @@ export const adminRouter = router({
           name: users.name,
           email: users.email,
           role: users.role,
-          createdAt: users.createdAt,
+          created_at: users.createdAt,
         })
         .from(users)
         .orderBy(desc(users.createdAt))
@@ -182,10 +182,10 @@ export const adminRouter = router({
       const alerts = await db
         .select({
           id: aiChatMessages.id,
-          userId: aiChatMessages.userId,
+          user_id: aiChatMessages.userId,
           message: aiChatMessages.message,
           crisisFlag: aiChatMessages.crisisFlag,
-          createdAt: aiChatMessages.createdAt,
+          created_at: aiChatMessages.createdAt,
           userName: users.name,
           userEmail: users.email,
         })
@@ -198,12 +198,12 @@ export const adminRouter = router({
       // Transform to match expected format
       return alerts.map(alert => ({
         id: alert.id,
-        clientId: alert.userId || 0,
+        client_id: alert.userId || 0,
         severity: "high", // Default severity since we don't have this field
         triggerType: "ai_detected", // Default trigger type
         message: alert.message || "Crisis flag detected in AI conversation",
         status: "pending", // Default status (we don't track this yet)
-        createdAt: alert.createdAt,
+        created_at: alert.createdAt,
         clientName: alert.userName || "Unknown",
         clientEmail: alert.userEmail || "N/A",
       }));

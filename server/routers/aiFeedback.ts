@@ -11,7 +11,7 @@ import { integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core"
 // In-memory store for feedback (in production, this would be in the database)
 const feedbackStore: Array<{
   id: string;
-  userId: string;
+  user_id: string;
   responseId: string;
   rating: number;
   comment?: string;
@@ -50,7 +50,7 @@ export const aiFeedbackRouter = router({
     .mutation(async ({ ctx, input }) => {
       const feedback = {
         id: Math.random().toString(36).substr(2, 9),
-        userId: ctx.user?.id?.toString() || "anonymous",
+        user_id: ctx.user?.id?.toString() || "anonymous",
         responseId: input.responseId,
         rating: input.rating,
         comment: input.comment,

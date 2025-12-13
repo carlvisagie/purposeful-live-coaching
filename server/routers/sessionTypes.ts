@@ -22,7 +22,7 @@ export const sessionTypesRouter = router({
   getAll: publicProcedure
     .input(
       z.object({
-        coachId: z.number().optional().default(1), // Default to first coach
+        coach_id: z.number().optional().default(1), // Default to first coach
       })
     )
     .query(async ({ input }) => {
@@ -37,7 +37,7 @@ export const sessionTypesRouter = router({
   list: protectedProcedure
     .input(
       z.object({
-        coachId: z.number(),
+        coach_id: z.number(),
         activeOnly: z.boolean().optional().default(false),
       })
     )
@@ -70,7 +70,7 @@ export const sessionTypesRouter = router({
   create: protectedProcedure
     .input(
       z.object({
-        coachId: z.number(),
+        coach_id: z.number(),
         name: z.string().min(1).max(100),
         description: z.string().optional(),
         duration: z.number().min(15).max(480), // 15 min to 8 hours
@@ -80,7 +80,7 @@ export const sessionTypesRouter = router({
     )
     .mutation(async ({ input }) => {
       await createSessionType({
-        coachId: input.coachId,
+        coach_id: input.coachId,
         name: input.name,
         description: input.description,
         duration: input.duration,

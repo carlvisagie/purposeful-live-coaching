@@ -25,8 +25,8 @@ export const sessionPaymentsRouter = router({
         duration: z.number(),
         scheduledDate: z.string(),
         notes: z.string().optional(),
-        coachId: z.number(),
-        clientId: z.number(),
+        coach_id: z.number(),
+        client_id: z.number(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -55,8 +55,8 @@ export const sessionPaymentsRouter = router({
           metadata: {
             type: "session_booking",
             sessionTypeId: input.sessionTypeId.toString(),
-            coachId: input.coachId.toString(),
-            clientId: input.clientId.toString(),
+            coach_id: input.coachId.toString(),
+            client_id: input.clientId.toString(),
             scheduledDate: input.scheduledDate,
             duration: input.duration.toString(),
             notes: input.notes || "",
@@ -65,7 +65,7 @@ export const sessionPaymentsRouter = router({
 
         return {
           checkoutUrl: session.url,
-          sessionId: session.id,
+          session_id: session.id,
         };
       } catch (error) {
         console.error("Stripe checkout session creation failed:", error);
@@ -82,7 +82,7 @@ export const sessionPaymentsRouter = router({
   verifyPayment: protectedProcedure
     .input(
       z.object({
-        sessionId: z.string(),
+        session_id: z.string(),
       })
     )
     .mutation(async ({ input }) => {

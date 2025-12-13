@@ -25,7 +25,7 @@ export const chatRouter = router({
         message: z.string().min(1),
         type: z.enum(["corporate", "individual"]),
         routeToTeam: z.enum(["sales", "support"]),
-        sessionId: z.string().optional(), // For conversation continuity
+        session_id: z.string().optional(), // For conversation continuity
       })
     )
     .mutation(async ({ input }) => {
@@ -57,8 +57,8 @@ export const chatRouter = router({
           const [newConv] = await db
             .insert(aiChatConversations)
             .values({
-              userId: null, // Anonymous for now
-              clientId: null,
+              user_id: null, // Anonymous for now
+              client_id: null,
               startedAt: new Date(),
             })
             .$returningId();
@@ -71,7 +71,7 @@ export const chatRouter = router({
           conversationId: parseInt(conversationId),
           role: "user",
           content: input.message,
-          createdAt: new Date(),
+          created_at: new Date(),
         });
 
         // Build system prompt based on type
@@ -126,7 +126,7 @@ Focus on understanding their situation before pitching.`;
           conversationId: parseInt(conversationId),
           role: "assistant",
           content: aiReply,
-          createdAt: new Date(),
+          created_at: new Date(),
         });
 
         // Extract profile data in background (for individual chats)
@@ -172,7 +172,7 @@ Focus on understanding their situation before pitching.`;
   getHistory: publicProcedure
     .input(
       z.object({
-        sessionId: z.string(),
+        session_id: z.string(),
       })
     )
     .query(async ({ input }) => {
@@ -183,7 +183,7 @@ Focus on understanding their situation before pitching.`;
         .orderBy(aiChatMessages.createdAt);
 
       return {
-        sessionId: input.sessionId,
+        session_id: input.sessionId,
         messages: messages.map((msg) => ({
           id: msg.id.toString(),
           role: msg.role,

@@ -29,7 +29,7 @@ export const schedulingRouter = router({
   getWeeklyAvailability: publicProcedure
     .input(
       z.object({
-        coachId: z.number(),
+        coach_id: z.number(),
         sessionDuration: z.number().optional().default(60),
       })
     )
@@ -114,7 +114,7 @@ export const schedulingRouter = router({
   getAvailableSlots: publicProcedure
     .input(
       z.object({
-        coachId: z.number(),
+        coach_id: z.number(),
         date: z.date(),
         duration: z.number().default(60), // session duration in minutes
       })
@@ -239,7 +239,7 @@ export const schedulingRouter = router({
       // Create session
       await createSession({
         coachId,
-        clientId: tempClientId,
+        client_id: tempClientId,
         scheduledDate: scheduledDateTime,
         duration,
         sessionType: "Free Discovery Call",
@@ -262,8 +262,8 @@ export const schedulingRouter = router({
   bookSession: protectedProcedure
     .input(
       z.object({
-        coachId: z.number(),
-        clientId: z.number(),
+        coach_id: z.number(),
+        client_id: z.number(),
         scheduledDate: z.date(),
         duration: z.number().default(60),
         sessionType: z.string().optional(),
@@ -287,8 +287,8 @@ export const schedulingRouter = router({
 
       // Create session
       await createSession({
-        coachId: input.coachId,
-        clientId: input.clientId,
+        coach_id: input.coachId,
+        client_id: input.clientId,
         scheduledDate: input.scheduledDate,
         duration: input.duration,
         sessionType: input.sessionType,
@@ -308,7 +308,7 @@ export const schedulingRouter = router({
   rescheduleSession: protectedProcedure
     .input(
       z.object({
-        sessionId: z.number(),
+        session_id: z.number(),
         newDate: z.date(),
         newDuration: z.number().optional(),
       })
@@ -351,7 +351,7 @@ export const schedulingRouter = router({
       });
 
       // Reschedule notification email can be added when email service is configured
-      console.log("[Scheduling] Session rescheduled:", { sessionId: input.sessionId, newDate: input.newDate });
+      console.log("[Scheduling] Session rescheduled:", { session_id: input.sessionId, newDate: input.newDate });
 
       return { success: true };
     }),
@@ -362,7 +362,7 @@ export const schedulingRouter = router({
   cancelSession: protectedProcedure
     .input(
       z.object({
-        sessionId: z.number(),
+        session_id: z.number(),
         cancelledBy: z.enum(["coach", "client"]),
         reason: z.string().optional(),
       })
@@ -388,7 +388,7 @@ export const schedulingRouter = router({
       }
 
       // Cancellation notification email can be added when email service is configured
-      console.log("[Scheduling] Session cancelled:", { sessionId: input.sessionId, reason: input.reason });
+      console.log("[Scheduling] Session cancelled:", { session_id: input.sessionId, reason: input.reason });
 
       return { success: true };
     }),
@@ -399,7 +399,7 @@ export const schedulingRouter = router({
   getClientSessions: protectedProcedure
     .input(
       z.object({
-        clientId: z.number(),
+        client_id: z.number(),
         status: z.array(z.enum(["scheduled", "completed", "cancelled", "no-show"])).optional(),
       })
     )
@@ -412,7 +412,7 @@ export const schedulingRouter = router({
    * Get upcoming sessions for a client
    */
   getUpcomingClientSessions: protectedProcedure
-    .input(z.object({ clientId: z.number() }))
+    .input(z.object({ client_id: z.number() }))
     .query(async ({ input }) => {
       const sessions = await getUpcomingClientSessions(input.clientId);
       return { sessions };
@@ -424,7 +424,7 @@ export const schedulingRouter = router({
   getCoachSessions: protectedProcedure
     .input(
       z.object({
-        coachId: z.number(),
+        coach_id: z.number(),
         startDate: z.date(),
         endDate: z.date(),
         status: z.array(z.enum(["scheduled", "completed", "cancelled", "no-show"])).optional(),
@@ -444,7 +444,7 @@ export const schedulingRouter = router({
    * Get session by ID
    */
   getSession: protectedProcedure
-    .input(z.object({ sessionId: z.number() }))
+    .input(z.object({ session_id: z.number() }))
     .query(async ({ input }) => {
       const session = await getSessionById(input.sessionId);
 
@@ -464,7 +464,7 @@ export const schedulingRouter = router({
   getCoachAvailability: protectedProcedure
     .input(
       z.object({
-        coachId: z.number(),
+        coach_id: z.number(),
         dayOfWeek: z.number().min(0).max(6).optional(),
       })
     )
@@ -479,7 +479,7 @@ export const schedulingRouter = router({
   setCoachAvailability: protectedProcedure
     .input(
       z.object({
-        coachId: z.number(),
+        coach_id: z.number(),
         dayOfWeek: z.number().min(0).max(6),
         startTime: z.string().regex(/^\d{2}:\d{2}$/),
         endTime: z.string().regex(/^\d{2}:\d{2}$/),
@@ -487,7 +487,7 @@ export const schedulingRouter = router({
     )
     .mutation(async ({ input }) => {
       await upsertCoachAvailability({
-        coachId: input.coachId,
+        coach_id: input.coachId,
         dayOfWeek: input.dayOfWeek,
         startTime: input.startTime,
         endTime: input.endTime,
@@ -513,7 +513,7 @@ export const schedulingRouter = router({
   getAvailabilityExceptions: protectedProcedure
     .input(
       z.object({
-        coachId: z.number(),
+        coach_id: z.number(),
         startDate: z.date(),
         endDate: z.date(),
       })
@@ -533,7 +533,7 @@ export const schedulingRouter = router({
   createAvailabilityException: protectedProcedure
     .input(
       z.object({
-        coachId: z.number(),
+        coach_id: z.number(),
         startDate: z.date(),
         endDate: z.date(),
         reason: z.string().optional(),
@@ -541,7 +541,7 @@ export const schedulingRouter = router({
     )
     .mutation(async ({ input }) => {
       await createAvailabilityException({
-        coachId: input.coachId,
+        coach_id: input.coachId,
         startDate: input.startDate,
         endDate: input.endDate,
         reason: input.reason,

@@ -103,7 +103,7 @@ export const coachClientHistoryRouter = router({
           id: client.id,
           name: client.name,
           email: client.email,
-          createdAt: client.createdAt,
+          created_at: client.createdAt,
           lastActivity,
         },
         subscription: subscription || null,
@@ -177,7 +177,7 @@ export const coachClientHistoryRouter = router({
       return {
         recentConversations: recentConversations.map(conv => ({
           title: conv.title,
-          updatedAt: conv.updatedAt,
+          updated_at: conv.updatedAt,
         })),
         lastSessionNotes: lastSession?.coachNotes || null,
         lastSessionDate: lastSession?.sessionDate || null,
@@ -191,7 +191,7 @@ export const coachClientHistoryRouter = router({
    */
   addSessionNotes: protectedProcedure
     .input(z.object({
-      sessionId: z.number(),
+      session_id: z.number(),
       notes: z.string().min(1).max(10000),
     }))
     .mutation(async ({ input, ctx }) => {
@@ -207,7 +207,7 @@ export const coachClientHistoryRouter = router({
         .update(humanSessionBookings)
         .set({
           coachNotes: input.notes,
-          updatedAt: new Date(),
+          updated_at: new Date(),
         })
         .where(eq(humanSessionBookings.id, input.sessionId));
 

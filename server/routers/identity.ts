@@ -22,7 +22,7 @@ export const identityRouter = router({
    * Get or create identity profile
    */
   getProfile: protectedProcedure
-    .input(z.object({ clientId: z.number() }))
+    .input(z.object({ client_id: z.number() }))
     .query(async ({ input }) => {
       const profiles = await db
         .select()
@@ -35,7 +35,7 @@ export const identityRouter = router({
         const [newProfile] = await db
           .insert(identityProfiles)
           .values({
-            clientId: input.clientId,
+            client_id: input.clientId,
             currentIdentity: JSON.stringify([]),
             targetIdentity: JSON.stringify(["disciplined", "resilient", "mission-driven"]),
             identityGaps: JSON.stringify([]),
@@ -62,7 +62,7 @@ export const identityRouter = router({
   updateProfile: protectedProcedure
     .input(
       z.object({
-        clientId: z.number(),
+        client_id: z.number(),
         currentIdentity: z.array(z.string()).optional(),
         targetIdentity: z.array(z.string()).optional(),
         identityGaps: z.array(z.string()).optional(),
@@ -97,7 +97,7 @@ export const identityRouter = router({
   submitDailyCheckin: protectedProcedure
     .input(
       z.object({
-        clientId: z.number(),
+        client_id: z.number(),
         sleptWell: z.enum(["yes", "no"]),
         ateWell: z.enum(["yes", "no"]),
         movedBody: z.enum(["yes", "no"]),
@@ -123,7 +123,7 @@ export const identityRouter = router({
   getRecentCheckins: protectedProcedure
     .input(
       z.object({
-        clientId: z.number(),
+        client_id: z.number(),
         days: z.number().default(30),
       })
     )
@@ -151,7 +151,7 @@ export const identityRouter = router({
   createHabit: protectedProcedure
     .input(
       z.object({
-        clientId: z.number(),
+        client_id: z.number(),
         habitName: z.string(),
         habitDescription: z.string().optional(),
         identityConnection: z.string(), // "This habit makes me [identity]"
@@ -171,7 +171,7 @@ export const identityRouter = router({
    * Get active habits
    */
   getActiveHabits: protectedProcedure
-    .input(z.object({ clientId: z.number() }))
+    .input(z.object({ client_id: z.number() }))
     .query(async ({ input }) => {
       const activeHabits = await db
         .select()
@@ -240,7 +240,7 @@ export const identityRouter = router({
   logDisciplineEvent: protectedProcedure
     .input(
       z.object({
-        clientId: z.number(),
+        client_id: z.number(),
         eventType: z.enum(["impulse_controlled", "impulse_failed", "discipline_win", "discipline_fail"]),
         situation: z.string(),
         response: z.string(),
@@ -263,7 +263,7 @@ export const identityRouter = router({
   getDisciplineEvents: protectedProcedure
     .input(
       z.object({
-        clientId: z.number(),
+        client_id: z.number(),
         days: z.number().default(30),
       })
     )
@@ -291,7 +291,7 @@ export const identityRouter = router({
   createMicroHabit: protectedProcedure
     .input(
       z.object({
-        clientId: z.number(),
+        client_id: z.number(),
         microHabitName: z.string(),
         trigger: z.string(), // "After I [existing habit]"
         action: z.string(), // "I will [micro-habit]"
@@ -311,7 +311,7 @@ export const identityRouter = router({
    * Get active micro-habits
    */
   getActiveMicroHabits: protectedProcedure
-    .input(z.object({ clientId: z.number() }))
+    .input(z.object({ client_id: z.number() }))
     .query(async ({ input }) => {
       const activeMicroHabits = await db
         .select()

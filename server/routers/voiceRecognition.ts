@@ -20,7 +20,7 @@
  */
 
 import { z } from "zod";
-import { router, protectedProcedure } from "../_core/trpc";
+import { router, publicProcedure } from "../_core/trpc";
 import { voicePrints, recognitionEvents } from "../../drizzle/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { db } from "../db";
@@ -117,15 +117,15 @@ class VoiceRecognitionService {
    */
   async identifySpeaker(
     audioSample: string,
-    candidateVoicePrints: Array<{ userId: number; voicePrint: string }>
+    candidateVoicePrints: Array<{ user_id: number; voicePrint: string }>
   ): Promise<{
-    userId: number | null;
+    user_id: number | null;
     confidence: number;
   }> {
     // TODO: Integrate with actual voice biometrics API
     
     if (candidateVoicePrints.length === 0) {
-      return { userId: null, confidence: 0 };
+      return { user_id: null, confidence: 0 };
     }
     
     // Simulate API call
@@ -141,7 +141,7 @@ class VoiceRecognitionService {
     const confidence = Math.floor(Math.random() * 30) + 70;
     
     return {
-      userId: candidateVoicePrints[0].userId,
+      user_id: candidateVoicePrints[0].userId,
       confidence
     };
   }
@@ -153,7 +153,7 @@ export const voiceRecognitionRouter = router({
   /**
    * Enroll user's voice (create voice print)
    */
-  enrollVoice: protectedProcedure
+  enrollVoice: publicProcedure
     .input(z.object({
       audioSamples: z.array(z.string()).min(3).max(5), // Base64 encoded audio files
     }))
@@ -202,7 +202,7 @@ export const voiceRecognitionRouter = router({
   /**
    * Update existing voice print (re-enrollment)
    */
-  updateVoice: protectedProcedure
+  updateVoice: publicProcedure
     .input(z.object({
       audioSamples: z.array(z.string()).min(3).max(5),
     }))
@@ -243,7 +243,7 @@ export const voiceRecognitionRouter = router({
   /**
    * Verify user's voice (1:1 verification)
    */
-  verifyVoice: protectedProcedure
+  verifyVoice: publicProcedure
     .input(z.object({
       audioSample: z.string(), // Base64 encoded audio file
     }))
@@ -273,7 +273,7 @@ export const voiceRecognitionRouter = router({
       
       // Log recognition event
       await db.insert(recognitionEvents).values({
-        userId: isMatch ? userId : null,
+        user_id: isMatch ? userId : null,
         recognitionType: "voice",
         recognitionResult: isMatch ? "success" : "failure",
         confidenceScore: confidence,
@@ -309,7 +309,7 @@ export const voiceRecognitionRouter = router({
    * Identify speaker from audio (1:N identification)
    * Used when you don't know who's speaking
    */
-  identifySpeaker: protectedProcedure
+  identifySpeaker: publicProcedure
     .input(z.object({
       audioSample: z.string(),
       candidateUserIds: z.array(z.number()).optional(), // Limit search to specific users
@@ -328,7 +328,7 @@ export const voiceRecognitionRouter = router({
       if (candidates.length === 0) {
         return {
           identified: false,
-          userId: null,
+          user_id: null,
           confidence: 0,
           message: "No enrolled voice prints to compare against"
         };
@@ -337,14 +337,14 @@ export const voiceRecognitionRouter = router({
       // Identify speaker
       const { userId, confidence } = await voiceService.identifySpeaker(
         input.audioSample,
-        candidates.map(c => ({ userId: c.userId, voicePrint: c.voicePrint }))
+        candidates.map(c => ({ user_id: c.userId, voicePrint: c.voicePrint }))
       );
       
       const identified = userId !== null && confidence >= 75;
       
       // Log recognition event
       await db.insert(recognitionEvents).values({
-        userId: identified ? userId : null,
+        user_id: identified ? userId : null,
         recognitionType: "voice",
         recognitionResult: identified ? "success" : "failure",
         confidenceScore: confidence,
@@ -369,7 +369,7 @@ export const voiceRecognitionRouter = router({
   /**
    * Get user's voice enrollment status
    */
-  getEnrollmentStatus: protectedProcedure
+  getEnrollmentStatus: publicProcedure
     .query(async ({ ctx }) => {
       const userId = ctx.user.id;
       
@@ -393,7 +393,7 @@ export const voiceRecognitionRouter = router({
   /**
    * Get recognition history
    */
-  getRecognitionHistory: protectedProcedure
+  getRecognitionHistory: publicProcedure
     .input(z.object({
       limit: z.number().int().min(1).max(100).default(20),
     }))
@@ -412,7 +412,7 @@ export const voiceRecognitionRouter = router({
   /**
    * Disable voice recognition
    */
-  disableVoice: protectedProcedure
+  disableVoice: publicProcedure
     .mutation(async ({ ctx }) => {
       const userId = ctx.user.id;
       

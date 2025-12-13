@@ -183,18 +183,18 @@ export const aiChatRouter = router({
     .input(
       z.object({
         title: z.string().optional(),
-        clientId: z.number().optional(),
+        client_id: z.number().optional(),
       })
     )
     .mutation(async ({ input, ctx }) => {
       // Demo mode: allow guest users (omit userId for guest users)
       const userId = ctx.user?.id;
-      console.error('[tRPC createConversation] userId:', userId, 'input:', JSON.stringify(input));
+      console.error('[tRPC createConversation] user_id:', userId, 'input:', JSON.stringify(input));
       
       try {
         const conversationId = await createConversation({
-          ...(userId ? { userId } : {}),
-          ...(input.clientId ? { clientId: input.clientId } : {}),
+          ...(userId ? { user_id } : {}),
+          ...(input.clientId ? { client_id: input.clientId } : {}),
           title: input.title || "New Conversation",
         });
         console.error('[tRPC createConversation] Success! conversationId:', conversationId);

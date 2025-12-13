@@ -51,7 +51,7 @@ export const aiChatFeedbackRouter = router({
           rating: input.rating,
           feedbackText: input.feedbackText,
           feedbackCategory: input.feedbackCategory,
-          updatedAt: new Date(),
+          updated_at: new Date(),
         })
         .where(eq(aiChatConversations.id, input.conversationId));
 
@@ -177,7 +177,7 @@ export const aiChatFeedbackRouter = router({
         .set({
           reviewedByAdmin: "yes",
           adminNotes: input.adminNotes,
-          updatedAt: new Date(),
+          updated_at: new Date(),
         })
         .where(eq(aiChatConversations.id, input.conversationId));
 

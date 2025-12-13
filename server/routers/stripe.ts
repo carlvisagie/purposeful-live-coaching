@@ -78,7 +78,7 @@ export const stripeRouter = router({
 
       return {
         url: session.url,
-        sessionId: session.id,
+        session_id: session.id,
       };
     }),
 
@@ -90,7 +90,7 @@ export const stripeRouter = router({
   verifyAndCreateBooking: publicProcedure
     .input(
       z.object({
-        sessionId: z.string(),
+        session_id: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -129,7 +129,7 @@ export const stripeRouter = router({
       }
 
       // Create or get client record
-      let clientId: number;
+      let client_id: number;
       const clientEmail = session.customer_email || metadata.customer_email;
       
       if (clientEmail) {
@@ -146,7 +146,7 @@ export const stripeRouter = router({
           const [newClient] = await db
             .insert(clientsTable)
             .values({
-              coachId: 1, // Default coach ID (you)
+              coach_id: 1, // Default coach ID (you)
               name: session.customer_details?.name || metadata.customer_name || 'Unknown',
               email: clientEmail,
               phone: null,
@@ -170,7 +170,7 @@ export const stripeRouter = router({
         .insert(sessionsTable)
         .values({
           clientId,
-          coachId: 1, // Default coach ID (you)
+          coach_id: 1, // Default coach ID (you)
           sessionTypeId: parseInt(metadata.session_type_id),
           scheduledDate: new Date(metadata.scheduled_date),
           duration: sessionType?.duration || 60, // Default to 60 minutes

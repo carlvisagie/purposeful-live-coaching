@@ -32,7 +32,7 @@ export const coachDashboardRouter = router({
    * Get single client with full profile
    */
   getClientProfile: publicProcedure
-    .input(z.object({ clientId: z.number() }))
+    .input(z.object({ client_id: z.number() }))
     .query(async ({ input }) => {
       const client = await db.query.clients.findFirst({
         where: eq(clients.id, input.clientId),
@@ -50,7 +50,7 @@ export const coachDashboardRouter = router({
    * Returns all chat messages ordered by timestamp
    */
   getConversationHistory: publicProcedure
-    .input(z.object({ clientId: z.number() }))
+    .input(z.object({ client_id: z.number() }))
     .query(async ({ input }) => {
       // Find conversations for this client
       const conversations = await db.query.aiChatConversations.findMany({
@@ -123,7 +123,7 @@ export const coachDashboardRouter = router({
    */
   updateProfileFromExtraction: publicProcedure
     .input(z.object({
-      clientId: z.number(),
+      client_id: z.number(),
       extractedData: z.object({
         // Professional
         jobTitle: z.string().optional(),

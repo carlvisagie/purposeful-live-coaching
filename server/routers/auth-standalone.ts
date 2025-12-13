@@ -64,7 +64,7 @@ export const authRouter = router({
       // Create session
       const sessionToken = generateSessionToken();
       await db.createSession({
-        userId: user.id,
+        user_id: user.id,
         token: sessionToken,
         expiresAt: new Date(Date.now() + ONE_YEAR_MS),
       });
@@ -120,7 +120,7 @@ export const authRouter = router({
       // Create session
       const sessionToken = generateSessionToken();
       await db.createSession({
-        userId: user.id,
+        user_id: user.id,
         token: sessionToken,
         expiresAt: new Date(Date.now() + ONE_YEAR_MS),
       });

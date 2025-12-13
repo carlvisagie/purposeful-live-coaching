@@ -211,7 +211,7 @@ export const liveSessionRouter = router({
   transcribeAudio: protectedProcedure
     .input(
       z.object({
-        sessionId: z.number(),
+        session_id: z.number(),
         audioUrl: z.string().url(),
         speaker: z.enum(["client", "coach"]),
       })
@@ -235,7 +235,7 @@ export const liveSessionRouter = router({
         const [transcript] = await db
           .insert(liveSessionTranscripts)
           .values({
-            sessionId: input.sessionId,
+            session_id: input.sessionId,
             speaker: input.speaker,
             text: transcriptText,
             timestamp: new Date(),
@@ -261,7 +261,7 @@ export const liveSessionRouter = router({
   analyzeSegment: protectedProcedure
     .input(
       z.object({
-        sessionId: z.number(),
+        session_id: z.number(),
         transcriptText: z.string(),
         speaker: z.enum(["client", "coach"]),
       })
@@ -294,7 +294,7 @@ export const liveSessionRouter = router({
           // Save prompts to database
           for (const prompt of prompts) {
             await db.insert(coachGuidance).values({
-              sessionId: input.sessionId,
+              session_id: input.sessionId,
               guidanceType: prompt.type === 'suggestion' ? 'suggest' : prompt.type === 'warning' ? 'alert' : 'reference',
               priority: prompt.priority,
               message: `${prompt.title}: ${prompt.content}`,
@@ -321,7 +321,7 @@ export const liveSessionRouter = router({
    * Get all coaching prompts for a session
    */
   getSessionPrompts: protectedProcedure
-    .input(z.object({ sessionId: z.number() }))
+    .input(z.object({ session_id: z.number() }))
     .query(async ({ input }) => {
       const prompts = await db
         .select()
@@ -336,7 +336,7 @@ export const liveSessionRouter = router({
    * Get session transcript
    */
   getSessionTranscript: protectedProcedure
-    .input(z.object({ sessionId: z.number() }))
+    .input(z.object({ session_id: z.number() }))
     .query(async ({ input }) => {
       const transcript = await db
         .select()
@@ -353,8 +353,8 @@ export const liveSessionRouter = router({
   createSession: publicProcedure
     .input(
       z.object({
-        coachId: z.number().optional(),
-        clientId: z.number().optional(),
+        coach_id: z.number().optional(),
+        client_id: z.number().optional(),
         clientName: z.string().optional(),
         sessionType: z.string().default('coaching'),
       })
@@ -406,20 +406,20 @@ export const liveSessionRouter = router({
         
         // Create session record (no auth required for frictionless use)
         const [session] = await db.insert(sessions).values({
-          coachId: coachId,
-          clientId: clientId,
+          coach_id: coachId,
+          client_id: clientId,
           scheduledDate: new Date(),
           duration: 0,
           sessionType: input.sessionType,
           status: 'in_progress',
           paymentStatus: 'completed', // Live sessions are for existing clients
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          created_at: new Date(),
+          updated_at: new Date(),
         }).returning();
 
         return {
-          sessionId: session.id,
-          clientId: session.clientId,
+          session_id: session.id,
+          client_id: session.clientId,
           clientName: input.clientName || 'Unknown Client',
           sessionType: session.sessionType,
           startTime: session.scheduledDate,
@@ -434,7 +434,7 @@ export const liveSessionRouter = router({
     }),
 
   generateSessionSummary: protectedProcedure
-    .input(z.object({ sessionId: z.number() }))
+    .input(z.object({ session_id: z.number() }))
     .mutation(async ({ input }) => {
       try {
         // Get full transcript

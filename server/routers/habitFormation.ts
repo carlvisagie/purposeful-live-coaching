@@ -143,7 +143,7 @@ export const habitFormationRouter = router({
       await db.update(habitProfiles)
         .set({ 
           totalActiveHabits: sql`${habitProfiles.totalActiveHabits} + 1`,
-          updatedAt: new Date(),
+          updated_at: new Date(),
         })
         .where(eq(habitProfiles.id, profile.id));
       
@@ -243,7 +243,7 @@ export const habitFormationRouter = router({
       await db.update(habits)
         .set({
           ...updates,
-          updatedAt: new Date(),
+          updated_at: new Date(),
         })
         .where(eq(habits.id, habitId));
       
@@ -358,7 +358,7 @@ export const habitFormationRouter = router({
             longestStreak: newLongestStreak,
             totalCompletions: newTotalCompletions,
             successRate,
-            updatedAt: new Date(),
+            updated_at: new Date(),
           })
           .where(eq(habits.id, input.habitId));
         
@@ -371,7 +371,7 @@ export const habitFormationRouter = router({
           await db.update(habitProfiles)
             .set({
               longestStreak: newLongestStreak,
-              updatedAt: new Date(),
+              updated_at: new Date(),
             })
             .where(eq(habitProfiles.id, profile.id));
         }
@@ -387,7 +387,7 @@ export const habitFormationRouter = router({
         await db.update(habits)
           .set({
             currentStreak: 0,
-            updatedAt: new Date(),
+            updated_at: new Date(),
           })
           .where(eq(habits.id, input.habitId));
         
