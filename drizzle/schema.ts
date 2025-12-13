@@ -62,27 +62,27 @@ export const users = pgTable("users", {
    */
   id: serial("id").primaryKey(),
   /** Manus OAuth identifier (openId) returned from the OAuth callback. Unique per user. */
-  openId: varchar("openId", { length: 64 }).notNull().unique(),
+  openId: varchar("open_id", { length: 64 }).notNull().unique(),
   name: text("name"),
   email: varchar("email", { length: 320 }),
-  loginMethod: varchar("loginMethod", { length: 64 }),
+  loginMethod: varchar("login_method", { length: 64 }),
   birthdate: date("birthdate"), // For age verification (18+ requirement)
   role: varchar("role", { length: 50 }),
   
   // Profile fields extracted from AI conversations
-  primaryGoal: text("primaryGoal"), // e.g., "stress management", "career transition"
-  secondaryGoal: text("secondaryGoal"),
-  mainChallenges: text("mainChallenges"), // JSON array of challenges
-  preferredFrequency: varchar("preferredFrequency", { length: 50 }),
+  primaryGoal: text("primary_goal"), // e.g., "stress management", "career transition"
+  secondaryGoal: text("secondary_goal"),
+  mainChallenges: text("main_challenges"), // JSON array of challenges
+  preferredFrequency: varchar("preferred_frequency", { length: 50 }),
   timezone: varchar("timezone", { length: 64 }), // e.g., "America/Los_Angeles"
   availability: text("availability"), // e.g., "evenings", "weekends", "flexible"
-  communicationStyle: varchar("communicationStyle", { length: 50 }),
+  communicationStyle: varchar("communication_style", { length: 50 }),
   triggers: text("triggers"), // JSON array of triggers to watch for
-  profileCompleteness: integer("profileCompleteness").default(0), // 0-100%
+  profileCompleteness: integer("profile_completeness").default(0), // 0-100%
   
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
-  lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  lastSignedIn: timestamp("last_signed_in").defaultNow().notNull(),
 });
 
 export type User = typeof users.$inferSelect;
@@ -93,14 +93,14 @@ export type InsertUser = typeof users.$inferInsert;
  */
 export const coaches = pgTable("coaches", {
   id: serial("id").primaryKey(),
-  userId: integer("userId").notNull().references(() => users.id),
+  userId: integer("user_id").notNull().references(() => users.id),
   specialization: text("specialization"),
   bio: text("bio"),
   certifications: text("certifications"),
-  yearsExperience: integer("yearsExperience"),
-  isActive: varchar("isActive", { length: 50 }),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  yearsExperience: integer("years_experience"),
+  isActive: varchar("is_active", { length: 50 }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export type Coach = typeof coaches.$inferSelect;
