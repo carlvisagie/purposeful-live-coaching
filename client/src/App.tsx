@@ -38,6 +38,7 @@ import MyProfile from "./pages/MyProfile";
 import RefundPolicy from "./pages/RefundPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import AdminSetup from "./pages/AdminSetup";
 
 
 function Router() {
@@ -82,6 +83,7 @@ function Router() {
       <Route path="/refund-policy" component={RefundPolicy} />
       <Route path="/terms-of-service" component={TermsOfService} />
       <Route path="/privacy-policy-v2" component={PrivacyPolicy} />
+      <Route path="/admin/setup" component={AdminSetup} />
 
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}

@@ -559,4 +559,46 @@ export const schedulingRouter = router({
       await deleteAvailabilityException(input.id);
       return { success: true };
     }),
+
+  /**
+   * ADMIN: Seed default coach availability (Monday-Friday, 9 AM - 5 PM)
+   * This is a one-time setup endpoint to populate initial availability
+   */
+  seedDefaultAvailability: protectedProcedure
+    .input(z.object({ coachId: z.number() }))
+    .mutation(async ({ input }) => {
+      // Check if availability already exists
+      const existing = await getCoachAvailability(input.coachId, 1); // Check Monday
+      if (existing.length > 0) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Coach already has availability configured. Delete existing slots first if you want to reseed.",
+        });
+      }
+
+      // Create default availability: Monday-Friday, 9 AM - 5 PM
+      const availabilitySlots = [
+        { dayOfWeek: 1, startTime: '09:00', endTime: '17:00' }, // Monday
+        { dayOfWeek: 2, startTime: '09:00', endTime: '17:00' }, // Tuesday
+        { dayOfWeek: 3, startTime: '09:00', endTime: '17:00' }, // Wednesday
+        { dayOfWeek: 4, startTime: '09:00', endTime: '17:00' }, // Thursday
+        { dayOfWeek: 5, startTime: '09:00', endTime: '17:00' }, // Friday
+      ];
+
+      for (const slot of availabilitySlots) {
+        await upsertCoachAvailability({
+          coachId: input.coachId,
+          dayOfWeek: slot.dayOfWeek,
+          startTime: slot.startTime,
+          endTime: slot.endTime,
+          isActive: 'true',
+        });
+      }
+
+      return {
+        success: true,
+        message: 'Default availability created: Monday-Friday, 9:00 AM - 5:00 PM',
+        slotsCreated: availabilitySlots.length,
+      };
+    }),
 });
