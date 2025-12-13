@@ -518,7 +518,6 @@ export const wellnessModulesData: Record<string, any> = {
       "Sustainability Action Plan"
     ]
   },
-};
 
   // GROWTH MODULES (8)
   "career-development": {
