@@ -2,14 +2,13 @@
 
 ## 🔴 CRITICAL - REVENUE BLOCKERS
 
-- [x] Fix /daily-os/morning route (404 error) - REVERTED (requires backend work)
-- [ ] Implement tier differentiation system
-  - [ ] Add subscription tier checks to AI chat router
-  - [ ] Enforce message limits per tier (Basic: 100, Premium: 500, Elite: unlimited)
-  - [ ] Filter wellness modules by tier (Basic: 5, Premium: 31, Elite: 31)
-  - [ ] Add usage indicators in UI (messages used/remaining)
-  - [ ] Add tier badges to dashboard
-  - [ ] Create upgrade prompts when approaching limits
+- [x] Fix /daily-os/morning route (404 error) - REVERTED (requires backend wor- [x] Implement tier differentiation system
+  - [x] Add subscription tier checks to AI chat router
+  - [x] Enforce message limits per tier (Basic: 100, Premium: 500, Elite: unlimited)
+  - [ ] Filter wellness modules by tier (Basic: 5, Premium: 31, Elite: 31) - Frontend pending
+  - [x] Use GPT-4o-mini for Basic tier, GPT-4o for Premium/Elite
+  - [ ] Display tier limits in UI - Frontend pending
+  - [x] Add upgrade prompts when limits reachedng limits
 - [ ] Test payment processing for all tiers
 
 ## 🟡 HIGH PRIORITY - Daily Operating System

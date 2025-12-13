@@ -226,6 +226,52 @@ export const aiChatRouter = router({
         });
       }
 
+      // TIER DIFFERENTIATION: Check message limits
+      if (userId) {
+        const { getTierLimits, hasReachedMessageLimit } = await import("../_core/tierConfig");
+        const { subscriptions, usageTracking } = await import("../../drizzle/schema");
+        
+        // Get user's active subscription
+        const [subscription] = await db
+          .select()
+          .from(subscriptions)
+          .where(eq(subscriptions.userId, userId))
+          .limit(1);
+
+        if (subscription) {
+          // Get current period usage
+          const [usage] = await db
+            .select()
+            .from(usageTracking)
+            .where(eq(usageTracking.subscriptionId, subscription.id))
+            .orderBy(desc(usageTracking.periodStart))
+            .limit(1);
+
+          const messagesUsed = usage?.aiSessionsUsed || 0;
+          const tier = subscription.tier;
+
+          // Check if user has reached their limit
+          if (hasReachedMessageLimit(messagesUsed, tier)) {
+            const limits = getTierLimits(tier);
+            throw new TRPCError({
+              code: "FORBIDDEN",
+              message: `You've reached your monthly message limit (${limits.messagesPerMonth} messages). Upgrade to ${tier === 'ai_basic' || tier === 'basic' ? 'Premium' : 'Elite'} for ${tier === 'ai_basic' || tier === 'basic' ? '500 messages' : 'unlimited messages'}.`,
+            });
+          }
+
+          // Increment usage counter
+          if (usage) {
+            await db
+              .update(usageTracking)
+              .set({ 
+                aiSessionsUsed: messagesUsed + 1,
+                updatedAt: new Date()
+              })
+              .where(eq(usageTracking.id, usage.id));
+          }
+        }
+      }
+
       // Detect crisis level
       const crisisFlag = detectCrisisLevel(input.message);
 
@@ -341,11 +387,30 @@ export const aiChatRouter = router({
         content: input.message,
       });
 
-      // Get AI response
+      // Get AI response with tier-based model selection
       let aiResponse: string;
       try {
+        // TIER DIFFERENTIATION: Use appropriate AI model based on subscription tier
+        let aiModel: "gpt-4o-mini" | "gpt-4o" = "gpt-4o"; // Default to gpt-4o for best experience
+        
+        if (userId) {
+          const { getAIModelForTier } = await import("../_core/tierConfig");
+          const { subscriptions } = await import("../../drizzle/schema");
+          
+          const [subscription] = await db
+            .select()
+            .from(subscriptions)
+            .where(eq(subscriptions.userId, userId))
+            .limit(1);
+          
+          if (subscription) {
+            aiModel = getAIModelForTier(subscription.tier);
+          }
+        }
+        
         const response = await invokeLLM({
           messages: conversationHistory,
+          model: aiModel,
         });
 
         const content = response.choices[0]?.message?.content;
