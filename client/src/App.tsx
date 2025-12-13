@@ -5,7 +5,7 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import IndividualLanding from "./pages/IndividualLanding";
-import Dashboard from "./pages/Dashboard";
+import MissionControl from "./pages/MissionControl";
 import Clients from "./pages/Clients";
 import NewClient from "./pages/NewClient";
 import CoachSetup from "./pages/CoachSetup";
@@ -48,7 +48,8 @@ function Router() {
     <Switch>
       <Route path={"/"} component={IndividualLanding} />
       <Route path="/individual-coaching" component={IndividualLanding} />
-      <Route path="/dashboard" component={Dashboard} />
+      <Route path="/dashboard" component={MissionControl} />
+      <Route path="/mission-control" component={MissionControl} />
       <Route path="/clients" component={Clients} />
       <Route path="/clients/new" component={NewClient} />
       <Route path="/clients/:id" component={ClientDetail} />
