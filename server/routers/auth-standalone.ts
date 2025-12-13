@@ -8,6 +8,9 @@ import { publicProcedure, router } from "../_core/trpc";
 import * as db from "../db-auth";
 import { TRPCError } from "@trpc/server";
 import crypto from "crypto";
+import { eq } from "drizzle-orm";
+import { subscriptions, usageTracking } from "../../drizzle/schema";
+import { db as drizzleDb } from "../db";
 
 // Simple password hashing (in production, use bcrypt)
 function hashPassword(password: string, salt: string): string {
@@ -76,6 +79,39 @@ export const authRouter = router({
         sameSite: "lax",
         maxAge: ONE_YEAR_MS,
         path: "/",
+      });
+
+      // AUTO-ASSIGN BASIC TIER: Frictionless onboarding
+      // Every new user gets Basic tier (100 messages/month, 5 modules)
+      const now = new Date();
+      const periodEnd = new Date(now);
+      periodEnd.setMonth(periodEnd.getMonth() + 1);
+
+      const [newSubscription] = await drizzleDb
+        .insert(subscriptions)
+        .values({
+          userId: user.id,
+          productId: "ai_basic",
+          tier: "ai_basic",
+          billingFrequency: "monthly",
+          status: "active",
+          currentPeriodStart: now,
+          currentPeriodEnd: periodEnd,
+          createdAt: now,
+          updatedAt: now,
+        })
+        .returning();
+
+      // Create initial usage tracking record
+      await drizzleDb.insert(usageTracking).values({
+        subscriptionId: newSubscription.id,
+        userId: user.id,
+        periodStart: now,
+        periodEnd: periodEnd,
+        aiMessagesUsed: 0,
+        humanSessionsUsed: 0,
+        createdAt: now,
+        updatedAt: now,
       });
 
       return {
