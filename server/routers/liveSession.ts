@@ -235,7 +235,7 @@ export const liveSessionRouter = router({
         const [transcript] = await db
           .insert(liveSessionTranscripts)
           .values({
-            session_id: input.sessionId,
+            session_id: input.session_id,
             speaker: input.speaker,
             text: transcriptText,
             timestamp: new Date(),
@@ -272,7 +272,7 @@ export const liveSessionRouter = router({
         const recentTranscripts = await db
           .select()
           .from(liveSessionTranscripts)
-          .where(eq(liveSessionTranscripts.sessionId, input.sessionId))
+          .where(eq(liveSessionTranscripts.session_id, input.session_id))
           .orderBy(liveSessionTranscripts.timestamp)
           .limit(5);
 
@@ -294,7 +294,7 @@ export const liveSessionRouter = router({
           // Save prompts to database
           for (const prompt of prompts) {
             await db.insert(coachGuidance).values({
-              session_id: input.sessionId,
+              session_id: input.session_id,
               guidanceType: prompt.type === 'suggestion' ? 'suggest' : prompt.type === 'warning' ? 'alert' : 'reference',
               priority: prompt.priority,
               message: `${prompt.title}: ${prompt.content}`,
@@ -326,7 +326,7 @@ export const liveSessionRouter = router({
       const prompts = await db
         .select()
         .from(coachGuidance)
-        .where(eq(coachGuidance.sessionId, input.sessionId))
+        .where(eq(coachGuidance.session_id, input.session_id))
         .orderBy(coachGuidance.timestamp);
 
       return { prompts };
@@ -341,7 +341,7 @@ export const liveSessionRouter = router({
       const transcript = await db
         .select()
         .from(liveSessionTranscripts)
-        .where(eq(liveSessionTranscripts.sessionId, input.sessionId))
+        .where(eq(liveSessionTranscripts.session_id, input.session_id))
         .orderBy(liveSessionTranscripts.timestamp);
 
       return { transcript };
@@ -362,7 +362,7 @@ export const liveSessionRouter = router({
     .mutation(async ({ input }) => {
       try {
         // Ensure default coach exists (for frictionless demo sessions)
-        let coachId = input.coachId;
+        let coachId = input.coach_id;
         if (!coachId) {
           const existingCoaches = await db.select().from(coaches).limit(1);
           if (existingCoaches.length > 0) {
@@ -387,9 +387,9 @@ export const liveSessionRouter = router({
         }
         
         // Ensure default client exists if not provided
-        let clientId = input.clientId;
+        let clientId = input.client_id;
         if (!clientId) {
-          const existingClients = await db.select().from(clients).where(eq(clients.coachId, coachId)).limit(1);
+          const existingClients = await db.select().from(clients).where(eq(clients.coach_id, coachId)).limit(1);
           if (existingClients.length > 0) {
             clientId = existingClients[0].id;
           } else {
@@ -419,7 +419,7 @@ export const liveSessionRouter = router({
 
         return {
           session_id: session.id,
-          client_id: session.clientId,
+          client_id: session.client_id,
           clientName: input.clientName || 'Unknown Client',
           sessionType: session.sessionType,
           startTime: session.scheduledDate,
@@ -441,7 +441,7 @@ export const liveSessionRouter = router({
         const transcript = await db
           .select()
           .from(liveSessionTranscripts)
-          .where(eq(liveSessionTranscripts.sessionId, input.sessionId))
+          .where(eq(liveSessionTranscripts.session_id, input.session_id))
           .orderBy(liveSessionTranscripts.timestamp);
 
         const fullTranscript = transcript
