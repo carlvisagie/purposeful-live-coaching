@@ -42,6 +42,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
+  // Force fresh build - Dec 13, 2025
   return (
     <Switch>
       <Route path={"/"} component={IndividualLanding} />
