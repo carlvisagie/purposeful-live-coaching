@@ -142,7 +142,9 @@ export default function AICoach() {
   }, [conversationsData, selectedConversationId]);
 
   const handleNewConversation = () => {
+    console.log('[AICoach] Creating new conversation...');
     createConversationMutation.mutate({});
+    console.log('[AICoach] Mutation called, isPending:', createConversationMutation.isPending);
   };
 
   const handleSendMessage = () => {
