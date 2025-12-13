@@ -551,6 +551,98 @@ ALTER TABLE "aiInsights" RENAME TO "ai_insights";
 
 ---
 
+## ✅ REMAINING TODO & PRIORITIES
+
+### 🔴 CRITICAL - IMMEDIATE ACTION REQUIRED
+
+**Booking System Activation (5 minutes)**
+- [ ] Visit `/admin/setup` page
+- [ ] Click "Seed Coach Availability" button
+- [ ] Verify booking calendar shows available time slots
+- **Impact:** Enables human coaching session bookings (revenue stream)
+
+### 🟡 HIGH PRIORITY - Revenue & Core Features
+
+**Payment Processing**
+- [ ] Test Stripe checkout flow for all tiers (Basic $29, Premium $149, Elite $299)
+- [ ] Verify subscription creation in database
+- [ ] Test upgrade/downgrade flows
+- **Status:** Code exists, needs frontend debugging
+
+**Tier Differentiation UX Polish**
+- [x] Backend enforcement (message limits, model selection)
+- [x] Usage counter in AI Coach
+- [ ] Module filtering display (show locked modules for Basic tier)
+- [ ] Upgrade prompts when approaching limits
+
+**Standard Pages (Professional credibility)**
+- [ ] About page
+- [ ] Contact page
+- [ ] FAQ page
+- [ ] Resources/Blog page
+- [ ] Privacy Policy
+- [ ] Terms of Service
+
+### 🟢 MEDIUM PRIORITY - Enhanced Features
+
+**Daily Operating System Expansion**
+- [x] Morning Routine page
+- [x] Evening Review page
+- [ ] Habit Tracker with streak visualization
+- [ ] Progress Dashboard with long-term trajectory
+- [ ] Micro-habits system
+- [ ] Mission alignment tracker
+
+**Health Tracking Enhancement**
+- [x] Basic health tracker (movement, nutrition, sleep, stress)
+- [ ] Data visualization (charts, trends)
+- [ ] Goal setting and progress tracking
+- [ ] Integration with wearables (future)
+
+**Wellness Modules Enhancement**
+- [x] All 33 module detail pages with content
+- [ ] Progress tracking per module
+- [ ] Completion certificates
+- [ ] Module recommendations based on AI insights
+
+### 🔵 LONG-TERM - Core Differentiator (18-24 months)
+
+**Live Video Sessions with AI Observation**
+- [ ] WebRTC video infrastructure
+- [ ] Face recognition integration
+- [ ] Real-time behavioral analysis (Chase Hughes framework)
+- [ ] Coach prompting system during sessions
+- [ ] Session recording and playback
+- [ ] Post-session AI insights report
+- **Complexity:** Requires computer vision, ML models, real-time processing
+- **Status:** 0% complete - this is the ultimate platform vision
+
+### 🟣 POLISH & OPTIMIZATION
+
+**Quality Assurance**
+- [ ] Full platform QA (all pages)
+- [ ] Mobile responsiveness testing
+- [ ] Cross-browser compatibility
+- [ ] Error handling review
+- [ ] Performance optimization
+
+**Documentation**
+- [x] MASTER_GUIDE (this document)
+- [ ] User guide
+- [ ] Coach onboarding guide
+- [ ] Admin documentation
+- [ ] API documentation
+
+**Marketing & Growth**
+- [ ] Landing page A/B testing
+- [ ] SEO optimization
+- [ ] Email automation sequences
+- [ ] Social proof collection
+- [ ] Beta testing program
+- [ ] Referral system
+
+---
+
 ## 📝 TECHNICAL NOTES
 
 ### Database Schema Synchronization
@@ -598,4 +690,4 @@ ALTER TABLE "aiInsights" RENAME TO "ai_insights";
 
 **This is the SINGLE SOURCE OF TRUTH for the Purposeful Live Coaching platform. All other documentation is outdated and should be ignored.**
 
-**Last Verified:** December 13, 2025 06:30 UTC
+**Last Verified:** December 13, 2025 - 5:30 PM EST (22:30 UTC)
