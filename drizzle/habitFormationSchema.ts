@@ -54,8 +54,8 @@ export const habitProfiles = pgTable("habit_profiles", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// Habits
-export const habits = pgTable("habits", {
+// Habit Formation Habits (Advanced)
+export const habitFormationHabits = pgTable("habit_formation_habits", {
   id: varchar("id", { length: 255 }).primaryKey(),
   profileId: varchar("profile_id", { length: 255 }).notNull(),
   userId: varchar("user_id", { length: 255 }).notNull(),

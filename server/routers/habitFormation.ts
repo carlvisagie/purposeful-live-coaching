@@ -11,7 +11,7 @@
 import { z } from "zod";
 import { router, protectedProcedure } from "../_core/trpc";
 import { 
-  habits, 
+  habitFormationHabits as habits, 
   habitProfiles, 
   habitTracking,
 } from "../../drizzle/schema";

@@ -66,19 +66,19 @@ export type InsertDailyCheckin = typeof dailyCheckins.$inferInsert;
 // Habit tracking moved to habitFormationSchema.ts for better structure
 
 /**
- * Habit Completions - Track daily execution
+ * Identity Habit Completions - Track daily execution
  */
-export const habitCompletions = pgTable("habitCompletions", {
+export const identityHabitCompletions = pgTable("identity_habit_completions", {
   id: serial("id").primaryKey(),
-  habitId: integer("habit_id").notNull().references(() => habits.id),
+  habitId: integer("habit_id").notNull(), // references habits table
   completionDate: timestamp("completion_date").defaultNow().notNull(),
   completed: varchar("completed", { length: 50 }),
   notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export type HabitCompletion = typeof habitCompletions.$inferSelect;
-export type InsertHabitCompletion = typeof habitCompletions.$inferInsert;
+export type IdentityHabitCompletion = typeof identityHabitCompletions.$inferSelect;
+export type InsertIdentityHabitCompletion = typeof identityHabitCompletions.$inferInsert;
 
 /**
  * Discipline Events - Track impulse control and discipline moments

@@ -11,7 +11,7 @@ import {
   identityProfiles,
   dailyCheckins,
   habits,
-  habitCompletions,
+  identityHabitCompletions as habitCompletions,
   disciplineEvents,
   microHabits,
 } from "../../drizzle/schema";

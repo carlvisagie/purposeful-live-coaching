@@ -258,7 +258,7 @@ export const mentorships = pgTable("mentorships", {
 });
 
 // Daily Check-Ins (Community-wide)
-export const dailyCheckIns = pgTable("daily_check_ins", {
+export const communityDailyCheckIns = pgTable("community_daily_check_ins", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   checkInDate: timestamp("check_in_date").notNull(),
