@@ -17,6 +17,7 @@ import ManageSessionTypes from "./pages/ManageSessionTypes";
 import AICoach from "./pages/AICoach";
 import EmotionTracker from "./pages/EmotionTracker";
 import WellnessModules from "./pages/WellnessModules";
+import DailyCheckIn from "./pages/DailyCheckIn";
 import CoachDashboard from "./pages/CoachDashboard";
 import AutismDashboard from "./pages/AutismDashboard";
 import CreateAutismProfile from "./pages/CreateAutismProfile";
@@ -52,6 +53,7 @@ function Router() {
       <Route path="/ai-coach" component={AICoach} />
       <Route path="/emotions" component={EmotionTracker} />
       <Route path="/wellness-modules" component={WellnessModules} />
+      <Route path="/daily-check-in" component={DailyCheckIn} />
 
       <Route path="/coach/dashboard" component={CoachDashboard} />
       <Route path="/autism" component={AutismDashboard} />

@@ -110,3 +110,16 @@
 - [x] Add "upgrade to unlock" prompts when limits reached
 - [ ] Test all three AI tiers end-to-end
 - [ ] Document tier differentiation in MASTER_GUIDE.md
+
+## 🟢 DAILY OPERATING SYSTEM (Dec 13, 1:30 PM)
+
+- [x] Create daily check-ins schema (morning/evening)
+- [x] Create habits schema with streak tracking
+- [x] Create dailyCheckIns tRPC router
+- [x] Create DailyCheckIn page (morning + evening combined)
+- [x] Add route to App.tsx
+- [ ] Create HabitTracker page
+- [ ] Create ProgressDashboard page
+- [ ] Test daily check-in flow
+- [ ] Test habit tracking with streaks
+- [ ] Add navigation links to Dashboard
