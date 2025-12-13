@@ -75,6 +75,9 @@ export default function Dashboard() {
 
   const nextAction = getNextAction();
   const NextActionIcon = nextAction.icon;
+  
+  // Placeholder metrics (TODO: fetch from backend)
+  const identityAlignment = 75; // Percentage of identity alignment
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950 dark:via-blue-950 dark:to-indigo-950">
