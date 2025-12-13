@@ -177,7 +177,7 @@ export default function MySessions() {
             View and manage your coaching sessions
           </p>
         </div>
-        <Button onClick={() => setLocation("/book-session")}>
+        <Button onClick={() => setLocation("/sessions/book")}>
           <Calendar className="h-4 w-4 mr-2" />
           Book New Session
         </Button>
@@ -202,7 +202,7 @@ export default function MySessions() {
                 <p className="text-sm text-muted-foreground mb-4">
                   Book a session to get started
                 </p>
-                <Button onClick={() => setLocation("/book-session")}>
+                <Button onClick={() => setLocation("/sessions/book")}>
                   Book Your First Session
                 </Button>
               </CardContent>
@@ -223,7 +223,7 @@ export default function MySessions() {
                 <p className="text-sm text-muted-foreground mb-4">
                   Book your first session to begin your journey
                 </p>
-                <Button onClick={() => setLocation("/book-session")}>
+                <Button onClick={() => setLocation("/sessions/book")}>
                   Book a Session
                 </Button>
               </CardContent>
