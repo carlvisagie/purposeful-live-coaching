@@ -6,104 +6,11 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  Heart, Brain, Activity, Apple, Sparkles, Users, DollarSign, Target,
-  Flame, Moon, Zap, BookOpen, TrendingUp, Shield, Lightbulb, Clock,
-  Home, Briefcase, MessageCircle, Award, Eye, Smile, Coffee, Wind,
-  Droplet, Sun, Star, Leaf, Mountain, Waves, TreePine, Dumbbell,
-  HeartPulse, ArrowLeft, CheckCircle2, PlayCircle, FileText, Headphones
+  ArrowLeft, CheckCircle2, PlayCircle, FileText, Headphones, Sparkles
 } from "lucide-react";
+import { wellnessModulesData } from "@/data/wellnessModulesData";
 
-// Module data matching WellnessModules.tsx
-const moduleData: Record<string, any> = {
-  "emotional-wellness": {
-    icon: Heart,
-    title: "Emotional Wellness",
-    description: "Master your emotions and build resilience through evidence-based techniques",
-    category: "Core",
-    color: "text-red-500",
-    bgColor: "bg-red-50",
-    longDescription: "Emotional wellness is the foundation of a fulfilling life. Learn to understand, express, and regulate your emotions effectively. Build resilience to handle life's challenges with grace and strength.",
-    benefits: [
-      "Develop emotional intelligence and self-awareness",
-      "Build resilience to bounce back from setbacks",
-      "Improve relationships through better emotional regulation",
-      "Reduce anxiety and emotional overwhelm",
-      "Cultivate inner peace and emotional balance"
-    ],
-    lessons: [
-      { title: "Understanding Your Emotions", duration: "15 min", type: "video" },
-      { title: "The Emotion Wheel Exercise", duration: "10 min", type: "exercise" },
-      { title: "Building Emotional Resilience", duration: "20 min", type: "video" },
-      { title: "Daily Emotional Check-in Practice", duration: "5 min", type: "practice" },
-      { title: "Emotion Regulation Techniques", duration: "25 min", type: "video" }
-    ],
-    exercises: [
-      "Emotion Journaling Template",
-      "Resilience Building Worksheet",
-      "Emotional Triggers Tracker",
-      "Self-Compassion Practice Guide"
-    ]
-  },
-  "mental-health": {
-    icon: Brain,
-    title: "Mental Health",
-    description: "Clarity, focus, and peace of mind using cognitive behavioral strategies",
-    category: "Core",
-    color: "text-purple-500",
-    bgColor: "bg-purple-50",
-    longDescription: "Your mental health is your most valuable asset. Discover evidence-based strategies from cognitive behavioral therapy to achieve clarity, reduce anxiety, and cultivate lasting peace of mind.",
-    benefits: [
-      "Reduce anxiety and negative thought patterns",
-      "Improve focus and mental clarity",
-      "Develop healthy coping mechanisms",
-      "Build cognitive resilience",
-      "Enhance overall psychological well-being"
-    ],
-    lessons: [
-      { title: "Understanding Your Mind", duration: "18 min", type: "video" },
-      { title: "Cognitive Restructuring Basics", duration: "22 min", type: "video" },
-      { title: "Anxiety Management Techniques", duration: "15 min", type: "exercise" },
-      { title: "Thought Pattern Recognition", duration: "12 min", type: "practice" },
-      { title: "Building Mental Resilience", duration: "20 min", type: "video" }
-    ],
-    exercises: [
-      "Thought Record Worksheet",
-      "Anxiety Reduction Toolkit",
-      "Cognitive Distortions Guide",
-      "Mental Health Self-Assessment"
-    ]
-  },
-  "physical-fitness": {
-    icon: Activity,
-    title: "Physical Fitness",
-    description: "Strength, energy, and vitality through personalized movement plans",
-    category: "Core",
-    color: "text-green-500",
-    bgColor: "bg-green-50",
-    longDescription: "Transform your body and energy levels through sustainable fitness practices. Whether you're a beginner or advanced, discover personalized movement strategies that fit your lifestyle.",
-    benefits: [
-      "Increase strength and endurance",
-      "Boost daily energy levels",
-      "Improve body composition",
-      "Enhance mobility and flexibility",
-      "Build sustainable fitness habits"
-    ],
-    lessons: [
-      { title: "Fitness Fundamentals", duration: "16 min", type: "video" },
-      { title: "Creating Your Workout Plan", duration: "20 min", type: "exercise" },
-      { title: "Strength Training Basics", duration: "25 min", type: "video" },
-      { title: "Cardio for Health", duration: "18 min", type: "video" },
-      { title: "Recovery and Rest", duration: "12 min", type: "video" }
-    ],
-    exercises: [
-      "Personalized Workout Template",
-      "Progress Tracking Sheet",
-      "Exercise Form Guide",
-      "Mobility Routine Checklist"
-    ]
-  },
-  // Add more modules as needed - this is a template showing the structure
-};
+const moduleData = wellnessModulesData;
 
 // Generate default content for modules not explicitly defined
 const generateDefaultModule = (slug: string) => {
