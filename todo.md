@@ -80,3 +80,17 @@
 - [x] Fix database migration syntax error (PostgreSQL AFTER clause)
 - [x] Ensure schema changes are compatible with production database
 - [x] Test migration locally before deploying
+
+## 🔴 FRICTIONLESS CLIENT IDENTIFICATION (NEW)
+
+- [x] Remove AI disclosure compliance dialog blocking chat access
+- [x] Remove subscription requirement for guest AI chat access
+- [x] Enable guest access to conversation list
+- [x] Fix AI chat button disabled state
+- [ ] Implement anonymous client ID generation (browser fingerprint + localStorage)
+- [x] Add voice input button to AI chat interface
+- [ ] Integrate Whisper API for voice transcription
+- [ ] AI extraction of client info from natural conversation
+- [ ] Store client metadata in conversation context
+- [ ] Implement persistent identity across sessions
+- [ ] Add optional account linking for multi-device access

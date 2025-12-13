@@ -14,6 +14,8 @@ import {
   Loader2,
   Bot,
   User,
+  Mic,
+  MicOff,
 } from "lucide-react";
 import { useAuth } from "@/_core/hooks/useAuth";
 // Guest access enabled - no login required
@@ -49,6 +51,10 @@ export default function AICoach() {
   const [selectedConversationId, setSelectedConversationId] = useState<number | null>(null);
   const [message, setMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [conversationToDelete, setConversationToDelete] = useState<number | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -164,6 +170,71 @@ export default function AICoach() {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
+    }
+  };
+
+  const handleVoiceInput = async () => {
+    if (isRecording) {
+      // Stop recording
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
+        mediaRecorderRef.current.stop();
+      }
+      return;
+    }
+
+    // Start recording
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = async () => {
+        setIsRecording(false);
+        setIsTranscribing(true);
+
+        const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+        
+        // Upload to S3 and transcribe
+        try {
+          // Convert blob to base64 for upload
+          const reader = new FileReader();
+          reader.readAsDataURL(audioBlob);
+          reader.onloadend = async () => {
+            const base64Audio = (reader.result as string).split(",")[1];
+            
+            // TODO: Upload to S3 and get URL
+            // For now, we'll use a placeholder - need to implement S3 upload
+            toast.info("Voice transcription coming soon! For now, please type your message.");
+            setIsTranscribing(false);
+            
+            // Future implementation:
+            // 1. Upload audio to S3
+            // 2. Call transcription API with S3 URL
+            // 3. Set transcribed text to message input
+          };
+        } catch (error) {
+          console.error("Transcription error:", error);
+          toast.error("Failed to transcribe audio. Please try typing instead.");
+          setIsTranscribing(false);
+        }
+
+        // Stop all tracks
+        stream.getTracks().forEach(track => track.stop());
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+      toast.success("Recording started. Click again to stop.");
+    } catch (error) {
+      console.error("Microphone access error:", error);
+      toast.error("Failed to access microphone. Please check permissions.");
     }
   };
 
@@ -382,21 +453,37 @@ export default function AICoach() {
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       onKeyDown={handleKeyPress}
-                      placeholder="Type your message... (Press Enter to send, Shift+Enter for new line)"
+                      placeholder={isRecording ? "Recording..." : "Type your message... (Press Enter to send, Shift+Enter for new line)"}
                       className="flex-1 min-h-[60px] max-h-[200px]"
-                      disabled={isSending}
+                      disabled={isSending || isRecording || isTranscribing}
                     />
-                    <Button
-                      onClick={handleSendMessage}
-                      disabled={!message.trim() || isSending}
-                      className="bg-rose-500 hover:bg-rose-600"
-                    >
-                      {isSending ? (
-                        <Loader2 className="h-5 w-5 animate-spin" />
-                      ) : (
-                        <Send className="h-5 w-5" />
-                      )}
-                    </Button>
+                    <div className="flex flex-col gap-2">
+                      <Button
+                        onClick={handleVoiceInput}
+                        disabled={isSending || isTranscribing}
+                        variant={isRecording ? "destructive" : "outline"}
+                        title={isRecording ? "Stop recording" : "Voice input"}
+                      >
+                        {isTranscribing ? (
+                          <Loader2 className="h-5 w-5 animate-spin" />
+                        ) : isRecording ? (
+                          <MicOff className="h-5 w-5 animate-pulse" />
+                        ) : (
+                          <Mic className="h-5 w-5" />
+                        )}
+                      </Button>
+                      <Button
+                        onClick={handleSendMessage}
+                        disabled={!message.trim() || isSending || isRecording || isTranscribing}
+                        className="bg-rose-500 hover:bg-rose-600"
+                      >
+                        {isSending ? (
+                          <Loader2 className="h-5 w-5 animate-spin" />
+                        ) : (
+                          <Send className="h-5 w-5" />
+                        )}
+                      </Button>
+                    </div>
                   </div>
                   <p className="text-xs text-gray-500 mt-2">
                     💡 This AI coach provides support, but is not a replacement for professional
