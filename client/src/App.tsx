@@ -11,6 +11,7 @@ import NewClient from "./pages/NewClient";
 import CoachSetup from "./pages/CoachSetup";
 import ClientDetail from "./pages/ClientDetail";
 import MySessions from "./pages/MySessions";
+import BookSession from "./pages/BookSession";
 import CoachAvailability from "./pages/CoachAvailability";
 import ManageSessionTypes from "./pages/ManageSessionTypes";
 import AICoach from "./pages/AICoach";
@@ -43,6 +44,7 @@ function Router() {
       <Route path="/clients/:id" component={ClientDetail} />
       <Route path="/coach/setup" component={CoachSetup} />
       <Route path="/my-sessions" component={MySessions} />
+      <Route path="/sessions/book" component={BookSession} />
       <Route path="/coach/availability" component={CoachAvailability} />
       <Route path="/coach/session-types" component={ManageSessionTypes} />
       <Route path="/ai-coach" component={AICoach} />

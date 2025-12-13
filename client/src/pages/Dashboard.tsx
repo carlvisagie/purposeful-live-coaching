@@ -31,7 +31,7 @@ export default function Dashboard() {
   const { data: user } = trpc.auth.me.useQuery();
   
   // Coaching-specific queries (using only existing routers) - disabled auth requirement
-  const { data: subscription } = trpc.subscriptions.getMySubscription.useQuery(undefined, { enabled: false });
+  const { data: subscription } = trpc.subscriptions.getMySubscription.useQuery();
   const { data: upcomingSessions } = trpc.scheduling.getUpcomingClientSessions.useQuery(
     { clientId: user?.id || 0 },
     { enabled: false }
