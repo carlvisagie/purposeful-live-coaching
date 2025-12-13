@@ -105,7 +105,7 @@
 - [x] Update AI chat router to check subscription tier before processing
 - [x] Enforce message limits (Basic: 100, Premium: 500, Elite: unlimited)
 - [x] Use GPT-4o-mini for Basic tier, GPT-4o for Premium/Elite
-- [ ] Filter wellness modules by tier (Basic: 5, Premium/Elite: 31)
+- [x] Filter wellness modules by tier (Basic: 5, Premium/Elite: 33)
 - [x] Add usage counter display in AI chat UI
 - [x] Add "upgrade to unlock" prompts when limits reached
 - [ ] Test all three AI tiers end-to-end

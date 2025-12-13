@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -38,7 +39,8 @@ import {
   TreePine,
   Dumbbell,
   HeartPulse,
-  Search
+  Search,
+  Lock
 } from "lucide-react";
 
 const wellnessModules = [
@@ -95,6 +97,13 @@ const categories = [
 export default function WellnessModules() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Fetch user's subscription tier for access control
+  const { data: usageData } = trpc.subscriptions.getCurrentUsage.useQuery();
+
+  // Determine tier access (Basic: 5 modules, Premium/Elite: all 33)
+  const tierModuleLimit = usageData?.tierName?.includes('Basic') ? 5 : 33;
+  const hasFullAccess = tierModuleLimit === 33;
 
   const filteredModules = wellnessModules.filter(m => {
     const matchesCategory = selectedCategory === "All" || m.category === selectedCategory;
@@ -198,25 +207,35 @@ export default function WellnessModules() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredModules.map((module, idx) => {
             const Icon = module.icon;
+            const isLocked = !hasFullAccess && idx >= tierModuleLimit;
             return (
               <Card 
                 key={idx} 
-                className="hover:shadow-xl transition-all duration-300 cursor-pointer group border-2 hover:border-purple-300 hover:-translate-y-1"
+                className={`hover:shadow-xl transition-all duration-300 cursor-pointer group border-2 hover:border-purple-300 hover:-translate-y-1 ${isLocked ? 'opacity-60' : ''}`}
               >
                 <CardHeader>
                   <div className="flex items-start justify-between mb-3">
-                    <div className={`p-4 rounded-xl ${module.bgColor} group-hover:scale-110 transition-transform`}>
+                    <div className={`p-4 rounded-xl ${module.bgColor} group-hover:scale-110 transition-transform relative`}>
                       <Icon className={`h-7 w-7 ${module.color}`} />
+                      {isLocked && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-gray-900/20 rounded-xl">
+                          <Lock className="h-5 w-5 text-gray-700" />
+                        </div>
+                      )}
                     </div>
-                    <Badge variant="secondary" className="text-xs">
-                      {module.category}
+                    <Badge variant={isLocked ? "outline" : "secondary"} className="text-xs">
+                      {isLocked ? "Premium" : module.category}
                     </Badge>
                   </div>
                   <CardTitle className="text-lg group-hover:text-purple-600 transition-colors leading-tight">
                     {module.title}
                   </CardTitle>
                   <CardDescription className="text-sm leading-relaxed">
-                    {module.description}
+                    {isLocked ? (
+                      <span className="text-orange-600 font-medium">🔒 Upgrade to Premium to unlock</span>
+                    ) : (
+                      module.description
+                    )}
                   </CardDescription>
                 </CardHeader>
               </Card>
