@@ -1256,12 +1256,6 @@ export const wellnessModulesData: Record<string, any> = {
           content: "The mind and body are not separate entities; they are a deeply interconnected system. Your thoughts, emotions, and beliefs have a profound impact on your physical health and energy levels. In this final lesson, we'll explore the science behind the mind-body connection and provide you with practical tools to leverage this connection for greater well-being. You'll learn how mindfulness meditation can reduce stress and improve focus, how specific breathing techniques can instantly shift your energy state, and how the food you eat can either drain or energize you. We'll also discuss the importance of sleep and movement in maintaining optimal energy levels. This lesson brings together all the concepts from the module, reinforcing the idea that true energy management requires a holistic approach. By learning to care for your mind, body, and spirit in an integrated way, you can unlock a new level of vitality and live a more energized, purposeful life."
         }      
     ],
-      "Identify your peak performance hours",
-      "Match tasks to energy levels",
-      "Eliminate energy drains",
-      "Boost sustained energy naturally",
-      "Prevent afternoon crashes"
-    ],
     lessons: [
       { title: "Understanding Your Energy Rhythms", duration: "18 min", type: "video" },
       { title: "Energy Audit Exercise", duration: "15 min", type: "exercise" },
