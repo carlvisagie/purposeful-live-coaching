@@ -1287,11 +1287,71 @@ export const wellnessModulesData: Record<string, any> = {
       "Build rapport and influence others"
     ],
     lessons: [
-      { title: "Communication Fundamentals", duration: "19 min", type: "video" },
-      { title: "Public Speaking Confidence", duration: "23 min", type: "exercise" },
-      { title: "Non-Verbal Communication", duration: "16 min", type: "video" },
-      { title: "Difficult Conversations", duration: "21 min", type: "video" },
-      { title: "Persuasion and Influence", duration: "20 min", type: "video" }
+      { 
+        title: "Communication Fundamentals", 
+        duration: "19 min", 
+        type: "video",
+        description: "Master the core principles of effective communication that apply to every interaction.",
+        keyPoints: [
+          "The communication model: sender, message, receiver, feedback",
+          "Active listening: the most underrated communication skill",
+          "Clarity and conciseness: say more with fewer words",
+          "Adapting your communication style to your audience"
+        ],
+        content: "Communication is the #1 skill for success in life and work. This lesson covers the fundamentals. The communication model: communication involves a sender (you), a message (what you're saying), a receiver (the other person), and feedback (their response). Breakdowns happen at any stage: unclear message, distracted receiver, no feedback loop. Effective communicators optimize each stage. Active listening: most people listen to respond, not to understand. Active listening means: giving full attention (no phone, no interrupting), reflecting back what you heard ('So what you're saying is...'), asking clarifying questions ('Can you tell me more about...'), validating emotions ('That sounds frustrating'). This makes people feel heard and builds trust. Clarity and conciseness: confused messages create confusion. Before speaking, know your main point. Use simple language. Avoid jargon. Be specific ('The report is due Friday at 5pm' vs. 'The report is due soon'). Respect people's time - say what needs to be said, then stop. Adapting your style: different people prefer different communication styles. Some want details, others want the bottom line. Some prefer direct feedback, others need it softened. Pay attention to how people communicate and mirror their style. This builds rapport. Common communication barriers: Assumptions (thinking you know what they mean without asking), Distractions (multitasking while talking), Emotional reactivity (getting defensive), Poor timing (having important conversations when stressed or rushed), Lack of feedback (not checking if your message was understood). Avoid these. The 7-38-55 rule: research by Albert Mehrabian suggests that communication is 7% words, 38% tone of voice, 55% body language. While this is often misinterpreted (it applies specifically to communicating feelings and attitudes), the point is clear: how you say something matters as much as what you say. This lesson provides a communication fundamentals checklist."
+      },
+      { 
+        title: "Public Speaking Confidence", 
+        duration: "23 min", 
+        type: "exercise",
+        description: "Overcome fear and speak confidently in front of any audience.",
+        keyPoints: [
+          "Why public speaking terrifies us: evolutionary psychology",
+          "Preparation is confidence: the 10-1 rule",
+          "Managing anxiety: reframe nervousness as excitement",
+          "Delivery techniques: voice, pace, pauses, and presence"
+        ],
+        content: "Public speaking is the #1 fear for most people (above death!). This lesson teaches you to speak confidently. Why we fear public speaking: evolutionarily, being judged by the tribe meant life or death. Social rejection triggered the same brain regions as physical pain. Your fear is ancient wiring, not a personal flaw. Understanding this helps you reframe it. Preparation is confidence: the 10-1 rule says for every 1 minute of speaking, spend 10 minutes preparing. Know your material so well that you could give the talk in your sleep. This eliminates the fear of forgetting. Structure your talk: Opening (hook their attention with a story, question, or surprising fact), Body (3 main points - people can't remember more), Closing (call to action or memorable takeaway). This structure creates clarity. Managing anxiety: nervousness and excitement have the same physiology (increased heart rate, adrenaline). The difference is your interpretation. Instead of 'I'm nervous,' say 'I'm excited.' This reframe changes your experience. Use the anxiety as energy. Delivery techniques: Voice (speak from your diaphragm, project to the back of the room), Pace (slow down - nervous speakers rush), Pauses (silence is powerful - pause before and after key points), Eye contact (connect with individuals, not the crowd), Movement (purposeful movement keeps attention, nervous pacing distracts), Gestures (natural gestures emphasize points). Practice these. Handling mistakes: everyone makes mistakes. If you stumble, don't apologize profusely. Pause, smile, continue. The audience wants you to succeed. They're rooting for you. Confidence comes from repetition. The more you speak, the easier it gets. Start small: team meetings, toast at dinner, Toastmasters. Build the skill progressively. This exercise includes a public speaking practice framework and anxiety management techniques."
+      },
+      { 
+        title: "Non-Verbal Communication", 
+        duration: "16 min", 
+        type: "video",
+        description: "Read and use body language to enhance your communication and influence.",
+        keyPoints: [
+          "The power of body language: it speaks louder than words",
+          "Reading others: signs of engagement, discomfort, deception",
+          "Projecting confidence: posture, eye contact, gestures",
+          "Cultural differences in non-verbal communication"
+        ],
+        content: "Your body communicates constantly, often contradicting your words. This lesson teaches you to read and use body language. The power of body language: when your words and body language conflict, people believe your body. Saying 'I'm fine' with crossed arms and a frown sends a clear message: you're not fine. Alignment between verbal and non-verbal communication builds trust. Reading others - signs of engagement: Leaning in, Maintaining eye contact, Nodding, Open posture (uncrossed arms), Mirroring your gestures. These signals mean they're interested and receptive. Reading others - signs of discomfort: Crossed arms or legs, Avoiding eye contact, Touching face or neck, Fidgeting, Leaning away, Checking phone. These signals mean they're uncomfortable, bored, or disagreeing. Adjust your approach. Reading deception (with caution): Inconsistent body language (smiling while saying something sad), Excessive stillness (overcontrolling body), Touching face, especially mouth and nose, Avoiding eye contact or overcompensating with too much. Note: these are not definitive - context matters. Don't accuse based on body language alone. Projecting confidence: Posture (stand tall, shoulders back, chest open - this also increases testosterone and decreases cortisol), Eye contact (hold for 3-5 seconds, then break naturally), Gestures (use open palm gestures, avoid fidgeting), Facial expressions (smile genuinely, relax your face), Personal space (respect boundaries, but don't be too distant). These signals communicate confidence and competence. Power poses: research by Amy Cuddy (though controversial) suggests that holding confident poses for 2 minutes before important events can increase confidence. Try it: stand with hands on hips, chest open, chin up. Cultural differences: body language varies by culture. Eye contact is respectful in Western cultures but can be seen as aggressive in some Asian cultures. Personal space preferences vary. When communicating across cultures, research norms and watch for cues. This lesson includes a body language decoder guide."
+      },
+      { 
+        title: "Difficult Conversations", 
+        duration: "21 min", 
+        type: "video",
+        description: "Navigate conflict and difficult conversations with grace and effectiveness.",
+        keyPoints: [
+          "Why we avoid difficult conversations: short-term relief, long-term damage",
+          "The conversation framework: facts, feelings, ask",
+          "Managing emotions: yours and theirs",
+          "Finding resolution: focus on needs, not positions"
+        ],
+        content: "Difficult conversations are unavoidable in life and work. This lesson teaches you to handle them effectively. Why we avoid them: difficult conversations trigger anxiety. We fear conflict, rejection, or making things worse. So we avoid them. But avoidance causes resentment, misunderstanding, and relationship damage. The short-term relief of avoidance creates long-term problems. Facing difficult conversations is a skill. Preparation: Before the conversation, clarify: What's the issue? (Be specific, not vague), What's your goal? (What outcome do you want?), What's your contribution? (How did you contribute to the problem?), What emotions are you feeling? (Name them so they don't control you). This preparation prevents reactive, unproductive conversations. The conversation framework: Facts ('When you missed the deadline...'), Feelings ('I felt frustrated because...'), Ask ('Can we discuss how to prevent this?'). This structure is non-accusatory and solution-focused. Avoid: Blame ('You always...'), Assumptions ('You don't care about this project'), Generalizations ('You never listen'). These trigger defensiveness. Managing your emotions: If you're angry, wait until you calm down. Conversations from anger rarely go well. Use 'I' statements ('I feel...' not 'You make me feel...'). Take breaks if emotions escalate ('Let's pause and continue in 10 minutes'). Managing their emotions: If they get defensive, validate their feelings ('I understand this is hard to hear'), Stay calm (your calm can de-escalate their reactivity), Focus on the issue, not the person ('The behavior is the problem, not you'). Finding resolution: Focus on needs, not positions. Positions are what you want ('I want you to work late'). Needs are why you want it ('I need this project done on time'). When you understand each other's needs, you can find creative solutions. End with agreement: 'So we've agreed that...' Summarize the resolution. Confirm understanding. Follow up later to ensure the agreement is working. This lesson includes a difficult conversation script template."
+      },
+      { 
+        title: "Persuasion and Influence", 
+        duration: "20 min", 
+        type: "video",
+        description: "Ethically influence others and get buy-in for your ideas.",
+        keyPoints: [
+          "The psychology of persuasion: Cialdini's 6 principles",
+          "Building credibility: the foundation of influence",
+          "Framing your message: benefits, not features",
+          "Handling objections: the feel-felt-found technique"
+        ],
+        content: "Persuasion is not manipulation - it's helping people see the value of your idea. This lesson teaches ethical influence. Cialdini's 6 principles of persuasion: Reciprocity (people feel obligated to return favors - give first), Commitment and consistency (people want to act consistently with their commitments - get small yeses first), Social proof (people follow what others do - show testimonials, case studies), Authority (people trust experts - establish your credibility), Liking (people say yes to those they like - build rapport), Scarcity (people want what's limited - create urgency). Use these ethically. Building credibility: influence requires trust. Build credibility through: Expertise (demonstrate knowledge), Reliability (do what you say you'll do), Transparency (admit what you don't know), Results (show track record). Without credibility, persuasion is impossible. Framing your message: people don't care about features - they care about benefits. Don't say 'This software has advanced analytics.' Say 'This software helps you make better decisions faster.' Focus on what's in it for them. Use stories: facts tell, stories sell. Instead of statistics, share a story of someone who benefited from your idea. Stories create emotional connection and are more memorable than data. Handling objections: when someone objects, use the feel-felt-found technique: 'I understand how you feel. Others have felt the same way. What they found was...' This validates their concern while providing a new perspective. Timing matters: people are more persuadable when they're in a good mood, not rushed, and feel respected. Choose your moment. Don't push when they're stressed or distracted. The ethical line: persuasion becomes manipulation when you: Lie or deceive, Pressure or coerce, Exploit vulnerabilities, Prioritize your gain over their wellbeing. Always ask: 'Is this genuinely in their best interest?' If not, don't do it. This lesson includes a persuasion strategy template."
+      }
     ],
     exercises: [
       "Communication Style Assessment",
@@ -1377,11 +1437,71 @@ export const wellnessModulesData: Record<string, any> = {
       "Create time for what you love"
     ],
     lessons: [
-      { title: "Time Management Fundamentals", duration: "19 min", type: "video" },
-      { title: "The Eisenhower Matrix", duration: "14 min", type: "exercise" },
-      { title: "Time Blocking Mastery", duration: "21 min", type: "video" },
-      { title: "Defeating Procrastination", duration: "18 min", type: "video" },
-      { title: "Productivity Systems", duration: "23 min", type: "video" }
+      { 
+        title: "Time Management Fundamentals", 
+        duration: "19 min", 
+        type: "video",
+        description: "Understand the core principles of managing your most valuable resource: time.",
+        keyPoints: [
+          "Time is finite: you can't make more, only choose how to use it",
+          "The 80/20 rule: 20% of activities produce 80% of results",
+          "Energy management matters as much as time management",
+          "The myth of multitasking: why it destroys productivity"
+        ],
+        content: "Time management isn't about doing more - it's about doing what matters. This lesson covers the fundamentals. Time is finite: you have 168 hours per week. That's it. You can't make more time, but you can choose how to use it. Most people waste time on low-value activities while claiming they're 'too busy' for what matters. Time management is about intentional choices. The 80/20 rule (Pareto Principle): 20% of your activities produce 80% of your results. Identify your high-impact activities (the 20%) and prioritize them ruthlessly. Examples: 20% of clients generate 80% of revenue, 20% of your work creates 80% of your value, 20% of relationships provide 80% of support. Focus on the vital few, not the trivial many. Energy management matters: you can have time but lack energy. Working on important tasks when you're exhausted is inefficient. Identify your peak energy times (most people are sharpest in the morning) and schedule high-priority work then. Protect your energy through sleep, exercise, and breaks. The myth of multitasking: your brain can't actually multitask - it switches between tasks rapidly. Each switch has a cognitive cost (attention residue). Research shows multitasking reduces productivity by 40% and increases errors. Single-tasking is faster and higher quality. Common time wasters: Unstructured meetings (no agenda, no time limit), Social media and email (constant checking), Saying yes to everything (no boundaries), Perfectionism (diminishing returns), Lack of planning (reactive instead of proactive). Audit where your time goes and eliminate these. Time management is values management: how you spend your time reflects your priorities. If you say family is important but work 80 hours per week, your time doesn't match your values. Align your time with what truly matters. This lesson includes a time audit worksheet to identify where your time goes."
+      },
+      { 
+        title: "The Eisenhower Matrix", 
+        duration: "14 min", 
+        type: "exercise",
+        description: "Prioritize tasks using President Eisenhower's urgent vs. important framework.",
+        keyPoints: [
+          "The four quadrants: urgent/important, important/not urgent, urgent/not important, neither",
+          "Quadrant 2 is where success happens: important but not urgent",
+          "Most people live in Quadrant 1 (crisis mode) and Quadrant 3 (distractions)",
+          "The goal: minimize Quadrants 1 and 3, eliminate Quadrant 4, maximize Quadrant 2"
+        ],
+        content: "The Eisenhower Matrix is a powerful prioritization tool. It categorizes tasks by urgency and importance. The four quadrants: Quadrant 1 - Urgent and Important (crises, deadlines, emergencies). Do these immediately. Quadrant 2 - Important but Not Urgent (planning, prevention, relationship building, skill development). Schedule these. Quadrant 3 - Urgent but Not Important (interruptions, some emails, other people's priorities). Delegate or minimize these. Quadrant 4 - Neither Urgent nor Important (time wasters, busywork, mindless scrolling). Eliminate these. Quadrant 2 is where success happens: most people spend their time in Quadrants 1 (crisis mode) and 3 (reacting to others). But Quadrant 2 - important but not urgent - is where you build the future. Examples: Exercise (prevents health crises), Relationship building (prevents loneliness), Strategic planning (prevents business failures), Skill development (prevents career stagnation). These activities don't scream for attention, but they create long-term success. Why we neglect Quadrant 2: Quadrant 2 activities don't have deadlines. No one is demanding them. They're easy to postpone. But postponing them creates Quadrant 1 crises. Example: neglecting exercise (Q2) leads to health emergencies (Q1). Neglecting relationship maintenance (Q2) leads to relationship crises (Q1). Prevention is easier than crisis management. How to use the matrix: List all your tasks, Categorize each into a quadrant, Do Q1 immediately, Schedule Q2 (this is most important), Delegate or minimize Q3, Eliminate Q4. Review weekly. The goal: minimize Quadrants 1 and 3, eliminate Quadrant 4, maximize Quadrant 2. When you invest in Q2, Q1 crises decrease. This exercise includes an Eisenhower Matrix template and examples."
+      },
+      { 
+        title: "Time Blocking Mastery", 
+        duration: "21 min", 
+        type: "video",
+        description: "Schedule your day in focused blocks to maximize productivity and minimize distractions.",
+        keyPoints: [
+          "What is time blocking: assigning specific tasks to specific time slots",
+          "Why it works: reduces decision fatigue and context switching",
+          "How to time block: theme days, task batching, buffer time",
+          "Protecting your blocks: treating calendar commitments as sacred"
+        ],
+        content: "Time blocking is a scheduling method where you assign specific tasks to specific time slots. This lesson teaches you to master it. What is time blocking: instead of a to-do list (tasks without time), you assign each task to a specific time block on your calendar. Example: Monday 9-11am: Write report, 11am-12pm: Team meeting, 1-3pm: Client calls. Your entire day is scheduled in advance. Why it works: Reduces decision fatigue (you don't waste energy deciding what to do next), Prevents context switching (you focus on one thing at a time), Creates realistic expectations (you see how much time you actually have), Protects important work (it's scheduled, not squeezed in). Research shows time blocking increases productivity by 50%. How to time block: Theme days (assign different themes to different days - Monday is strategy, Tuesday is meetings, etc.), Task batching (group similar tasks together - answer all emails in one block, make all calls in one block), Buffer time (schedule 15-30 minutes between blocks for overruns and transitions), Energy alignment (schedule high-priority work during your peak energy times). Example time-blocked day: 6-7am: Exercise, 7-8am: Morning routine, 8-9am: Email and planning, 9-12pm: Deep work (most important project), 12-1pm: Lunch and walk, 1-3pm: Meetings, 3-4pm: Admin tasks, 4-5pm: Planning tomorrow, 5pm+: Personal time. Every hour is assigned. Protecting your blocks: treat your calendar like a doctor's appointment - non-negotiable. When someone asks for your time, check your calendar. If that block is assigned, say 'I'm not available then. How about [alternative time]?' This prevents your day from being hijacked by others' priorities. Common objections: 'My day is too unpredictable' (start with 50% blocked, leave 50% flexible), 'I feel too constrained' (you can adjust blocks as needed - it's a guide, not a prison), 'Meetings disrupt my blocks' (batch meetings into specific days/times). Flexibility within structure: time blocking isn't rigid. If something urgent comes up, adjust. But without a plan, you're reactive all day. This lesson includes time blocking templates and examples."
+      },
+      { 
+        title: "Defeating Procrastination", 
+        duration: "18 min", 
+        type: "video",
+        description: "Understand why you procrastinate and use proven strategies to overcome it.",
+        keyPoints: [
+          "Procrastination is emotion regulation, not laziness",
+          "The procrastination equation: expectancy, value, impulsiveness, delay",
+          "Strategies to beat procrastination: break it down, 2-minute rule, temptation bundling",
+          "Addressing the root cause: fear of failure, perfectionism, lack of clarity"
+        ],
+        content: "Procrastination isn't a character flaw - it's a habit you can change. This lesson teaches you how. Procrastination is emotion regulation: you don't procrastinate because you're lazy. You procrastinate to avoid negative emotions (anxiety, boredom, overwhelm, fear of failure). The task triggers discomfort, so you seek short-term mood repair (social media, snacks, busywork). Understanding this is the first step to change. The procrastination equation (Piers Steel): Motivation = (Expectancy × Value) / (Impulsiveness × Delay). Expectancy (do you believe you can succeed?), Value (how rewarding is the task?), Impulsiveness (how easily distracted are you?), Delay (how far away is the reward?). To reduce procrastination, increase expectancy and value, decrease impulsiveness and delay. Strategies to beat procrastination: Break it down (overwhelming tasks trigger procrastination - break them into tiny steps. Instead of 'Write report,' start with 'Write one paragraph'), The 2-minute rule (commit to just 2 minutes. Starting is the hardest part. Once you start, you'll often continue), Temptation bundling (pair unpleasant tasks with pleasant ones - listen to your favorite podcast only while doing admin work), Implementation intentions ('If it's 9am, then I will work on the report' - removes decision-making), Accountability (tell someone your deadline or work with a body double). Addressing root causes: Fear of failure (you avoid starting because you're afraid it won't be good enough. Reframe: 'Done is better than perfect'), Perfectionism (you delay because you want it to be perfect. Reframe: 'Version 1 doesn't need to be perfect'), Lack of clarity (you don't know where to start. Solution: spend 5 minutes planning before starting), Low energy (you're exhausted. Solution: rest, then work). The cost of procrastination: increased stress, lower quality work, missed opportunities, damaged reputation, guilt and shame. Short-term relief creates long-term pain. The 10-minute rule: when you don't want to start, commit to just 10 minutes. Set a timer. After 10 minutes, you can stop guilt-free. But usually, you'll keep going. This lesson includes a procrastination troubleshooting guide."
+      },
+      { 
+        title: "Productivity Systems", 
+        duration: "23 min", 
+        type: "video",
+        description: "Explore proven productivity systems and build one that works for you.",
+        keyPoints: [
+          "Getting Things Done (GTD): capture, clarify, organize, reflect, engage",
+          "Pomodoro Technique: 25-minute focused sprints with breaks",
+          "Eat the Frog: do your hardest task first thing in the morning",
+          "Building your personal system: combine principles that work for you"
+        ],
+        content: "Productivity systems provide structure for managing tasks and time. This lesson explores proven systems. Getting Things Done (GTD) by David Allen: Capture (write down everything on your mind - tasks, ideas, commitments), Clarify (is it actionable? If yes, what's the next action? If no, trash it, file it, or someday/maybe it), Organize (put tasks in appropriate lists - by context, priority, or project), Reflect (weekly review to update lists and plan the week), Engage (do the work, trusting your system). GTD creates mental clarity by externalizing everything. Pomodoro Technique by Francesco Cirillo: Work in 25-minute focused sprints (pomodoros), Take a 5-minute break, After 4 pomodoros, take a 15-30 minute break. This creates urgency (you have 25 minutes to make progress) and prevents burnout (regular breaks maintain energy). Great for deep work. Eat the Frog by Brian Tracy: Identify your most important task (the 'frog' - the thing you're most likely to procrastinate on), Do it first thing in the morning, before anything else. This ensures your highest-priority work gets done when your energy is highest. The rest of the day feels easier after eating the frog. Time blocking (covered in previous lesson): Schedule every hour of your day in advance. Prevents reactive, distracted work. Combines well with other systems. The Ivy Lee Method: At the end of each day, write down the 6 most important tasks for tomorrow, Prioritize them in order, Tomorrow, work on task 1 until complete, then task 2, etc. Simple but effective for focus. Building your personal system: don't adopt a system wholesale - take principles that work for you. Example hybrid: Use GTD for capturing and organizing, Use time blocking for scheduling, Use Pomodoro for execution, Use Eat the Frog for prioritization. Experiment to find your fit. The key: consistency: any system works if you use it consistently. The best system is the one you'll actually follow. Start simple, then refine. Tools: Analog (paper planner, bullet journal) vs. Digital (Todoist, Notion, Trello). Choose what you'll actually use. This lesson includes productivity system templates and setup guides."
+      }
     ],
     exercises: [
       "Time Audit Worksheet",
