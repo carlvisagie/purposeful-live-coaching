@@ -315,9 +315,37 @@ export default function AICoach() {
                 <Heart className="h-8 w-8 text-rose-500" />
                 <span className="text-xl font-bold text-gray-900">AI Coach</span>
               </div>
-              <Button variant="ghost" onClick={() => (window.location.href = "/dashboard")}>
-                Back to Dashboard
-              </Button>
+              <div className="flex items-center gap-4">
+                {/* Usage Counter & Tier Badge */}
+                {usageData && (
+                  <div className="flex items-center gap-3">
+                    {/* Tier Badge */}
+                    <div className="px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-rose-500 to-purple-600 text-white">
+                      {usageData.tierName || 'Basic'}
+                    </div>
+                    {/* Usage Counter */}
+                    <div className="text-sm font-medium">
+                      {usageData.messagesRemaining === -1 ? (
+                        <span className="text-green-600">✨ Unlimited</span>
+                      ) : (
+                        <span className="text-gray-700">
+                          <span className="font-bold">{usageData.messagesUsed}</span>
+                          <span className="text-gray-500"> / {usageData.messageLimit}</span>
+                          {usageData.messagesRemaining <= 10 && usageData.messagesRemaining > 0 && (
+                            <span className="text-orange-600 ml-1 font-semibold">({usageData.messagesRemaining} left!)</span>
+                          )}
+                          {usageData.messagesRemaining === 0 && (
+                            <span className="text-red-600 ml-1 font-semibold">(Limit reached)</span>
+                          )}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                )}
+                <Button variant="ghost" onClick={() => (window.location.href = "/dashboard")}>
+                  Back to Dashboard
+                </Button>
+              </div>
             </div>
           </div>
         </header>
@@ -465,6 +493,45 @@ export default function AICoach() {
                       conversationId={selectedConversationId}
                       onRatingSubmitted={() => refetchConversations()}
                     />
+                  </div>
+                )}
+
+                {/* Upgrade Prompt Banner */}
+                {usageData && usageData.messagesRemaining !== -1 && usageData.messagesRemaining <= 20 && (
+                  <div className={`border-t p-4 ${
+                    usageData.messagesRemaining === 0 
+                      ? 'bg-red-50 border-red-200' 
+                      : usageData.messagesRemaining <= 10
+                      ? 'bg-orange-50 border-orange-200'
+                      : 'bg-yellow-50 border-yellow-200'
+                  }`}>
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        {usageData.messagesRemaining === 0 ? (
+                          <>
+                            <p className="text-sm font-semibold text-red-900">🚫 Message limit reached</p>
+                            <p className="text-xs text-red-700 mt-1">Upgrade to continue chatting with your AI coach</p>
+                          </>
+                        ) : usageData.messagesRemaining <= 10 ? (
+                          <>
+                            <p className="text-sm font-semibold text-orange-900">⚠️ Only {usageData.messagesRemaining} messages left</p>
+                            <p className="text-xs text-orange-700 mt-1">Upgrade now to avoid interruption</p>
+                          </>
+                        ) : (
+                          <>
+                            <p className="text-sm font-semibold text-yellow-900">💡 {usageData.messagesRemaining} messages remaining</p>
+                            <p className="text-xs text-yellow-700 mt-1">Upgrade for unlimited access</p>
+                          </>
+                        )}
+                      </div>
+                      <Button
+                        size="sm"
+                        onClick={() => (window.location.href = "/pricing")}
+                        className="bg-gradient-to-r from-rose-500 to-purple-600 hover:from-rose-600 hover:to-purple-700 text-white"
+                      >
+                        Upgrade Now
+                      </Button>
+                    </div>
                   </div>
                 )}
 

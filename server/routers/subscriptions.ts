@@ -37,6 +37,7 @@ const TIER_CONFIG = {
   ai_basic: {
     name: "AI Coaching - Basic",
     price: 2900, // $29.00/month
+    messagesPerMonth: 100, // 100 AI messages per month
     humanSessionsIncluded: 0,
     stripePriceId: STRIPE_PRICE_IDS.ai_basic,
     features: [
@@ -50,6 +51,7 @@ const TIER_CONFIG = {
   ai_premium: {
     name: "AI Coaching - Premium",
     price: 14900, // $149.00/month
+    messagesPerMonth: 500, // 500 AI messages per month
     humanSessionsIncluded: 1,
     stripePriceId: STRIPE_PRICE_IDS.ai_premium,
     features: [
@@ -63,6 +65,7 @@ const TIER_CONFIG = {
   ai_elite: {
     name: "AI Coaching - Elite",
     price: 29900, // $299.00/month
+    messagesPerMonth: -1, // Unlimited AI messages
     humanSessionsIncluded: 4,
     stripePriceId: STRIPE_PRICE_IDS.ai_elite,
     features: [
@@ -77,6 +80,7 @@ const TIER_CONFIG = {
   human_basic: {
     name: "Human Coaching - Basic",
     price: 80000, // $800.00/month
+    messagesPerMonth: -1, // Unlimited AI messages
     humanSessionsIncluded: 2,
     stripePriceId: STRIPE_PRICE_IDS.human_basic,
     features: [
@@ -90,6 +94,7 @@ const TIER_CONFIG = {
   human_premium: {
     name: "Human Coaching - Premium",
     price: 120000, // $1,200.00/month
+    messagesPerMonth: -1, // Unlimited AI messages
     humanSessionsIncluded: 4,
     stripePriceId: STRIPE_PRICE_IDS.human_premium,
     features: [
@@ -104,6 +109,7 @@ const TIER_CONFIG = {
   human_elite: {
     name: "Human Coaching - Elite",
     price: 200000, // $2,000.00/month
+    messagesPerMonth: -1, // Unlimited AI messages
     humanSessionsIncluded: 8,
     stripePriceId: STRIPE_PRICE_IDS.human_elite,
     features: [
