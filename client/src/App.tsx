@@ -27,6 +27,8 @@ import StressRelief from "./pages/StressRelief";
 import CoachDashboard from "./pages/CoachDashboard";
 import AutismDashboard from "./pages/AutismDashboard";
 import CreateAutismProfile from "./pages/CreateAutismProfile";
+import AutismProfileDetail from "./pages/AutismProfileDetail";
+import AutismInterventions from "./pages/AutismInterventions";
 import LiveSessionAssistant from "./pages/LiveSessionAssistant";
 import CoachingScripts from "./pages/CoachingScripts";
 import Pricing from "./pages/Pricing";
@@ -74,6 +76,8 @@ function Router() {
       <Route path="/coach/dashboard" component={CoachDashboard} />
       <Route path="/autism" component={AutismDashboard} />
       <Route path="/autism/create-profile" component={CreateAutismProfile} />
+      <Route path="/autism/profile/:id" component={AutismProfileDetail} />
+      <Route path="/autism/interventions/:id" component={AutismInterventions} />
       <Route path="/live-session" component={LiveSessionAssistant} />
       <Route path="/coaching-scripts" component={CoachingScripts} />
       <Route path="/pricing" component={Pricing} />
