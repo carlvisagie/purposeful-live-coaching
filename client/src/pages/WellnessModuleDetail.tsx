@@ -180,7 +180,9 @@ export default function WellnessModuleDetail() {
                     </div>
                   </div>
                   
-                  <Button>Start</Button>
+                  <Link to={`/wellness-modules/${slug}/lesson/${idx}`}>
+                    <Button>Start</Button>
+                  </Link>
                 </CardContent>
               </Card>
             ))}
