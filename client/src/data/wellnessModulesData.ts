@@ -24,11 +24,71 @@ export const wellnessModulesData: Record<string, any> = {
       "Cultivate inner peace and emotional balance"
     ],
     lessons: [
-      { title: "Understanding Your Emotions", duration: "15 min", type: "video" },
-      { title: "The Emotion Wheel Exercise", duration: "10 min", type: "exercise" },
-      { title: "Building Emotional Resilience", duration: "20 min", type: "video" },
-      { title: "Daily Emotional Check-in Practice", duration: "5 min", type: "practice" },
-      { title: "Emotion Regulation Techniques", duration: "25 min", type: "video" }
+      { 
+        title: "Understanding Your Emotions", 
+        duration: "15 min", 
+        type: "video",
+        description: "Learn the fundamental nature of emotions, their purpose in human experience, and how to identify and name your emotional states accurately.",
+        keyPoints: [
+          "Emotions are information - they tell us what matters",
+          "All emotions are valid, even uncomfortable ones",
+          "The emotion wheel helps identify nuanced feelings",
+          "Emotional awareness is the first step to emotional intelligence"
+        ],
+        content: "Emotions are complex psychological states that involve three distinct components: a subjective experience, a physiological response, and a behavioral or expressive response. Understanding emotions begins with recognizing that they serve an important evolutionary purpose - they provide rapid information about our environment and motivate us to take action. In this lesson, you'll learn to identify your emotions with precision using the emotion wheel, understand the difference between primary and secondary emotions, and develop the foundational skill of emotional awareness that underlies all emotional intelligence."
+      },
+      { 
+        title: "The Emotion Wheel Exercise", 
+        duration: "10 min", 
+        type: "exercise",
+        description: "Practice using the emotion wheel to identify and articulate your feelings with greater precision and nuance.",
+        keyPoints: [
+          "Move from basic emotions (happy, sad, angry) to nuanced feelings",
+          "Practice naming emotions in real-time",
+          "Notice physical sensations associated with each emotion",
+          "Build emotional vocabulary"
+        ],
+        content: "The Emotion Wheel, developed by psychologist Robert Plutchik, is a powerful tool for developing emotional granularity - the ability to make fine-grained distinctions among emotions. Research shows that people with higher emotional granularity experience better mental health outcomes and more effective emotion regulation. In this exercise, you'll practice moving from basic emotion categories (like 'bad') to more specific feelings (like 'disappointed,' 'embarrassed,' or 'overwhelmed'). You'll learn to notice the physical sensations, thoughts, and action urges that accompany different emotions, building a rich emotional vocabulary that enhances self-awareness."
+      },
+      { 
+        title: "Building Emotional Resilience", 
+        duration: "20 min", 
+        type: "video",
+        description: "Discover evidence-based strategies for bouncing back from emotional setbacks and building long-term emotional strength.",
+        keyPoints: [
+          "Resilience is a skill that can be developed",
+          "The role of cognitive flexibility in resilience",
+          "Building a resilience toolkit",
+          "Post-traumatic growth and finding meaning"
+        ],
+        content: "Emotional resilience is the ability to adapt to stressful situations and bounce back from adversity. It's not about avoiding difficult emotions or 'toughening up' - it's about developing the psychological flexibility to experience the full range of human emotions while maintaining your well-being. This lesson explores the key components of resilience: realistic optimism, cognitive flexibility, strong social connections, and a sense of purpose. You'll learn practical strategies from positive psychology and cognitive behavioral therapy, including reframing techniques, self-compassion practices, and meaning-making exercises that help you not just survive challenges, but grow from them."
+      },
+      { 
+        title: "Daily Emotional Check-in Practice", 
+        duration: "5 min", 
+        type: "practice",
+        description: "Establish a simple daily practice for monitoring your emotional state and building emotional awareness.",
+        keyPoints: [
+          "Quick daily emotional assessment",
+          "Notice patterns over time",
+          "Identify triggers and trends",
+          "Build emotional self-awareness habit"
+        ],
+        content: "Daily emotional check-ins are a cornerstone practice for developing emotional intelligence. This brief 5-minute practice involves pausing to notice and name your current emotional state, rating its intensity, identifying any physical sensations, and noting what might have triggered the emotion. Over time, this practice helps you recognize patterns in your emotional life - you might notice that certain situations, people, or times of day consistently affect your mood. This awareness is the foundation for effective emotion regulation. The practice also helps you catch emotional states early, before they intensify, giving you more options for responding skillfully."
+      },
+      { 
+        title: "Emotion Regulation Techniques", 
+        duration: "25 min", 
+        type: "video",
+        description: "Master evidence-based techniques for managing intense emotions and returning to emotional balance.",
+        keyPoints: [
+          "The STOP technique for emotional pausing",
+          "Opposite action for changing emotional states",
+          "Grounding techniques for overwhelming emotions",
+          "Building distress tolerance skills"
+        ],
+        content: "Emotion regulation is the ability to influence which emotions you have, when you have them, and how you experience and express them. This comprehensive lesson teaches you multiple evidence-based techniques from Dialectical Behavior Therapy (DBT) and other therapeutic approaches. You'll learn the STOP technique (Stop, Take a breath, Observe, Proceed) for creating space between emotion and action. You'll discover 'opposite action' - a powerful DBT skill where you act opposite to your emotional urge to change the emotion itself. You'll practice grounding techniques like the 5-4-3-2-1 method for overwhelming emotions, and learn to build distress tolerance through self-soothing and radical acceptance. These skills don't eliminate difficult emotions, but they give you choice in how you respond."
+      }
     ],
     exercises: [
       "Emotion Journaling Template",
