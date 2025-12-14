@@ -114,11 +114,71 @@ export const wellnessModulesData: Record<string, any> = {
       "Enhance overall psychological well-being"
     ],
     lessons: [
-      { title: "Understanding Your Mind", duration: "18 min", type: "video" },
-      { title: "Cognitive Restructuring Basics", duration: "22 min", type: "video" },
-      { title: "Anxiety Management Techniques", duration: "15 min", type: "exercise" },
-      { title: "Thought Pattern Recognition", duration: "12 min", type: "practice" },
-      { title: "Building Mental Resilience", duration: "20 min", type: "video" }
+      { 
+        title: "Understanding Your Mind", 
+        duration: "18 min", 
+        type: "video",
+        description: "Explore how your mind works, the relationship between thoughts and emotions, and the foundations of mental well-being.",
+        keyPoints: [
+          "The mind-body connection and its impact on health",
+          "How thoughts create emotions and drive behavior",
+          "The difference between mind and brain",
+          "Neuroplasticity: your brain's ability to change"
+        ],
+        content: "Your mind is not your brain, though they're intimately connected. The mind encompasses your thoughts, beliefs, memories, and consciousness, while the brain is the physical organ that supports mental processes. Understanding this distinction is crucial for mental health because it reveals that you have agency over your mental states. This lesson explores the cognitive model: thoughts → emotions → behaviors. You'll learn how automatic thoughts shape your emotional experience and discover the revolutionary concept of neuroplasticity - your brain's ability to form new neural pathways throughout life. This means that mental patterns aren't fixed; with practice, you can literally rewire your brain for better mental health."
+      },
+      { 
+        title: "Cognitive Restructuring Basics", 
+        duration: "22 min", 
+        type: "video",
+        description: "Master the core CBT technique of identifying and challenging unhelpful thought patterns to improve your mental health.",
+        keyPoints: [
+          "Identifying automatic negative thoughts",
+          "Common cognitive distortions (all-or-nothing thinking, catastrophizing, etc.)",
+          "The ABC model: Activating event, Belief, Consequence",
+          "Generating alternative, balanced thoughts"
+        ],
+        content: "Cognitive restructuring is the cornerstone technique of Cognitive Behavioral Therapy (CBT), one of the most evidence-based approaches to mental health. The premise is simple but powerful: it's not events themselves that cause emotional distress, but our interpretations of those events. This lesson teaches you to catch automatic negative thoughts - those rapid, often unconscious interpretations that pop into your mind. You'll learn to identify cognitive distortions like catastrophizing ('This will be a disaster'), all-or-nothing thinking ('I'm a complete failure'), and mind-reading ('They think I'm stupid'). Most importantly, you'll practice the skill of generating alternative, more balanced thoughts that are both realistic and helpful. This isn't positive thinking - it's accurate thinking."
+      },
+      { 
+        title: "Anxiety Management Techniques", 
+        duration: "15 min", 
+        type: "exercise",
+        description: "Practice evidence-based techniques for reducing anxiety in the moment and building long-term anxiety resilience.",
+        keyPoints: [
+          "Box breathing for immediate anxiety relief",
+          "Progressive muscle relaxation",
+          "The 5-4-3-2-1 grounding technique",
+          "Worry time scheduling"
+        ],
+        content: "Anxiety is one of the most common mental health challenges, affecting millions of people worldwide. While some anxiety is normal and even helpful, excessive anxiety can be debilitating. This practical exercise teaches you multiple techniques for managing anxiety. Box breathing (4-4-4-4 pattern) activates your parasympathetic nervous system, triggering a relaxation response. Progressive muscle relaxation helps release physical tension that accompanies anxiety. The 5-4-3-2-1 technique grounds you in the present moment when anxiety pulls you into future worries. And worry time scheduling - a counterintuitive technique where you designate a specific time each day for worrying - helps contain anxious thoughts. Practice these techniques regularly, not just when you're anxious, to build your anxiety management skills."
+      },
+      { 
+        title: "Thought Pattern Recognition", 
+        duration: "12 min", 
+        type: "practice",
+        description: "Develop the skill of noticing your habitual thought patterns and their impact on your mood and behavior.",
+        keyPoints: [
+          "Keeping a thought record",
+          "Identifying your most common cognitive distortions",
+          "Noticing thought-emotion-behavior connections",
+          "Building metacognitive awareness"
+        ],
+        content: "Metacognition - thinking about thinking - is a powerful skill for mental health. Most people go through life on autopilot, unaware of the constant stream of thoughts running through their minds. This practice helps you develop the observer stance: the ability to notice your thoughts without being swept away by them. You'll learn to keep a thought record, documenting situations that trigger strong emotions, the automatic thoughts that arise, and the emotions and behaviors that follow. Over time, patterns emerge. You might notice that you consistently catastrophize about work situations, or that you often engage in black-and-white thinking about relationships. Recognizing these patterns is the first step to changing them. This practice builds the foundation for lasting mental health improvements."
+      },
+      { 
+        title: "Building Mental Resilience", 
+        duration: "20 min", 
+        type: "video",
+        description: "Develop psychological strength and the ability to bounce back from mental health challenges.",
+        keyPoints: [
+          "The three pillars of mental resilience",
+          "Stress inoculation and controlled exposure",
+          "Developing a growth mindset",
+          "Building psychological flexibility"
+        ],
+        content: "Mental resilience is the capacity to maintain mental health in the face of adversity and to recover quickly from difficulties. It's not about being invulnerable or never experiencing mental health struggles - it's about having the skills and resources to navigate challenges effectively. This lesson explores the three pillars of mental resilience: cognitive flexibility (the ability to adapt your thinking), emotional regulation (managing intense feelings), and social connection (having supportive relationships). You'll learn about stress inoculation - the idea that controlled exposure to manageable stressors can build resilience, much like a vaccine. You'll discover how a growth mindset (believing abilities can be developed) protects mental health. And you'll understand psychological flexibility - the ability to stay present, open up to difficult emotions, and take action aligned with your values even when it's hard. These skills transform mental health challenges from threats into opportunities for growth."
+      }
     ],
     exercises: [
       "Thought Record Worksheet",
