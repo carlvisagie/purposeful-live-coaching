@@ -1267,4 +1267,45 @@ ALTER TABLE "aiInsights" RENAME TO "ai_insights";
 
 ---
 
-**Last Verified:** December 15, 2025 - 12:45 AM GMT+1
+---
+
+## 🚨 ONE REMAINING ISSUE (Under Investigation)
+
+**Tier Badge & Usage Counter Not Showing in Production**
+
+**Status:** Debugging in progress (as of 12:30 AM GMT+1)
+
+**Problem:** Tier badge and usage counter are not visible in AI Coach header, even after successful deployment of fixes.
+
+**Evidence:**
+- Code changes deployed successfully (commit `3671b8f`, `3c49e06`)
+- Deploy status: LIVE
+- But tier badge not rendering in production
+
+**Hypothesis:** `usageData` query returning null/undefined
+
+**Action Taken:**
+- Added console.log debugging (commit `929b92d`)
+- Deployed debug version
+- Waiting for cache propagation (5-10 minutes)
+
+**Root Cause Analysis:** The conditional render `{usageData && (` means the tier badge only shows if `usageData` exists. If the tRPC query `trpc.subscriptions.getCurrentUsage` is failing or returning null, the badge won't render.
+
+**Possible Causes:**
+1. Backend query not handling anonymous users correctly
+2. Database missing subscription/tier data
+3. tRPC query configuration issue
+4. Frontend cache serving stale bundle
+
+**Next Steps:**
+1. Wait for cache propagation
+2. Check browser console for debug output
+3. Test backend query directly
+4. Fix based on evidence
+
+**Impact:** This is the final 10% blocking 100% revenue-readiness. Once fixed, upgrade prompts will drive conversions.
+
+---
+
+**Last Updated:** December 15, 2025 - 12:30 AM GMT+1  
+**Platform Status:** 90% revenue-ready (→ 100% once tier badge fixed)
