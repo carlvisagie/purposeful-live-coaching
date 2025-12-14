@@ -384,11 +384,71 @@ export const wellnessModulesData: Record<string, any> = {
       "Find meaning in daily experiences"
     ],
     lessons: [
-      { title: "Exploring Your Values", duration: "17 min", type: "video" },
-      { title: "Gratitude Practice Foundations", duration: "12 min", type: "exercise" },
-      { title: "Meditation for Beginners", duration: "20 min", type: "practice" },
-      { title: "Finding Your Purpose", duration: "25 min", type: "video" },
-      { title: "Spiritual Rituals and Practices", duration: "15 min", type: "video" }
+      { 
+        title: "Exploring Your Values", 
+        duration: "17 min", 
+        type: "video",
+        description: "Discover the core values that guide your decisions and define what truly matters to you.",
+        keyPoints: [
+          "Values vs. goals: understanding the difference",
+          "Identifying your top 5 core values",
+          "Living in alignment vs. values conflict",
+          "Using values as a decision-making compass"
+        ],
+        content: "Values are the principles and qualities that matter most to you - they're your internal compass for navigating life's decisions. Unlike goals (which you achieve and move past), values are ongoing directions you move toward. This profound lesson guides you through discovering your authentic values, not the ones society, family, or culture imposed on you. You'll explore common value categories: connection (love, family, friendship), growth (learning, achievement, creativity), contribution (service, impact, legacy), security (safety, stability, health), and freedom (autonomy, adventure, independence). You'll learn to distinguish between values you genuinely hold and values you think you 'should' have. The values clarification exercise helps you identify your top 5 core values - the non-negotiables that define who you are. You'll discover the concept of values alignment: when your daily actions reflect your values, you feel fulfilled and authentic. When there's misalignment - working a job that conflicts with your values, maintaining relationships that violate your principles - you experience chronic dissatisfaction and inner conflict. You'll learn to use your values as a decision-making compass: when faced with choices, ask 'which option honors my values?' This lesson is transformational because living in alignment with your values is the foundation of authentic happiness and meaning."
+      },
+      { 
+        title: "Gratitude Practice Foundations", 
+        duration: "12 min", 
+        type: "exercise",
+        description: "Build a sustainable gratitude practice that rewires your brain for positivity and contentment.",
+        keyPoints: [
+          "The neuroscience of gratitude: how it changes your brain",
+          "Three good things: the simplest effective practice",
+          "Gratitude journaling: depth vs. breadth",
+          "Expressing gratitude to others: strengthening relationships"
+        ],
+        content: "Gratitude is not toxic positivity or denying life's difficulties - it's the practice of intentionally noticing and appreciating the good in your life, even amid challenges. Research shows gratitude practices literally rewire your brain, strengthening neural pathways associated with positive emotions and weakening those linked to negative rumination. This practical exercise teaches you to build a sustainable gratitude practice. The simplest evidence-based practice: each evening, write down three good things that happened today and why they happened. This trains your brain to notice positive experiences throughout the day. Gratitude journaling: research shows that depth matters more than frequency. Writing detailed reflections about one thing you're grateful for once a week is more effective than superficial daily lists. You'll learn to go beyond surface gratitude ('I'm grateful for my family') to specific, vivid appreciation ('I'm grateful for the way my daughter laughed when we played together this morning - her joy reminded me what matters most'). Expressing gratitude to others: write gratitude letters to people who've impacted your life. You don't have to send them (though doing so strengthens relationships), but the act of articulating appreciation is powerfully healing. You'll discover that gratitude isn't about pretending everything is perfect - it's about training your attention to notice the good that coexists with the difficult. This practice is transformational for mental health, relationships, and life satisfaction."
+      },
+      { 
+        title: "Meditation for Beginners", 
+        duration: "20 min", 
+        type: "practice",
+        description: "Learn accessible meditation techniques that calm your mind and connect you to the present moment.",
+        keyPoints: [
+          "Meditation myths: you don't need to 'clear your mind'",
+          "Breath awareness: the foundational practice",
+          "Working with wandering thoughts: the practice IS noticing",
+          "Starting small: 5 minutes is enough"
+        ],
+        content: "Meditation is one of the most misunderstood practices. Many people try it, think they're 'doing it wrong' because their mind won't stop thinking, and give up. This lesson demystifies meditation and teaches you a simple, accessible practice. First, let's dispel the biggest myth: meditation is NOT about clearing your mind or stopping thoughts. That's impossible and not the goal. Meditation is about training your attention - noticing when your mind wanders (which it will, constantly) and gently bringing it back to your chosen focus. The practice IS the noticing and returning. This lesson teaches breath awareness meditation: sit comfortably, close your eyes, and bring your attention to the physical sensation of breathing. Notice the air entering your nostrils, your chest or belly rising and falling. Within seconds, your mind will wander to thoughts, plans, worries. When you notice this (and you will, repeatedly), gently return your attention to the breath. No judgment, no frustration - just notice and return. This simple practice, done for just 5-10 minutes daily, has profound effects: reduced anxiety and stress, improved focus and emotional regulation, increased self-awareness, and a sense of inner calm. You'll learn that meditation isn't about achieving a special state - it's about being present with whatever is. This lesson includes a guided 10-minute meditation you can practice immediately. Meditation is a skill that develops with practice, like learning an instrument. Be patient with yourself."
+      },
+      { 
+        title: "Finding Your Purpose", 
+        duration: "25 min", 
+        type: "video",
+        description: "Discover your unique purpose through deep self-reflection and practical exercises.",
+        keyPoints: [
+          "Purpose is not one grand mission - it evolves",
+          "The intersection of passion, skill, and service",
+          "Your purpose statement: a living document",
+          "Living purposefully: daily actions aligned with meaning"
+        ],
+        content: "The question 'What is my purpose?' can feel overwhelming, even paralyzing. This lesson reframes purpose in a way that's accessible and actionable. First, understand that purpose is not one grand, fixed mission you must discover. Purpose evolves as you grow and change. It's not something you find 'out there' - it emerges from self-knowledge and lived experience. This lesson guides you through discovering your purpose at the intersection of three elements: what you're passionate about (what energizes and excites you), what you're skilled at (your natural talents and developed abilities), and how you can serve others (the needs you can meet in the world). You'll explore powerful questions: What problems do you feel called to solve? What activities make you lose track of time? What would you do if money were no object? When have you felt most alive and fulfilled? What do people consistently come to you for help with? You'll craft a purpose statement - not a rigid declaration, but a living document that articulates your current understanding of why you're here and what you're called to do. Most importantly, you'll learn that purpose isn't just about your career or one area of life. You can live purposefully as a parent, friend, community member, artist, or volunteer. Purpose is about bringing intentionality and meaning to your daily actions. This lesson is deeply transformational because living with purpose - even if that purpose evolves - provides resilience, direction, and deep fulfillment."
+      },
+      { 
+        title: "Spiritual Rituals and Practices", 
+        duration: "15 min", 
+        type: "video",
+        description: "Create personal rituals that connect you to something greater and infuse daily life with meaning.",
+        keyPoints: [
+          "Rituals vs. routines: intention makes the difference",
+          "Morning rituals: setting intention for the day",
+          "Evening rituals: reflection and gratitude",
+          "Creating rituals around transitions and milestones"
+        ],
+        content: "Rituals are intentional practices that connect you to something beyond the mundane - whether that's your values, a sense of the sacred, nature, or a higher power. Unlike routines (which are functional), rituals are infused with meaning and presence. This lesson teaches you to create personal spiritual practices that resonate with you, regardless of religious background. Morning rituals: begin your day with intention. This might include meditation, journaling, reading inspirational text, stretching, or simply sitting with a cup of tea in silence. The key is presence and intention - you're not just going through motions, you're consciously setting the tone for your day. Evening rituals: close your day with reflection. Review your day with compassion, note what you're grateful for, release what didn't serve you, and set intentions for tomorrow. This practice prevents rumination and promotes restful sleep. Transition rituals: create practices around life transitions - changing seasons, birthdays, new jobs, endings and beginnings. These rituals help you process change and mark important moments. Nature connection: spend time in nature with intention - not exercising or socializing, but simply being present with the natural world. This cultivates awe and perspective. The beauty of personal spiritual practices is that they're entirely yours - you can draw from religious traditions, create your own, or blend practices that resonate. This lesson helps you design rituals that feel authentic and sustainable, infusing your daily life with meaning and connection."
+      }
     ],
     exercises: [
       "Values Clarification Worksheet",
