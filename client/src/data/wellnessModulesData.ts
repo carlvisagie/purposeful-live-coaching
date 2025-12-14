@@ -1106,11 +1106,71 @@ export const wellnessModulesData: Record<string, any> = {
       "Enjoy life while building your career"
     ],
     lessons: [
-      { title: "The Burnout Epidemic", duration: "17 min", type: "video" },
-      { title: "Setting Healthy Boundaries", duration: "19 min", type: "exercise" },
-      { title: "Time Blocking for Balance", duration: "16 min", type: "video" },
-      { title: "Saying No Without Guilt", duration: "14 min", type: "video" },
-      { title: "Sustainable Success Strategies", duration: "21 min", type: "video" }
+      { 
+        title: "The Burnout Epidemic", 
+        duration: "17 min", 
+        type: "video",
+        description: "Understand what burnout is, why it's epidemic, and how to recognize it before it destroys you.",
+        keyPoints: [
+          "What is burnout: physical, emotional, and mental exhaustion",
+          "The three dimensions: exhaustion, cynicism, reduced efficacy",
+          "Warning signs: chronic fatigue, detachment, decreased performance",
+          "The cost: health problems, relationship damage, career derailment"
+        ],
+        content: "Burnout is epidemic in modern society. This lesson helps you understand and prevent it. What is burnout: burnout is a state of physical, emotional, and mental exhaustion caused by prolonged stress. It's not just being tired - it's a deep depletion that doesn't improve with rest. The World Health Organization officially recognizes burnout as an occupational phenomenon. The three dimensions (Christina Maslach): Exhaustion (feeling drained, depleted, unable to cope), Cynicism (detachment, negativity, loss of enthusiasm), Reduced efficacy (feeling incompetent, unproductive, like nothing you do matters). All three dimensions together indicate burnout. Warning signs: Physical (chronic fatigue, insomnia, frequent illness, headaches, muscle pain), Emotional (irritability, anxiety, depression, emotional numbness), Behavioral (withdrawing from responsibilities, procrastinating, using food/drugs/alcohol to cope, taking frustrations out on others), Cognitive (difficulty concentrating, forgetfulness, decreased creativity). If you have multiple signs, you may be burning out. The burnout progression: Stage 1 - Honeymoon (high enthusiasm, taking on too much), Stage 2 - Stress onset (fatigue, irritability, reduced sleep), Stage 3 - Chronic stress (persistent exhaustion, resentment, health issues), Stage 4 - Burnout (complete exhaustion, cynicism, feeling trapped), Stage 5 - Habitual burnout (chronic physical and mental health problems). Catch it early. Why it's epidemic: Always-on culture (emails at night, work on weekends), Lack of boundaries (can't separate work and personal life), Glorification of busy (wearing exhaustion as a badge of honor), Economic pressure (fear of losing job if you don't overwork), Technology (never truly disconnected). These factors create perfect conditions for burnout. The cost of burnout: Health (increased risk of heart disease, diabetes, depression, weakened immune system), Relationships (irritability and withdrawal damage connections), Career (decreased performance can lead to job loss), Life satisfaction (burnout steals joy from everything). Prevention is easier than recovery. This lesson includes a burnout assessment tool."
+      },
+      { 
+        title: "Setting Healthy Boundaries", 
+        duration: "19 min", 
+        type: "exercise",
+        description: "Learn to set and maintain boundaries that protect your time, energy, and wellbeing.",
+        keyPoints: [
+          "What are boundaries: limits you set to protect your wellbeing",
+          "Types of boundaries: time, emotional, physical, digital",
+          "Why we struggle with boundaries: people-pleasing, guilt, fear of conflict",
+          "How to set boundaries: be clear, be consistent, be unapologetic"
+        ],
+        content: "Boundaries are essential for work-life balance. This lesson teaches you to set them. What are boundaries: boundaries are limits you set to protect your time, energy, and wellbeing. They define what you will and won't accept. Without boundaries, others' demands consume your life. Boundaries aren't selfish - they're self-preservation. Types of boundaries: Time (work hours, availability, response times - 'I don't check email after 7pm'), Emotional (what you'll discuss, how you'll be treated - 'I won't tolerate yelling'), Physical (personal space, touch - 'I need my own workspace'), Digital (social media limits, phone-free times - 'No phones at dinner'). You need boundaries in all areas. Why we struggle with boundaries: People-pleasing (wanting everyone to like you), Guilt (feeling selfish for prioritizing yourself), Fear of conflict (avoiding difficult conversations), Fear of consequences (worried you'll lose job/relationship), Unclear priorities (not knowing what matters most). These fears keep you boundary-less and burned out. The cost of no boundaries: Resentment (saying yes when you mean no builds bitterness), Exhaustion (overcommitting drains you), Poor performance (spreading yourself thin reduces quality), Damaged relationships (resentment poisons connections), Lost identity (living for others' expectations, not your values). Boundaries protect you from this. How to set boundaries: Be clear ('I'm available Monday-Friday, 9-5' not 'I'll try to be available'), Be consistent (enforce your boundaries every time, or they're meaningless), Be unapologetic ('I don't work weekends' not 'I'm sorry, but I can't work weekends'), Offer alternatives when possible ('I can't do that, but I can do this'). Clarity and consistency are key. Communicating boundaries: 'I've decided...' (not asking permission), 'My policy is...' (makes it less personal), 'I'm not available then. How about...' (offers alternative). Use 'I' statements, be direct, don't over-explain. Handling pushback: some people will test your boundaries. Stay firm. 'I understand this is inconvenient, but my decision stands.' Repeat as needed. People respect boundaries when you enforce them. This exercise includes a boundary-setting worksheet and scripts."
+      },
+      { 
+        title: "Time Blocking for Balance", 
+        duration: "16 min", 
+        type: "video",
+        description: "Use time blocking to protect both work productivity and personal life.",
+        keyPoints: [
+          "Time blocking for work: focused productivity in defined hours",
+          "Time blocking for life: scheduling personal priorities",
+          "The danger of 'work expands to fill time': Parkinson's Law",
+          "Creating hard stops: ending work at a set time"
+        ],
+        content: "Time blocking creates work-life balance by protecting both. This lesson shows you how. Time blocking for work: assign specific tasks to specific time blocks during work hours. Example: 9-11am: deep work on project, 11am-12pm: meetings, 1-3pm: emails and admin. This creates focused productivity. When work has defined boundaries, you accomplish more in less time. Time blocking for life: schedule personal priorities like you schedule work. Block time for: Exercise, Family dinner, Date night, Hobbies, Rest. If it's not on your calendar, it won't happen. Treat personal time blocks as non-negotiable as work meetings. Parkinson's Law: work expands to fill the time available. If you have all day to complete a task, it will take all day. If you have 2 hours, you'll finish in 2 hours. Time blocking creates urgency and focus. Without it, work bleeds into personal time. Creating hard stops: decide when work ends (e.g., 6pm). At that time, stop - even if tasks remain. This forces prioritization (you'll focus on what matters) and protects personal time. Hard stops prevent work from consuming your life. The evening routine: End work at set time, Close laptop and put it away (physical separation), Change clothes (psychological transition), Do something enjoyable (exercise, cook, read). This ritual signals 'work is over.' Without it, you mentally stay at work all evening. Weekend boundaries: decide if you'll work weekends. If yes, define specific hours (e.g., Saturday 9-12pm). If no, protect weekends completely. Don't check work email. Weekends are for recovery - without them, burnout is inevitable. This lesson includes time blocking templates for work-life balance."
+      },
+      { 
+        title: "Saying No Without Guilt", 
+        duration: "14 min", 
+        type: "video",
+        description: "Master the art of saying no to protect your priorities without damaging relationships.",
+        keyPoints: [
+          "Why saying no is essential: every yes to something is a no to something else",
+          "The guilt trap: why we say yes when we mean no",
+          "How to say no: scripts and strategies",
+          "Saying no at work vs. in personal life"
+        ],
+        content: "Saying no is essential for work-life balance. This lesson teaches you how. Why saying no is essential: you have limited time and energy. Every yes to something is a no to something else. Saying yes to extra work means saying no to family time. Saying yes to social obligations means saying no to rest. Choose your yeses carefully. The guilt trap: we say yes when we mean no because: We want to be liked, We feel obligated, We fear disappointing others, We don't want to seem lazy or uncommitted. But chronic yes-saying leads to resentment and burnout. Saying no protects your wellbeing. Reframing no: saying no isn't selfish - it's self-respect. It's not rejecting the person - it's declining the request. It's not being unhelpful - it's being honest about your capacity. This reframe reduces guilt. How to say no - direct approach: 'I can't commit to that right now.' 'That doesn't work for me.' 'I'm not available.' Simple, clear, no elaborate excuse needed. The more you explain, the more they'll try to problem-solve around your no. How to say no - softer approach: 'I appreciate you thinking of me, but I can't take that on.' 'That sounds great, but I'm at capacity.' 'Let me check my schedule... Unfortunately, I'm fully booked.' This acknowledges the request while declining. Offering alternatives: 'I can't do X, but I can do Y.' 'I can't help this week, but I could next month.' 'I can't lead the project, but I can contribute in this specific way.' This shows willingness while maintaining boundaries. Buying time: 'Let me check my schedule and get back to you.' This prevents pressure to say yes immediately. But don't use this as avoidance - actually get back to them with your answer. Saying no at work: 'I'm currently focused on X and Y. If I take on Z, which should I deprioritize?' This forces your manager to make the trade-off decision. Or: 'I can do that, but it will take X hours. Can we adjust my other deadlines?' Saying no in personal life: 'I'd love to, but I'm prioritizing family time this month.' 'I need to recharge this weekend, so I'm staying in.' No elaborate excuse needed. Real friends respect your boundaries. This lesson includes no-saying scripts for various situations."
+      },
+      { 
+        title: "Sustainable Success Strategies", 
+        duration: "21 min", 
+        type: "video",
+        description: "Build a career and life that's successful and sustainable - without burning out.",
+        keyPoints: [
+          "Success without sacrifice: the myth of work-life balance vs. work-life integration",
+          "The 4 pillars of sustainable success: health, relationships, work, personal growth",
+          "Energy management over time management: work with your rhythms",
+          "The power of recovery: rest is productive"
+        ],
+        content: "Sustainable success means achieving your goals without destroying your health and relationships. This lesson shows you how. The myth of work-life balance: 'balance' implies equal time to work and life. That's unrealistic. Some seasons require more work (launching a business, big project). Some require more life (new baby, family crisis). Instead of balance, aim for integration - aligning work and life with your values. The 4 pillars of sustainable success: Health (sleep, exercise, nutrition - without health, nothing else matters), Relationships (family, friends, community - success means nothing if you're alone), Work (career, finances, impact - provides purpose and security), Personal growth (learning, hobbies, spirituality - keeps life meaningful). Neglecting any pillar creates instability. Invest in all four. Energy management over time management: you can have time but lack energy. Work with your natural rhythms: Schedule high-priority work during peak energy hours (usually morning), Batch similar tasks (reduces context switching), Take breaks every 90 minutes (matches ultradian rhythms), Protect sleep (7-9 hours non-negotiable). Energy management is more important than time management. The power of recovery: high performers alternate between stress and recovery. Recovery isn't lazy - it's strategic. Without recovery, performance declines. Build recovery into your day (breaks, walks, lunch away from desk), week (evenings off, weekend rest), and year (vacations). Rest is productive. Defining success on your terms: society defines success as money, status, achievement. But true success is living according to your values. Define what success means to you: Time with family? Creative work? Financial freedom? Health? Adventure? Then build a life around that, not someone else's definition. Avoiding the hedonic treadmill: achieving goals feels good temporarily, then you adapt and want more. This is the hedonic treadmill. To sustain satisfaction: Appreciate what you have (gratitude practice), Enjoy the process, not just outcomes (find meaning in daily work), Connect achievements to values (why does this matter to you?). This prevents endless striving. This lesson includes a sustainable success planning template."
+      }
     ],
     exercises: [
       "Boundary Setting Worksheet",
