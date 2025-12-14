@@ -46,6 +46,8 @@ import {
 export default function AICoach() {
   const { user, loading: authLoading } = useAuth();
   
+  // Note: user is always null in frictionless mode, but backend tracks anonymous sessions
+  
   // Frictionless platform - no compliance dialogs
   const [, setLocation] = useLocation();
   const [selectedConversationId, setSelectedConversationId] = useState<number | null>(null);
@@ -67,11 +69,8 @@ export default function AICoach() {
   const { data: conversationsData, refetch: refetchConversations } =
     trpc.aiChat.listConversations.useQuery();
 
-  // Fetch usage stats for tier limits
-  const { data: usageData } = trpc.subscriptions.getCurrentUsage.useQuery(
-    undefined,
-    { enabled: !!user } // Only fetch if user is logged in
-  );
+  // Fetch usage stats for tier limits (works for anonymous users too)
+  const { data: usageData } = trpc.subscriptions.getCurrentUsage.useQuery();
 
   // Fetch selected conversation messages
   const { data: conversationData, refetch: refetchMessages } =
