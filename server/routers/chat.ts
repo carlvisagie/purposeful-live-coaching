@@ -54,16 +54,16 @@ export const chatRouter = router({
           }));
         } else {
           // Create new conversation
-          const [newConv] = await db
+          const newConv = await db
             .insert(aiChatConversations)
             .values({
               userId: null, // Anonymous for now
               clientId: null,
               lastMessageAt: new Date(),
             })
-            .$returningId();
+            .returning({ id: aiChatConversations.id });
 
-          conversationId = newConv.id.toString();
+        conversationId = newConv[0].id.toString();
         }
 
         // Save user message

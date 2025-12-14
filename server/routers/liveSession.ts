@@ -248,10 +248,10 @@ export const liveSessionRouter = router({
             text: transcriptText,
             timestamp: new Date(),
           })
-          .$returningId();
+          .returning({ id: liveSessionTranscripts.id });
 
         return {
-          transcriptId: transcript.id,
+          transcriptId: transcript[0].id,
           text: transcriptText,
         };
       } catch (error) {

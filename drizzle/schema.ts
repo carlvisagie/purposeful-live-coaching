@@ -1,4 +1,4 @@
-import { date, decimal, int, integer, pgTable, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, date, decimal, int, integer, pgTable, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // Export identity schema tables
 export * from "./identitySchema";
@@ -392,7 +392,7 @@ export const coachAvailability = pgTable("coach_availability", {
   dayOfWeek: integer("day_of_week").notNull(), // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
   startTime: varchar("start_time", { length: 5 }).notNull(), // HH:MM format (e.g., "09:00")
   endTime: varchar("end_time", { length: 5 }).notNull(), // HH:MM format (e.g., "17:00")
-  isActive: varchar("is_active", { length: 50 }),
+  isActive: boolean("is_active").notNull().default(true),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

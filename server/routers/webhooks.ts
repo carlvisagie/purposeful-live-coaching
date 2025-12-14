@@ -210,8 +210,8 @@ async function handleSessionBooking(session: Stripe.Checkout.Session, db: any, u
         phone: "",
         status: "active",
       })
-      .$returningId();
-    clientId = newClient.id;
+      .returning({ id: clients.id });
+    clientId = newClient[0].id;
     console.log("[Webhook] Created new client record:", clientId);
   } else {
     clientId = clientRecord[0].id;

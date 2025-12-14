@@ -43,12 +43,12 @@ export const identityRouter = router({
             identityWins: JSON.stringify([]),
             identityContradictions: JSON.stringify([]),
           })
-          .$returningId();
+          .returning({ id: identityProfiles.id });
 
         const [profile] = await db
           .select()
           .from(identityProfiles)
-          .where(eq(identityProfiles.id, newProfile.id));
+          .where(eq(identityProfiles.id, newProfile[0].id));
 
         return profile;
       }
@@ -109,12 +109,12 @@ export const identityRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      const [checkin] = await db
+      const checkin = await db
         .insert(dailyCheckins)
         .values(input)
-        .$returningId();
+        .returning({ id: dailyCheckins.id });
 
-      return { checkinId: checkin.id, success: true };
+      return { checkinId: checkin[0].id, success: true };
     }),
 
   /**
@@ -159,12 +159,12 @@ export const identityRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      const [habit] = await db
+      const habit = await db
         .insert(habits)
         .values(input)
-        .$returningId();
+        .returning({ id: habits.id });
 
-      return { habitId: habit.id, success: true };
+      return { habitId: habit[0].id, success: true };
     }),
 
   /**
@@ -198,12 +198,12 @@ export const identityRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      const [completion] = await db
+      const completion = await db
         .insert(habitCompletions)
         .values(input)
-        .$returningId();
+        .returning({ id: habitCompletions.id });
 
-      return { completionId: completion.id, success: true };
+      return { completionId: completion[0].id, success: true };
     }),
 
   /**
@@ -249,12 +249,12 @@ export const identityRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      const [event] = await db
+      const event = await db
         .insert(disciplineEvents)
         .values(input)
-        .$returningId();
+        .returning({ id: disciplineEvents.id });
 
-      return { eventId: event.id, success: true };
+      return { eventId: event[0].id, success: true };
     }),
 
   /**
@@ -299,12 +299,12 @@ export const identityRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      const [microHabit] = await db
+      const microHabit = await db
         .insert(microHabits)
         .values(input)
-        .$returningId();
+        .returning({ id: microHabits.id });
 
-      return { microHabitId: microHabit.id, success: true };
+      return { microHabitId: microHabit[0].id, success: true };
     }),
 
   /**

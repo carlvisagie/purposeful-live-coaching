@@ -359,9 +359,63 @@ export default function LiveSessionAssistant() {
         videoRef.current.srcObject = stream;
       }
       
-      const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: "video/webm;codecs=vp9,opus",
-      });
+      // VOICE RECOGNITION: Capture first 5 seconds for identification
+      if (!recognitionAttempted) {
+        setTimeout(async () => {
+          try {
+            // Get first audio chunk for voice recognition
+            const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+            const audioBase64 = await blobToBase64(audioBlob);
+            
+            const result = await identifyByVoice.mutateAsync({ audioData: audioBase64 });
+            
+            if (result.identified && result.client) {
+              setRecognizedClient({
+                id: result.client.id,
+                name: result.client.name,
+                confidence: result.confidence
+              });
+              
+              toast.success(`Welcome back, ${result.client.name}! 👋`, {
+                description: `Recognized with ${Math.round(result.confidence * 100)}% confidence`
+              });
+              
+              // Load client profile
+              setSessionData({
+                sessionId: 0,
+                clientId: result.client.id,
+                clientName: result.client.name,
+                sessionType: 'coaching',
+                startTime: new Date(),
+                duration: 0
+              });
+            } else {
+              toast.warning('Client not recognized', {
+                description: 'Please verify client identity manually'
+              });
+            }
+            
+            setRecognitionAttempted(true);
+          } catch (error) {
+            console.error('Voice recognition failed:', error);
+            toast.error('Voice recognition unavailable');
+          }
+        }, 5000); // Wait 5 seconds to collect voice sample
+      }
+      
+      // Check for supported mimeType
+      let mimeType = "video/webm;codecs=vp9,opus";
+      if (!MediaRecorder.isTypeSupported(mimeType)) {
+        mimeType = "video/webm;codecs=vp8,opus";
+        if (!MediaRecorder.isTypeSupported(mimeType)) {
+          mimeType = "video/webm";
+          if (!MediaRecorder.isTypeSupported(mimeType)) {
+            throw new Error("No supported video format found");
+          }
+        }
+      }
+      
+      const mediaRecorder = new MediaRecorder(stream, { mimeType });
 
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = [];

@@ -85,7 +85,7 @@ export const clientFilesRouter = router({
         mimeType: input.mimeType,
         fileSize,
         transcriptionStatus: (input.fileType === "audio" || input.fileType === "video") ? "pending" : null,
-      }).$returningId();
+      }).returning({ id: clientFiles.id });
 
       // Auto-transcribe audio/video files
       if (input.fileType === "audio" || input.fileType === "video") {
@@ -102,23 +102,23 @@ export const clientFilesRouter = router({
                 transcriptionStatus: "completed",
                 duration: Math.floor(result.duration || 0),
               })
-              .where(eq(clientFiles.id, file.id));
+              .where(eq(clientFiles.id, file[0].id));
           } else {
             // Transcription failed
             await db.update(clientFiles)
               .set({ transcriptionStatus: "failed" })
-              .where(eq(clientFiles.id, file.id));
+              .where(eq(clientFiles.id, file[0].id));
           }
         }).catch(async (error) => {
           console.error("[Client Files] Transcription failed:", error);
           await db.update(clientFiles)
             .set({ transcriptionStatus: "failed" })
-            .where(eq(clientFiles.id, file.id));
+            .where(eq(clientFiles.id, file[0].id));
         });
       }
 
       return {
-        fileId: file.id,
+        fileId: file[0].id,
         fileUrl,
         message: "File uploaded successfully",
       };

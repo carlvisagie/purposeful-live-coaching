@@ -24,7 +24,7 @@ export async function getCoachAvailability(coachId: number, dayOfWeek?: number) 
   const db = await getDb();
   if (!db) return [];
 
-  const conditions = [eq(coachAvailability.coachId, coachId), eq(coachAvailability.isActive, "true")];
+  const conditions = [eq(coachAvailability.coachId, coachId), eq(coachAvailability.isActive, true)];
   
   if (dayOfWeek !== undefined) {
     conditions.push(eq(coachAvailability.dayOfWeek, dayOfWeek));
