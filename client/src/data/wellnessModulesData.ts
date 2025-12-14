@@ -28,7 +28,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Understanding Your Emotions", 
         duration: "15 min", 
         type: "video",
-        videoUrl: "/videos/emotional_wellness_lesson_1.mp4",
+        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/ead149f2-d342-4283-87a8-c3484a942255/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Emotional-Wellness%20Lesson%201.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=8V1B9UP1IHKRwbNTwdODDwn%2FpQk%3D&Expires=1766327824",
         description: "Learn the fundamental nature of emotions, their purpose in human experience, and how to identify and name your emotional states accurately.",
         keyPoints: [
           "Emotions are information - they tell us what matters",
@@ -55,7 +55,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Building Emotional Resilience", 
         duration: "20 min", 
         type: "video",
-        videoUrl: "/videos/emotional_wellness_lesson_2.mp4",
+        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/b38fa6af-db38-4266-ba88-3f58320b0b7a/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Emotional-Wellness%20Lesson%202.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=Nn3zMRJgVONjcX3Spwsl%2BQ0144w%3D&Expires=1766327824",
         description: "Discover evidence-based strategies for bouncing back from emotional setbacks and building long-term emotional strength.",
         keyPoints: [
           "Resilience is a skill that can be developed",
@@ -82,7 +82,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Emotion Regulation Techniques", 
         duration: "25 min", 
         type: "video",
-        videoUrl: "/videos/emotional_wellness_lesson_3.mp4",
+        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/09d303d0-848a-4e8e-a67c-b15ae968a1f8/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Emotional-Wellness%20Lesson%203.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=3Tjp5CQZAaOMxH%2FiXa6BJrMDE5E%3D&Expires=1766327824",
         description: "Master evidence-based techniques for managing intense emotions and returning to emotional balance.",
         keyPoints: [
           "The STOP technique for emotional pausing",
@@ -211,7 +211,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Fitness Fundamentals", 
         duration: "16 min", 
         type: "video",
-        videoUrl: "/videos/physical_fitness_lesson_1.mp4",
+        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/eddb5c31-d14f-4b60-972c-da702d76a4ea/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Physical-Fitness%20Lesson%201.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=pSbhBdjEifl%2FwweB5E1bY%2Bx3KHY%3D&Expires=1766327824",
         description: "Build a strong foundation in fitness principles that will serve you for life, regardless of your current fitness level.",
         keyPoints: [
           "The four pillars of fitness: strength, cardio, flexibility, and recovery",
@@ -238,7 +238,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Strength Training Basics", 
         duration: "25 min", 
         type: "video",
-        videoUrl: "/videos/physical_fitness_lesson_2.mp4",
+        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/fe6b0817-d915-40a1-a41a-8e7d31a6d549/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Physical-Fitness%20Lesson%202.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=xkNzdZtbyvt6qNKEWZZDh2A5EBY%3D&Expires=1766327824",
         description: "Master the fundamental movement patterns and principles of strength training for lifelong strength and health.",
         keyPoints: [
           "The six fundamental movement patterns",
@@ -252,7 +252,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Cardio for Health", 
         duration: "18 min", 
         type: "video",
-        videoUrl: "/videos/physical_fitness_lesson_3.mp4",
+        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/579035a3-7782-43da-8849-168753c8796b/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Physical-Fitness%20Lesson%203.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=Eowr5N%2BFvbHHUJmXUfjdr0dyBT0%3D&Expires=1766327824",
         description: "Discover how to use cardiovascular exercise to build heart health, endurance, and metabolic fitness.",
         keyPoints: [
           "The difference between LISS, MISS, and HIIT cardio",
@@ -266,7 +266,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Recovery and Rest", 
         duration: "12 min", 
         type: "video",
-        videoUrl: "/videos/physical_fitness_lesson_4.mp4",
+        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/a0d0039d-4485-4a9c-820b-5c486cc8b2c6/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Physical-Fitness%20Lesson%204.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=beopDedth%2FXiFMuhT0LXAt7k5rs%3D&Expires=1766327824",
         description: "Understand why recovery is when your body actually gets stronger, and learn to optimize rest for maximum results.",
         keyPoints: [
           "Muscle growth happens during rest, not during workouts",
@@ -305,7 +305,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Nutrition Fundamentals", 
         duration: "20 min", 
         type: "video",
-        videoUrl: "/videos/nutrition_lesson_1.mp4",
+        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/72c8bb32-b6fa-40f4-95f9-6c34e1212258/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Nutrition%20Lesson%201.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=TXDkiHoJqOchfZHnLnxPjqDT4mA%3D&Expires=1766327824",
         description: "Master the foundational principles of nutrition science to make informed food choices that support your health and goals.",
         keyPoints: [
           "Macronutrients: protein, carbohydrates, and fats - what they do and how much you need",
@@ -332,7 +332,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Meal Planning Mastery", 
         duration: "18 min", 
         type: "video",
-        videoUrl: "/videos/nutrition_lesson_2.mp4",
+        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/b2680d8a-db85-4063-a531-b4d881dece6a/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Nutrition%20Lesson%202.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=vMhykIZivSG3udHU03vli6jFX4M%3D&Expires=1766327824",
         description: "Develop a sustainable meal planning system that saves time, reduces stress, and ensures you eat well consistently.",
         keyPoints: [
           "Weekly planning: the key to consistent nutrition",
@@ -346,7 +346,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Intuitive Eating Principles", 
         duration: "16 min", 
         type: "video",
-        videoUrl: "/videos/nutrition_lesson_3.mp4",
+        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/b2ef37a9-96fa-4b1d-b7d4-7c922d611305/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Nutrition%20Lesson%203.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=tDNTAKcKaU90Vi0jkBnVqEEo5u4%3D&Expires=1766327824",
         description: "Heal your relationship with food by learning to trust your body's hunger and fullness signals.",
         keyPoints: [
           "Rejecting diet mentality and food rules",
@@ -360,7 +360,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Nutrition for Performance", 
         duration: "22 min", 
         type: "video",
-        videoUrl: "/videos/nutrition_lesson_4.mp4",
+        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/9362d7d5-10de-4ad3-85cc-48061dbc87d3/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Nutrition%20Lesson%204.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=2i56GZtMLwZI%2F0qIISJjSpg91Zw%3D&Expires=1766327824",
         description: "Optimize your nutrition to support athletic performance, recovery, and body composition goals.",
         keyPoints: [
           "Fueling before, during, and after exercise",
@@ -399,7 +399,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Exploring Your Values", 
         duration: "17 min", 
         type: "video",
-        videoUrl: "/videos/spiritual_wellness_lesson_1.mp4",
+        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/6a4835a8-5ad2-4f9e-8848-2bfa8ee0a5e0/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Spiritual-Wellness%20Lesson%201.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=8qZw1wAn01h3UzrH0THQQDwML6k%3D&Expires=1766327824",
         description: "Discover the core values that guide your decisions and define what truly matters to you.",
         keyPoints: [
           "Values vs. goals: understanding the difference",
@@ -439,7 +439,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Finding Your Purpose", 
         duration: "25 min", 
         type: "video",
-        videoUrl: "/videos/spiritual_wellness_lesson_2.mp4",
+        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/f61f3975-219b-48df-8510-d3321a60e78c/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Spiritual-Wellness%20Lesson%202.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=jA83Od%2FtwCd0ex%2Fiin3TD%2BAOfKY%3D&Expires=1766327824",
         description: "Discover your unique purpose through deep self-reflection and practical exercises.",
         keyPoints: [
           "Purpose is not one grand mission - it evolves",
@@ -453,7 +453,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Spiritual Rituals and Practices", 
         duration: "15 min", 
         type: "video",
-        videoUrl: "/videos/spiritual_wellness_lesson_3.mp4",
+        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/7e1c798d-fb48-478f-b020-39dd40ed1983/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Spiritual-Wellness%20Lesson%203.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=tI75luMnOddCQWWGBrYWZpgO8qY%3D&Expires=1766327824",
         description: "Create personal rituals that connect you to something greater and infuse daily life with meaning.",
         keyPoints: [
           "Rituals vs. routines: intention makes the difference",
