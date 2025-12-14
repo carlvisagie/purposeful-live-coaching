@@ -565,11 +565,71 @@ export const wellnessModulesData: Record<string, any> = {
       "Plan for long-term financial security"
     ],
     lessons: [
-      { title: "Money Mindset Transformation", duration: "20 min", type: "video" },
-      { title: "Budgeting That Actually Works", duration: "22 min", type: "exercise" },
-      { title: "Debt Elimination Strategies", duration: "18 min", type: "video" },
-      { title: "Investing for Beginners", duration: "25 min", type: "video" },
-      { title: "Building Passive Income", duration: "23 min", type: "video" }
+      { 
+        title: "Money Mindset Transformation", 
+        duration: "20 min", 
+        type: "video",
+        description: "Transform your relationship with money by identifying and shifting limiting beliefs that keep you stuck financially.",
+        keyPoints: [
+          "Common money scripts: scarcity vs. abundance mindset",
+          "Your money story: how childhood experiences shape adult finances",
+          "Reframing money as a tool, not a measure of worth",
+          "The psychology of enough: contentment without complacency"
+        ],
+        content: "Your relationship with money is shaped by beliefs formed in childhood - what psychologists call 'money scripts.' These unconscious beliefs drive your financial behaviors, often sabotaging your best intentions. This transformational lesson helps you identify and shift limiting money beliefs. Common money scripts: 'Money is the root of all evil' (money avoidance), 'More money will solve all my problems' (money worship), 'I don't deserve to be wealthy' (money status), or 'There's never enough' (scarcity mindset). These scripts operate unconsciously, creating self-sabotaging patterns. You'll explore your money story: What did your parents teach you about money? Was money a source of stress or security in your childhood? Did you grow up with scarcity or abundance? These experiences shape your adult relationship with money. Reframing money: money is not good or evil - it's a neutral tool that amplifies your values. Money can fund your freedom, support causes you care about, provide security for your family, and create opportunities. It's also not a measure of your worth as a person. Abundance vs. scarcity: scarcity mindset believes resources are limited, creating anxiety and hoarding. Abundance mindset recognizes that wealth can be created, fostering generosity and opportunity-seeking. The psychology of enough: contentment doesn't mean complacency. You can be grateful for what you have while working toward financial goals. This lesson is transformational because shifting your money mindset is the foundation of financial wellness."
+      },
+      { 
+        title: "Budgeting That Actually Works", 
+        duration: "22 min", 
+        type: "exercise",
+        description: "Create a realistic, sustainable budget that aligns with your values and goals without feeling restrictive.",
+        keyPoints: [
+          "The 50/30/20 rule: a simple framework for allocating income",
+          "Values-based budgeting: spending on what matters most",
+          "Tracking systems: finding what works for you",
+          "Building in flexibility: budgets aren't straitjackets"
+        ],
+        content: "Most budgets fail because they're too restrictive, complicated, or don't align with your values. This practical exercise teaches you to create a budget that actually works. The 50/30/20 rule: allocate 50% of after-tax income to needs (housing, food, utilities, transportation, minimum debt payments), 30% to wants (dining out, entertainment, hobbies), and 20% to savings and debt payoff. This is a starting framework - adjust based on your situation. Values-based budgeting: instead of cutting everything, identify what truly matters to you. If travel is a core value, budget generously for it and cut elsewhere. If dining out brings you joy, keep it. Cut spending that doesn't align with your values. This makes budgeting sustainable. Tracking systems: choose a method that fits your personality. Options include: budgeting apps (Mint, YNAB), spreadsheets, envelope system (cash for different categories), or zero-based budgeting (every dollar has a job). The best system is the one you'll actually use. Building in flexibility: life is unpredictable. Build a 'miscellaneous' category for unexpected expenses. If you overspend in one category, adjust another. Review and adjust your budget monthly - it's a living document, not a rigid rule. This exercise includes a step-by-step budget creation worksheet. A good budget isn't about restriction - it's about intentionally directing your money toward what matters most."
+      },
+      { 
+        title: "Debt Elimination Strategies", 
+        duration: "18 min", 
+        type: "video",
+        description: "Develop a strategic plan to eliminate debt using proven methods while maintaining financial stability.",
+        keyPoints: [
+          "Good debt vs. bad debt: understanding the difference",
+          "Debt snowball vs. debt avalanche: choosing your strategy",
+          "Negotiating with creditors: lowering interest rates",
+          "Avoiding debt while paying off debt: breaking the cycle"
+        ],
+        content: "Debt can feel overwhelming and hopeless, but with a strategic plan, you can become debt-free. This lesson teaches proven debt elimination strategies. First, understand good debt vs. bad debt. Good debt: low-interest loans that build wealth or increase earning potential (mortgage, student loans for valuable degrees, business loans). Bad debt: high-interest consumer debt for depreciating assets (credit cards, car loans for expensive vehicles, payday loans). Prioritize eliminating bad debt. Two proven strategies: Debt snowball (Dave Ramsey method): list debts from smallest to largest balance, pay minimums on all, put extra money toward the smallest debt. When it's paid off, roll that payment to the next smallest. This creates psychological wins and momentum. Debt avalanche (mathematically optimal): list debts by interest rate (highest to lowest), pay minimums on all, put extra money toward the highest interest debt. This saves the most money in interest. Choose based on your personality - snowball for motivation, avalanche for math. Negotiating with creditors: call credit card companies and ask for lower interest rates. If you have a good payment history, they often agree. Consolidate high-interest debt with a lower-interest personal loan or balance transfer card (watch for fees). Avoiding new debt: identify triggers that lead to overspending. Use cash or debit cards instead of credit. Implement a 24-hour rule for non-essential purchases. Build an emergency fund (even $500-$1000) to avoid using credit for unexpected expenses. This lesson provides a clear path to financial freedom."
+      },
+      { 
+        title: "Investing for Beginners", 
+        duration: "25 min", 
+        type: "video",
+        description: "Demystify investing and learn to build wealth through simple, proven strategies accessible to everyone.",
+        keyPoints: [
+          "Compound interest: the eighth wonder of the world",
+          "Index funds vs. individual stocks: simplicity wins",
+          "Asset allocation: balancing risk and growth",
+          "Starting small: you don't need a lot to begin"
+        ],
+        content: "Investing can feel intimidating, but it's essential for building wealth and financial security. This lesson demystifies investing with simple, proven strategies. Compound interest: Albert Einstein allegedly called it 'the eighth wonder of the world.' When you invest, you earn returns. Those returns earn returns. Over time, this exponential growth creates significant wealth. Example: investing $200/month at 8% annual return for 30 years yields $300,000. The key is starting early and staying consistent. Index funds vs. individual stocks: research shows that 90% of professional fund managers don't beat the market long-term. Instead of trying to pick winning stocks, invest in low-cost index funds that track the entire market (S&P 500, total stock market index). This provides instant diversification and historically averages 10% annual returns. Asset allocation: balance risk and growth based on your age and goals. A common rule: subtract your age from 110 to determine your stock percentage (e.g., at age 30, hold 80% stocks, 20% bonds). Stocks offer growth but volatility; bonds offer stability but lower returns. Rebalance annually. Tax-advantaged accounts: prioritize 401(k) (especially if employer matches - free money), Roth IRA (tax-free growth), and HSA (triple tax advantage). Starting small: you don't need thousands to start. Many brokerages allow fractional shares - invest with as little as $10. The important thing is to start. Automate investments so you're consistently building wealth. This lesson empowers you to take control of your financial future."
+      },
+      { 
+        title: "Building Passive Income", 
+        duration: "23 min", 
+        type: "video",
+        description: "Explore proven strategies for creating income streams that generate money while you sleep.",
+        keyPoints: [
+          "Passive income myths: it requires upfront work",
+          "Dividend investing: earning income from stock ownership",
+          "Real estate: rental properties and REITs",
+          "Digital products: creating once, selling repeatedly"
+        ],
+        content: "Passive income - earning money without active work - is the key to financial freedom. But it's often misunderstood. This lesson explores realistic passive income strategies. First, dispel the myth: passive income isn't effortless. It requires significant upfront work (creating a product, building a rental property portfolio, etc.) before it becomes passive. But once established, it generates income with minimal ongoing effort. Dividend investing: buy stocks in established companies that pay dividends (quarterly cash payments to shareholders). Dividend aristocrats (companies that have increased dividends for 25+ years) provide reliable income. Reinvest dividends to compound growth. With a large enough portfolio, dividends can fund your lifestyle. Real estate: rental properties generate monthly income. Challenges include upfront capital, property management, and market risk. Alternative: Real Estate Investment Trusts (REITs) - companies that own income-producing real estate. You can invest in REITs like stocks, earning dividends without managing properties. Digital products: create once, sell repeatedly. Options include: online courses (teach your expertise), ebooks (self-publish on Amazon), stock photography, music, software, templates, or membership sites. Requires upfront creation effort but can generate income indefinitely. Affiliate marketing: promote others' products and earn commissions. Build an audience (blog, YouTube, social media), provide value, recommend products you genuinely use. Peer-to-peer lending: lend money through platforms like LendingClub, earning interest. Higher risk than savings accounts but potentially higher returns. This lesson provides a roadmap to building income streams that create financial freedom."
+      }
     ],
     exercises: [
       "Money Mindset Assessment",
