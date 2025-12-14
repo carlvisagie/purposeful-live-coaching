@@ -535,11 +535,71 @@ export const wellnessModulesData: Record<string, any> = {
       "Reduce stress and improve mood"
     ],
     lessons: [
-      { title: "The Science of Sleep", duration: "19 min", type: "video" },
-      { title: "Creating Your Sleep Sanctuary", duration: "14 min", type: "exercise" },
-      { title: "Sleep Hygiene Essentials", duration: "17 min", type: "video" },
-      { title: "Overcoming Insomnia", duration: "21 min", type: "video" },
-      { title: "Power Napping Strategies", duration: "10 min", type: "video" }
+      { 
+        title: "The Science of Sleep", 
+        duration: "19 min", 
+        type: "video",
+        description: "Understand the fascinating neuroscience of sleep and why it's the most powerful performance enhancer available.",
+        keyPoints: [
+          "The four stages of sleep and what happens in each",
+          "REM vs. deep sleep: different functions, both essential",
+          "Sleep cycles: why 7-9 hours matters",
+          "The devastating effects of chronic sleep deprivation"
+        ],
+        content: "Sleep is not a luxury or a waste of time - it's a biological necessity as fundamental as food and water. This lesson reveals the remarkable neuroscience of sleep. You'll discover the four stages of sleep: N1 (light transition), N2 (deeper relaxation where most sleep occurs), N3 (deep slow-wave sleep where physical restoration happens), and REM (rapid eye movement sleep where memory consolidation and emotional processing occur). You cycle through these stages 4-6 times per night, each cycle lasting about 90 minutes. Deep sleep dominates the first half of the night (physical recovery, growth hormone release, immune system strengthening), while REM sleep dominates the second half (memory consolidation, learning, creativity, emotional regulation). Cut your sleep short and you disproportionately lose REM sleep. You'll learn why 7-9 hours is the sweet spot for most adults - less than 7 hours chronically impairs cognitive function, emotional regulation, immune function, and metabolic health. You'll understand that sleep deprivation is cumulative - you can't 'catch up' on weekends. Most powerfully, you'll discover that sleep is when your brain clears toxic waste products (including amyloid-beta, linked to Alzheimer's), consolidates memories, and integrates learning. No pill, supplement, or biohack can replace adequate sleep. This lesson will transform how you prioritize rest."
+      },
+      { 
+        title: "Creating Your Sleep Sanctuary", 
+        duration: "14 min", 
+        type: "exercise",
+        description: "Transform your bedroom into an environment optimized for deep, restorative sleep.",
+        keyPoints: [
+          "Temperature: cool is crucial (65-68°F ideal)",
+          "Darkness: blocking all light for melatonin production",
+          "Quiet: managing noise for uninterrupted sleep",
+          "Comfort: mattress, pillows, and bedding that support you"
+        ],
+        content: "Your bedroom environment profoundly affects sleep quality. This practical exercise guides you through optimizing every aspect of your sleep sanctuary. Temperature: your body needs to drop its core temperature to initiate sleep - keep your room cool (65-68°F is ideal). Use breathable bedding, consider a fan, or adjust your thermostat. Darkness: even small amounts of light can suppress melatonin production and disrupt sleep. Install blackout curtains or use an eye mask. Cover or remove electronic lights (alarm clocks, chargers, etc.). Quiet: noise disruptions fragment sleep even if you don't fully wake. Use earplugs, a white noise machine, or a fan to mask disruptive sounds. If you live in a noisy environment, consider soundproofing. Comfort: invest in a quality mattress that supports your body (replace every 7-10 years), pillows that keep your spine aligned, and bedding that feels good against your skin. Remove clutter - your bedroom should be a calm, dedicated sleep space, not an office or entertainment center. Remove TVs, computers, and work materials if possible. This exercise includes a room-by-room checklist to systematically optimize your sleep environment. Small changes can yield dramatic improvements in sleep quality."
+      },
+      { 
+        title: "Sleep Hygiene Essentials", 
+        duration: "17 min", 
+        type: "video",
+        description: "Master the daily habits and routines that set you up for consistently excellent sleep.",
+        keyPoints: [
+          "Consistent sleep schedule: same bedtime and wake time daily",
+          "Morning sunlight exposure: setting your circadian rhythm",
+          "Caffeine cutoff: no stimulants after 2 PM",
+          "Wind-down routine: signaling your body it's time for sleep"
+        ],
+        content: "Sleep hygiene refers to the behaviors and environmental factors that prepare you for quality sleep. This lesson teaches the essential practices. Consistency: go to bed and wake up at the same time every day, including weekends. Your body craves predictability - irregular sleep schedules confuse your circadian rhythm. Morning sunlight: get bright light exposure (ideally sunlight) within 30-60 minutes of waking. This sets your circadian clock and promotes alertness during the day and sleepiness at night. Caffeine management: caffeine has a half-life of 5-6 hours. If you drink coffee at 4 PM, half the caffeine is still in your system at 10 PM. Cut off caffeine by early afternoon. Alcohol caution: while alcohol may help you fall asleep, it fragments sleep and suppresses REM sleep. Limit alcohol and avoid it close to bedtime. Exercise: regular physical activity improves sleep quality, but intense exercise too close to bedtime can be stimulating. Finish workouts at least 2-3 hours before bed. Wind-down routine: create a 30-60 minute pre-bed routine that signals your body it's time to sleep. This might include dimming lights, reading, gentle stretching, meditation, or journaling. Avoid screens (the blue light suppresses melatonin), stressful conversations, and stimulating activities. Your wind-down routine becomes a powerful sleep cue. These practices compound - each one makes a small difference, but together they transform your sleep."
+      },
+      { 
+        title: "Overcoming Insomnia", 
+        duration: "21 min", 
+        type: "video",
+        description: "Evidence-based strategies to break the cycle of insomnia and reclaim restful sleep.",
+        keyPoints: [
+          "Understanding the insomnia cycle: anxiety about sleep perpetuates sleeplessness",
+          "Cognitive behavioral therapy for insomnia (CBT-I): the gold standard treatment",
+          "Sleep restriction therapy: counterintuitive but highly effective",
+          "Thought reframing: changing your relationship with sleeplessness"
+        ],
+        content: "Insomnia - difficulty falling asleep, staying asleep, or waking too early - affects millions and can feel hopeless. But insomnia is highly treatable without medication. This lesson teaches cognitive behavioral therapy for insomnia (CBT-I), the gold standard treatment with better long-term outcomes than sleeping pills. You'll understand the insomnia cycle: you have trouble sleeping, which creates anxiety about sleep, which makes it harder to sleep, creating more anxiety. Breaking this cycle requires changing both behaviors and thoughts. Sleep restriction therapy: this counterintuitive technique involves initially limiting time in bed to match your actual sleep time (if you sleep 5 hours but spend 8 hours in bed, you'd limit bed time to 5-5.5 hours). This builds sleep pressure and consolidates sleep. As sleep improves, you gradually increase time in bed. Stimulus control: use your bed only for sleep and sex - no reading, TV, or phone use in bed. If you can't sleep after 20 minutes, get up and do a quiet activity until you feel sleepy. This strengthens the bed-sleep association. Cognitive reframing: challenge catastrophic thoughts about sleep ('I'll never sleep again,' 'I can't function without sleep'). The truth: humans are remarkably resilient, and one bad night won't ruin you. Paradoxically, accepting sleeplessness reduces the anxiety that perpetuates it. This lesson provides a structured program to overcome insomnia and reclaim restful sleep."
+      },
+      { 
+        title: "Power Napping Strategies", 
+        duration: "10 min", 
+        type: "video",
+        description: "Learn to use strategic naps to boost alertness, performance, and creativity without disrupting nighttime sleep.",
+        keyPoints: [
+          "The optimal nap length: 10-20 minutes for alertness, 90 minutes for full cycle",
+          "Timing your nap: early afternoon is ideal",
+          "The caffeine nap: combining coffee and a short nap for maximum alertness",
+          "When not to nap: if you have insomnia or sleep debt"
+        ],
+        content: "Napping is a powerful tool for boosting alertness, performance, and mood - if done correctly. This lesson teaches you to nap strategically. The power nap (10-20 minutes): this brief nap provides a quick boost in alertness and performance without entering deep sleep. You wake feeling refreshed, not groggy. Perfect for an afternoon energy dip. The full-cycle nap (90 minutes): this allows you to complete a full sleep cycle, including REM sleep. You wake at the end of a cycle feeling refreshed. Useful if you're sleep-deprived or need creative problem-solving. Avoid naps between 20-60 minutes - you'll wake during deep sleep feeling groggy (sleep inertia). Timing: nap in the early afternoon (1-3 PM) when there's a natural dip in circadian alertness. Napping too late can interfere with nighttime sleep. The caffeine nap: drink a cup of coffee, then immediately take a 15-20 minute nap. Caffeine takes about 20 minutes to kick in, so you wake as it's taking effect, feeling doubly alert. When not to nap: if you have insomnia, daytime naps can reduce sleep pressure and make it harder to fall asleep at night. If you're chronically sleep-deprived, naps are a band-aid - prioritize getting adequate nighttime sleep. This lesson helps you use naps as a strategic tool, not a crutch."
+      }
     ],
     exercises: [
       "Sleep Quality Assessment",
