@@ -87,7 +87,7 @@ export default function AICoach() {
   const createConversationMutation = trpc.aiChat.createConversation.useMutation({
     onSuccess: async (data) => {
       setSelectedConversationId(data.conversationId);
-      refetchConversations();
+      await refetchConversations(); // Await to ensure sidebar updates
       toast.success("New conversation started");
       
       // Track AI session usage for subscription
