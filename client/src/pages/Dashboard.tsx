@@ -102,7 +102,7 @@ export default function Dashboard() {
         </div>
 
         {/* Quick Actions Bar */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Link to="/ai-coach">
             <Button className="w-full h-20 text-lg" variant="default" size="lg">
               <MessageCircle className="mr-3 h-6 w-6" />
@@ -113,6 +113,12 @@ export default function Dashboard() {
             <Button className="w-full h-20 text-lg" variant="outline" size="lg">
               <Calendar className="mr-3 h-6 w-6" />
               Book a Session
+            </Button>
+          </Link>
+          <Link to="/autism">
+            <Button className="w-full h-20 text-lg" variant="outline" size="lg">
+              <Heart className="mr-3 h-6 w-6" />
+              Autism Support
             </Button>
           </Link>
           <Link to="/pricing">
