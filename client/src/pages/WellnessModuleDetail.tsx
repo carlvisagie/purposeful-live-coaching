@@ -9,6 +9,7 @@ import {
   ArrowLeft, CheckCircle2, PlayCircle, FileText, Headphones, Sparkles
 } from "lucide-react";
 import { wellnessModulesData } from "@/data/wellnessModulesData";
+import { exerciseMaterialsMap } from "@/data/exerciseMaterialsMap";
 
 const moduleData = wellnessModulesData;
 
@@ -200,9 +201,22 @@ export default function WellnessModuleDetail() {
                     <p className="text-gray-600 mb-4">
                       Downloadable worksheet to practice and track your progress
                     </p>
-                    <Button variant="outline" className="w-full">
+                    <Button 
+                      variant="outline" 
+                      className="w-full"
+                      onClick={() => {
+                        // Find matching material file
+                        const materialPath = exerciseMaterialsMap[exercise] || 
+                                           exerciseMaterialsMap[exercise.replace(/-/g, ' ')];
+                        if (materialPath) {
+                          window.open(materialPath, '_blank');
+                        } else {
+                          console.error('Material not found for:', exercise);
+                        }
+                      }}
+                    >
                       <FileText className="h-4 w-4 mr-2" />
-                      Download PDF
+                      Download Material
                     </Button>
                   </CardContent>
                 </Card>

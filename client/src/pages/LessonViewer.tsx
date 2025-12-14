@@ -129,7 +129,7 @@ export default function LessonViewer() {
                     <div className="text-center text-white">
                       <PlayCircle className="h-16 w-16 mx-auto mb-4 opacity-50" />
                       <p className="text-lg mb-2">Video Content</p>
-                      <p className="text-sm text-gray-400">Video player will be integrated here</p>
+                      <p className="text-sm text-gray-400">Video not available for this lesson</p>
                       <p className="text-xs text-gray-500 mt-2">Duration: {lesson.duration}</p>
                     </div>
                   </div>

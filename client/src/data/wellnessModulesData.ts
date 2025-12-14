@@ -28,7 +28,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Understanding Your Emotions", 
         duration: "15 min", 
         type: "video",
-        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/ead149f2-d342-4283-87a8-c3484a942255/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Emotional-Wellness%20Lesson%201.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=8V1B9UP1IHKRwbNTwdODDwn%2FpQk%3D&Expires=1766327824",
+        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/b5fe8344-6d4b-4081-806a-075ff07c7ca3/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Emotional%20Wellness%20-%20Lesson%201.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=WjXNc1pBBSMNjBaR%2FLGn5Ph0Lq8%3D&Expires=1766351243",
         description: "Learn the fundamental nature of emotions, their purpose in human experience, and how to identify and name your emotional states accurately.",
         keyPoints: [
           "Emotions are information - they tell us what matters",
@@ -55,7 +55,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Building Emotional Resilience", 
         duration: "20 min", 
         type: "video",
-        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/b38fa6af-db38-4266-ba88-3f58320b0b7a/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Emotional-Wellness%20Lesson%202.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=Nn3zMRJgVONjcX3Spwsl%2BQ0144w%3D&Expires=1766327824",
+        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/36ad1523-eb44-4674-853f-cacd8b4d3579/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Emotional%20Wellness%20-%20Lesson%202.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=z2b3N50LpmtRU6HakRsp7Zba1s4%3D&Expires=1766351243",
         description: "Discover evidence-based strategies for bouncing back from emotional setbacks and building long-term emotional strength.",
         keyPoints: [
           "Resilience is a skill that can be developed",
@@ -120,7 +120,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Understanding Your Mind", 
         duration: "18 min", 
-        type: "video",
+        type: "reading",
         description: "Explore how your mind works, the relationship between thoughts and emotions, and the foundations of mental well-being.",
         keyPoints: [
           "The mind-body connection and its impact on health",
@@ -134,6 +134,8 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Cognitive Restructuring Basics", 
         duration: "22 min", 
         type: "video",
+        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/d6f8dd8b-d632-4916-a013-bbf1f080e105/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Mental%20Health%20-%20Lesson%202.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=6mPArP8%2BqB2sfddo1UKtZSJXnn8%3D&Expires=1766351243",
+        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/d6f8dd8b-d632-4916-a013-bbf1f080e105/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Mental%20Health%20-%20Lesson%202.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=6mPArP8%2BqB2sfddo1UKtZSJXnn8%3D&Expires=1766351243",
         description: "Master the core CBT technique of identifying and challenging unhelpful thought patterns to improve your mental health.",
         keyPoints: [
           "Identifying automatic negative thoughts",
@@ -172,7 +174,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Building Mental Resilience", 
         duration: "20 min", 
-        type: "video",
+        type: "reading",
         description: "Develop psychological strength and the ability to bounce back from mental health challenges.",
         keyPoints: [
           "The three pillars of mental resilience",
@@ -211,7 +213,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Fitness Fundamentals", 
         duration: "16 min", 
         type: "video",
-        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/eddb5c31-d14f-4b60-972c-da702d76a4ea/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Physical-Fitness%20Lesson%201.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=pSbhBdjEifl%2FwweB5E1bY%2Bx3KHY%3D&Expires=1766327824",
+        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/5f6671a1-66ae-4897-988f-865952c2f481/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Physical%20Fitness%20-%20Lesson%201.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=cRKGbHgawFV0njGpcpdP0NDiJb0%3D&Expires=1766351243",
         description: "Build a strong foundation in fitness principles that will serve you for life, regardless of your current fitness level.",
         keyPoints: [
           "The four pillars of fitness: strength, cardio, flexibility, and recovery",
@@ -238,7 +240,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Strength Training Basics", 
         duration: "25 min", 
         type: "video",
-        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/fe6b0817-d915-40a1-a41a-8e7d31a6d549/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Physical-Fitness%20Lesson%202.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=xkNzdZtbyvt6qNKEWZZDh2A5EBY%3D&Expires=1766327824",
+        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/a30aaa46-42a4-47fe-b28b-701f85fd2e3d/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Physical%20Fitness%20-%20Lesson%202.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=6pNvdyeJ2ThnKecOD2hV0awek0M%3D&Expires=1766351243",
         description: "Master the fundamental movement patterns and principles of strength training for lifelong strength and health.",
         keyPoints: [
           "The six fundamental movement patterns",
@@ -252,7 +254,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Cardio for Health", 
         duration: "18 min", 
         type: "video",
-        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/579035a3-7782-43da-8849-168753c8796b/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Physical-Fitness%20Lesson%203.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=Eowr5N%2BFvbHHUJmXUfjdr0dyBT0%3D&Expires=1766327824",
+        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/82f24a0d-a2e6-4bb2-b1b1-fccef38cf946/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Physical%20Fitness%20-%20Lesson%203.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=1dyIbm6gz0lnZakgWbNgNHoX9aE%3D&Expires=1766351243",
         description: "Discover how to use cardiovascular exercise to build heart health, endurance, and metabolic fitness.",
         keyPoints: [
           "The difference between LISS, MISS, and HIIT cardio",
@@ -266,7 +268,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Recovery and Rest", 
         duration: "12 min", 
         type: "video",
-        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/a0d0039d-4485-4a9c-820b-5c486cc8b2c6/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Physical-Fitness%20Lesson%204.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=beopDedth%2FXiFMuhT0LXAt7k5rs%3D&Expires=1766327824",
+        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/13a2bdc2-0f35-4b48-b678-ff05ba6e542d/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Physical%20Fitness%20-%20Lesson%204.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=Kp0zo2q1v40gU1XNWXJNLHbKE6E%3D&Expires=1766351243",
         description: "Understand why recovery is when your body actually gets stronger, and learn to optimize rest for maximum results.",
         keyPoints: [
           "Muscle growth happens during rest, not during workouts",
@@ -305,7 +307,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Nutrition Fundamentals", 
         duration: "20 min", 
         type: "video",
-        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/72c8bb32-b6fa-40f4-95f9-6c34e1212258/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Nutrition%20Lesson%201.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=TXDkiHoJqOchfZHnLnxPjqDT4mA%3D&Expires=1766327824",
+        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/57b2735d-f58a-494b-99a1-2dbc4395497d/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Nutrition%20-%20Lesson%201.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=lTvbgIs9KrwFWFgyz4oA6w5C9kw%3D&Expires=1766351243",
         description: "Master the foundational principles of nutrition science to make informed food choices that support your health and goals.",
         keyPoints: [
           "Macronutrients: protein, carbohydrates, and fats - what they do and how much you need",
@@ -332,7 +334,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Meal Planning Mastery", 
         duration: "18 min", 
         type: "video",
-        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/b2680d8a-db85-4063-a531-b4d881dece6a/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Nutrition%20Lesson%202.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=vMhykIZivSG3udHU03vli6jFX4M%3D&Expires=1766327824",
+        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/22ef3b7a-bde1-4f44-9e94-bafbf3ae7062/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Nutrition%20-%20Lesson%202.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=ES75GpJq3rtUCqxv6un4HUVC6jw%3D&Expires=1766351243",
         description: "Develop a sustainable meal planning system that saves time, reduces stress, and ensures you eat well consistently.",
         keyPoints: [
           "Weekly planning: the key to consistent nutrition",
@@ -346,7 +348,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Intuitive Eating Principles", 
         duration: "16 min", 
         type: "video",
-        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/b2ef37a9-96fa-4b1d-b7d4-7c922d611305/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Nutrition%20Lesson%203.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=tDNTAKcKaU90Vi0jkBnVqEEo5u4%3D&Expires=1766327824",
+        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/7feea566-9c00-4aa1-9a2c-f77f815aa6a6/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Nutrition%20-%20Lesson%203.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=n6VKjYgGtw3iyB6mUG1VOAtwJuk%3D&Expires=1766351243",
         description: "Heal your relationship with food by learning to trust your body's hunger and fullness signals.",
         keyPoints: [
           "Rejecting diet mentality and food rules",
@@ -360,7 +362,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Nutrition for Performance", 
         duration: "22 min", 
         type: "video",
-        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/9362d7d5-10de-4ad3-85cc-48061dbc87d3/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Nutrition%20Lesson%204.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=2i56GZtMLwZI%2F0qIISJjSpg91Zw%3D&Expires=1766327824",
+        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/fa8fcf0b-f75d-408d-880c-7f23cc19ad47/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Nutrition%20-%20Lesson%204.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=hrU1I9nqTiQ7u0hl7LhrWWaWlmU%3D&Expires=1766351242",
         description: "Optimize your nutrition to support athletic performance, recovery, and body composition goals.",
         keyPoints: [
           "Fueling before, during, and after exercise",
@@ -399,7 +401,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Exploring Your Values", 
         duration: "17 min", 
         type: "video",
-        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/6a4835a8-5ad2-4f9e-8848-2bfa8ee0a5e0/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Spiritual-Wellness%20Lesson%201.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=8qZw1wAn01h3UzrH0THQQDwML6k%3D&Expires=1766327824",
+        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/241b76bf-0cc6-4e47-ab86-c7e6d568f7a5/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Spiritual%20Wellness%20-%20Lesson%201.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=1UcY7Rpi4a%2BOldOTTd3DwnZ0t14%3D&Expires=1766351242",
         description: "Discover the core values that guide your decisions and define what truly matters to you.",
         keyPoints: [
           "Values vs. goals: understanding the difference",
@@ -439,7 +441,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Finding Your Purpose", 
         duration: "25 min", 
         type: "video",
-        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/f61f3975-219b-48df-8510-d3321a60e78c/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Spiritual-Wellness%20Lesson%202.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=jA83Od%2FtwCd0ex%2Fiin3TD%2BAOfKY%3D&Expires=1766327824",
+        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/d43f5303-eb57-4ba2-bbdf-bc2fba1f7db9/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Spiritual%20Wellness%20-%20Lesson%202.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=OXmfT5hkKEKD%2BB5XtJ8S%2FfpRV%2BQ%3D&Expires=1766351242",
         description: "Discover your unique purpose through deep self-reflection and practical exercises.",
         keyPoints: [
           "Purpose is not one grand mission - it evolves",
@@ -453,7 +455,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Spiritual Rituals and Practices", 
         duration: "15 min", 
         type: "video",
-        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/7e1c798d-fb48-478f-b020-39dd40ed1983/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Spiritual-Wellness%20Lesson%203.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=tI75luMnOddCQWWGBrYWZpgO8qY%3D&Expires=1766327824",
+        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/b8939d25-810f-4bbf-a6f1-4daffbc589f8/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Spiritual%20Wellness%20-%20Lesson%203.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=bOPAmE6%2BoxQE2aKQwykaD%2FwRYKU%3D&Expires=1766351242",
         description: "Create personal rituals that connect you to something greater and infuse daily life with meaning.",
         keyPoints: [
           "Rituals vs. routines: intention makes the difference",
@@ -492,7 +494,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Communication Fundamentals", 
         duration: "19 min", 
-        type: "video",
+        type: "reading",
         description: "Master the essential communication skills that transform relationships from surface-level to deeply connected.",
         keyPoints: [
           "The four communication styles: passive, aggressive, passive-aggressive, assertive",
@@ -518,7 +520,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Healthy Boundaries 101", 
         duration: "21 min", 
-        type: "video",
+        type: "reading",
         description: "Learn to set clear boundaries that protect your well-being while maintaining healthy relationships.",
         keyPoints: [
           "Boundaries are not walls - they're guidelines for how you want to be treated",
@@ -531,7 +533,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Conflict Resolution Strategies", 
         duration: "18 min", 
-        type: "video",
+        type: "reading",
         description: "Transform conflicts from destructive battles into opportunities for deeper understanding and growth.",
         keyPoints: [
           "Conflict is inevitable and not inherently bad",
@@ -544,7 +546,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Building Emotional Intimacy", 
         duration: "16 min", 
-        type: "video",
+        type: "reading",
         description: "Cultivate deep emotional connection through vulnerability, trust, and authentic sharing.",
         keyPoints: [
           "Emotional intimacy vs. physical intimacy: both are essential",
@@ -582,7 +584,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Money Mindset Transformation", 
         duration: "20 min", 
-        type: "video",
+        type: "reading",
         description: "Transform your relationship with money by identifying and shifting limiting beliefs that keep you stuck financially.",
         keyPoints: [
           "Common money scripts: scarcity vs. abundance mindset",
@@ -608,7 +610,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Debt Elimination Strategies", 
         duration: "18 min", 
-        type: "video",
+        type: "reading",
         description: "Develop a strategic plan to eliminate debt using proven methods while maintaining financial stability.",
         keyPoints: [
           "Good debt vs. bad debt: understanding the difference",
@@ -621,7 +623,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Investing for Beginners", 
         duration: "25 min", 
-        type: "video",
+        type: "reading",
         description: "Demystify investing and learn to build wealth through simple, proven strategies accessible to everyone.",
         keyPoints: [
           "Compound interest: the eighth wonder of the world",
@@ -634,7 +636,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Building Passive Income", 
         duration: "23 min", 
-        type: "video",
+        type: "reading",
         description: "Explore proven strategies for creating income streams that generate money while you sleep.",
         keyPoints: [
           "Passive income myths: it requires upfront work",
@@ -672,7 +674,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "The Science of Goal Setting", 
         duration: "17 min", 
-        type: "video",
+        type: "reading",
         description: "Understand the neuroscience and psychology behind effective goal-setting and why most goals fail.",
         keyPoints: [
           "Why 92% of New Year's resolutions fail",
@@ -699,7 +701,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Creating Your Action Plan", 
         duration: "20 min", 
-        type: "video",
+        type: "reading",
         description: "Break down big goals into daily actions using proven project management and productivity frameworks.",
         keyPoints: [
           "Reverse engineering: start with the end in mind",
@@ -712,7 +714,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Overcoming Obstacles", 
         duration: "18 min", 
-        type: "video",
+        type: "reading",
         description: "Anticipate and overcome common obstacles that derail goal achievement using mental contrasting and contingency planning.",
         keyPoints: [
           "Mental contrasting: visualizing success AND obstacles",
@@ -725,7 +727,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Accountability Systems", 
         duration: "14 min", 
-        type: "video",
+        type: "reading",
         description: "Build external accountability structures that dramatically increase your odds of achieving goals.",
         keyPoints: [
           "The power of social accountability: you're 65% more likely to achieve goals when accountable to someone",
@@ -763,7 +765,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "The Habit Loop Explained", 
         duration: "16 min", 
-        type: "video",
+        type: "reading",
         description: "Understand the neurological pattern that drives all habits and how to rewire it for lasting change.",
         keyPoints: [
           "The habit loop: cue, craving, response, reward",
@@ -789,7 +791,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Habit Stacking Mastery", 
         duration: "18 min", 
-        type: "video",
+        type: "reading",
         description: "Build new habits by linking them to existing routines, creating automatic behavior chains.",
         keyPoints: [
           "The habit stacking formula: After [CURRENT HABIT], I will [NEW HABIT]",
@@ -802,7 +804,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Breaking Bad Habits", 
         duration: "20 min", 
-        type: "video",
+        type: "reading",
         description: "Eliminate destructive habits by understanding their function and replacing them with healthier alternatives.",
         keyPoints: [
           "You can't eliminate a bad habit, you can only replace it",
@@ -815,7 +817,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Environment Design for Habits", 
         duration: "15 min", 
-        type: "video",
+        type: "reading",
         description: "Engineer your physical environment to make good habits inevitable and bad habits impossible.",
         keyPoints: [
           "Environment is the invisible hand that shapes behavior",
@@ -853,7 +855,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "The Science of Sleep", 
         duration: "19 min", 
-        type: "video",
+        type: "reading",
         description: "Understand the fascinating neuroscience of sleep and why it's the most powerful performance enhancer available.",
         keyPoints: [
           "The four stages of sleep and what happens in each",
@@ -879,7 +881,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Sleep Hygiene Essentials", 
         duration: "17 min", 
-        type: "video",
+        type: "reading",
         description: "Master the daily habits and routines that set you up for consistently excellent sleep.",
         keyPoints: [
           "Consistent sleep schedule: same bedtime and wake time daily",
@@ -892,7 +894,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Overcoming Insomnia", 
         duration: "21 min", 
-        type: "video",
+        type: "reading",
         description: "Evidence-based strategies to break the cycle of insomnia and reclaim restful sleep.",
         keyPoints: [
           "Understanding the insomnia cycle: anxiety about sleep perpetuates sleeplessness",
@@ -905,7 +907,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Power Napping Strategies", 
         duration: "10 min", 
-        type: "video",
+        type: "reading",
         description: "Learn to use strategic naps to boost alertness, performance, and creativity without disrupting nighttime sleep.",
         keyPoints: [
           "The optimal nap length: 10-20 minutes for alertness, 90 minutes for full cycle",
@@ -943,7 +945,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Understanding Stress Response", 
         duration: "18 min", 
-        type: "video",
+        type: "reading",
         description: "Learn how your body and brain respond to stress, and why chronic stress is so damaging.",
         keyPoints: [
           "The fight-or-flight response: evolutionary advantage, modern problem",
@@ -969,7 +971,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Cognitive Stress Reframing", 
         duration: "20 min", 
-        type: "video",
+        type: "reading",
         description: "Change your relationship with stress by reframing how you interpret stressful situations.",
         keyPoints: [
           "The ABC model: Activating event, Belief, Consequence",
@@ -995,7 +997,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Building Stress Resilience", 
         duration: "22 min", 
-        type: "video",
+        type: "reading",
         description: "Develop long-term resilience to handle stress without breaking down.",
         keyPoints: [
           "Resilience is trainable: it's not a fixed trait",
@@ -1033,7 +1035,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Why Journaling Works", 
         duration: "14 min", 
-        type: "video",
+        type: "reading",
         description: "Understand the science behind journaling and why it's one of the most powerful tools for personal growth.",
         keyPoints: [
           "The neuroscience of expressive writing: how writing rewires your brain",
@@ -1072,7 +1074,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Reflective Journaling Prompts", 
         duration: "16 min", 
-        type: "video",
+        type: "reading",
         description: "Use powerful prompts to process emotions, gain self-awareness, and clarify your path forward.",
         keyPoints: [
           "Prompts for processing difficult emotions",
@@ -1085,7 +1087,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Building a Journaling Habit", 
         duration: "15 min", 
-        type: "video",
+        type: "reading",
         description: "Make journaling a consistent practice that sticks, even when motivation fades.",
         keyPoints: [
           "Start small: 5 minutes is better than nothing",
@@ -1123,7 +1125,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "The Burnout Epidemic", 
         duration: "17 min", 
-        type: "video",
+        type: "reading",
         description: "Understand what burnout is, why it's epidemic, and how to recognize it before it destroys you.",
         keyPoints: [
           "What is burnout: physical, emotional, and mental exhaustion",
@@ -1149,7 +1151,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Time Blocking for Balance", 
         duration: "16 min", 
-        type: "video",
+        type: "reading",
         description: "Use time blocking to protect both work productivity and personal life.",
         keyPoints: [
           "Time blocking for work: focused productivity in defined hours",
@@ -1162,7 +1164,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Saying No Without Guilt", 
         duration: "14 min", 
-        type: "video",
+        type: "reading",
         description: "Master the art of saying no to protect your priorities without damaging relationships.",
         keyPoints: [
           "Why saying no is essential: every yes to something is a no to something else",
@@ -1175,7 +1177,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Sustainable Success Strategies", 
         duration: "21 min", 
-        type: "video",
+        type: "reading",
         description: "Build a career and life that's successful and sustainable - without burning out.",
         keyPoints: [
           "Success without sacrifice: the myth of work-life balance vs. work-life integration",
@@ -1208,7 +1210,7 @@ export const wellnessModulesData: Record<string, any> = {
         {
           title: "The Four Dimensions of Energy",
           duration: "15 min",
-          type: "video",
+          type: "reading",
           description: "Discover the four key dimensions of personal energy—physical, emotional, mental, and spiritual—and learn why managing energy, not just time, is the key to high performance and a fulfilling life.",
           keyPoints: [
             "Energy, not time, is the fundamental currency of high performance.", "There are four distinct but interconnected dimensions of energy: physical, emotional, mental, and spiritual.", "Balancing energy expenditure with energy renewal is critical for sustainable success.", "Small, intentional rituals can dramatically improve your energy levels."
@@ -1228,7 +1230,7 @@ export const wellnessModulesData: Record<string, any> = {
         {
           title: "The Power of Ultradian Rhythms",
           duration: "15 min",
-          type: "video",
+          type: "reading",
           description: "Learn about the science of ultradian rhythms—the natural 90-120 minute cycles of energy and focus—and how to work with, not against, your body's natural rhythms to maximize productivity and prevent burnout.",
           keyPoints: [
             "Your body operates in natural 90-120 minute cycles of high and low energy.", "Working in focused sprints followed by short breaks is more effective than marathon sessions.", "Ignoring your body's need for rest leads to diminishing returns and burnout.", "Schedule your most important tasks during your peak energy cycles."
@@ -1248,7 +1250,7 @@ export const wellnessModulesData: Record<string, any> = {
         {
           title: "The Mind-Body Connection",
           duration: "15 min",
-          type: "video",
+          type: "reading",
           description: "Explore the profound connection between your mind and body, and learn how practices like mindfulness, breathwork, and nutrition can be used to regulate your energy and improve your overall well-being.",
           keyPoints: [
             "Your thoughts and emotions have a direct impact on your physical energy.", "Mindfulness and breathwork are powerful tools for managing stress and boosting energy.", "The food you eat is not just fuel; it's information that tells your body how to function.", "A holistic approach to energy management is the most effective."
@@ -1257,11 +1259,11 @@ export const wellnessModulesData: Record<string, any> = {
         }      
     ],
     lessons: [
-      { title: "Understanding Your Energy Rhythms", duration: "18 min", type: "video" },
+      { title: "Understanding Your Energy Rhythms", duration: "18 min", type: "reading" },
       { title: "Energy Audit Exercise", duration: "15 min", type: "exercise" },
-      { title: "Ultradian Rhythm Optimization", duration: "20 min", type: "video" },
-      { title: "Natural Energy Boosters", duration: "14 min", type: "video" },
-      { title: "Recovery and Renewal", duration: "16 min", type: "video" }
+      { title: "Ultradian Rhythm Optimization", duration: "20 min", type: "reading" },
+      { title: "Natural Energy Boosters", duration: "14 min", type: "reading" },
+      { title: "Recovery and Renewal", duration: "16 min", type: "reading" }
     ],
     exercises: [
       "Energy Audit Worksheet",
@@ -1287,12 +1289,12 @@ export const wellnessModulesData: Record<string, any> = {
       "Reduce jet lag and shift work issues"
     ],
     lessons: [
-      { title: "What is Circadian Rhythm?", duration: "16 min", type: "video" }
+      { title: "What is Circadian Rhythm?", duration: "16 min", type: "reading" }
 ,
       { title: "Light Exposure Optimization", duration: "14 min", type: "exercise" },
-      { title: "Meal Timing for Health", duration: "18 min", type: "video" },
-      { title: "Exercise Timing Strategies", duration: "15 min", type: "video" },
-      { title: "Circadian Rhythm Reset", duration: "20 min", type: "video" }
+      { title: "Meal Timing for Health", duration: "18 min", type: "reading" },
+      { title: "Exercise Timing Strategies", duration: "15 min", type: "reading" },
+      { title: "Circadian Rhythm Reset", duration: "20 min", type: "reading" }
     ],
     exercises: [
       "Circadian Assessment Quiz",
@@ -1318,12 +1320,12 @@ export const wellnessModulesData: Record<string, any> = {
       "Enhance digestive health"
     ],
     lessons: [
-      { title: "Hydration Science", duration: "15 min", type: "video" }
+      { title: "Hydration Science", duration: "15 min", type: "reading" }
 ,
       { title: "Calculating Your Water Needs", duration: "10 min", type: "exercise" },
-      { title: "Natural Detox Strategies", duration: "19 min", type: "video" },
-      { title: "Electrolyte Balance", duration: "14 min", type: "video" },
-      { title: "Detox Myths vs Facts", duration: "17 min", type: "video" }
+      { title: "Natural Detox Strategies", duration: "19 min", type: "reading" },
+      { title: "Electrolyte Balance", duration: "14 min", type: "reading" },
+      { title: "Detox Myths vs Facts", duration: "17 min", type: "reading" }
     ],
     exercises: [
       "Hydration Calculator",
@@ -1349,12 +1351,12 @@ export const wellnessModulesData: Record<string, any> = {
       "Support sustainable living"
     ],
     lessons: [
-      { title: "Environmental Health Basics", duration: "17 min", type: "video" }
+      { title: "Environmental Health Basics", duration: "17 min", type: "reading" }
 ,
       { title: "Home Toxin Audit", duration: "20 min", type: "exercise" },
-      { title: "Air Quality Optimization", duration: "15 min", type: "video" },
-      { title: "Biophilic Design Principles", duration: "18 min", type: "video" },
-      { title: "Sustainable Living Practices", duration: "16 min", type: "video" }
+      { title: "Air Quality Optimization", duration: "15 min", type: "reading" },
+      { title: "Biophilic Design Principles", duration: "18 min", type: "reading" },
+      { title: "Sustainable Living Practices", duration: "16 min", type: "reading" }
     ],
     exercises: [
       "Environmental Audit Checklist",
@@ -1381,12 +1383,12 @@ export const wellnessModulesData: Record<string, any> = {
       "Negotiate salary and promotions confidently"
     ],
     lessons: [
-      { title: "Career Vision Mapping", duration: "20 min", type: "video" }
+      { title: "Career Vision Mapping", duration: "20 min", type: "reading" }
 ,
       { title: "Personal Branding Workshop", duration: "22 min", type: "exercise" },
-      { title: "Strategic Networking", duration: "18 min", type: "video" },
-      { title: "Career Transition Strategies", duration: "21 min", type: "video" },
-      { title: "Negotiation Mastery", duration: "24 min", type: "video" }
+      { title: "Strategic Networking", duration: "18 min", type: "reading" },
+      { title: "Career Transition Strategies", duration: "21 min", type: "reading" },
+      { title: "Negotiation Mastery", duration: "24 min", type: "reading" }
     ],
     exercises: [
       "Career Vision Worksheet",
@@ -1415,7 +1417,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Communication Fundamentals", 
         duration: "19 min", 
-        type: "video",
+        type: "reading",
         description: "Master the core principles of effective communication that apply to every interaction.",
         keyPoints: [
           "The communication model: sender, message, receiver, feedback",
@@ -1441,7 +1443,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Non-Verbal Communication", 
         duration: "16 min", 
-        type: "video",
+        type: "reading",
         description: "Read and use body language to enhance your communication and influence.",
         keyPoints: [
           "The power of body language: it speaks louder than words",
@@ -1454,7 +1456,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Difficult Conversations", 
         duration: "21 min", 
-        type: "video",
+        type: "reading",
         description: "Navigate conflict and difficult conversations with grace and effectiveness.",
         keyPoints: [
           "Why we avoid difficult conversations: short-term relief, long-term damage",
@@ -1467,7 +1469,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Persuasion and Influence", 
         duration: "20 min", 
-        type: "video",
+        type: "reading",
         description: "Ethically influence others and get buy-in for your ideas.",
         keyPoints: [
           "The psychology of persuasion: Cialdini's 6 principles",
@@ -1502,12 +1504,12 @@ export const wellnessModulesData: Record<string, any> = {
       "Lead with emotional intelligence"
     ],
     lessons: [
-      { title: "Leadership Foundations", duration: "21 min", type: "video" }
+      { title: "Leadership Foundations", duration: "21 min", type: "reading" }
 ,
       { title: "Your Leadership Style", duration: "17 min", type: "exercise" },
-      { title: "Emotional Intelligence for Leaders", duration: "23 min", type: "video" },
-      { title: "Decision-Making Frameworks", duration: "19 min", type: "video" },
-      { title: "Building Team Culture", duration: "22 min", type: "video" }
+      { title: "Emotional Intelligence for Leaders", duration: "23 min", type: "reading" },
+      { title: "Decision-Making Frameworks", duration: "19 min", type: "reading" },
+      { title: "Building Team Culture", duration: "22 min", type: "reading" }
     ],
     exercises: [
       "Leadership Style Assessment",
@@ -1533,13 +1535,13 @@ export const wellnessModulesData: Record<string, any> = {
       "Build a sustainable creative practice"
     ],
     lessons: [
-      { title: "The Creative Mindset", duration: "18 min", type: "video" }
+      { title: "The Creative Mindset", duration: "18 min", type: "reading" }
 
 ,
       { title: "Brainstorming Techniques", duration: "15 min", type: "exercise" },
-      { title: "Overcoming Creative Blocks", duration: "20 min", type: "video" },
-      { title: "Design Thinking Process", duration: "24 min", type: "video" },
-      { title: "Creative Habit Building", duration: "16 min", type: "video" }
+      { title: "Overcoming Creative Blocks", duration: "20 min", type: "reading" },
+      { title: "Design Thinking Process", duration: "24 min", type: "reading" },
+      { title: "Creative Habit Building", duration: "16 min", type: "reading" }
     ],
     exercises: [
       "Creativity Assessment",
@@ -1568,7 +1570,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Time Management Fundamentals", 
         duration: "19 min", 
-        type: "video",
+        type: "reading",
         description: "Understand the core principles of managing your most valuable resource: time.",
         keyPoints: [
           "Time is finite: you can't make more, only choose how to use it",
@@ -1594,7 +1596,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Time Blocking Mastery", 
         duration: "21 min", 
-        type: "video",
+        type: "reading",
         description: "Schedule your day in focused blocks to maximize productivity and minimize distractions.",
         keyPoints: [
           "What is time blocking: assigning specific tasks to specific time slots",
@@ -1607,7 +1609,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Defeating Procrastination", 
         duration: "18 min", 
-        type: "video",
+        type: "reading",
         description: "Understand why you procrastinate and use proven strategies to overcome it.",
         keyPoints: [
           "Procrastination is emotion regulation, not laziness",
@@ -1620,7 +1622,7 @@ export const wellnessModulesData: Record<string, any> = {
       { 
         title: "Productivity Systems", 
         duration: "23 min", 
-        type: "video",
+        type: "reading",
         description: "Explore proven productivity systems and build one that works for you.",
         keyPoints: [
           "Getting Things Done (GTD): capture, clarify, organize, reflect, engage",
@@ -1655,12 +1657,12 @@ export const wellnessModulesData: Record<string, any> = {
       "Track and celebrate growth"
     ],
     lessons: [
-      { title: "Growth vs Fixed Mindset", duration: "17 min", type: "video" }
+      { title: "Growth vs Fixed Mindset", duration: "17 min", type: "reading" }
 ,
       { title: "Self-Assessment Exercise", duration: "20 min", type: "exercise" },
-      { title: "Creating Your Development Plan", duration: "22 min", type: "video" },
-      { title: "Learning How to Learn", duration: "19 min", type: "video" },
-      { title: "Measuring Progress", duration: "15 min", type: "video" }
+      { title: "Creating Your Development Plan", duration: "22 min", type: "reading" },
+      { title: "Learning How to Learn", duration: "19 min", type: "reading" },
+      { title: "Measuring Progress", duration: "15 min", type: "reading" }
     ],
     exercises: [
       "Self-Assessment Tool",
@@ -1686,12 +1688,12 @@ export const wellnessModulesData: Record<string, any> = {
       "Create memorable life experiences"
     ],
     lessons: [
-      { title: "The Power of Discomfort", duration: "18 min", type: "video" }
+      { title: "The Power of Discomfort", duration: "18 min", type: "reading" }
 ,
       { title: "Fear Setting Exercise", duration: "16 min", type: "exercise" },
-      { title: "Calculated Risk-Taking", duration: "20 min", type: "video" },
-      { title: "Building Courage", duration: "17 min", type: "video" },
-      { title: "Adventure Planning", duration: "15 min", type: "video" }
+      { title: "Calculated Risk-Taking", duration: "20 min", type: "reading" },
+      { title: "Building Courage", duration: "17 min", type: "reading" },
+      { title: "Adventure Planning", duration: "15 min", type: "reading" }
     ],
     exercises: [
       "Fear Setting Worksheet",
@@ -1717,12 +1719,12 @@ export const wellnessModulesData: Record<string, any> = {
       "Live with intention and fulfillment"
     ],
     lessons: [
-      { title: "What is Purpose?", duration: "19 min", type: "video" }
+      { title: "What is Purpose?", duration: "19 min", type: "reading" }
 ,
       { title: "Purpose Discovery Workshop", duration: "25 min", type: "exercise" },
-      { title: "Values Alignment", duration: "18 min", type: "video" },
+      { title: "Values Alignment", duration: "18 min", type: "reading" },
       { title: "Creating Your Mission Statement", duration: "20 min", type: "exercise" },
-      { title: "Living with Intention", duration: "17 min", type: "video" }
+      { title: "Living with Intention", duration: "17 min", type: "reading" }
     ],
     exercises: [
       "Purpose Discovery Guide",
@@ -1749,11 +1751,11 @@ export const wellnessModulesData: Record<string, any> = {
       "Grow through adversity"
     ],
     lessons: [
-      { title: "The Science of Resilience", duration: "20 min", type: "video" },
+      { title: "The Science of Resilience", duration: "20 min", type: "reading" },
       { title: "Adversity Inventory", duration: "18 min", type: "exercise" },
-      { title: "Cognitive Reframing", duration: "22 min", type: "video" },
-      { title: "Building Mental Toughness", duration: "21 min", type: "video" },
-      { title: "Post-Traumatic Growth", duration: "19 min", type: "video" }
+      { title: "Cognitive Reframing", duration: "22 min", type: "reading" },
+      { title: "Building Mental Toughness", duration: "21 min", type: "reading" },
+      { title: "Post-Traumatic Growth", duration: "19 min", type: "reading" }
     ],
     exercises: [
       "Resilience Assessment",
@@ -1779,11 +1781,11 @@ export const wellnessModulesData: Record<string, any> = {
       "Cultivate inner peace"
     ],
     lessons: [
-      { title: "What is Mindfulness?", duration: "16 min", type: "video" },
+      { title: "What is Mindfulness?", duration: "16 min", type: "reading" },
       { title: "Basic Meditation Practice", duration: "20 min", type: "practice" },
       { title: "Mindful Breathing", duration: "12 min", type: "practice" },
       { title: "Body Scan Meditation", duration: "25 min", type: "practice" },
-      { title: "Mindfulness in Daily Life", duration: "18 min", type: "video" }
+      { title: "Mindfulness in Daily Life", duration: "18 min", type: "reading" }
     ],
     exercises: [
       "Meditation Timer Guide",
@@ -1809,11 +1811,11 @@ export const wellnessModulesData: Record<string, any> = {
       "Create lasting wellbeing"
     ],
     lessons: [
-      { title: "The Science of Happiness", duration: "21 min", type: "video" },
+      { title: "The Science of Happiness", duration: "21 min", type: "reading" },
       { title: "Character Strengths Assessment", duration: "15 min", type: "exercise" },
       { title: "Three Good Things Practice", duration: "10 min", type: "practice" },
-      { title: "Savoring Techniques", duration: "17 min", type: "video" },
-      { title: "Building Optimism", duration: "19 min", type: "video" }
+      { title: "Savoring Techniques", duration: "17 min", type: "reading" },
+      { title: "Building Optimism", duration: "19 min", type: "reading" }
     ],
     exercises: [
       "VIA Character Strengths Survey",
@@ -1839,9 +1841,9 @@ export const wellnessModulesData: Record<string, any> = {
       "Enhance athletic performance"
     ],
     lessons: [
-      { title: "The Science of Breathwork", duration: "18 min", type: "video" },
+      { title: "The Science of Breathwork", duration: "18 min", type: "reading" },
       { title: "Box Breathing Technique", duration: "10 min", type: "practice" },
-      { title: "Wim Hof Method", duration: "22 min", type: "video" },
+      { title: "Wim Hof Method", duration: "22 min", type: "reading" },
       { title: "Alternate Nostril Breathing", duration: "12 min", type: "practice" },
       { title: "Transformational Breathwork", duration: "30 min", type: "practice" }
     ],
@@ -1869,11 +1871,11 @@ export const wellnessModulesData: Record<string, any> = {
       "Build stronger relationships"
     ],
     lessons: [
-      { title: "The Four Components of EQ", duration: "19 min", type: "video" },
+      { title: "The Four Components of EQ", duration: "19 min", type: "reading" },
       { title: "Self-Awareness Assessment", duration: "17 min", type: "exercise" },
-      { title: "Emotion Regulation Strategies", duration: "21 min", type: "video" },
-      { title: "Developing Empathy", duration: "18 min", type: "video" },
-      { title: "Social Skills Mastery", duration: "20 min", type: "video" }
+      { title: "Emotion Regulation Strategies", duration: "21 min", type: "reading" },
+      { title: "Developing Empathy", duration: "18 min", type: "reading" },
+      { title: "Social Skills Mastery", duration: "20 min", type: "reading" }
     ],
     exercises: [
       "EQ Assessment Tool",
@@ -1899,11 +1901,11 @@ export const wellnessModulesData: Record<string, any> = {
       "Deepen environmental awareness"
     ],
     lessons: [
-      { title: "The Healing Power of Nature", duration: "17 min", type: "video" },
+      { title: "The Healing Power of Nature", duration: "17 min", type: "reading" },
       { title: "Forest Bathing Practice", duration: "25 min", type: "practice" },
-      { title: "Earthing and Grounding", duration: "15 min", type: "video" },
+      { title: "Earthing and Grounding", duration: "15 min", type: "reading" },
       { title: "Nature Meditation", duration: "20 min", type: "practice" },
-      { title: "Outdoor Movement Practices", duration: "18 min", type: "video" }
+      { title: "Outdoor Movement Practices", duration: "18 min", type: "reading" }
     ],
     exercises: [
       "Nature Connection Tracker",
@@ -1929,11 +1931,11 @@ export const wellnessModulesData: Record<string, any> = {
       "Build confidence and discipline"
     ],
     lessons: [
-      { title: "Strength Training Fundamentals", duration: "22 min", type: "video" },
-      { title: "Progressive Overload Principles", duration: "18 min", type: "video" },
-      { title: "Exercise Form Mastery", duration: "25 min", type: "video" },
+      { title: "Strength Training Fundamentals", duration: "22 min", type: "reading" },
+      { title: "Progressive Overload Principles", duration: "18 min", type: "reading" },
+      { title: "Exercise Form Mastery", duration: "25 min", type: "reading" },
       { title: "Program Design", duration: "20 min", type: "exercise" },
-      { title: "Recovery and Adaptation", duration: "16 min", type: "video" }
+      { title: "Recovery and Adaptation", duration: "16 min", type: "reading" }
     ],
     exercises: [
       "Strength Assessment Test",
@@ -1959,11 +1961,11 @@ export const wellnessModulesData: Record<string, any> = {
       "Increase lifespan and healthspan"
     ],
     lessons: [
-      { title: "Cardiovascular Health Basics", duration: "19 min", type: "video" },
-      { title: "Heart Rate Zone Training", duration: "21 min", type: "video" },
-      { title: "HIIT vs Steady State", duration: "17 min", type: "video" },
-      { title: "Building Endurance", duration: "20 min", type: "video" },
-      { title: "Heart Health Lifestyle", duration: "18 min", type: "video" }
+      { title: "Cardiovascular Health Basics", duration: "19 min", type: "reading" },
+      { title: "Heart Rate Zone Training", duration: "21 min", type: "reading" },
+      { title: "HIIT vs Steady State", duration: "17 min", type: "reading" },
+      { title: "Building Endurance", duration: "20 min", type: "reading" },
+      { title: "Heart Health Lifestyle", duration: "18 min", type: "reading" }
     ],
     exercises: [
       "Heart Health Assessment",
