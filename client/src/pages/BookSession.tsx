@@ -42,16 +42,18 @@ export default function BookSession() {
     }
   );
 
-  // Book session mutation
-  const bookSession = trpc.scheduling.bookSession.useMutation({
-    onSuccess: () => {
-      setShowConfirmation(true);
-      setSelectedDate(null);
-      setSelectedSlot(null);
-      setNotes("");
+  // Create Stripe checkout session for payment
+  const createCheckout = trpc.stripe.createSessionCheckout.useMutation({
+    onSuccess: (data) => {
+      // Redirect to Stripe checkout
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        toast.error("Failed to create checkout session");
+      }
     },
     onError: (error) => {
-      toast.error(`Failed to book session: ${error.message}`);
+      toast.error(`Failed to create checkout: ${error.message}`);
     },
   });
 
@@ -61,12 +63,20 @@ export default function BookSession() {
       return;
     }
 
-    bookSession.mutate({
-      coachId,
-      clientId,
-      scheduledDate: new Date(selectedSlot),
-      duration,
-      sessionType,
+    // Get session type ID (map from value to ID)
+    // TODO: Fetch actual session types from backend
+    const sessionTypeMap: Record<string, number> = {
+      "initial": 1,
+      "follow-up": 2,
+      "check-in": 3,
+    };
+
+    const sessionTypeId = sessionTypeMap[sessionType] || 2;
+
+    // Create Stripe checkout with session details
+    createCheckout.mutate({
+      sessionTypeId,
+      scheduledDate: selectedSlot,
       notes,
     });
   };
