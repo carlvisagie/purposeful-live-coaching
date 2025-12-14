@@ -84,7 +84,7 @@ export const schedulingRouter = router({
 
         // Add available hours for this day
         const dayAvailability = availability.filter(
-          a => a.dayOfWeek === currentDayOfWeek && a.isActive === "true"
+          a => a.dayOfWeek === currentDayOfWeek && a.isActive === true
         );
 
         for (const slot of dayAvailability) {
@@ -491,7 +491,7 @@ export const schedulingRouter = router({
         dayOfWeek: input.dayOfWeek,
         startTime: input.startTime,
         endTime: input.endTime,
-        isActive: "true",
+        isActive: true,
       });
 
       return { success: true };
@@ -591,7 +591,7 @@ export const schedulingRouter = router({
           dayOfWeek: slot.dayOfWeek,
           startTime: slot.startTime,
           endTime: slot.endTime,
-          isActive: 'true',
+          isActive: true,
         });
       }
 
