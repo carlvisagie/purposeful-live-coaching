@@ -29,7 +29,7 @@ export const schedulingRouter = router({
   getWeeklyAvailability: publicProcedure
     .input(
       z.object({
-        coach_id: z.number(),
+        coachId: z.number(),
         sessionDuration: z.number().optional().default(60),
       })
     )
@@ -114,7 +114,7 @@ export const schedulingRouter = router({
   getAvailableSlots: publicProcedure
     .input(
       z.object({
-        coach_id: z.number(),
+        coachId: z.number(),
         date: z.date(),
         duration: z.number().default(60), // session duration in minutes
       })
@@ -262,7 +262,7 @@ export const schedulingRouter = router({
   bookSession: protectedProcedure
     .input(
       z.object({
-        coach_id: z.number(),
+        coachId: z.number(),
         client_id: z.number(),
         scheduledDate: z.date(),
         duration: z.number().default(60),
@@ -287,7 +287,7 @@ export const schedulingRouter = router({
 
       // Create session
       await createSession({
-        coach_id: input.coachId,
+        coachId: input.coachId,
         client_id: input.clientId,
         scheduledDate: input.scheduledDate,
         duration: input.duration,
@@ -424,7 +424,7 @@ export const schedulingRouter = router({
   getCoachSessions: protectedProcedure
     .input(
       z.object({
-        coach_id: z.number(),
+        coachId: z.number(),
         startDate: z.date(),
         endDate: z.date(),
         status: z.array(z.enum(["scheduled", "completed", "cancelled", "no-show"])).optional(),
@@ -464,7 +464,7 @@ export const schedulingRouter = router({
   getCoachAvailability: protectedProcedure
     .input(
       z.object({
-        coach_id: z.number(),
+        coachId: z.number(),
         dayOfWeek: z.number().min(0).max(6).optional(),
       })
     )
@@ -479,7 +479,7 @@ export const schedulingRouter = router({
   setCoachAvailability: protectedProcedure
     .input(
       z.object({
-        coach_id: z.number(),
+        coachId: z.number(),
         dayOfWeek: z.number().min(0).max(6),
         startTime: z.string().regex(/^\d{2}:\d{2}$/),
         endTime: z.string().regex(/^\d{2}:\d{2}$/),
@@ -487,7 +487,7 @@ export const schedulingRouter = router({
     )
     .mutation(async ({ input }) => {
       await upsertCoachAvailability({
-        coach_id: input.coachId,
+        coachId: input.coachId,
         dayOfWeek: input.dayOfWeek,
         startTime: input.startTime,
         endTime: input.endTime,
@@ -513,7 +513,7 @@ export const schedulingRouter = router({
   getAvailabilityExceptions: protectedProcedure
     .input(
       z.object({
-        coach_id: z.number(),
+        coachId: z.number(),
         startDate: z.date(),
         endDate: z.date(),
       })
@@ -533,7 +533,7 @@ export const schedulingRouter = router({
   createAvailabilityException: protectedProcedure
     .input(
       z.object({
-        coach_id: z.number(),
+        coachId: z.number(),
         startDate: z.date(),
         endDate: z.date(),
         reason: z.string().optional(),
@@ -541,7 +541,7 @@ export const schedulingRouter = router({
     )
     .mutation(async ({ input }) => {
       await createAvailabilityException({
-        coach_id: input.coachId,
+        coachId: input.coachId,
         startDate: input.startDate,
         endDate: input.endDate,
         reason: input.reason,
