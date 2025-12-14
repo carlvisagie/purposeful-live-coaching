@@ -177,20 +177,53 @@ export default function LessonViewer() {
             
             {/* Lesson Content */}
             <div className="prose max-w-none mb-8">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Lesson Overview</h2>
+              {lesson.description && (
+                <>
+                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Lesson Overview</h2>
+                  <p className="text-gray-700 mb-6">
+                    {lesson.description}
+                  </p>
+                </>
+              )}
               
-              <p className="text-gray-700 mb-4">
-                This lesson is part of the {module.title} module, designed to help you develop
-                practical skills and sustainable habits for lasting transformation.
-              </p>
+              {lesson.keyPoints && lesson.keyPoints.length > 0 && (
+                <>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Takeaways:</h3>
+                  <ul className="space-y-2 text-gray-700 mb-6">
+                    {lesson.keyPoints.map((point: string, index: number) => (
+                      <li key={index}>{point}</li>
+                    ))}
+                  </ul>
+                </>
+              )}
               
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Takeaways:</h3>
-              <ul className="space-y-2 text-gray-700 mb-6">
-                <li>Understand the core principles and concepts</li>
-                <li>Learn evidence-based techniques and strategies</li>
-                <li>Practice applying skills in real-world scenarios</li>
-                <li>Build confidence and competence through repetition</li>
-              </ul>
+              {lesson.content && (
+                <>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Detailed Content</h3>
+                  <div className="text-gray-700 leading-relaxed mb-6 whitespace-pre-line">
+                    {lesson.content}
+                  </div>
+                </>
+              )}
+              
+              {!lesson.description && !lesson.keyPoints && !lesson.content && (
+                <>
+                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Lesson Overview</h2>
+                  
+                  <p className="text-gray-700 mb-4">
+                    This lesson is part of the {module.title} module, designed to help you develop
+                    practical skills and sustainable habits for lasting transformation.
+                  </p>
+                  
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Takeaways:</h3>
+                  <ul className="space-y-2 text-gray-700 mb-6">
+                    <li>Understand the core principles and concepts</li>
+                    <li>Learn evidence-based techniques and strategies</li>
+                    <li>Practice applying skills in real-world scenarios</li>
+                    <li>Build confidence and competence through repetition</li>
+                  </ul>
+                </>
+              )}
               
               <div className="bg-blue-50 border-l-4 border-blue-600 p-4 rounded">
                 <div className="flex items-start gap-3">
