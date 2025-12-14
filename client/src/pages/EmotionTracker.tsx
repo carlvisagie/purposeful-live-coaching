@@ -14,7 +14,7 @@ import {
   Calendar,
   Loader2,
 } from "lucide-react";
-import { useAuth } from "@/_core/hooks/useAuth";
+import { useAuth } from "@/contexts/AuthContext";
 
 import {
   Select,

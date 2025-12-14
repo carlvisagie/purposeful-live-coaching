@@ -38,7 +38,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { toast } from "sonner";
-import { useAuth } from "@/_core/hooks/useAuth";
+import { useAuth } from "@/contexts/AuthContext";
 import { useLocation } from "wouter";
 
 /**

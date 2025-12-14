@@ -17,7 +17,7 @@ import {
   Mic,
   MicOff,
 } from "lucide-react";
-import { useAuth } from "@/_core/hooks/useAuth";
+import { useAuth } from "@/contexts/AuthContext";
 // Guest access enabled - no login required
 import { Streamdown } from "streamdown";
 import { useLocation } from "wouter";
