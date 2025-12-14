@@ -655,11 +655,72 @@ export const wellnessModulesData: Record<string, any> = {
       "Celebrate wins and maintain momentum"
     ],
     lessons: [
-      { title: "The Science of Goal Setting", duration: "17 min", type: "video" },
-      { title: "SMART Goals Workshop", duration: "15 min", type: "exercise" },
-      { title: "Creating Your Action Plan", duration: "20 min", type: "video" },
-      { title: "Overcoming Obstacles", duration: "18 min", type: "video" },
-      { title: "Accountability Systems", duration: "14 min", type: "video" }
+      { 
+        title: "The Science of Goal Setting", 
+        duration: "17 min", 
+        type: "video",
+        description: "Understand the neuroscience and psychology behind effective goal-setting and why most goals fail.",
+        keyPoints: [
+          "Why 92% of New Year's resolutions fail",
+          "The neuroscience of motivation and reward",
+          "Approach goals vs. avoidance goals",
+          "The power of implementation intentions"
+        ],
+        content: "Research shows that 92% of New Year's resolutions fail. But it's not because people lack willpower - it's because they use ineffective goal-setting strategies. This lesson teaches the science of what actually works. Why goals fail: vague goals ('get healthier'), outcome-only focus (ignoring the process), unrealistic timelines, lack of systems, and no accountability. The neuroscience of motivation: your brain's reward system (dopamine) drives goal pursuit. But dopamine spikes when you anticipate reward, not when you achieve it. This is why starting feels exciting but following through is hard. Solution: create small wins along the way to maintain dopamine. Approach vs. avoidance goals: approach goals (what you want to achieve) are more motivating than avoidance goals (what you want to stop). 'Exercise 3x per week' beats 'stop being lazy.' Frame goals positively. Implementation intentions: research by Peter Gollwitzer shows that specifying when, where, and how you'll act dramatically increases success. Instead of 'I'll exercise more,' say 'I'll go to the gym Monday, Wednesday, Friday at 6 AM before work.' This pre-commitment reduces decision fatigue. Identity-based goals: James Clear's research shows that goals tied to identity ('I'm a runner') are more sustainable than outcome goals ('I want to run a marathon'). When your goal aligns with who you are, you're intrinsically motivated. This lesson transforms how you approach goals."
+      },
+      { 
+        title: "SMART Goals Workshop", 
+        duration: "15 min", 
+        type: "exercise",
+        description: "Transform vague aspirations into Specific, Measurable, Achievable, Relevant, and Time-bound goals.",
+        keyPoints: [
+          "Specific: crystal clear, no ambiguity",
+          "Measurable: track progress objectively",
+          "Achievable: challenging but realistic",
+          "Relevant: aligned with your values and bigger vision",
+          "Time-bound: clear deadline creates urgency"
+        ],
+        content: "SMART goals are a proven framework for turning vague wishes into achievable outcomes. This workshop guides you through creating SMART goals. Specific: vague goals like 'get fit' fail because your brain doesn't know what to do. Specific goals like 'lose 15 pounds by exercising 4x per week and eating 1800 calories daily' give your brain a clear target. Ask: What exactly do I want to achieve? Why is it important? Who is involved? Where will it happen? Measurable: you need objective criteria to track progress. 'Lose 15 pounds' is measurable. 'Feel better' is not. Measurable goals let you celebrate progress and adjust course. Ask: How will I know when I've achieved this? What metrics will I track? Achievable: goals should stretch you but not break you. Setting an impossible goal (lose 50 pounds in a month) leads to failure and demotivation. Consider your resources, constraints, and current situation. Ask: Is this realistic given my circumstances? What obstacles might I face? Relevant: goals should align with your values and long-term vision. A goal to 'make $1 million' is irrelevant if you value time freedom over money. Ask: Does this goal matter to me? Does it align with my values and bigger vision? Time-bound: deadlines create urgency and prevent procrastination. 'Someday' never comes. 'By December 31' forces action. Include milestones for long-term goals. Ask: When will I achieve this? What are my milestones? This workshop includes a step-by-step SMART goal template. You'll leave with crystal-clear, actionable goals."
+      },
+      { 
+        title: "Creating Your Action Plan", 
+        duration: "20 min", 
+        type: "video",
+        description: "Break down big goals into daily actions using proven project management and productivity frameworks.",
+        keyPoints: [
+          "Reverse engineering: start with the end in mind",
+          "The 90-day sprint: balancing urgency and sustainability",
+          "Daily non-negotiables: the actions that move the needle",
+          "Tracking and reviewing: weekly check-ins for course correction"
+        ],
+        content: "A goal without a plan is just a wish. This lesson teaches you to create actionable plans that bridge the gap between where you are and where you want to be. Reverse engineering: start with your goal and work backwards. If your goal is to run a marathon in 6 months, what needs to happen in month 5? Month 3? This week? This creates a roadmap. The 90-day sprint: long-term goals (1 year+) feel abstract and distant. Break them into 90-day sprints. What can you achieve in the next 90 days that moves you toward your goal? This creates urgency without burnout. Quarterly planning is used by top companies and high performers because it balances short-term focus with long-term vision. Breaking down goals: use the chunking method. If your goal is to write a book (overwhelming), break it down: 50,000 words ÷ 90 days = 555 words/day (manageable). Big goals become doable when broken into daily actions. Daily non-negotiables: identify the 1-3 actions that, if done daily, guarantee progress. For weight loss, it might be: track calories, exercise 30 minutes, drink 8 glasses of water. These become your daily non-negotiables - you do them no matter what. Tracking and reviewing: what gets measured gets managed. Track your daily actions and review weekly. Ask: What worked? What didn't? What do I need to adjust? This prevents you from staying on a failing path for months. This lesson provides templates for 90-day plans, weekly reviews, and daily action trackers. You'll have a clear roadmap to your goal."
+      },
+      { 
+        title: "Overcoming Obstacles", 
+        duration: "18 min", 
+        type: "video",
+        description: "Anticipate and overcome common obstacles that derail goal achievement using mental contrasting and contingency planning.",
+        keyPoints: [
+          "Mental contrasting: visualizing success AND obstacles",
+          "If-then planning: pre-deciding how you'll handle challenges",
+          "The fresh start effect: using new beginnings to reset",
+          "Self-compassion: bouncing back from setbacks"
+        ],
+        content: "Every goal faces obstacles. The difference between success and failure is how you handle them. This lesson teaches evidence-based strategies for overcoming obstacles. Mental contrasting: research by Gabriele Oettingen shows that positive visualization alone doesn't work - it can actually reduce motivation by making you feel like you've already succeeded. Instead, use mental contrasting: visualize your desired outcome, then visualize the obstacles you'll face. This creates realistic optimism and prepares you for challenges. If-then planning (implementation intentions): pre-decide how you'll handle obstacles. 'If I feel too tired to exercise, then I'll do a 10-minute walk instead.' 'If I'm tempted by junk food, then I'll eat an apple first.' This removes decision-making in the moment when willpower is low. Common obstacles: lack of time (solution: schedule it like an appointment), lack of motivation (solution: focus on identity, not outcomes), lack of support (solution: find an accountability partner), unexpected life events (solution: build flexibility into your plan). The fresh start effect: research shows that people are more likely to pursue goals after temporal landmarks (New Year, birthdays, Mondays). Use these as reset points. If you fall off track, don't wait until next year - use the next Monday as a fresh start. Self-compassion: research by Kristin Neff shows that self-compassion (treating yourself kindly after setbacks) predicts goal achievement better than self-criticism. When you stumble, acknowledge it without judgment, learn from it, and move forward. Beating yourself up leads to giving up. This lesson helps you anticipate obstacles and build resilience."
+      },
+      { 
+        title: "Accountability Systems", 
+        duration: "14 min", 
+        type: "video",
+        description: "Build external accountability structures that dramatically increase your odds of achieving goals.",
+        keyPoints: [
+          "The power of social accountability: you're 65% more likely to achieve goals when accountable to someone",
+          "Finding the right accountability partner: characteristics that matter",
+          "Commitment devices: making it costly to quit",
+          "Public declarations: the power of going public"
+        ],
+        content: "Research shows you're 65% more likely to achieve a goal if you commit to someone, and 95% more likely if you have ongoing accountability check-ins. This lesson teaches you to build accountability systems. Why accountability works: when you're only accountable to yourself, it's easy to rationalize excuses. External accountability creates social pressure (in a good way) and makes quitting harder. Finding an accountability partner: choose someone who: is also pursuing goals (mutual accountability), will be honest and supportive (not just cheerleading), is reliable (shows up for check-ins), and ideally has achieved similar goals. This could be a friend, colleague, or coach. Structure: meet weekly (in-person, phone, or video). Share what you committed to last week, what you actually did, what you learned, and what you're committing to this week. Keep it short (15-30 minutes) and consistent. Commitment devices: these are strategies that make quitting costly. Examples: financial stakes (bet money you'll achieve your goal using apps like StickK), public declarations (announce your goal on social media), prepayment (pay for a gym membership or course upfront), or accountability groups (join a mastermind or group program). The key is making the cost of quitting higher than the cost of continuing. Public declarations: research shows that publicly stating your goal increases commitment. Tell friends, family, or social media. The fear of public failure motivates action. But be careful: some research suggests that talking about goals can give you a premature sense of accomplishment. Balance public declaration with private execution. This lesson provides templates for accountability partnerships and commitment contracts. You'll build a system that keeps you on track."
+      }
     ],
     exercises: [
       "Goal Setting Worksheet",
