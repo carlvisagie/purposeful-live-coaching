@@ -1023,28 +1023,37 @@ export default function LiveSessionAssistant() {
             </CardContent>
           </Card>
 
-          {/* Coaching Prompts */}
-          <Card className="h-[400px] flex flex-col">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Lightbulb className="h-5 w-5 text-yellow-500" />
-                AI Coaching Prompts
+          {/* Coaching Scripts - Enhanced for Real-Time Reading */}
+          <Card className="h-[600px] flex flex-col">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Lightbulb className="h-5 w-5 text-yellow-500" />
+                  AI Coaching Scripts
+                </div>
+                <Badge variant="secondary">{coachingPrompts.length} scripts</Badge>
               </CardTitle>
+              <p className="text-xs text-gray-500 mt-1">
+                Scroll back anytime to find the exact phrase you need
+              </p>
             </CardHeader>
-            <CardContent className="flex-1 overflow-y-auto">
+            <CardContent className="flex-1 overflow-y-auto px-4">
               {coachingPrompts.length === 0 ? (
                 <div className="h-full flex items-center justify-center text-gray-500">
                   <div className="text-center">
                     <Brain className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p className="text-sm">AI will suggest coaching prompts during the session</p>
+                    <p className="text-sm">AI will generate full scripts during the session</p>
+                    <p className="text-xs mt-2 text-gray-400">
+                      You can pause, scroll back, and read word-for-word
+                    </p>
                   </div>
                 </div>
               ) : (
-                <div className="space-y-3">
-                  {coachingPrompts.map((prompt) => (
+                <div className="space-y-4">
+                  {coachingPrompts.map((prompt, index) => (
                     <div
                       key={prompt.id}
-                      className={`p-3 rounded-lg border-l-4 ${
+                      className={`p-4 rounded-lg border-l-4 shadow-sm ${
                         prompt.priority === "critical"
                           ? "bg-red-50 border-red-500"
                           : prompt.priority === "high"
@@ -1054,17 +1063,36 @@ export default function LiveSessionAssistant() {
                           : "bg-blue-50 border-blue-500"
                       }`}
                     >
-                      <div className="flex items-center gap-2 mb-1">
-                        {prompt.type === "warning" ? (
-                          <Shield className="h-4 w-4 text-red-600" />
-                        ) : prompt.type === "insight" ? (
-                          <TrendingUp className="h-4 w-4 text-blue-600" />
-                        ) : (
-                          <Lightbulb className="h-4 w-4 text-yellow-600" />
-                        )}
-                        <span className="font-semibold text-sm">{prompt.title}</span>
+                      {/* Header with timestamp and priority */}
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          {prompt.type === "warning" ? (
+                            <Shield className="h-4 w-4 text-red-600" />
+                          ) : prompt.type === "insight" ? (
+                            <TrendingUp className="h-4 w-4 text-blue-600" />
+                          ) : (
+                            <Lightbulb className="h-4 w-4 text-yellow-600" />
+                          )}
+                          <span className="font-semibold text-sm">{prompt.title}</span>
+                        </div>
+                        <span className="text-xs text-gray-500">
+                          {new Date().toLocaleTimeString()}
+                        </span>
                       </div>
-                      <p className="text-sm text-gray-700">{prompt.content}</p>
+
+                      {/* Full Script - Large, Readable */}
+                      <div className="bg-white p-3 rounded border border-gray-200 mb-2">
+                        <p className="text-base leading-relaxed text-gray-900">
+                          {prompt.content}
+                        </p>
+                      </div>
+
+                      {/* Technique Badge */}
+                      {prompt.technique && (
+                        <Badge variant="outline" className="text-xs">
+                          {prompt.technique}
+                        </Badge>
+                      )}
                     </div>
                   ))}
                   <div ref={promptsEndRef} />

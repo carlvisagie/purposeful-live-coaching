@@ -113,7 +113,7 @@ async function generateCoachingPrompts(
   transcriptSegment: string,
   sessionContext: string[]
 ) {
-  const promptGenerationRequest = `Based on this coaching session analysis, generate 1-3 actionable coaching prompts.
+  const promptGenerationRequest = `Based on this coaching session analysis, generate 1-3 FULL COACHING SCRIPTS (not short prompts).
 
 Current segment: "${transcriptSegment}"
 Emotions detected: ${analysis.emotions.join(", ")}
@@ -123,12 +123,20 @@ Themes: ${analysis.themes.join(", ")}
 
 Session context: ${sessionContext.join(" | ")}
 
-Generate coaching prompts that:
-1. Are specific and actionable
-2. Use evidence-based coaching techniques
-3. Are appropriate for the emotional state
-4. Include exact phrases the coach can use
-5. Flag any compliance concerns
+Generate FULL SCRIPTS that:
+1. Are COMPLETE phrases the coach can read word-for-word
+2. Are 2-4 sentences long (not just one sentence)
+3. Include follow-up questions or transition phrases
+4. Use evidence-based coaching techniques
+5. Are appropriate for the emotional state
+6. Flag any compliance concerns
+7. Sound natural and conversational (not robotic)
+
+EXAMPLE OF GOOD SCRIPT:
+"I'm noticing you mentioned sleep issues a few times. Can you tell me more about your sleep patterns? What time do you typically go to bed, and how long does it take you to fall asleep? Have you noticed any patterns in what helps or hinders your sleep?"
+
+EXAMPLE OF BAD SCRIPT (TOO SHORT):
+"Ask about sleep patterns."
 
 Return JSON format:
 {
@@ -137,7 +145,7 @@ Return JSON format:
       "type": "suggestion" | "warning" | "insight",
       "priority": "low" | "medium" | "high" | "critical",
       "title": "Brief title",
-      "content": "Detailed coaching prompt with exact phrases",
+      "content": "FULL SCRIPT - 2-4 complete sentences the coach can read word-for-word",
       "technique": "Name of coaching technique"
     }
   ]

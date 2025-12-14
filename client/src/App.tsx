@@ -27,6 +27,7 @@ import CoachDashboard from "./pages/CoachDashboard";
 import AutismDashboard from "./pages/AutismDashboard";
 import CreateAutismProfile from "./pages/CreateAutismProfile";
 import LiveSessionAssistant from "./pages/LiveSessionAssistant";
+import CoachingScripts from "./pages/CoachingScripts";
 import Pricing from "./pages/Pricing";
 import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 import SessionPurchaseSuccess from "./pages/SessionPurchaseSuccess";
@@ -72,6 +73,7 @@ function Router() {
       <Route path="/autism" component={AutismDashboard} />
       <Route path="/autism/create-profile" component={CreateAutismProfile} />
       <Route path="/live-session" component={LiveSessionAssistant} />
+      <Route path="/coaching-scripts" component={CoachingScripts} />
       <Route path="/pricing" component={Pricing} />
 
       <Route path="/subscription/success" component={SubscriptionSuccess} />
