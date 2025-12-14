@@ -28,6 +28,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Understanding Your Emotions", 
         duration: "15 min", 
         type: "video",
+        videoUrl: "/videos/emotional_wellness_lesson_1.mp4",
         description: "Learn the fundamental nature of emotions, their purpose in human experience, and how to identify and name your emotional states accurately.",
         keyPoints: [
           "Emotions are information - they tell us what matters",
@@ -54,6 +55,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Building Emotional Resilience", 
         duration: "20 min", 
         type: "video",
+        videoUrl: "/videos/emotional_wellness_lesson_2.mp4",
         description: "Discover evidence-based strategies for bouncing back from emotional setbacks and building long-term emotional strength.",
         keyPoints: [
           "Resilience is a skill that can be developed",
@@ -80,6 +82,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Emotion Regulation Techniques", 
         duration: "25 min", 
         type: "video",
+        videoUrl: "/videos/emotional_wellness_lesson_3.mp4",
         description: "Master evidence-based techniques for managing intense emotions and returning to emotional balance.",
         keyPoints: [
           "The STOP technique for emotional pausing",
@@ -208,6 +211,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Fitness Fundamentals", 
         duration: "16 min", 
         type: "video",
+        videoUrl: "/videos/physical_fitness_lesson_1.mp4",
         description: "Build a strong foundation in fitness principles that will serve you for life, regardless of your current fitness level.",
         keyPoints: [
           "The four pillars of fitness: strength, cardio, flexibility, and recovery",
@@ -234,6 +238,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Strength Training Basics", 
         duration: "25 min", 
         type: "video",
+        videoUrl: "/videos/physical_fitness_lesson_2.mp4",
         description: "Master the fundamental movement patterns and principles of strength training for lifelong strength and health.",
         keyPoints: [
           "The six fundamental movement patterns",
@@ -247,6 +252,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Cardio for Health", 
         duration: "18 min", 
         type: "video",
+        videoUrl: "/videos/physical_fitness_lesson_3.mp4",
         description: "Discover how to use cardiovascular exercise to build heart health, endurance, and metabolic fitness.",
         keyPoints: [
           "The difference between LISS, MISS, and HIIT cardio",
@@ -260,6 +266,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Recovery and Rest", 
         duration: "12 min", 
         type: "video",
+        videoUrl: "/videos/physical_fitness_lesson_4.mp4",
         description: "Understand why recovery is when your body actually gets stronger, and learn to optimize rest for maximum results.",
         keyPoints: [
           "Muscle growth happens during rest, not during workouts",
@@ -298,6 +305,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Nutrition Fundamentals", 
         duration: "20 min", 
         type: "video",
+        videoUrl: "/videos/nutrition_lesson_1.mp4",
         description: "Master the foundational principles of nutrition science to make informed food choices that support your health and goals.",
         keyPoints: [
           "Macronutrients: protein, carbohydrates, and fats - what they do and how much you need",
@@ -324,6 +332,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Meal Planning Mastery", 
         duration: "18 min", 
         type: "video",
+        videoUrl: "/videos/nutrition_lesson_2.mp4",
         description: "Develop a sustainable meal planning system that saves time, reduces stress, and ensures you eat well consistently.",
         keyPoints: [
           "Weekly planning: the key to consistent nutrition",
@@ -337,6 +346,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Intuitive Eating Principles", 
         duration: "16 min", 
         type: "video",
+        videoUrl: "/videos/nutrition_lesson_3.mp4",
         description: "Heal your relationship with food by learning to trust your body's hunger and fullness signals.",
         keyPoints: [
           "Rejecting diet mentality and food rules",
@@ -350,6 +360,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Nutrition for Performance", 
         duration: "22 min", 
         type: "video",
+        videoUrl: "/videos/nutrition_lesson_4.mp4",
         description: "Optimize your nutrition to support athletic performance, recovery, and body composition goals.",
         keyPoints: [
           "Fueling before, during, and after exercise",
@@ -388,6 +399,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Exploring Your Values", 
         duration: "17 min", 
         type: "video",
+        videoUrl: "/videos/spiritual_wellness_lesson_1.mp4",
         description: "Discover the core values that guide your decisions and define what truly matters to you.",
         keyPoints: [
           "Values vs. goals: understanding the difference",
@@ -427,6 +439,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Finding Your Purpose", 
         duration: "25 min", 
         type: "video",
+        videoUrl: "/videos/spiritual_wellness_lesson_2.mp4",
         description: "Discover your unique purpose through deep self-reflection and practical exercises.",
         keyPoints: [
           "Purpose is not one grand mission - it evolves",
@@ -440,6 +453,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Spiritual Rituals and Practices", 
         duration: "15 min", 
         type: "video",
+        videoUrl: "/videos/spiritual_wellness_lesson_3.mp4",
         description: "Create personal rituals that connect you to something greater and infuse daily life with meaning.",
         keyPoints: [
           "Rituals vs. routines: intention makes the difference",
@@ -1189,6 +1203,59 @@ export const wellnessModulesData: Record<string, any> = {
     bgColor: "bg-orange-50",
     longDescription: "Time management is outdated—energy management is the key to peak performance. Learn to align your tasks with your natural energy rhythms for maximum productivity and minimal burnout.",
     benefits: [
+    ],
+    lessons: [
+        {
+          title: "The Four Dimensions of Energy",
+          duration: "15 min",
+          type: "video",
+          description: "Discover the four key dimensions of personal energy—physical, emotional, mental, and spiritual—and learn why managing energy, not just time, is the key to high performance and a fulfilling life.",
+          keyPoints: [
+            "Energy, not time, is the fundamental currency of high performance.", "There are four distinct but interconnected dimensions of energy: physical, emotional, mental, and spiritual.", "Balancing energy expenditure with energy renewal is critical for sustainable success.", "Small, intentional rituals can dramatically improve your energy levels."
+          ],
+          content: "We live in a world that glorifies the hustle, where time management is hailed as the ultimate productivity hack. But what if we've been focusing on the wrong metric? The truth is, you can have all the time in the world, but without the energy to engage with it, you'll still fall short of your potential. This lesson introduces a paradigm shift: managing your energy, not your time. We'll explore the four core dimensions of personal energy: **physical** (the quantity of your energy), **emotional** (the quality of your energy), **mental** (the focus of your energy), and **spiritual** (the force of your energy). You'll learn how these dimensions are interconnected and how neglecting one can drain the others. We'll also introduce the concept of strategic renewal—the idea that you must intentionally and systematically replenish your energy stores to perform at your best. This isn't about working less; it's about working smarter, with more focus, engagement, and purpose. By the end of this lesson, you'll have a new framework for understanding your personal energy and a clear path toward building a more energized and fulfilling life."
+        }      ,
+        {
+          title: "Auditing Your Energy",
+          duration: "20 min",
+          type: "exercise",
+          description: "Complete a comprehensive energy audit to identify your biggest energy drains and opportunities for renewal. Gain clarity on where your energy is going and how to reclaim it.",
+          keyPoints: [
+            "Awareness is the first step to change.", "Identify specific activities, people, and thoughts that drain your energy.", "Recognize the subtle but significant impact of your environment on your energy levels.", "Create a personalized energy map to guide your renewal strategies."
+          ],
+          content: "You can't manage what you don't measure. Before you can build a more energized life, you need to understand where your energy is currently being spent. This lesson guides you through a comprehensive energy audit, a powerful exercise designed to bring awareness to your unique energy patterns. You'll learn to identify your personal 'energy vampires'—the activities, relationships, and thought patterns that are draining your vitality. We'll also explore the concept of 'energy givers'—the things that truly nourish and replenish you. You'll create a personalized energy map, a visual representation of your energy flows, which will serve as your guide for the rest of this module. This isn't about judgment; it's about honest self-assessment. By the end of this exercise, you'll have a clear, data-driven understanding of your energy landscape, empowering you to make targeted changes that will have the biggest impact on your overall energy levels."
+        }      ,
+        {
+          title: "The Power of Ultradian Rhythms",
+          duration: "15 min",
+          type: "video",
+          description: "Learn about the science of ultradian rhythms—the natural 90-120 minute cycles of energy and focus—and how to work with, not against, your body's natural rhythms to maximize productivity and prevent burnout.",
+          keyPoints: [
+            "Your body operates in natural 90-120 minute cycles of high and low energy.", "Working in focused sprints followed by short breaks is more effective than marathon sessions.", "Ignoring your body's need for rest leads to diminishing returns and burnout.", "Schedule your most important tasks during your peak energy cycles."
+          ],
+          content: "Our bodies have a natural, internal clock that governs our energy levels throughout the day. These are called ultradian rhythms, and they operate in 90-120 minute cycles. During each cycle, we move from a period of high energy and focus to a period of low energy and fatigue. The modern workday, with its expectation of constant, sustained effort, is in direct conflict with this biological reality. In this lesson, you'll learn to recognize the signs of your ultradian troughs—the moments when your body is telling you it's time to rest. We'll explore the science behind these rhythms and show you how to structure your day to align with them. You'll learn the power of the '90-minute focus block,' a strategy used by elite performers in every field to maximize their productivity. By working in focused sprints and then taking intentional breaks, you can achieve more in less time, all while feeling more energized and less stressed. This is the secret to sustainable high performance."
+        }      ,
+        {
+          title: "Designing Your Energy Renewal Rituals",
+          duration: "20 min",
+          type: "exercise",
+          description: "Design a personalized set of energy renewal rituals—small, intentional habits that you can integrate into your daily life to replenish your physical, emotional, mental, and spiritual energy.",
+          keyPoints: [
+            "Rituals are powerful because they are automatic and require little conscious effort.", "Create specific rituals for each of the four energy dimensions.", "Start small and build momentum over time.", "Your renewal rituals should be enjoyable and nourishing, not another chore."
+          ],
+          content: "Knowledge is not enough; it's the application of knowledge that creates change. In this lesson, you'll move from theory to practice by designing your own personalized energy renewal rituals. A ritual is a highly specific behavior that you do at a precise time, so that it becomes automatic and no longer requires conscious effort. We'll guide you through the process of creating a set of rituals tailored to your unique needs and preferences, covering all four dimensions of energy. For physical energy, this might be a 10-minute walk after lunch. For emotional energy, it could be a 2-minute gratitude practice. For mental energy, it might be turning off your phone for 30 minutes of focused work. And for spiritual energy, it could be a 5-minute journaling session at the end of the day. The key is to start small and be specific. By the end of this exercise, you'll have a concrete plan for integrating these powerful rituals into your daily life, creating a sustainable system for managing your energy and transforming your well-being."
+        }      ,
+        {
+          title: "The Mind-Body Connection",
+          duration: "15 min",
+          type: "video",
+          description: "Explore the profound connection between your mind and body, and learn how practices like mindfulness, breathwork, and nutrition can be used to regulate your energy and improve your overall well-being.",
+          keyPoints: [
+            "Your thoughts and emotions have a direct impact on your physical energy.", "Mindfulness and breathwork are powerful tools for managing stress and boosting energy.", "The food you eat is not just fuel; it's information that tells your body how to function.", "A holistic approach to energy management is the most effective."
+          ],
+          content: "The mind and body are not separate entities; they are a deeply interconnected system. Your thoughts, emotions, and beliefs have a profound impact on your physical health and energy levels. In this final lesson, we'll explore the science behind the mind-body connection and provide you with practical tools to leverage this connection for greater well-being. You'll learn how mindfulness meditation can reduce stress and improve focus, how specific breathing techniques can instantly shift your energy state, and how the food you eat can either drain or energize you. We'll also discuss the importance of sleep and movement in maintaining optimal energy levels. This lesson brings together all the concepts from the module, reinforcing the idea that true energy management requires a holistic approach. By learning to care for your mind, body, and spirit in an integrated way, you can unlock a new level of vitality and live a more energized, purposeful life."
+        }      
+    ],
       "Identify your peak performance hours",
       "Match tasks to energy levels",
       "Eliminate energy drains",
@@ -1226,7 +1293,8 @@ export const wellnessModulesData: Record<string, any> = {
       "Reduce jet lag and shift work issues"
     ],
     lessons: [
-      { title: "What is Circadian Rhythm?", duration: "16 min", type: "video" },
+      { title: "What is Circadian Rhythm?", duration: "16 min", type: "video" }
+,
       { title: "Light Exposure Optimization", duration: "14 min", type: "exercise" },
       { title: "Meal Timing for Health", duration: "18 min", type: "video" },
       { title: "Exercise Timing Strategies", duration: "15 min", type: "video" },
@@ -1256,7 +1324,8 @@ export const wellnessModulesData: Record<string, any> = {
       "Enhance digestive health"
     ],
     lessons: [
-      { title: "Hydration Science", duration: "15 min", type: "video" },
+      { title: "Hydration Science", duration: "15 min", type: "video" }
+,
       { title: "Calculating Your Water Needs", duration: "10 min", type: "exercise" },
       { title: "Natural Detox Strategies", duration: "19 min", type: "video" },
       { title: "Electrolyte Balance", duration: "14 min", type: "video" },
@@ -1286,7 +1355,8 @@ export const wellnessModulesData: Record<string, any> = {
       "Support sustainable living"
     ],
     lessons: [
-      { title: "Environmental Health Basics", duration: "17 min", type: "video" },
+      { title: "Environmental Health Basics", duration: "17 min", type: "video" }
+,
       { title: "Home Toxin Audit", duration: "20 min", type: "exercise" },
       { title: "Air Quality Optimization", duration: "15 min", type: "video" },
       { title: "Biophilic Design Principles", duration: "18 min", type: "video" },
@@ -1317,7 +1387,8 @@ export const wellnessModulesData: Record<string, any> = {
       "Negotiate salary and promotions confidently"
     ],
     lessons: [
-      { title: "Career Vision Mapping", duration: "20 min", type: "video" },
+      { title: "Career Vision Mapping", duration: "20 min", type: "video" }
+,
       { title: "Personal Branding Workshop", duration: "22 min", type: "exercise" },
       { title: "Strategic Networking", duration: "18 min", type: "video" },
       { title: "Career Transition Strategies", duration: "21 min", type: "video" },
@@ -1437,7 +1508,8 @@ export const wellnessModulesData: Record<string, any> = {
       "Lead with emotional intelligence"
     ],
     lessons: [
-      { title: "Leadership Foundations", duration: "21 min", type: "video" },
+      { title: "Leadership Foundations", duration: "21 min", type: "video" }
+,
       { title: "Your Leadership Style", duration: "17 min", type: "exercise" },
       { title: "Emotional Intelligence for Leaders", duration: "23 min", type: "video" },
       { title: "Decision-Making Frameworks", duration: "19 min", type: "video" },
@@ -1467,7 +1539,9 @@ export const wellnessModulesData: Record<string, any> = {
       "Build a sustainable creative practice"
     ],
     lessons: [
-      { title: "The Creative Mindset", duration: "18 min", type: "video" },
+      { title: "The Creative Mindset", duration: "18 min", type: "video" }
+
+,
       { title: "Brainstorming Techniques", duration: "15 min", type: "exercise" },
       { title: "Overcoming Creative Blocks", duration: "20 min", type: "video" },
       { title: "Design Thinking Process", duration: "24 min", type: "video" },
@@ -1587,7 +1661,8 @@ export const wellnessModulesData: Record<string, any> = {
       "Track and celebrate growth"
     ],
     lessons: [
-      { title: "Growth vs Fixed Mindset", duration: "17 min", type: "video" },
+      { title: "Growth vs Fixed Mindset", duration: "17 min", type: "video" }
+,
       { title: "Self-Assessment Exercise", duration: "20 min", type: "exercise" },
       { title: "Creating Your Development Plan", duration: "22 min", type: "video" },
       { title: "Learning How to Learn", duration: "19 min", type: "video" },
@@ -1617,7 +1692,8 @@ export const wellnessModulesData: Record<string, any> = {
       "Create memorable life experiences"
     ],
     lessons: [
-      { title: "The Power of Discomfort", duration: "18 min", type: "video" },
+      { title: "The Power of Discomfort", duration: "18 min", type: "video" }
+,
       { title: "Fear Setting Exercise", duration: "16 min", type: "exercise" },
       { title: "Calculated Risk-Taking", duration: "20 min", type: "video" },
       { title: "Building Courage", duration: "17 min", type: "video" },
@@ -1647,7 +1723,8 @@ export const wellnessModulesData: Record<string, any> = {
       "Live with intention and fulfillment"
     ],
     lessons: [
-      { title: "What is Purpose?", duration: "19 min", type: "video" },
+      { title: "What is Purpose?", duration: "19 min", type: "video" }
+,
       { title: "Purpose Discovery Workshop", duration: "25 min", type: "exercise" },
       { title: "Values Alignment", duration: "18 min", type: "video" },
       { title: "Creating Your Mission Statement", duration: "20 min", type: "exercise" },
