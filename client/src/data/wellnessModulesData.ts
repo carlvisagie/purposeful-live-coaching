@@ -746,11 +746,71 @@ export const wellnessModulesData: Record<string, any> = {
       "Design your environment for success"
     ],
     lessons: [
-      { title: "The Habit Loop Explained", duration: "16 min", type: "video" },
-      { title: "Identifying Your Keystone Habits", duration: "12 min", type: "exercise" },
-      { title: "Habit Stacking Mastery", duration: "18 min", type: "video" },
-      { title: "Breaking Bad Habits", duration: "20 min", type: "video" },
-      { title: "Environment Design for Habits", duration: "15 min", type: "video" }
+      { 
+        title: "The Habit Loop Explained", 
+        duration: "16 min", 
+        type: "video",
+        description: "Understand the neurological pattern that drives all habits and how to rewire it for lasting change.",
+        keyPoints: [
+          "The habit loop: cue, craving, response, reward",
+          "How habits are stored in the basal ganglia",
+          "Why willpower fails and systems succeed",
+          "The role of dopamine in habit formation"
+        ],
+        content: "Every habit follows a neurological pattern called the habit loop, discovered by MIT researchers. Understanding this loop is the key to building good habits and breaking bad ones. The habit loop has four stages: Cue (trigger that initiates the behavior), Craving (the motivational force - you don't crave the habit itself, you crave the change in state it delivers), Response (the actual habit you perform), and Reward (the end goal - it satisfies your craving and teaches your brain to remember this loop for the future). Example: Your phone buzzes (cue), you feel curious about the notification (craving), you check your phone (response), you satisfy your curiosity (reward). Your brain logs this: 'When phone buzzes, check it for satisfaction.' The neuroscience: habits are stored in the basal ganglia, a primitive part of your brain. This is why habits feel automatic - they literally bypass your conscious decision-making. Your prefrontal cortex (willpower center) has limited capacity, but your basal ganglia can run unlimited habits simultaneously. This is why 'just use willpower' fails. Why systems beat willpower: willpower is finite and depletes throughout the day. Systems (automatic habits) don't require willpower. The goal isn't to eliminate bad habits through sheer force - it's to redesign the habit loop. Dopamine's role: dopamine spikes when you anticipate reward, not when you receive it. This is why cravings drive behavior. Understanding this helps you engineer habits: make the cue obvious, the craving attractive, the response easy, and the reward satisfying. This lesson gives you the foundation for all habit change."
+      },
+      { 
+        title: "Identifying Your Keystone Habits", 
+        duration: "12 min", 
+        type: "exercise",
+        description: "Discover the small habits that create cascading positive changes across your entire life.",
+        keyPoints: [
+          "What makes a habit 'keystone': ripple effects across multiple areas",
+          "Common keystone habits: exercise, sleep, meditation",
+          "Identifying YOUR unique keystone habits",
+          "Starting small: the 2-minute rule"
+        ],
+        content: "Not all habits are created equal. Keystone habits are small changes that trigger chain reactions, transforming multiple areas of your life. This exercise helps you identify yours. What makes a keystone habit: it creates a ripple effect. When you exercise regularly, you naturally start eating better, sleeping better, being more productive, and feeling more confident. One habit cascades into many positive changes. Common keystone habits: Exercise (improves mood, energy, sleep, confidence, discipline), Quality sleep (improves decision-making, emotional regulation, physical health), Meditation (improves focus, emotional control, stress management), Making your bed (starts your day with a win, creates order), Meal planning (improves nutrition, saves money, reduces decision fatigue), Journaling (increases self-awareness, emotional processing, clarity). Identifying YOUR keystone habits: reflect on your past. When have you felt your best? What habits were you practicing? What single habit, if established, would make the biggest difference in your life right now? Consider your current challenges - what habit would address multiple issues? The 2-minute rule: start ridiculously small. Want to build an exercise habit? Start with 2 minutes of movement. Want to meditate? Start with 2 minutes. The goal isn't the 2 minutes - it's to establish the identity ('I'm someone who exercises daily'). Once the habit is established, you can scale up. But most people fail because they start too big. This exercise includes a keystone habit identification worksheet. You'll leave with 1-3 keystone habits to focus on."
+      },
+      { 
+        title: "Habit Stacking Mastery", 
+        duration: "18 min", 
+        type: "video",
+        description: "Build new habits by linking them to existing routines, creating automatic behavior chains.",
+        keyPoints: [
+          "The habit stacking formula: After [CURRENT HABIT], I will [NEW HABIT]",
+          "Choosing the right anchor habit: frequency and consistency matter",
+          "Stacking multiple habits: building powerful routines",
+          "Common mistakes and how to avoid them"
+        ],
+        content: "Habit stacking is a powerful technique developed by BJ Fogg and popularized by James Clear. Instead of relying on motivation, you link new habits to existing ones, creating automatic chains. The formula: 'After [CURRENT HABIT], I will [NEW HABIT].' Examples: 'After I pour my morning coffee, I will meditate for 2 minutes.' 'After I sit down for dinner, I will say one thing I'm grateful for.' 'After I close my laptop at end of workday, I will do 10 pushups.' The power: your current habit serves as the cue for your new habit. You don't need to remember or rely on motivation - the existing habit triggers the new one automatically. Choosing anchor habits: pick habits you already do consistently (brushing teeth, pouring coffee, sitting down at your desk, getting in your car, etc.). The more consistent the anchor, the more reliable the stack. Frequency matters: if you want a daily habit, anchor it to a daily habit. Stacking multiple habits: you can create powerful routines by stacking several habits. Morning routine example: 'After my alarm goes off, I will drink a glass of water. After I drink water, I will do 5 minutes of stretching. After I stretch, I will meditate for 5 minutes. After I meditate, I will write 3 things I'm grateful for.' This creates an automatic sequence. Common mistakes: Stacking too many habits at once (start with 1-2), Choosing inconsistent anchors (habits you don't do reliably), Making the new habit too big (keep it small), Not being specific about the anchor (vague cues don't trigger behavior). This lesson includes habit stacking templates for morning, evening, and work routines. You'll build automatic behavior chains."
+      },
+      { 
+        title: "Breaking Bad Habits", 
+        duration: "20 min", 
+        type: "video",
+        description: "Eliminate destructive habits by understanding their function and replacing them with healthier alternatives.",
+        keyPoints: [
+          "You can't eliminate a bad habit, you can only replace it",
+          "Identifying the true craving: what need does this habit serve?",
+          "Making bad habits invisible, unattractive, difficult, and unsatisfying",
+          "Replacement habits: finding healthier alternatives"
+        ],
+        content: "Bad habits are hard to break because they serve a function. This lesson teaches you to eliminate destructive patterns by addressing their root cause. The replacement principle: neuroscience shows you can't simply delete a habit - the neural pathway remains. Instead, you must replace the bad habit with a better one that satisfies the same craving. Example: if you stress-eat, you can't just 'stop eating when stressed.' You need a replacement that relieves stress (walk, call a friend, deep breathing). Identifying the true craving: bad habits persist because they provide a reward. Smoking isn't about nicotine - it's about stress relief, social connection, or taking a break. Identify what your bad habit actually provides. Ask: What do I feel right before doing this habit? What do I feel after? What would I lose if I stopped? The four laws of breaking bad habits (inverse of building good habits): Make it invisible (remove cues - if you watch too much TV, unplug it and put the remote in another room), Make it unattractive (reframe it - instead of 'I can't have junk food,' say 'I don't eat junk food' - identity shift), Make it difficult (add friction - if you scroll social media too much, log out after each use and delete apps from your phone), Make it unsatisfying (accountability partner, habit tracker where you mark days you avoid the habit). Common bad habits and replacements: Stress eating → Stress walk or call a friend, Excessive social media → Read a book or call someone, Procrastination → 2-minute rule (just start for 2 minutes), Nail biting → Hold a stress ball, Smoking → Chew gum or do deep breathing. The key is finding a replacement that satisfies the same craving. This lesson provides a bad habit elimination worksheet. You'll identify the function of your bad habit and design a replacement strategy."
+      },
+      { 
+        title: "Environment Design for Habits", 
+        duration: "15 min", 
+        type: "video",
+        description: "Engineer your physical environment to make good habits inevitable and bad habits impossible.",
+        keyPoints: [
+          "Environment is the invisible hand that shapes behavior",
+          "The 20-second rule: reducing friction for good habits",
+          "Visual cues: making good habits obvious",
+          "Removing temptation: out of sight, out of mind"
+        ],
+        content: "Your environment shapes your behavior more than motivation or willpower. This lesson teaches you to design spaces that make success inevitable. Environment is the invisible hand: research shows that behavior is a function of the person AND the environment. You can have strong willpower, but if your environment works against you, you'll fail. Example: keeping junk food in your pantry and expecting willpower to resist is setting yourself up for failure. Remove the junk food (change environment) and you don't need willpower. The 20-second rule: Shawn Achor's research shows that reducing the activation energy for good habits by just 20 seconds dramatically increases follow-through. Examples: Want to exercise in the morning? Sleep in your workout clothes. Want to eat healthier? Pre-cut vegetables and put them at eye level in your fridge. Want to read more? Place a book on your pillow. The easier you make good habits, the more likely you'll do them. Increasing friction for bad habits: make bad habits 20 seconds harder. Want to watch less TV? Unplug it and put the remote in another room. Want to reduce social media? Delete apps from your phone (you can still access via browser, but the extra friction reduces mindless scrolling). Visual cues: make good habits obvious. Want to drink more water? Put a water bottle on your desk. Want to take vitamins? Put them next to your coffee maker. Want to practice guitar? Put your guitar in the middle of your living room. The more visible the cue, the more likely you'll act. Context matters: designate specific spaces for specific activities. Work at your desk, relax on your couch, sleep in your bed. Don't blur contexts (no working in bed) - this weakens the environmental cues. This lesson includes an environment audit checklist. You'll redesign your spaces for success."
+      }
     ],
     exercises: [
       "Habit Tracker Template",
