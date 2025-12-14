@@ -97,6 +97,9 @@ export default function LiveSessionAssistant() {
   const [detectedTriggers, setDetectedTriggers] = useState<string[]>([]);
   const [coachingPrompts, setCoachingPrompts] = useState<CoachingPrompt[]>([]);
 
+  // API mutations
+  const uploadAudioMutation = trpc.audioUpload.uploadAudioChunk.useMutation();
+
   // Session notes
   const [sessionNotes, setSessionNotes] = useState("");
   const [keyInsights, setKeyInsights] = useState<string[]>([]);
@@ -673,13 +676,25 @@ export default function LiveSessionAssistant() {
     }
 
     try {
-      // Upload audio to S3 first
-      const formData = new FormData();
-      formData.append("file", audioBlob, "audio-chunk.webm");
+      // Convert audio blob to base64
+      const reader = new FileReader();
+      const audioBase64 = await new Promise<string>((resolve, reject) => {
+        reader.onloadend = () => {
+          const base64 = (reader.result as string).split(',')[1];
+          resolve(base64);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(audioBlob);
+      });
+
+      // Upload audio to S3
+      const uploadResult = await uploadAudioMutation.mutateAsync({
+        sessionId: sessionData.sessionId,
+        audioData: audioBase64,
+        mimeType: audioBlob.type,
+      });
       
-      // TODO: Upload to S3 and get URL
-      // For now, use a placeholder
-      const audioUrl = "https://placeholder-audio-url.com/chunk.webm";
+      const audioUrl = uploadResult.audioUrl;
       
       // Call transcription
       await transcribeMutation.mutateAsync({
