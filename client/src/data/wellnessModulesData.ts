@@ -294,11 +294,71 @@ export const wellnessModulesData: Record<string, any> = {
       "Prevent chronic disease through dietary choices"
     ],
     lessons: [
-      { title: "Nutrition Fundamentals", duration: "20 min", type: "video" },
-      { title: "Building Your Plate", duration: "15 min", type: "exercise" },
-      { title: "Meal Planning Mastery", duration: "18 min", type: "video" },
-      { title: "Intuitive Eating Principles", duration: "16 min", type: "video" },
-      { title: "Nutrition for Performance", duration: "22 min", type: "video" }
+      { 
+        title: "Nutrition Fundamentals", 
+        duration: "20 min", 
+        type: "video",
+        description: "Master the foundational principles of nutrition science to make informed food choices that support your health and goals.",
+        keyPoints: [
+          "Macronutrients: protein, carbohydrates, and fats - what they do and how much you need",
+          "Micronutrients: vitamins and minerals that power your body",
+          "Caloric balance: understanding energy in vs. energy out",
+          "Bio-individuality: why one-size-fits-all diets fail"
+        ],
+        content: "Nutrition is simultaneously simple and complex. At its core, food provides energy (measured in calories) and nutrients (vitamins, minerals, and compounds) that your body needs to function. This lesson demystifies nutrition science, starting with the three macronutrients: protein (builds and repairs tissue, 4 calories per gram), carbohydrates (primary energy source, 4 calories per gram), and fats (hormone production and nutrient absorption, 9 calories per gram). You'll learn that no macronutrient is inherently 'bad' - each serves essential functions. You'll discover micronutrients - vitamins and minerals that don't provide energy but enable countless bodily processes. You'll understand caloric balance: eat more than you burn and you gain weight; eat less and you lose weight; eat about the same and you maintain. But here's the crucial insight: optimal nutrition isn't just about calories and macros. It's about food quality, nutrient density, timing, and bio-individuality - your unique needs based on genetics, activity level, health status, and goals. This lesson gives you the foundational knowledge to cut through diet fads and make informed choices."
+      },
+      { 
+        title: "Building Your Plate", 
+        duration: "15 min", 
+        type: "exercise",
+        description: "Learn to construct balanced, nutritious meals using simple visual guidelines that work for any eating style.",
+        keyPoints: [
+          "The plate method: visual portion control without measuring",
+          "Protein at every meal for satiety and muscle maintenance",
+          "Colorful vegetables for micronutrients and fiber",
+          "Smart carbohydrate choices based on activity level"
+        ],
+        content: "Counting calories and weighing food works, but it's tedious and unsustainable for most people. This practical exercise teaches you the plate method - a simple visual system for building balanced meals without measuring. Picture your plate: fill half with non-starchy vegetables (leafy greens, broccoli, peppers, etc.) for volume, fiber, and micronutrients. Fill one quarter with lean protein (chicken, fish, tofu, legumes) for satiety and muscle maintenance. Fill the remaining quarter with quality carbohydrates - the amount and type depend on your activity level. Very active? Choose starchy carbs like rice, potatoes, or oats. Sedentary? Opt for more vegetables or smaller portions of whole grains. Add a serving of healthy fats (olive oil, avocado, nuts) and you have a complete, balanced meal. This method works for any dietary preference - omnivore, vegetarian, vegan, paleo, keto (adjust the ratios). You'll practice building sample meals for breakfast, lunch, and dinner, learning to eyeball portions and make smart substitutions based on what's available."
+      },
+      { 
+        title: "Meal Planning Mastery", 
+        duration: "18 min", 
+        type: "video",
+        description: "Develop a sustainable meal planning system that saves time, reduces stress, and ensures you eat well consistently.",
+        keyPoints: [
+          "Weekly planning: the key to consistent nutrition",
+          "Batch cooking and meal prep strategies",
+          "Building a rotation of go-to meals",
+          "Flexible planning that accommodates life's unpredictability"
+        ],
+        content: "The difference between people who eat well consistently and those who don't usually isn't willpower - it's planning. This lesson teaches you to create a meal planning system that works with your life, not against it. You'll learn to dedicate 30 minutes each week to planning your meals, creating a shopping list, and preparing for the week ahead. You'll discover batch cooking strategies: cook once, eat multiple times. Prepare a large batch of protein (grilled chicken, ground turkey, baked tofu), chop vegetables for the week, cook a big pot of grains, and you have mix-and-match components for quick meals. You'll build a rotation of 10-15 go-to meals that you can make without thinking - this eliminates decision fatigue. Crucially, you'll learn flexible planning: have backup options for busy days (healthy frozen meals, simple scrambled eggs, pre-made salads), and don't aim for perfection. If you eat well 80% of the time, you'll see results. This lesson transforms meal planning from an overwhelming chore into a simple weekly habit that sets you up for success."
+      },
+      { 
+        title: "Intuitive Eating Principles", 
+        duration: "16 min", 
+        type: "video",
+        description: "Heal your relationship with food by learning to trust your body's hunger and fullness signals.",
+        keyPoints: [
+          "Rejecting diet mentality and food rules",
+          "Honoring hunger and respecting fullness",
+          "Making peace with food - no foods are forbidden",
+          "Coping with emotions without using food"
+        ],
+        content: "Decades of dieting have disconnected many people from their body's natural hunger and fullness signals. Intuitive eating is an evidence-based approach that helps you rebuild trust with your body and develop a peaceful relationship with food. This lesson introduces the core principles: reject the diet mentality (diets don't work long-term and damage your relationship with food), honor your hunger (don't let yourself get ravenously hungry), feel your fullness (eat until satisfied, not stuffed), challenge the food police (no foods are 'good' or 'bad'), discover satisfaction (eat foods you actually enjoy), cope with emotions without food (find non-food ways to comfort yourself), respect your body (accept your genetic blueprint), and honor your health with gentle nutrition (you don't have to eat perfectly to be healthy). Intuitive eating isn't a free-for-all - it's about tuning into your body's wisdom. When you stop restricting and labeling foods as forbidden, you often find that you naturally gravitate toward foods that make you feel good. This approach is particularly powerful for people who've struggled with yo-yo dieting, disordered eating, or chronic restriction."
+      },
+      { 
+        title: "Nutrition for Performance", 
+        duration: "22 min", 
+        type: "video",
+        description: "Optimize your nutrition to support athletic performance, recovery, and body composition goals.",
+        keyPoints: [
+          "Fueling before, during, and after exercise",
+          "Protein timing for muscle growth and recovery",
+          "Carbohydrate cycling based on training intensity",
+          "Hydration and electrolyte balance"
+        ],
+        content: "If you're physically active - whether you're a competitive athlete or just someone who works out regularly - strategic nutrition can significantly enhance your performance and results. This advanced lesson teaches you to fuel your training intelligently. You'll learn pre-workout nutrition: eat a meal with carbs and protein 2-3 hours before training for sustained energy, or a small snack 30-60 minutes before for quick fuel. You'll discover intra-workout nutrition: for sessions longer than 90 minutes, consume easily digestible carbs to maintain performance. You'll master post-workout nutrition: the 'anabolic window' isn't as narrow as once believed, but eating protein and carbs within a few hours supports recovery. You'll understand protein timing: distribute protein intake across 3-5 meals (20-40g per meal) to maximize muscle protein synthesis. You'll learn carbohydrate cycling: eat more carbs on high-intensity training days, fewer on rest or low-intensity days. And you'll grasp hydration: drink enough that your urine is pale yellow, and replace electrolytes (sodium, potassium, magnesium) during long or intense sessions. Performance nutrition isn't about supplements and complicated protocols - it's about consistent fundamentals applied intelligently."
+      }
     ],
     exercises: [
       "Food Journal Template",
