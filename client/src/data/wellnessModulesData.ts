@@ -204,11 +204,71 @@ export const wellnessModulesData: Record<string, any> = {
       "Build sustainable fitness habits"
     ],
     lessons: [
-      { title: "Fitness Fundamentals", duration: "16 min", type: "video" },
-      { title: "Creating Your Workout Plan", duration: "20 min", type: "exercise" },
-      { title: "Strength Training Basics", duration: "25 min", type: "video" },
-      { title: "Cardio for Health", duration: "18 min", type: "video" },
-      { title: "Recovery and Rest", duration: "12 min", type: "video" }
+      { 
+        title: "Fitness Fundamentals", 
+        duration: "16 min", 
+        type: "video",
+        description: "Build a strong foundation in fitness principles that will serve you for life, regardless of your current fitness level.",
+        keyPoints: [
+          "The four pillars of fitness: strength, cardio, flexibility, and recovery",
+          "Progressive overload: the key to continuous improvement",
+          "Form over ego: why technique matters more than weight",
+          "Consistency beats intensity: building sustainable habits"
+        ],
+        content: "Physical fitness is not about achieving a perfect body or competing with others - it's about building strength, energy, and vitality that enhance every area of your life. This foundational lesson introduces the four essential components of complete fitness: strength training (building muscle and bone density), cardiovascular exercise (heart and lung health), flexibility and mobility (range of motion and injury prevention), and recovery (allowing your body to adapt and grow stronger). You'll learn the principle of progressive overload - gradually increasing the demands on your body to stimulate adaptation. Most importantly, you'll understand that perfect form and consistent practice matter far more than lifting heavy weights or running fast. Fitness is a lifelong journey, not a destination. This lesson gives you the roadmap to build a body that serves you well for decades to come."
+      },
+      { 
+        title: "Creating Your Workout Plan", 
+        duration: "20 min", 
+        type: "exercise",
+        description: "Design a personalized workout plan that fits your goals, schedule, and current fitness level.",
+        keyPoints: [
+          "Assessing your current fitness level honestly",
+          "Setting SMART fitness goals",
+          "Balancing different types of exercise",
+          "Scheduling workouts you'll actually do"
+        ],
+        content: "Generic workout plans fail because they don't account for your unique life, goals, and constraints. This practical exercise guides you through creating a personalized fitness plan that works for YOU. You'll start with an honest assessment of your current fitness level - not to judge yourself, but to establish a realistic starting point. You'll set SMART goals (Specific, Measurable, Achievable, Relevant, Time-bound) that motivate rather than overwhelm you. You'll learn to balance strength training, cardio, and flexibility work in a way that supports your goals - whether that's fat loss, muscle gain, athletic performance, or simply feeling better in your body. Most crucially, you'll schedule workouts at times when you're actually likely to do them, accounting for your energy levels, work schedule, and family commitments. The best workout plan is the one you'll actually follow. This exercise helps you create exactly that."
+      },
+      { 
+        title: "Strength Training Basics", 
+        duration: "25 min", 
+        type: "video",
+        description: "Master the fundamental movement patterns and principles of strength training for lifelong strength and health.",
+        keyPoints: [
+          "The six fundamental movement patterns",
+          "Progressive resistance: starting light and building up",
+          "Proper form for key exercises (squat, hinge, push, pull)",
+          "Why strength training is essential for everyone, not just bodybuilders"
+        ],
+        content: "Strength training is perhaps the single most important type of exercise for long-term health and quality of life. It builds muscle mass (which declines with age), increases bone density (preventing osteoporosis), boosts metabolism, improves insulin sensitivity, and enhances functional capacity for daily activities. This comprehensive lesson teaches you the six fundamental movement patterns that form the foundation of all strength training: squat (sitting and standing), hinge (bending and lifting), push (pressing away), pull (drawing toward), carry (holding and moving with load), and core stability (resisting unwanted movement). You'll learn proper form for essential exercises like bodyweight squats, deadlifts, push-ups, and rows. You'll understand the principle of progressive resistance - starting with manageable weights and gradually increasing over time. Whether you train with barbells, dumbbells, resistance bands, or just your bodyweight, these principles remain constant. Strength training isn't about vanity - it's about building a resilient, capable body that serves you well throughout life."
+      },
+      { 
+        title: "Cardio for Health", 
+        duration: "18 min", 
+        type: "video",
+        description: "Discover how to use cardiovascular exercise to build heart health, endurance, and metabolic fitness.",
+        keyPoints: [
+          "The difference between LISS, MISS, and HIIT cardio",
+          "Heart rate zones and why they matter",
+          "Finding cardio activities you actually enjoy",
+          "Balancing cardio with strength training"
+        ],
+        content: "Cardiovascular exercise strengthens your heart, improves lung capacity, enhances endurance, and supports metabolic health. But not all cardio is created equal, and more isn't always better. This lesson explores three types of cardio training: LISS (Low-Intensity Steady State) like walking or easy cycling, which builds aerobic base and aids recovery; MISS (Moderate-Intensity Steady State) like jogging or swimming, which improves cardiovascular fitness; and HIIT (High-Intensity Interval Training), which maximizes calorie burn and metabolic benefits in minimal time. You'll learn about heart rate zones - how to calculate your max heart rate and train in different zones for different benefits. Most importantly, you'll discover that the best cardio is the kind you'll actually do consistently. Hate running? Try cycling, swimming, rowing, dancing, or hiking. Love team sports? Basketball and soccer provide excellent cardio. The key is finding movement you enjoy enough to sustain long-term. You'll also learn how to balance cardio with strength training - they're complementary, not competing priorities."
+      },
+      { 
+        title: "Recovery and Rest", 
+        duration: "12 min", 
+        type: "video",
+        description: "Understand why recovery is when your body actually gets stronger, and learn to optimize rest for maximum results.",
+        keyPoints: [
+          "Muscle growth happens during rest, not during workouts",
+          "Active recovery vs. complete rest",
+          "Sleep: the most powerful recovery tool",
+          "Recognizing and preventing overtraining"
+        ],
+        content: "Here's a truth that surprises many people: you don't get stronger during workouts - you get stronger during recovery. Exercise creates micro-tears in muscle fibers and stresses your cardiovascular system. It's during rest that your body repairs this damage and adapts by building back stronger. This lesson teaches you to view recovery not as laziness, but as an essential component of your fitness program. You'll learn the difference between active recovery (light movement like walking or yoga that promotes blood flow and healing) and complete rest (days off from structured exercise). You'll discover why sleep is the most powerful recovery tool available - during deep sleep, your body releases growth hormone, repairs tissue, and consolidates motor learning. You'll understand the signs of overtraining: persistent fatigue, declining performance, increased injury risk, mood changes, and elevated resting heart rate. Most people don't train too hard - they recover too little. This lesson helps you optimize recovery so your hard work in the gym actually translates to results."
+      }
     ],
     exercises: [
       "Personalized Workout Template",
