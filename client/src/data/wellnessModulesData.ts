@@ -475,11 +475,71 @@ export const wellnessModulesData: Record<string, any> = {
       "Attract and maintain healthy relationships"
     ],
     lessons: [
-      { title: "Communication Fundamentals", duration: "19 min", type: "video" },
-      { title: "Active Listening Practice", duration: "14 min", type: "exercise" },
-      { title: "Healthy Boundaries 101", duration: "21 min", type: "video" },
-      { title: "Conflict Resolution Strategies", duration: "18 min", type: "video" },
-      { title: "Building Emotional Intimacy", duration: "16 min", type: "video" }
+      { 
+        title: "Communication Fundamentals", 
+        duration: "19 min", 
+        type: "video",
+        description: "Master the essential communication skills that transform relationships from surface-level to deeply connected.",
+        keyPoints: [
+          "The four communication styles: passive, aggressive, passive-aggressive, assertive",
+          "'I' statements: expressing needs without blame",
+          "Nonverbal communication: body language speaks louder than words",
+          "The 5:1 ratio: positive to negative interactions in healthy relationships"
+        ],
+        content: "Communication is the foundation of every relationship - romantic, family, friendship, professional. Yet most of us never learned how to communicate effectively. This lesson teaches you the core skills. First, understand the four communication styles: Passive (avoiding conflict, suppressing needs, saying 'yes' when you mean 'no'), Aggressive (demanding, blaming, dominating), Passive-Aggressive (indirect hostility, sarcasm, silent treatment), and Assertive (clear, direct, respectful expression of needs and boundaries). Assertive communication is the goal - it honors both your needs and the other person's. You'll learn 'I' statements: instead of 'You never listen to me' (blame), say 'I feel unheard when I'm interrupted' (ownership of your experience). This reduces defensiveness and opens dialogue. Nonverbal communication: your tone, facial expressions, and body language convey more than your words. Crossed arms, lack of eye contact, or a dismissive tone can contradict your verbal message. Practice congruence - ensure your nonverbal cues match your words. The Gottman Institute's research shows that healthy relationships have a 5:1 ratio of positive to negative interactions. For every criticism or conflict, you need five positive interactions (appreciation, affection, humor, support) to maintain relationship health. This lesson transforms how you communicate, leading to deeper understanding, less conflict, and stronger connections."
+      },
+      { 
+        title: "Active Listening Practice", 
+        duration: "14 min", 
+        type: "exercise",
+        description: "Develop the powerful skill of truly hearing others - the foundation of connection and trust.",
+        keyPoints: [
+          "Listening to understand vs. listening to respond",
+          "Reflective listening: mirroring back what you heard",
+          "Validating emotions: you don't have to agree to acknowledge",
+          "Avoiding common listening blocks: advising, one-upping, fixing"
+        ],
+        content: "Most people don't listen to understand - they listen to respond. While the other person is talking, they're formulating their reply, waiting for their turn to speak. This isn't listening; it's a conversation transaction. Active listening is the practice of fully focusing on understanding the other person's perspective, emotions, and needs. This transformational exercise teaches you how. First, set the intention to understand, not to fix, advise, or judge. When someone shares with you, your job is to hear them, not solve their problem (unless they explicitly ask for advice). Reflective listening: periodically mirror back what you heard: 'It sounds like you're feeling overwhelmed by work demands and frustrated that your manager doesn't recognize your efforts.' This shows you're listening and allows them to clarify if you misunderstood. Validating emotions: you don't have to agree with someone's perspective to acknowledge their feelings. 'That sounds really difficult' or 'I can see why you'd feel that way' validates their experience. Validation is profoundly healing. Avoid common listening blocks: Advising ('Here's what you should do...'), One-upping ('That's nothing, let me tell you what happened to me...'), Fixing ('Don't feel that way'), Interrogating (rapid-fire questions), or Minimizing ('It's not that bad'). These blocks shut down connection. This exercise includes partner practice: one person shares for 3 minutes while the other practices active listening, then switch. Active listening is a skill that transforms all your relationships - people feel seen, heard, and valued."
+      },
+      { 
+        title: "Healthy Boundaries 101", 
+        duration: "21 min", 
+        type: "video",
+        description: "Learn to set clear boundaries that protect your well-being while maintaining healthy relationships.",
+        keyPoints: [
+          "Boundaries are not walls - they're guidelines for how you want to be treated",
+          "The six types of boundaries: physical, emotional, time, sexual, intellectual, material",
+          "How to communicate boundaries clearly and compassionately",
+          "Dealing with boundary violations: consequences, not punishment"
+        ],
+        content: "Boundaries are the invisible lines that define where you end and another person begins. They protect your physical space, emotional energy, time, values, and resources. Healthy boundaries are essential for self-respect and healthy relationships. This lesson teaches you to identify, set, and maintain boundaries. First, understand that boundaries are not selfish or mean - they're necessary. Boundaries are not walls that keep people out; they're guidelines for how you want to be treated. The six types of boundaries: Physical (personal space, touch), Emotional (not taking responsibility for others' feelings, not allowing others to dump their emotions on you), Time (how you spend your time, saying no to commitments), Sexual (consent, comfort level), Intellectual (respecting differing opinions), and Material (money, possessions). You'll assess your current boundaries: Do you say 'yes' when you mean 'no'? Do you feel responsible for others' emotions? Do you tolerate disrespectful treatment? Weak boundaries lead to resentment, exhaustion, and loss of self. Setting boundaries: be clear, direct, and unapologetic. 'I'm not available to talk after 9 PM' or 'I need you to ask before borrowing my things.' You don't need to justify or over-explain. Dealing with violations: boundaries without consequences are just suggestions. If someone repeatedly violates your boundary, enforce a consequence: 'I asked you not to criticize my parenting. If you do it again, I'll end the conversation.' This lesson is transformational because boundaries are an act of self-love that paradoxically improve relationships."
+      },
+      { 
+        title: "Conflict Resolution Strategies", 
+        duration: "18 min", 
+        type: "video",
+        description: "Transform conflicts from destructive battles into opportunities for deeper understanding and growth.",
+        keyPoints: [
+          "Conflict is inevitable and not inherently bad",
+          "The four horsemen of relationship apocalypse: criticism, contempt, defensiveness, stonewalling",
+          "The repair attempt: de-escalating before damage is done",
+          "Win-win solutions: collaborative problem-solving"
+        ],
+        content: "Conflict is inevitable in any relationship. The question isn't whether you'll have conflict, but how you'll handle it. Handled poorly, conflict erodes trust and connection. Handled well, conflict deepens understanding and strengthens bonds. This lesson teaches you to navigate conflict constructively. First, reframe conflict: it's not a battle to win or lose, it's a problem to solve together. The goal isn't to prove you're right; it's to understand each other and find a solution that works for both of you. The Gottman Institute identified the 'four horsemen' that predict relationship failure: Criticism (attacking character, not behavior: 'You're so selfish'), Contempt (disrespect, mockery, sarcasm - the most toxic), Defensiveness (playing the victim, making excuses), and Stonewalling (shutting down, refusing to engage). Avoid these at all costs. Instead, practice: Complaining without criticizing ('I felt hurt when you forgot our anniversary' vs. 'You don't care about me'), Expressing appreciation even in conflict, Taking responsibility for your part, and Staying engaged even when it's uncomfortable. The repair attempt: when conflict escalates, make a bid to de-escalate: 'I'm sorry, I'm getting too heated. Can we take a break and come back to this?' or even humor: 'We're both being ridiculous right now.' Repair attempts prevent lasting damage. Collaborative problem-solving: state the problem from both perspectives, brainstorm solutions together, choose one to try, and agree to revisit if it doesn't work. This lesson transforms conflict from something to avoid into an opportunity for growth."
+      },
+      { 
+        title: "Building Emotional Intimacy", 
+        duration: "16 min", 
+        type: "video",
+        description: "Cultivate deep emotional connection through vulnerability, trust, and authentic sharing.",
+        keyPoints: [
+          "Emotional intimacy vs. physical intimacy: both are essential",
+          "Vulnerability: the courage to be seen",
+          "The 36 questions that lead to love: accelerating connection",
+          "Rituals of connection: daily practices that maintain intimacy"
+        ],
+        content: "Emotional intimacy is the feeling of being truly known and accepted by another person. It's created through vulnerability, trust, and authentic sharing. Many relationships have physical intimacy but lack emotional intimacy, leaving partners feeling lonely despite being together. This lesson teaches you to build and maintain deep emotional connection. Emotional intimacy requires vulnerability - the willingness to share your true thoughts, feelings, fears, and desires, even when it's uncomfortable. Brené Brown defines vulnerability as 'uncertainty, risk, and emotional exposure.' It's scary because you risk rejection, but it's also the birthplace of love, belonging, and connection. You cannot have intimacy without vulnerability. Start small: share something you're proud of, something you're worried about, a childhood memory. Notice how it feels to be seen. The 36 questions that lead to love: psychologist Arthur Aron created a series of increasingly personal questions that accelerate intimacy. Questions like 'If you could wake up tomorrow having gained one quality, what would it be?' or 'When did you last cry in front of another person?' These questions bypass small talk and create real connection. Rituals of connection: daily practices that maintain intimacy. This might be a morning coffee together without phones, a nightly check-in where you each share a high and low from your day, or a weekly date night. Consistency matters more than grand gestures. This lesson is transformational because emotional intimacy is what makes relationships deeply fulfilling and resilient."
+      }
     ],
     exercises: [
       "Communication Style Assessment",
