@@ -926,11 +926,71 @@ export const wellnessModulesData: Record<string, any> = {
       "Cultivate inner calm and peace"
     ],
     lessons: [
-      { title: "Understanding Stress Response", duration: "18 min", type: "video" },
-      { title: "Box Breathing Technique", duration: "8 min", type: "practice" },
-      { title: "Cognitive Stress Reframing", duration: "20 min", type: "video" },
-      { title: "Progressive Muscle Relaxation", duration: "15 min", type: "practice" },
-      { title: "Building Stress Resilience", duration: "22 min", type: "video" }
+      { 
+        title: "Understanding Stress Response", 
+        duration: "18 min", 
+        type: "video",
+        description: "Learn how your body and brain respond to stress, and why chronic stress is so damaging.",
+        keyPoints: [
+          "The fight-or-flight response: evolutionary advantage, modern problem",
+          "Acute vs. chronic stress: why chronic stress kills",
+          "Cortisol and health: weight gain, inflammation, disease",
+          "The stress-perception connection: it's not what happens, it's how you interpret it"
+        ],
+        content: "Stress is your body's response to perceived threats. Understanding this response is the first step to managing it. The fight-or-flight response: when you perceive danger, your amygdala (fear center) triggers a cascade of hormones - adrenaline and cortisol. Your heart rate increases, blood pressure rises, muscles tense, digestion stops, and your prefrontal cortex (rational thinking) shuts down. This was lifesaving when running from predators. But today, your brain can't distinguish between a lion and an angry email - it triggers the same response. Acute vs. chronic stress: acute stress (short-term) is healthy - it helps you perform under pressure. Chronic stress (constant activation) is deadly. When cortisol stays elevated, it causes: weight gain (especially belly fat), inflammation (root of most diseases), weakened immune system, high blood pressure, anxiety and depression, memory problems, and accelerated aging. The stress-perception connection: stress isn't caused by external events - it's caused by your perception of them. Two people can experience the same event (traffic jam) with different stress levels. One sees it as a disaster, the other as a chance to listen to a podcast. This is why stress management focuses on changing perception, not just circumstances. Common stress triggers: work pressure, financial worries, relationship conflict, health concerns, information overload, lack of control, uncertainty about the future. The good news: you can rewire your stress response through techniques taught in this module."
+      },
+      { 
+        title: "Box Breathing Technique", 
+        duration: "8 min", 
+        type: "practice",
+        description: "Master this Navy SEAL technique to instantly calm your nervous system and reduce stress in 2 minutes.",
+        keyPoints: [
+          "How breathwork activates the parasympathetic nervous system",
+          "The box breathing pattern: inhale 4, hold 4, exhale 4, hold 4",
+          "When to use it: before meetings, during anxiety, before sleep",
+          "Why it works: CO2 tolerance and vagal tone"
+        ],
+        content: "Box breathing is a powerful technique used by Navy SEALs to stay calm under extreme pressure. It works by activating your parasympathetic nervous system (rest-and-digest mode), counteracting the stress response. How it works: when you're stressed, your breathing becomes shallow and rapid. This signals danger to your brain, perpetuating the stress cycle. Deep, slow breathing signals safety, activating the vagus nerve and calming your entire system. The technique: Inhale through your nose for 4 counts, Hold your breath for 4 counts, Exhale through your mouth for 4 counts, Hold empty for 4 counts. Repeat for 5-10 cycles (2-4 minutes). Why it works: the extended exhale and hold increases CO2 tolerance, which calms anxiety. The rhythmic pattern gives your mind something to focus on, interrupting anxious thoughts. The breath hold stimulates the vagus nerve, which controls your relaxation response. When to use it: Before stressful events (meetings, presentations, difficult conversations), During anxiety or panic attacks (it's impossible to have a panic attack while doing box breathing), Before sleep (it calms your nervous system), Anytime you need to reset. This practice includes a guided audio session. You'll learn to use your breath as an instant stress-relief tool."
+      },
+      { 
+        title: "Cognitive Stress Reframing", 
+        duration: "20 min", 
+        type: "video",
+        description: "Change your relationship with stress by reframing how you interpret stressful situations.",
+        keyPoints: [
+          "The ABC model: Activating event, Belief, Consequence",
+          "Common cognitive distortions that amplify stress",
+          "Reframing techniques: finding alternative interpretations",
+          "The stress-is-enhancing mindset: research by Alia Crum"
+        ],
+        content: "Your stress isn't caused by events - it's caused by your thoughts about events. This lesson teaches cognitive reframing to reduce stress. The ABC model (Albert Ellis): Activating event (something happens), Belief (your interpretation), Consequence (your emotional response). Example: A - Your boss emails 'We need to talk.' B - 'I'm getting fired!' C - Anxiety and panic. Different belief: 'Maybe it's about the project update.' Different consequence: Calm curiosity. Your belief determines your stress level, not the event. Common cognitive distortions: Catastrophizing ('This will be a disaster'), Black-and-white thinking ('I'm a total failure'), Mind reading ('They think I'm incompetent'), Fortune telling ('This will never work out'), Overgeneralization ('I always mess up'). These distortions amplify stress. Reframing techniques: Question your thoughts - 'Is this thought true? What evidence do I have?' Find alternative explanations - 'What are 3 other ways to interpret this?' Worst-case scenario - 'What's the worst that could happen? Could I handle it?' Best-case scenario - 'What's the best possible outcome?' Most likely scenario - 'What will probably happen?' This creates balanced thinking. The stress-is-enhancing mindset: research by Alia Crum shows that viewing stress as enhancing (rather than debilitating) improves performance and health. When you feel stress, tell yourself: 'This stress is preparing me to perform. My body is giving me energy to handle this challenge.' This reframe changes your physiology. This lesson includes a cognitive reframing worksheet. You'll learn to challenge stress-inducing thoughts."
+      },
+      { 
+        title: "Progressive Muscle Relaxation", 
+        duration: "15 min", 
+        type: "practice",
+        description: "Release physical tension stored in your body through systematic muscle relaxation.",
+        keyPoints: [
+          "The mind-body connection: how physical tension creates mental stress",
+          "The tense-and-release technique: why it works",
+          "Full-body PMR sequence: from toes to head",
+          "When to practice: daily prevention vs. acute stress relief"
+        ],
+        content: "Stress lives in your body as muscle tension. Progressive Muscle Relaxation (PMR) is a proven technique to release this tension and calm your mind. The mind-body connection: your mind and body are interconnected. When you're stressed, your muscles tense (especially shoulders, neck, jaw). This tension signals danger to your brain, perpetuating stress. By releasing physical tension, you calm your mind. The technique: PMR involves systematically tensing and relaxing each muscle group. Why tense before relaxing? Tensing helps you notice where you hold tension, and the contrast makes relaxation deeper. The sequence: Start with your toes - curl them tightly for 5 seconds, then release and notice the relaxation for 10 seconds. Move up: feet, calves, thighs, glutes, stomach, chest, hands, arms, shoulders, neck, face. The entire sequence takes 10-15 minutes. Key principles: Focus on the contrast between tension and relaxation, Breathe deeply throughout, Don't tense so hard it hurts, Notice the feeling of relaxation spreading. When to practice: Daily prevention (before bed to improve sleep quality), Acute stress relief (during high-stress moments), Before important events (to calm pre-performance anxiety), After workouts (to enhance recovery). Benefits: Reduces muscle tension and pain, Lowers blood pressure and heart rate, Improves sleep quality, Increases body awareness, Provides a mental break from rumination. This practice includes a guided 15-minute PMR audio session. You'll learn to release stress stored in your body."
+      },
+      { 
+        title: "Building Stress Resilience", 
+        duration: "22 min", 
+        type: "video",
+        description: "Develop long-term resilience to handle stress without breaking down.",
+        keyPoints: [
+          "Resilience is trainable: it's not a fixed trait",
+          "The four pillars of resilience: physical, mental, emotional, spiritual",
+          "Hormetic stress: how controlled stress builds resilience",
+          "Recovery is as important as stress management"
+        ],
+        content: "Stress resilience is your ability to bounce back from adversity. This lesson teaches you to build unshakeable resilience. Resilience is trainable: some people seem naturally resilient, but research shows resilience is a set of skills you can develop. It's not about avoiding stress - it's about adapting to it. The four pillars of resilience: Physical (exercise, sleep, nutrition - a strong body handles stress better), Mental (cognitive flexibility, optimism, problem-solving - a flexible mind adapts to challenges), Emotional (emotional regulation, self-compassion, social support - healthy emotional processing prevents breakdown), Spiritual (purpose, meaning, values - a strong 'why' helps you endure hardship). Strengthen all four pillars. Hormetic stress: small doses of stress make you stronger (like exercise tears muscles to build them back stronger). Examples: Cold exposure (cold showers build stress tolerance), Exercise (physical stress improves resilience), Fasting (metabolic stress enhances cellular repair), Challenging conversations (social stress builds confidence). The key is controlled, recoverable stress. Recovery is crucial: stress isn't the problem - lack of recovery is. High performers alternate between stress and recovery. Build recovery into your day: breaks between meetings, walks after intense work, screen-free evenings, weekly rest days. Without recovery, stress accumulates and breaks you down. Building social support: resilient people have strong social connections. Cultivate relationships where you can be vulnerable. Join communities, maintain friendships, seek therapy or coaching when needed. Connection is a buffer against stress. This lesson provides a resilience-building action plan. You'll develop the capacity to handle whatever life throws at you."
+      }
     ],
     exercises: [
       "Stress Trigger Tracker",
@@ -956,11 +1016,71 @@ export const wellnessModulesData: Record<string, any> = {
       "Enhance creativity and problem-solving"
     ],
     lessons: [
-      { title: "Why Journaling Works", duration: "14 min", type: "video" },
-      { title: "Morning Pages Practice", duration: "10 min", type: "exercise" },
-      { title: "Gratitude Journaling", duration: "12 min", type: "practice" },
-      { title: "Reflective Journaling Prompts", duration: "16 min", type: "video" },
-      { title: "Building a Journaling Habit", duration: "15 min", type: "video" }
+      { 
+        title: "Why Journaling Works", 
+        duration: "14 min", 
+        type: "video",
+        description: "Understand the science behind journaling and why it's one of the most powerful tools for personal growth.",
+        keyPoints: [
+          "The neuroscience of expressive writing: how writing rewires your brain",
+          "Journaling reduces anxiety and depression: research by James Pennebaker",
+          "The clarifying effect: writing forces structured thinking",
+          "Different journaling styles for different goals"
+        ],
+        content: "Journaling is one of the most researched and effective tools for mental health and personal growth. This lesson explains why it works. The neuroscience of expressive writing: when you write about your thoughts and emotions, you activate your prefrontal cortex (rational brain) while processing emotional content from your limbic system. This integration helps you make sense of experiences and reduces emotional reactivity. Writing literally rewires your brain. Research by James Pennebaker: psychologist James Pennebaker conducted groundbreaking research on expressive writing. He found that writing about traumatic or stressful experiences for just 15-20 minutes per day for 3-4 days led to: Reduced anxiety and depression, Improved immune function, Better physical health, Higher academic and work performance, Increased emotional well-being. The benefits lasted months after the writing stopped. The clarifying effect: thoughts in your head are often jumbled and overwhelming. Writing forces you to structure them into coherent sentences. This process clarifies your thinking. You gain perspective, identify patterns, and find solutions. It's like having a conversation with yourself. Different journaling styles: Stream of consciousness (Morning Pages - write whatever comes to mind, no filter), Gratitude journaling (list things you're grateful for), Reflective journaling (process experiences and emotions), Goal-oriented journaling (track progress toward goals), Prompted journaling (answer specific questions). Choose the style that fits your needs. When to journal: Morning (set intentions for the day), Evening (reflect on the day), After stressful events (process emotions), When making decisions (clarify thinking), Anytime you feel overwhelmed. This lesson provides guidance on choosing your journaling approach."
+      },
+      { 
+        title: "Morning Pages Practice", 
+        duration: "10 min", 
+        type: "exercise",
+        description: "Learn Julia Cameron's transformative practice of writing three pages of stream-of-consciousness every morning.",
+        keyPoints: [
+          "What are Morning Pages: 3 pages of longhand writing, first thing in the morning",
+          "The rules: no editing, no judgment, no one else reads them",
+          "What to write: whatever comes to mind - worries, dreams, to-do lists, anything",
+          "The benefits: clears mental clutter, enhances creativity, reduces anxiety"
+        ],
+        content: "Morning Pages is a practice developed by Julia Cameron in 'The Artist's Way.' It's simple but transformative: write three pages of longhand, stream-of-consciousness writing every morning. The rules: Write first thing in the morning (before checking your phone or email), Write three pages (about 750 words), Write by hand (not typed - the physical act matters), Write whatever comes to mind (no editing, no judgment), Don't read what you wrote (at least not for several weeks). What to write: anything and everything. Your worries, your dreams, your to-do list, complaints, gratitudes, random thoughts. The content doesn't matter - the act of writing does. Most people start with 'I don't know what to write' and then fill three pages. Why it works: Morning Pages clears mental clutter. Your mind is full of thoughts, worries, and to-dos. Writing them down frees up mental space. It's like emptying your mental cache. This creates clarity and calm for the rest of your day. It also accesses your subconscious - before your rational mind fully wakes up, you can tap into deeper insights. Common objections: 'I don't have time' (it takes 20-30 minutes - wake up earlier or replace social media scrolling), 'I'm not a writer' (you don't need to be - no one will read this), 'I don't know what to write' (that's the point - write 'I don't know what to write' until something comes). The 30-day challenge: commit to Morning Pages for 30 days. Most people report: Reduced anxiety, Increased creativity, Better decision-making, More clarity on goals and values, Improved mood. This exercise includes a Morning Pages starter guide and prompts for when you're stuck."
+      },
+      { 
+        title: "Gratitude Journaling", 
+        duration: "12 min", 
+        type: "practice",
+        description: "Rewire your brain for positivity and happiness through daily gratitude practice.",
+        keyPoints: [
+          "The neuroscience of gratitude: how it rewires your brain for happiness",
+          "The practice: write 3-5 things you're grateful for each day",
+          "Going deeper: why you're grateful, not just what",
+          "The timing debate: morning vs. evening gratitude"
+        ],
+        content: "Gratitude journaling is one of the most researched positive psychology interventions. It literally rewires your brain for happiness. The neuroscience: your brain has a negativity bias - it's wired to focus on threats and problems (evolutionary survival mechanism). Gratitude practice counteracts this by training your brain to notice positive things. Regular gratitude practice increases activity in the prefrontal cortex and decreases activity in the amygdala (fear center). Over time, you become naturally more positive. The practice: every day, write 3-5 things you're grateful for. They can be big ('my health') or small ('the barista smiled at me'). The key is consistency. Research shows that people who practice gratitude journaling for just 2 weeks report: Increased happiness, Better sleep, More optimism, Stronger relationships, Improved physical health. Going deeper: don't just list things - explain why you're grateful. 'I'm grateful for my partner' is good. 'I'm grateful for my partner because they listened to me vent about work without trying to fix it' is transformative. The specificity deepens the emotional impact. The timing debate: some people prefer morning gratitude (starts the day positively), others prefer evening gratitude (reflects on the day's blessings). Research suggests evening may be slightly more effective because you're reflecting on actual experiences, not anticipating them. Experiment to find what works for you. Avoiding gratitude fatigue: don't list the same things every day. Challenge yourself to find new things. This keeps the practice fresh and trains your brain to actively seek positive experiences. This practice includes a gratitude journal template and prompts for when you're stuck."
+      },
+      { 
+        title: "Reflective Journaling Prompts", 
+        duration: "16 min", 
+        type: "video",
+        description: "Use powerful prompts to process emotions, gain self-awareness, and clarify your path forward.",
+        keyPoints: [
+          "Prompts for processing difficult emotions",
+          "Prompts for decision-making and clarity",
+          "Prompts for self-discovery and values",
+          "Prompts for tracking personal growth"
+        ],
+        content: "Reflective journaling uses specific prompts to guide deep self-exploration. This lesson provides transformative prompts for different situations. Prompts for processing difficult emotions: 'What am I feeling right now? Where do I feel it in my body?' 'What triggered this emotion? What need is not being met?' 'What would I say to a friend feeling this way?' 'What can I control in this situation? What do I need to accept?' These prompts help you process emotions rather than suppress them. Prompts for decision-making: 'What are my options? What are the pros and cons of each?' 'What would my future self advise me to do?' 'What would I do if I weren't afraid?' 'What aligns with my values?' 'What's the worst that could happen? Could I handle it?' These prompts create clarity when you're stuck. Prompts for self-discovery: 'What are my core values? Am I living in alignment with them?' 'What brings me joy? When do I feel most alive?' 'What are my strengths? How can I use them more?' 'What limiting beliefs am I holding? Are they true?' 'Who do I want to become?' These prompts deepen self-awareness. Prompts for tracking growth: 'What did I learn today/this week/this month?' 'What am I proud of?' 'What challenged me? How did I handle it?' 'What do I want to improve?' 'How have I grown since last year?' These prompts help you recognize progress. Weekly reflection prompts: 'What went well this week?' 'What didn't go well? What can I learn from it?' 'What am I grateful for?' 'What's one thing I'll do differently next week?' Weekly reflection creates continuous improvement. This lesson includes a library of 100+ journaling prompts organized by category."
+      },
+      { 
+        title: "Building a Journaling Habit", 
+        duration: "15 min", 
+        type: "video",
+        description: "Make journaling a consistent practice that sticks, even when motivation fades.",
+        keyPoints: [
+          "Start small: 5 minutes is better than nothing",
+          "Anchor it to an existing habit: habit stacking for journaling",
+          "Remove friction: keep your journal visible and accessible",
+          "Track your streak: use a habit tracker for accountability"
+        ],
+        content: "Journaling is most effective when done consistently. This lesson teaches you to build a sustainable journaling habit. Start small: don't commit to 30 minutes of journaling if you've never journaled before. Start with 5 minutes. Write one paragraph. List 3 things you're grateful for. Small and consistent beats big and sporadic. Once the habit is established, you can expand. Anchor it to an existing habit: use habit stacking. 'After I pour my morning coffee, I will write in my journal for 5 minutes.' 'After I brush my teeth at night, I will write 3 things I'm grateful for.' Linking journaling to an existing habit makes it automatic. Choose your time: Morning journaling sets intentions for the day. Evening journaling processes the day's events. Experiment to find what works for you. Consistency matters more than timing. Remove friction: make journaling as easy as possible. Keep your journal and pen on your nightstand or desk (visible cue). Use a journal you enjoy (nice paper, good pen). Consider digital journaling if that's easier (apps like Day One, Journey). The easier it is, the more likely you'll do it. Track your streak: use a habit tracker (physical calendar, app, or journal). Mark each day you journal. Seeing your streak builds momentum and accountability. Don't break the chain. What if you miss a day: don't let one missed day become two. The goal isn't perfection - it's consistency. If you miss a day, journal the next day without guilt. Overcoming resistance: some days you won't feel like journaling. That's when it matters most. Commit to just one sentence. Usually, once you start, you'll write more. But even one sentence counts. This lesson includes a journaling habit starter kit with templates and trackers."
+      }
     ],
     exercises: [
       "Journaling Prompt Library",
