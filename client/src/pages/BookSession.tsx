@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,8 +17,9 @@ const SESSION_TYPES = [
 ];
 
 export default function BookSession() {
-  const [coachId] = useState(1); // TODO: Get from context or props
-  const [clientId] = useState(1); // TODO: Get from auth context
+  const { user } = useAuth();
+  const [coachId] = useState(1); // Default coach
+  const clientId = user?.id || 1;
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [sessionType, setSessionType] = useState("follow-up");
