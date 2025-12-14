@@ -310,8 +310,23 @@ export const subscriptionsRouter = router({
 
   /**
    * Get current usage for billing period
+   * Works for both authenticated and anonymous users
    */
-  getCurrentUsage: protectedProcedure.query(async ({ ctx }) => {
+  getCurrentUsage: publicProcedure.query(async ({ ctx }) => {
+    // If no user (anonymous), return default free tier
+    if (!ctx.user) {
+      return {
+        messagesUsed: 0,
+        messageLimit: 100,
+        messagesRemaining: 100,
+        tierName: "AI Coaching - Free",
+        aiSessionsUsed: 0,
+        humanSessionsUsed: 0,
+        humanSessionsIncluded: 0,
+      };
+    }
+    
+    // Authenticated user - fetch actual subscription
     const sub = await db
       .select()
       .from(subscriptions)
