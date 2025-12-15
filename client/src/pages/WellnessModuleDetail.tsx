@@ -232,7 +232,9 @@ export default function WellnessModuleDetail() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <p className="text-gray-600">Curated books and articles to deepen your understanding</p>
-                <Button variant="outline">View Reading List</Button>
+                <Link to={`/wellness-modules/${slug}/resources`}>
+                  <Button variant="outline">View Reading List</Button>
+                </Link>
               </CardContent>
             </Card>
 
@@ -242,7 +244,9 @@ export default function WellnessModuleDetail() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <p className="text-gray-600">Connect with others on the same journey</p>
-                <Button variant="outline">Join Discussion</Button>
+                <a href="https://community.purposefullivecoaching.com" target="_blank" rel="noopener noreferrer">
+                  <Button variant="outline">Join Discussion</Button>
+                </a>
               </CardContent>
             </Card>
 
@@ -252,7 +256,9 @@ export default function WellnessModuleDetail() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <p className="text-gray-600">Get personalized support from our coaches</p>
-                <Button variant="outline">Book a Session</Button>
+                <Link to="/sessions/book">
+                  <Button variant="outline">Book a Session</Button>
+                </Link>
               </CardContent>
             </Card>
           </TabsContent>

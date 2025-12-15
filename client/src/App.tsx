@@ -20,6 +20,7 @@ import EmotionTracker from "./pages/EmotionTracker";
 import WellnessModules from "./pages/WellnessModules";
 import WellnessModuleDetail from "./pages/WellnessModuleDetail";
 import LessonViewer from "./pages/LessonViewer";
+import ModuleResources from "./pages/ModuleResources";
 import DailyCheckIn from "./pages/DailyCheckIn";
 import MorningRoutine from "./pages/MorningRoutine";
 import EveningReview from "./pages/EveningReview";
@@ -67,6 +68,7 @@ function Router() {
       <Route path="/emotions" component={EmotionTracker} />
       <Route path="/wellness-modules" component={WellnessModules} />
       <Route path="/wellness-modules/:slug" component={WellnessModuleDetail} />
+      <Route path="/wellness-modules/:slug/resources" component={ModuleResources} />
       <Route path="/wellness-modules/:moduleSlug/lesson/:lessonIndex" component={LessonViewer} />
       <Route path="/daily-check-in" component={DailyCheckIn} />
       <Route path="/daily-os/morning" component={MorningRoutine} />
