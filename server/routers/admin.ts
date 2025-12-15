@@ -1,7 +1,7 @@
 import { router, protectedProcedure } from "../_core/trpc";
 import { z } from "zod";
 import { db } from "../db";
-import { users, subscriptions, sessions, aiChatMessages } from "../../drizzle/schema";
+import { users, subscriptions, sessions, aiChatMessages, coachAvailability, coaches } from "../../drizzle/schema";
 import { eq, gte, sql, and, desc, isNotNull } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 
@@ -276,5 +276,69 @@ export const adminRouter = router({
         total: Number(row.total) / 100, // Convert cents to dollars
         count: Number(row.count),
       }));
+    }),
+
+  /**
+   * Seed default coach availability
+   * Creates default availability schedule (Mon-Fri, 9 AM - 5 PM) for coach ID 1
+   */
+  seedDefaultAvailability: adminProcedure
+    .mutation(async () => {
+      // First, ensure coach exists
+      const existingCoach = await db
+        .select()
+        .from(coaches)
+        .where(eq(coaches.id, 1))
+        .limit(1);
+
+      if (existingCoach.length === 0) {
+        // Create default coach
+        await db.insert(coaches).values({
+          id: 1,
+          name: "Carl Visagie",
+          email: "carl@purposefullive.com",
+          bio: "Professional Life Coach specializing in holistic wellness and personal transformation",
+          specialties: "Emotional Wellness, Mental Health, Physical Fitness, Nutrition, Spiritual Wellness",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+      }
+
+      // Check if availability already exists
+      const existing = await db
+        .select()
+        .from(coachAvailability)
+        .where(eq(coachAvailability.coachId, 1))
+        .limit(1);
+
+      if (existing.length > 0) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Coach availability already exists. Delete existing availability first.',
+        });
+      }
+
+      // Create default availability (Monday-Friday, 9 AM - 5 PM)
+      const availabilitySlots = [
+        { coachId: 1, dayOfWeek: 1, startTime: "09:00", endTime: "17:00", isActive: true },
+        { coachId: 1, dayOfWeek: 2, startTime: "09:00", endTime: "17:00", isActive: true },
+        { coachId: 1, dayOfWeek: 3, startTime: "09:00", endTime: "17:00", isActive: true },
+        { coachId: 1, dayOfWeek: 4, startTime: "09:00", endTime: "17:00", isActive: true },
+        { coachId: 1, dayOfWeek: 5, startTime: "09:00", endTime: "17:00", isActive: true },
+      ];
+
+      for (const slot of availabilitySlots) {
+        await db.insert(coachAvailability).values({
+          ...slot,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+      }
+
+      return {
+        success: true,
+        message: "Default availability created successfully (Mon-Fri, 9 AM - 5 PM)",
+        slotsCreated: 5,
+      };
     }),
 });
