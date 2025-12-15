@@ -279,21 +279,6 @@ export const adminRouter = router({
     }),
 
   /**
-   * Check availability data (debug endpoint)
-   */
-  checkAvailability: protectedProcedure
-    .query(async () => {
-      const availability = await db.select().from(coachAvailability);
-      const coachesData = await db.select().from(coaches).where(eq(coaches.id, 1));
-      return {
-        availabilityCount: availability.length,
-        availability: availability,
-        coachExists: coachesData.length > 0,
-        coach: coachesData[0] || null
-      };
-    }),
-
-  /**
    * Seed default coach availability
    * Creates default availability schedule (Mon-Fri, 9 AM - 5 PM) for coach ID 1
    */

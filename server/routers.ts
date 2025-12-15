@@ -13,7 +13,6 @@ import {
 import { aiInsightsRouter } from "./routers/aiInsights";
 import { stripeRouter } from "./routers/stripe";
 import { schedulingRouter } from "./routers/scheduling";
-import { debugRouter } from "./routers/debug";
 import { sessionTypesRouter } from "./routers/sessionTypes";
 import { sessionPaymentsRouter } from "./routers/sessionPayments";
 import { aiChatRouter } from "./routers/aiChat";
@@ -70,7 +69,6 @@ export const appRouter = router({
   sessions: sessionsRouter,
   stripe: stripeRouter,
   scheduling: schedulingRouter,
-  debug: debugRouter,
   sessionTypes: sessionTypesRouter,
   sessionPayments: sessionPaymentsRouter,
   aiChat: aiChatRouter,

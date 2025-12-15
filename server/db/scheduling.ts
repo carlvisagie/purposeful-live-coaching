@@ -129,14 +129,13 @@ export async function getCoachSessions(
     conditions.push(or(...statusConditions) as any);
   }
 
-  // Don't join clients table - not needed for availability checking
-  // This prevents errors if clients table doesn't exist or has schema issues
   return await db
     .select({
       session: sessions,
-      client: null, // Keep interface compatible but don't fetch client data
+      client: clients,
     })
     .from(sessions)
+    .leftJoin(clients, eq(sessions.clientId, clients.id))
     .where(and(...conditions))
     .orderBy(asc(sessions.scheduledDate));
 }
