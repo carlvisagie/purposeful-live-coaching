@@ -73,6 +73,7 @@ export const schedulingRouter = router({
 
         // Check if this day is blocked by exception
         const isBlocked = exceptions.some(exc => {
+          if (!exc || !exc.startDate || !exc.endDate) return false;
           const excStart = new Date(exc.startDate);
           const excEnd = new Date(exc.endDate);
           excStart.setHours(0, 0, 0, 0);
@@ -88,6 +89,7 @@ export const schedulingRouter = router({
         );
 
         for (const slot of dayAvailability) {
+          if (!slot || !slot.startTime || !slot.endTime) continue;
           const [startHour, startMin] = slot.startTime.split(":").map(Number);
           const [endHour, endMin] = slot.endTime.split(":").map(Number);
           const slotMinutes = (endHour * 60 + endMin) - (startHour * 60 + startMin);
