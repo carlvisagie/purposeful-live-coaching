@@ -68,6 +68,12 @@ export default function AICoach() {
   // Fetch conversations list - guest access enabled
   const { data: conversationsData, refetch: refetchConversations } =
     trpc.aiChat.listConversations.useQuery();
+  
+  // For anonymous users, track conversations in local state
+  const [anonymousConversations, setAnonymousConversations] = useState<number[]>([]);
+  
+  // Combine server conversations with anonymous conversations
+  const allConversations = conversationsData?.conversations || [];
 
   // Fetch usage stats for tier limits (works for anonymous users too)
   const { data: usageData } = trpc.subscriptions.getCurrentUsage.useQuery();
@@ -89,6 +95,12 @@ export default function AICoach() {
   const createConversationMutation = trpc.aiChat.createConversation.useMutation({
     onSuccess: async (data) => {
       setSelectedConversationId(data.conversationId);
+      
+      // Add to anonymous conversations if user not logged in
+      if (!user) {
+        setAnonymousConversations(prev => [data.conversationId, ...prev]);
+      }
+      
       await refetchConversations(); // Await to ensure sidebar updates
       toast.success("New conversation started");
       
@@ -302,7 +314,22 @@ export default function AICoach() {
     );
   }
 
+  // Show conversations from server OR current anonymous conversation
   const conversations = conversationsData?.conversations || [];
+  
+  // If anonymous user has active conversation, show it in sidebar
+  const displayConversations = user ? conversations : (
+    selectedConversationId ? [{
+      id: selectedConversationId,
+      title: conversationData?.conversation?.title || "Current Conversation",
+      lastMessageAt: new Date().toISOString(),
+      userId: null,
+      clientId: null,
+      createdAt: new Date().toISOString(),
+      rating: null,
+      ratingComment: null
+    }] : []
+  );
   const messages = conversationData?.messages || [];
 
   return (
@@ -383,14 +410,14 @@ export default function AICoach() {
               )}
             </CardHeader>
             <CardContent className="flex-1 overflow-y-auto p-4 space-y-2">
-              {conversations.length === 0 ? (
+              {displayConversations.length === 0 ? (
                 <div className="text-center text-gray-500 py-8">
                   <MessageCircle className="h-12 w-12 mx-auto mb-2 opacity-50" />
                   <p className="text-sm">No conversations yet</p>
                   <p className="text-xs mt-1">Click + to start chatting</p>
                 </div>
               ) : (
-                conversations.map((conv) => (
+                displayConversations.map((conv) => (
                   <div
                     key={conv.id}
                     className={`p-3 rounded-lg cursor-pointer transition-colors group ${

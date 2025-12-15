@@ -4,7 +4,7 @@
  */
 
 import { z } from "zod";
-import { protectedProcedure, router } from "../_core/trpc";
+import { protectedProcedure, publicProcedure, router } from "../_core/trpc";
 import { getDb } from "../db";
 import { aiChatConversations } from "../../drizzle/schema";
 import { eq, and, isNull, isNotNull, desc, sql } from "drizzle-orm";
@@ -13,7 +13,7 @@ export const aiChatFeedbackRouter = router({
   /**
    * Rate a conversation (thumbs up/down or 1-5 stars)
    */
-  rateConversation: protectedProcedure
+  rateConversation: publicProcedure
     .input(
       z.object({
         conversationId: z.number(),
@@ -27,14 +27,19 @@ export const aiChatFeedbackRouter = router({
       const db = await getDb();
       if (!db) throw new Error("Database not available");
 
-      // Verify conversation belongs to user
+      // Get user ID (null for anonymous users)
+      const userId = ctx.user?.id || null;
+
+      // Verify conversation exists and belongs to user (or is anonymous)
       const [conversation] = await db
         .select()
         .from(aiChatConversations)
         .where(
           and(
             eq(aiChatConversations.id, input.conversationId),
-            eq(aiChatConversations.userId, ctx.user.id)
+            userId !== null 
+              ? eq(aiChatConversations.userId, userId)
+              : isNull(aiChatConversations.userId)
           )
         )
         .limit(1);
