@@ -1,5 +1,8 @@
 // Auto-generated mapping of exercise names to material file paths
 export const exerciseMaterialsMap: Record<string, string> = {
+  // Emotional Wellness exercises
+  "Emotion Journaling Template": "/guides/emotion_journaling_template.md",
+  "Resilience Building Worksheet": "/guides/resilience_building_worksheet.md",
   "0 ymF8MtM3h9PG7MvRuBGWXM 1765744417428 na1fn L2hvbWUvdWJ1bnR1L2FkdmVudHVyZV9idWNrZXRfbGlzdA": "/guides/0_ymF8MtM3h9PG7MvRuBGWXM_1765744417428_na1fn_L2hvbWUvdWJ1bnR1L2FkdmVudHVyZV9idWNrZXRfbGlzdA.md",
   "1 qh6bN2IUCbP2fRoQepgCaa 1765744418229 na1fn L2hvbWUvdWJ1bnR1L0FkdmVyc2l0eV9SZXNwb25zZV9QbGFu": "/guides/1_qh6bN2IUCbP2fRoQepgCaa_1765744418229_na1fn_L2hvbWUvdWJ1bnR1L0FkdmVyc2l0eV9SZXNwb25zZV9QbGFu.md",
   "10 cCx8oH6JUu8GcyNCXefMKq 1765744419644 na1fn L2hvbWUvdWJ1bnR1L0NvbWZvcnRfWm9uZV9FeHBhbmRlcg": "/guides/10_cCx8oH6JUu8GcyNCXefMKq_1765744419644_na1fn_L2hvbWUvdWJ1bnR1L0NvbWZvcnRfWm9uZV9FeHBhbmRlcg.md",

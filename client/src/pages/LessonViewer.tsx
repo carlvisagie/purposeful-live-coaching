@@ -179,7 +179,15 @@ export default function LessonViewer() {
                       </ol>
                     </div>
                     
-                    <Button variant="outline" className="w-full">
+                    <Button 
+                      variant="outline" 
+                      className="w-full"
+                      onClick={() => {
+                        // Get worksheet filename from lesson title
+                        const worksheetName = lesson.title.toLowerCase().replace(/\s+/g, '_');
+                        window.open(`/guides/${worksheetName}.md`, '_blank');
+                      }}
+                    >
                       <Download className="h-4 w-4 mr-2" />
                       Download Exercise Worksheet (PDF)
                     </Button>
@@ -305,18 +313,28 @@ export default function LessonViewer() {
           <CardContent className="p-6">
             <h3 className="font-semibold text-gray-900 mb-4">Additional Resources</h3>
             <div className="grid gap-3">
-              <Button variant="outline" className="justify-start">
+              <Button 
+                variant="outline" 
+                className="justify-start"
+                onClick={() => window.open(`/lesson-notes/${moduleSlug}-lesson-${lessonIndex + 1}.md`, '_blank')}
+              >
                 <Download className="h-4 w-4 mr-2" />
                 Download Lesson Notes
               </Button>
-              <Button variant="outline" className="justify-start">
+              <Button 
+                variant="outline" 
+                className="justify-start"
+                onClick={() => window.open(`/transcripts/${moduleSlug}-lesson-${lessonIndex + 1}.md`, '_blank')}
+              >
                 <FileText className="h-4 w-4 mr-2" />
                 View Lesson Transcript
               </Button>
-              <Button variant="outline" className="justify-start">
-                <BookOpen className="h-4 w-4 mr-2" />
-                Related Reading Materials
-              </Button>
+              <Link to={`/wellness-modules/${moduleSlug}/resources`}>
+                <Button variant="outline" className="justify-start w-full">
+                  <BookOpen className="h-4 w-4 mr-2" />
+                  Related Reading Materials
+                </Button>
+              </Link>
             </div>
           </CardContent>
         </Card>

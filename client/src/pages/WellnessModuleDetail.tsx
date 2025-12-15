@@ -82,11 +82,17 @@ export default function WellnessModuleDetail() {
               <p className="text-xl text-gray-700 mb-4">{module.longDescription}</p>
               
               <div className="flex gap-3">
-                <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
-                  <PlayCircle className="h-5 w-5 mr-2" />
-                  Start Module
-                </Button>
-                <Button size="lg" variant="outline">
+                <Link to={`/wellness-modules/${slug}/lesson/0`}>
+                  <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
+                    <PlayCircle className="h-5 w-5 mr-2" />
+                    Start Module
+                  </Button>
+                </Link>
+                <Button 
+                  size="lg" 
+                  variant="outline"
+                  onClick={() => window.open(`/workbooks/${slug}-workbook.md`, '_blank')}
+                >
                   <FileText className="h-5 w-5 mr-2" />
                   Download Workbook
                 </Button>
