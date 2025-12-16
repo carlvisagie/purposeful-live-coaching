@@ -45,6 +45,7 @@ import RefundPolicy from "./pages/RefundPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import AdminSetup from "./pages/AdminSetup";
+import OwnerControlCenter from "./pages/OwnerControlCenter";
 
 
 function Router() {
@@ -76,7 +77,8 @@ function Router() {
       <Route path="/health-tracker" component={HealthTracker} />
       <Route path="/stress-relief" component={StressRelief} />
 
-      <Route path="/coach/dashboard" component={CoachDashboard} />
+      <Route path="/coach/dashboard" component={OwnerControlCenter} />
+      <Route path="/owner" component={OwnerControlCenter} />
       <Route path="/autism" component={AutismDashboard} />
       <Route path="/autism/create-profile" component={CreateAutismProfile} />
       <Route path="/autism/profile/:id" component={AutismProfileDetail} />
@@ -87,7 +89,7 @@ function Router() {
 
       <Route path="/subscription/success" component={SubscriptionSuccess} />
       <Route path="/subscription/session-success" component={SessionPurchaseSuccess} />
-      <Route path="/admin" component={AdminDashboard} />
+      <Route path="/admin" component={OwnerControlCenter} />
       <Route path="/admin/ai-monitoring" component={AdminAIMonitoring} />
       <Route path="/admin/client-history" component={AdminClientHistory} />
       <Route path="/my-files" component={MyFiles} />
