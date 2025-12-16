@@ -292,10 +292,12 @@ export default function OwnerControlCenter() {
                         </div>
                         <div className="flex items-center gap-2">
                           <Badge>{session.sessionType || 'Coaching'}</Badge>
-                          <Button size="sm" onClick={() => window.open("https://zoom.us/j/8201808284", "_blank")}>
-                            <Video className="h-4 w-4 mr-2" />
-                            Join
-                          </Button>
+                          <Link href={`/live-session?sessionId=${session.id}&clientId=${session.clientId}`}>
+                            <Button size="sm">
+                              <Video className="h-4 w-4 mr-2" />
+                              Start Session
+                            </Button>
+                          </Link>
                         </div>
                       </div>
                     ))}
