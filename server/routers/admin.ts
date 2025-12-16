@@ -279,8 +279,10 @@ export const adminRouter = router({
     }),
 
   /**
-   * Seed default coach availability
-   * Creates default availability schedule (Mon-Fri, 9 AM - 5 PM) for coach ID 1
+   * Seed coach availability
+   * Creates availability schedule:
+   * - Weekdays (Mon-Fri): 19:45 - 21:45 (7:45 PM - 9:45 PM)
+   * - Weekends (Sat-Sun): 09:00 - 16:30 (9:00 AM - 4:30 PM)
    */
   seedDefaultAvailability: adminProcedure
     .mutation(async () => {
@@ -304,27 +306,29 @@ export const adminRouter = router({
         });
       }
 
-      // Check if availability already exists
-      const existing = await db
-        .select()
-        .from(coachAvailability)
-        .where(eq(coachAvailability.coachId, 1))
-        .limit(1);
+      // Delete existing availability for coach ID 1 (allows re-seeding)
+      await db
+        .delete(coachAvailability)
+        .where(eq(coachAvailability.coachId, 1));
 
-      if (existing.length > 0) {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Coach availability already exists. Delete existing availability first.',
-        });
-      }
-
-      // Create default availability (Monday-Friday, 9 AM - 5 PM)
+      // Create availability with correct schedule
+      // Weekdays: 19:45 - 21:45 (7:45 PM - 9:45 PM)
+      // Weekends: 09:00 - 16:30 (9:00 AM - 4:30 PM)
       const availabilitySlots = [
-        { coachId: 1, dayOfWeek: 1, startTime: "09:00", endTime: "17:00", isActive: true },
-        { coachId: 1, dayOfWeek: 2, startTime: "09:00", endTime: "17:00", isActive: true },
-        { coachId: 1, dayOfWeek: 3, startTime: "09:00", endTime: "17:00", isActive: true },
-        { coachId: 1, dayOfWeek: 4, startTime: "09:00", endTime: "17:00", isActive: true },
-        { coachId: 1, dayOfWeek: 5, startTime: "09:00", endTime: "17:00", isActive: true },
+        // Monday (1)
+        { coachId: 1, dayOfWeek: 1, startTime: "19:45", endTime: "21:45", isActive: true },
+        // Tuesday (2)
+        { coachId: 1, dayOfWeek: 2, startTime: "19:45", endTime: "21:45", isActive: true },
+        // Wednesday (3)
+        { coachId: 1, dayOfWeek: 3, startTime: "19:45", endTime: "21:45", isActive: true },
+        // Thursday (4)
+        { coachId: 1, dayOfWeek: 4, startTime: "19:45", endTime: "21:45", isActive: true },
+        // Friday (5)
+        { coachId: 1, dayOfWeek: 5, startTime: "19:45", endTime: "21:45", isActive: true },
+        // Saturday (6)
+        { coachId: 1, dayOfWeek: 6, startTime: "09:00", endTime: "16:30", isActive: true },
+        // Sunday (0)
+        { coachId: 1, dayOfWeek: 0, startTime: "09:00", endTime: "16:30", isActive: true },
       ];
 
       for (const slot of availabilitySlots) {
@@ -337,8 +341,8 @@ export const adminRouter = router({
 
       return {
         success: true,
-        message: "Default availability created successfully (Mon-Fri, 9 AM - 5 PM)",
-        slotsCreated: 5,
+        message: "Availability created: Weekdays 19:45-21:45, Weekends 09:00-16:30",
+        slotsCreated: 7,
       };
     }),
 });
