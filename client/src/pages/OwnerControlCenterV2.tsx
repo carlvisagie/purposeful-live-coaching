@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,7 +9,8 @@ import { Link } from "wouter";
 import {
   Users, Calendar, Video, DollarSign, Clock, TrendingUp, Search, Plus,
   BarChart3, Settings, Bell, CheckCircle2, AlertCircle, Activity,
-  UserPlus, AlertTriangle, Target, Brain, Play, Zap, Timer
+  UserPlus, AlertTriangle, Target, Brain, Play, Zap, Timer, Mic, MicOff,
+  VideoOff, Volume2, Maximize2
 } from "lucide-react";
 
 /**
@@ -25,6 +26,17 @@ export default function OwnerControlCenterV2() {
   const [searchTerm, setSearchTerm] = useState("");
   const [timeRange, setTimeRange] = useState<"7d" | "30d" | "90d">("30d");
   const [currentTime, setCurrentTime] = useState(new Date());
+  
+  // Video/Audio testing state
+  const [isTestingEquipment, setIsTestingEquipment] = useState(false);
+  const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
+  const [audioLevel, setAudioLevel] = useState(0);
+  const [videoEnabled, setVideoEnabled] = useState(true);
+  const [audioEnabled, setAudioEnabled] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
 
   const { data: user } = trpc.auth.me.useQuery();
   
@@ -111,6 +123,108 @@ export default function OwnerControlCenterV2() {
     usersByTier: { basic: 0, premium: 0, elite: 0 },
   };
 
+  // Video/Audio testing functions
+  const setupAudioMonitoring = (stream: MediaStream) => {
+    try {
+      const audioContext = new AudioContext();
+      const analyser = audioContext.createAnalyser();
+      const microphone = audioContext.createMediaStreamSource(stream);
+      
+      analyser.fftSize = 256;
+      microphone.connect(analyser);
+      
+      audioContextRef.current = audioContext;
+      analyserRef.current = analyser;
+      
+      const dataArray = new Uint8Array(analyser.frequencyBinCount);
+      
+      const updateAudioLevel = () => {
+        if (analyserRef.current) {
+          analyserRef.current.getByteFrequencyData(dataArray);
+          const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
+          setAudioLevel(Math.min(100, (average / 128) * 100));
+          animationFrameRef.current = requestAnimationFrame(updateAudioLevel);
+        }
+      };
+      
+      updateAudioLevel();
+    } catch (error) {
+      console.error('Audio monitoring setup failed:', error);
+    }
+  };
+
+  const testEquipment = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { width: 1280, height: 720 },
+        audio: true
+      });
+      
+      setMediaStream(stream);
+      setIsTestingEquipment(true);
+      
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+      
+      setupAudioMonitoring(stream);
+    } catch (error: any) {
+      console.error('Equipment test failed:', error);
+      alert(`Camera/Microphone access failed: ${error.message}`);
+    }
+  };
+
+  const stopTest = () => {
+    if (mediaStream) {
+      mediaStream.getTracks().forEach(track => track.stop());
+      setMediaStream(null);
+    }
+    
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+    
+    if (audioContextRef.current) {
+      audioContextRef.current.close();
+      audioContextRef.current = null;
+    }
+    
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
+    
+    setIsTestingEquipment(false);
+    setAudioLevel(0);
+  };
+
+  const toggleVideo = () => {
+    if (mediaStream) {
+      const videoTrack = mediaStream.getVideoTracks()[0];
+      if (videoTrack) {
+        videoTrack.enabled = !videoTrack.enabled;
+        setVideoEnabled(videoTrack.enabled);
+      }
+    }
+  };
+
+  const toggleAudio = () => {
+    if (mediaStream) {
+      const audioTrack = mediaStream.getAudioTracks()[0];
+      if (audioTrack) {
+        audioTrack.enabled = !audioTrack.enabled;
+        setAudioEnabled(audioTrack.enabled);
+      }
+    }
+  };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      stopTest();
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50">
       {/* Top Navigation Bar */}
@@ -192,6 +306,162 @@ export default function OwnerControlCenterV2() {
               </CardHeader>
             </Card>
           )}
+
+          {/* VIDEO PREVIEW & EQUIPMENT TEST */}
+          <Card className="mb-6 border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-blue-50">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <Video className="h-5 w-5 text-purple-600" />
+                    Equipment Check
+                  </CardTitle>
+                  <CardDescription>
+                    Test your camera and microphone before sessions
+                  </CardDescription>
+                </div>
+                {isTestingEquipment && (
+                  <Badge variant="outline" className="bg-green-100 text-green-700 border-green-300">
+                    <Activity className="h-3 w-3 mr-1 animate-pulse" />
+                    Testing Active
+                  </Badge>
+                )}
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Video Preview - Large */}
+                <div className="lg:col-span-2">
+                  <div className="relative bg-gray-900 rounded-lg overflow-hidden aspect-video shadow-xl">
+                    <video
+                      ref={videoRef}
+                      autoPlay
+                      playsInline
+                      muted
+                      className="w-full h-full object-cover"
+                    />
+                    {!mediaStream && (
+                      <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                        <div className="text-center">
+                          <Video className="h-16 w-16 mx-auto mb-4 opacity-50" />
+                          <p className="text-lg font-medium">Camera preview will appear here</p>
+                          <p className="text-sm mt-2">Click "Test Equipment" to start</p>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Video Controls Overlay */}
+                    {mediaStream && (
+                      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-3">
+                        <Button
+                          size="lg"
+                          variant={videoEnabled ? "default" : "destructive"}
+                          onClick={toggleVideo}
+                          className="shadow-lg"
+                        >
+                          {videoEnabled ? <Video className="h-5 w-5" /> : <VideoOff className="h-5 w-5" />}
+                        </Button>
+                        <Button
+                          size="lg"
+                          variant={audioEnabled ? "default" : "destructive"}
+                          onClick={toggleAudio}
+                          className="shadow-lg"
+                        >
+                          {audioEnabled ? <Mic className="h-5 w-5" /> : <MicOff className="h-5 w-5" />}
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Controls & Audio Level */}
+                <div className="space-y-4">
+                  {/* Audio Level Indicator */}
+                  {mediaStream && (
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-sm font-medium">
+                        <span className="flex items-center gap-2">
+                          <Volume2 className="h-4 w-4" />
+                          Microphone Level
+                        </span>
+                        <span className="font-mono">{Math.round(audioLevel)}%</span>
+                      </div>
+                      <div className="h-4 bg-gray-200 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full transition-all duration-100 ${
+                            audioLevel > 70 ? 'bg-green-500' : audioLevel > 30 ? 'bg-yellow-500' : 'bg-red-500'
+                          }`}
+                          style={{ width: `${audioLevel}%` }}
+                        />
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        {audioLevel > 70 ? '✅ Great signal' : audioLevel > 30 ? '⚠️ Speak louder' : '❌ Too quiet'}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Test Buttons */}
+                  <div className="space-y-3">
+                    {!isTestingEquipment ? (
+                      <Button
+                        onClick={testEquipment}
+                        size="lg"
+                        className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                      >
+                        <Play className="h-5 w-5 mr-2" />
+                        Test Equipment
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={stopTest}
+                        size="lg"
+                        variant="outline"
+                        className="w-full"
+                      >
+                        <CheckCircle2 className="h-5 w-5 mr-2" />
+                        Stop Test
+                      </Button>
+                    )}
+                  </div>
+
+                  {/* Status Indicators */}
+                  {mediaStream && (
+                    <div className="space-y-2 pt-4 border-t">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="flex items-center gap-2">
+                          <div className={`h-2 w-2 rounded-full ${
+                            videoEnabled ? 'bg-green-500' : 'bg-red-500'
+                          }`} />
+                          Camera
+                        </span>
+                        <span className="font-medium">{videoEnabled ? 'ON' : 'OFF'}</span>
+                      </div>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="flex items-center gap-2">
+                          <div className={`h-2 w-2 rounded-full ${
+                            audioEnabled ? 'bg-green-500' : 'bg-red-500'
+                          }`} />
+                          Microphone
+                        </span>
+                        <span className="font-medium">{audioEnabled ? 'ON' : 'OFF'}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Tips */}
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <p className="text-xs font-medium text-blue-900 mb-1">💡 Pre-Flight Checklist:</p>
+                    <ul className="text-xs text-blue-700 space-y-1">
+                      <li>✓ Camera shows clear image</li>
+                      <li>✓ Audio level responds to voice</li>
+                      <li>✓ Good lighting on your face</li>
+                      <li>✓ Quiet environment</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Session Status Header */}
           <div className="flex items-center justify-between mb-6">
