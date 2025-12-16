@@ -9,6 +9,7 @@ import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { webhookRouter } from "../routers/webhooks";
 import { seedCoachAvailability } from "../seed-availability";
+import { runMigrations } from "../run-migrations-startup";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -69,7 +70,10 @@ async function startServer() {
   server.listen(port, async () => {
     console.log(`Server running on http://localhost:${port}/`);
     
-    // Seed coach availability if needed
+    // Run migrations first to ensure tables exist
+    await runMigrations();
+    
+    // Then seed coach availability if needed
     await seedCoachAvailability();
   });
 }
