@@ -26,10 +26,10 @@ export async function runMigrations() {
     const db = drizzle(migrationClient);
     
     // Determine migrations folder path
-    // In production (dist/), migrations are in ../drizzle
-    // In development, migrations are in ../../drizzle
+    // In production (dist/), migrations are copied to dist/drizzle during build
+    // In development, migrations are in ../../drizzle from server/
     const migrationsFolder = process.env.NODE_ENV === 'production' 
-      ? join(__dirname, '../drizzle')
+      ? join(__dirname, 'drizzle')
       : join(__dirname, '../../drizzle');
     
     console.log(`[Migrations] Using migrations folder: ${migrationsFolder}`);
