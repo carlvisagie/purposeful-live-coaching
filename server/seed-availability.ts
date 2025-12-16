@@ -7,7 +7,7 @@ import { db } from "./db";
 import { coaches, coachAvailability } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
 
-export async function seedCoachAvailability() {
+export async function seedCoachAvailability(force: boolean = false) {
   try {
     console.log("[Seed] Checking if coach availability needs to be seeded...");
     
@@ -17,12 +17,17 @@ export async function seedCoachAvailability() {
       .from(coachAvailability)
       .limit(1);
     
-    if (existing.length > 0) {
+    if (existing.length > 0 && !force) {
       console.log("[Seed] Coach availability already exists, skipping seed");
-      return;
+      return { success: true, message: "Availability already exists", skipped: true };
     }
     
-    console.log("[Seed] No availability found, seeding default data...");
+    if (force) {
+      console.log("[Seed] Force flag set, deleting existing availability...");
+      await db.delete(coachAvailability).where(eq(coachAvailability.coachId, 1));
+    }
+    
+    console.log("[Seed] Seeding coach availability...");
     
     // Ensure coach exists
     const existingCoach = await db
@@ -45,14 +50,25 @@ export async function seedCoachAvailability() {
       console.log("[Seed] ✅ Coach created");
     }
     
-    // Create default availability (Monday-Friday, 9 AM - 5 PM)
+    // Create availability with correct schedule
+    // Weekdays (Mon-Fri): 19:45 - 21:45 (7:45 PM - 9:45 PM)
+    // Weekends (Sat-Sun): 09:00 - 16:30 (9:00 AM - 4:30 PM)
     console.log("[Seed] Creating availability slots...");
     const availabilitySlots = [
-      { coachId: 1, dayOfWeek: 1, startTime: "09:00", endTime: "17:00", isActive: true },
-      { coachId: 1, dayOfWeek: 2, startTime: "09:00", endTime: "17:00", isActive: true },
-      { coachId: 1, dayOfWeek: 3, startTime: "09:00", endTime: "17:00", isActive: true },
-      { coachId: 1, dayOfWeek: 4, startTime: "09:00", endTime: "17:00", isActive: true },
-      { coachId: 1, dayOfWeek: 5, startTime: "09:00", endTime: "17:00", isActive: true },
+      // Monday (1)
+      { coachId: 1, dayOfWeek: 1, startTime: "19:45", endTime: "21:45", isActive: true },
+      // Tuesday (2)
+      { coachId: 1, dayOfWeek: 2, startTime: "19:45", endTime: "21:45", isActive: true },
+      // Wednesday (3)
+      { coachId: 1, dayOfWeek: 3, startTime: "19:45", endTime: "21:45", isActive: true },
+      // Thursday (4)
+      { coachId: 1, dayOfWeek: 4, startTime: "19:45", endTime: "21:45", isActive: true },
+      // Friday (5)
+      { coachId: 1, dayOfWeek: 5, startTime: "19:45", endTime: "21:45", isActive: true },
+      // Saturday (6)
+      { coachId: 1, dayOfWeek: 6, startTime: "09:00", endTime: "16:30", isActive: true },
+      // Sunday (0)
+      { coachId: 1, dayOfWeek: 0, startTime: "09:00", endTime: "16:30", isActive: true },
     ];
     
     for (const slot of availabilitySlots) {
@@ -63,11 +79,27 @@ export async function seedCoachAvailability() {
       });
     }
     
-    console.log("[Seed] ✅ Created 5 availability slots (Mon-Fri, 9 AM - 5 PM)");
+    console.log("[Seed] ✅ Created 7 availability slots");
+    console.log("[Seed]    Weekdays (Mon-Fri): 19:45 - 21:45");
+    console.log("[Seed]    Weekends (Sat-Sun): 09:00 - 16:30");
     console.log("[Seed] ✅ Booking system is now ready!");
+    
+    return { 
+      success: true, 
+      message: "Availability seeded successfully", 
+      slotsCreated: 7,
+      schedule: {
+        weekdays: "19:45 - 21:45",
+        weekends: "09:00 - 16:30"
+      }
+    };
     
   } catch (error) {
     console.error("[Seed] Failed to seed coach availability:", error);
-    // Don't throw - let the server start anyway
+    return { 
+      success: false, 
+      message: error instanceof Error ? error.message : "Unknown error",
+      error: true
+    };
   }
 }

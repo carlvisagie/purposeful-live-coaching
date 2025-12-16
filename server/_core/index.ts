@@ -45,6 +45,14 @@ async function startServer() {
   const uploadDir = process.env.UPLOAD_DIR || "/opt/render/project/src/uploads";
   app.use("/uploads", express.static(uploadDir));
   // OAuth removed - using guest checkout for Stripe
+  
+  // Manual seed endpoint (for when auto-seed doesn't work)
+  app.get("/api/seed-availability", async (req, res) => {
+    const force = req.query.force === "true";
+    const result = await seedCoachAvailability(force);
+    res.json(result);
+  });
+  
   // tRPC API
   app.use(
     "/api/trpc",
