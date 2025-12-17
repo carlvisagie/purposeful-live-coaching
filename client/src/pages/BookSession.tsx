@@ -60,7 +60,7 @@ export default function BookSession() {
   });
 
   const handleBookSession = () => {
-    console.log('handleBookSession called, selectedSlot:', selectedSlot);
+    alert('handleBookSession called! selectedSlot: ' + selectedSlot + ', user: ' + (user ? user.email : 'null'));
     
     // Check if user is logged in
     if (!user) {
