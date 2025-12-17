@@ -189,7 +189,7 @@ export default function LessonViewer() {
                       }}
                     >
                       <Download className="h-4 w-4 mr-2" />
-                      Download Exercise Worksheet (PDF)
+                      Download Exercise Guide
                     </Button>
                   </div>
                 </div>
@@ -319,7 +319,7 @@ export default function LessonViewer() {
                 onClick={() => window.open(`/lesson-notes/${moduleSlug}-lesson-${lessonIndex + 1}.md`, '_blank')}
               >
                 <Download className="h-4 w-4 mr-2" />
-                Download Lesson Notes
+                Download Lesson Notes (Markdown)
               </Button>
               <Button 
                 variant="outline" 
