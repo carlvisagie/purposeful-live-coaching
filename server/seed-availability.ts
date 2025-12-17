@@ -51,24 +51,24 @@ export async function seedCoachAvailability(force: boolean = false) {
     }
     
     // Create availability with correct schedule
-    // Weekdays (Mon-Fri): 19:45 - 21:45 (7:45 PM - 9:45 PM)
-    // Weekends (Sat-Sun): 09:00 - 16:30 (9:00 AM - 4:30 PM)
+    // Weekdays (Mon-Fri): 19:45 - 21:55 (7:45 PM - 9:55 PM)
+    // Weekends (Sat-Sun): 10:30 - 16:30 (10:30 AM - 4:30 PM)
     console.log("[Seed] Creating availability slots...");
     const availabilitySlots = [
       // Monday (1)
-      { coachId: 1, dayOfWeek: 1, startTime: "19:45", endTime: "21:45", isActive: true },
+      { coachId: 1, dayOfWeek: 1, startTime: "19:45", endTime: "21:55", isActive: true },
       // Tuesday (2)
-      { coachId: 1, dayOfWeek: 2, startTime: "19:45", endTime: "21:45", isActive: true },
+      { coachId: 1, dayOfWeek: 2, startTime: "19:45", endTime: "21:55", isActive: true },
       // Wednesday (3)
-      { coachId: 1, dayOfWeek: 3, startTime: "19:45", endTime: "21:45", isActive: true },
+      { coachId: 1, dayOfWeek: 3, startTime: "19:45", endTime: "21:55", isActive: true },
       // Thursday (4)
-      { coachId: 1, dayOfWeek: 4, startTime: "19:45", endTime: "21:45", isActive: true },
+      { coachId: 1, dayOfWeek: 4, startTime: "19:45", endTime: "21:55", isActive: true },
       // Friday (5)
-      { coachId: 1, dayOfWeek: 5, startTime: "19:45", endTime: "21:45", isActive: true },
+      { coachId: 1, dayOfWeek: 5, startTime: "19:45", endTime: "21:55", isActive: true },
       // Saturday (6)
-      { coachId: 1, dayOfWeek: 6, startTime: "09:00", endTime: "16:30", isActive: true },
+      { coachId: 1, dayOfWeek: 6, startTime: "10:30", endTime: "16:30", isActive: true },
       // Sunday (0)
-      { coachId: 1, dayOfWeek: 0, startTime: "09:00", endTime: "16:30", isActive: true },
+      { coachId: 1, dayOfWeek: 0, startTime: "10:30", endTime: "16:30", isActive: true },
     ];
     
     for (const slot of availabilitySlots) {
@@ -80,8 +80,8 @@ export async function seedCoachAvailability(force: boolean = false) {
     }
     
     console.log("[Seed] ✅ Created 7 availability slots");
-    console.log("[Seed]    Weekdays (Mon-Fri): 19:45 - 21:45");
-    console.log("[Seed]    Weekends (Sat-Sun): 09:00 - 16:30");
+    console.log("[Seed]    Weekdays (Mon-Fri): 19:45 - 21:55");
+    console.log("[Seed]    Weekends (Sat-Sun): 10:30 - 16:30");
     console.log("[Seed] ✅ Booking system is now ready!");
     
     return { 
@@ -89,8 +89,8 @@ export async function seedCoachAvailability(force: boolean = false) {
       message: "Availability seeded successfully", 
       slotsCreated: 7,
       schedule: {
-        weekdays: "19:45 - 21:45",
-        weekends: "09:00 - 16:30"
+        weekdays: "19:45 - 21:55",
+        weekends: "10:30 - 16:30"
       }
     };
     

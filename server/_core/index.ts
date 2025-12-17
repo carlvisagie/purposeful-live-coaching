@@ -68,6 +68,16 @@ async function startServer() {
     serveStatic(app);
   }
 
+  // Run migrations first to ensure tables exist
+  console.log("[Startup] Running migrations...");
+  await runMigrations();
+  console.log("[Startup] Migrations complete");
+  
+  // Then seed coach availability if needed
+  console.log("[Startup] Seeding coach availability...");
+  await seedCoachAvailability();
+  console.log("[Startup] Seeding complete");
+
   const preferredPort = parseInt(process.env.PORT || "3000");
   const port = await findAvailablePort(preferredPort);
 
@@ -75,14 +85,9 @@ async function startServer() {
     console.log(`Port ${preferredPort} is busy, using port ${port} instead`);
   }
 
-  server.listen(port, async () => {
-    console.log(`Server running on http://localhost:${port}/`);
-    
-    // Run migrations first to ensure tables exist
-    await runMigrations();
-    
-    // Then seed coach availability if needed
-    await seedCoachAvailability();
+  server.listen(port, () => {
+    console.log(`✅ Server running on http://localhost:${port}/`);
+    console.log(`✅ All systems ready!`);
   });
 }
 
