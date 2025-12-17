@@ -3,13 +3,23 @@
  * Runs automatically on server startup if no availability exists
  */
 
-import { db } from "./db";
+import { getDb } from "./db";
 import { coaches, coachAvailability } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
 
 export async function seedCoachAvailability(force: boolean = false) {
   try {
     console.log("[Seed] Checking if coach availability needs to be seeded...");
+    
+    // Get database connection (async to ensure it's ready)
+    console.log("[Seed] Getting database connection...");
+    const db = await getDb();
+    
+    if (!db) {
+      console.log("[Seed] Database not available, skipping seed");
+      return { success: false, message: "Database not available", skipped: true };
+    }
+    console.log("[Seed] Database connection established");
     
     // Check if availability already exists
     console.log("[Seed] Querying existing availability...");
