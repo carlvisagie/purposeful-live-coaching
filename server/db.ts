@@ -27,8 +27,12 @@ export async function getDb() {
       const client = postgres(process.env.DATABASE_URL, {
         max: 20, // Max 20 connections (reserve 5 for admin)
         idle_timeout: 30, // Close idle connections after 30s
-        connect_timeout: 5, // Fail fast if DB unavailable
+        connect_timeout: 30, // Increased timeout for slow DB connections
         max_lifetime: 60 * 30, // Recycle connections every 30 minutes
+        ssl: 'require', // Force SSL for Render database
+        connection: {
+          application_name: 'purposeful_live_coaching_app'
+        }
       });
       _db = drizzle(client, { schema });
       _client = client;
@@ -45,8 +49,12 @@ export async function getDb() {
 const client = postgres(process.env.DATABASE_URL || '', {
   max: 20, // Max 20 connections (reserve 5 for admin/monitoring)
   idle_timeout: 30, // Close idle connections after 30 seconds
-  connect_timeout: 5, // Fail fast if database unavailable
+  connect_timeout: 30, // Increased timeout for slow DB connections
   max_lifetime: 60 * 30, // Recycle connections every 30 minutes
+  ssl: 'require', // Force SSL for Render database
+  connection: {
+    application_name: 'purposeful_live_coaching_app'
+  },
   // Requests queue when pool is full (prevents "too many connections" crashes)
 });
 
