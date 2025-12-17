@@ -2,7 +2,6 @@
  * Run database migrations on server startup
  * This ensures tables exist before seeding
  */
-
 import { drizzle } from "drizzle-orm/postgres-js";
 import { migrate } from "drizzle-orm/postgres-js/migrator";
 import postgres from "postgres";
@@ -22,7 +21,12 @@ export async function runMigrations() {
     console.log("[Migrations] Starting database migrations...");
     
     // Create a dedicated connection for migrations
-    const migrationClient = postgres(process.env.DATABASE_URL, { max: 1 });
+    // CRITICAL: Must include ssl: 'require' for Render PostgreSQL
+    const migrationClient = postgres(process.env.DATABASE_URL, { 
+      max: 1,
+      ssl: 'require',
+      connect_timeout: 30,
+    });
     const db = drizzle(migrationClient);
     
     // Determine migrations folder path
