@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,7 @@ export default function BookSession() {
   const [sessionType, setSessionType] = useState("follow-up");
   const [notes, setNotes] = useState("");
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const bookButtonRef = useRef<HTMLButtonElement>(null);
 
   // Get current month for calendar
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -60,7 +61,9 @@ export default function BookSession() {
   });
 
   const handleBookSession = () => {
-    alert('handleBookSession called! selectedSlot: ' + selectedSlot + ', user: ' + (user ? user.email : 'null'));
+    console.log('[BookSession] handleBookSession called');
+    console.log('[BookSession] selectedSlot:', selectedSlot);
+    console.log('[BookSession] user:', user);
     
     // Check if user is logged in
     if (!user) {
@@ -317,11 +320,10 @@ export default function BookSession() {
           {/* Book Button */}
           {selectedSlot && (
             <button
+              ref={bookButtonRef}
+              id="book-session-btn"
               type="button"
-              onClick={() => {
-                console.log('Button clicked!');
-                handleBookSession();
-              }}
+              onClick={handleBookSession}
               disabled={createCheckout.isPending}
               className="w-full h-10 px-6 bg-primary text-primary-foreground rounded-md font-medium hover:bg-primary/90 disabled:opacity-50"
             >
