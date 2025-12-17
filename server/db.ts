@@ -1,9 +1,13 @@
+console.log("[Database] Module loading...");
+
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "../drizzle/schema";
 import { InsertUser, users } from "../drizzle/schema";
 import { ENV } from './_core/env';
+
+console.log("[Database] Imports complete, DATABASE_URL exists:", !!process.env.DATABASE_URL);
 
 /**
  * Database Connection Pool Configuration
@@ -24,6 +28,7 @@ let _client: postgres.Sql | null = null;
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
+      console.log("[Database] Creating async database connection...");
       const client = postgres(process.env.DATABASE_URL, {
         max: 20, // Max 20 connections (reserve 5 for admin)
         idle_timeout: 30, // Close idle connections after 30s
@@ -36,6 +41,7 @@ export async function getDb() {
       });
       _db = drizzle(client, { schema });
       _client = client;
+      console.log("[Database] Async connection created successfully");
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
       _db = null;
@@ -46,19 +52,38 @@ export async function getDb() {
 
 // Synchronous db instance for use in routers (assumes DB is already initialized)
 // Uses connection pooling to prevent crashes
-const client = postgres(process.env.DATABASE_URL || '', {
-  max: 20, // Max 20 connections (reserve 5 for admin/monitoring)
-  idle_timeout: 30, // Close idle connections after 30 seconds
-  connect_timeout: 30, // Increased timeout for slow DB connections
-  max_lifetime: 60 * 30, // Recycle connections every 30 minutes
-  ssl: 'require', // Force SSL for Render database
-  connection: {
-    application_name: 'purposeful_live_coaching_app'
-  },
-  // Requests queue when pool is full (prevents "too many connections" crashes)
-});
+let client: postgres.Sql;
+let db: ReturnType<typeof drizzle>;
 
-export const db = drizzle(client, { schema });
+try {
+  console.log("[Database] Creating synchronous database client...");
+  if (!process.env.DATABASE_URL) {
+    console.error("[Database] DATABASE_URL is not set!");
+    throw new Error("DATABASE_URL environment variable is required");
+  }
+  
+  client = postgres(process.env.DATABASE_URL, {
+    max: 20, // Max 20 connections (reserve 5 for admin/monitoring)
+    idle_timeout: 30, // Close idle connections after 30 seconds
+    connect_timeout: 30, // Increased timeout for slow DB connections
+    max_lifetime: 60 * 30, // Recycle connections every 30 minutes
+    ssl: 'require', // Force SSL for Render database
+    connection: {
+      application_name: 'purposeful_live_coaching_app'
+    },
+    // Requests queue when pool is full (prevents "too many connections" crashes)
+  });
+  
+  db = drizzle(client, { schema });
+  console.log("[Database] Synchronous client created successfully");
+} catch (error) {
+  console.error("[Database] Failed to create synchronous client:", error);
+  // Create a dummy client that will fail gracefully
+  client = postgres('postgresql://localhost:5432/dummy', { max: 1 });
+  db = drizzle(client, { schema });
+}
+
+export { db };
 
 // Graceful shutdown: close all database connections
 process.on('SIGTERM', async () => {

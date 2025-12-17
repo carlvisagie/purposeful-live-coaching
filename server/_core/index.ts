@@ -1,4 +1,6 @@
+console.log("[App] Starting application...");
 import "dotenv/config";
+console.log("[App] dotenv loaded");
 import express from "express";
 import { createServer } from "http";
 import net from "net";
