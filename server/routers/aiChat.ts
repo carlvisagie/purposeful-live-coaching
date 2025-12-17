@@ -195,6 +195,7 @@ export const aiChatRouter = router({
         const conversationId = await createConversation({
           userId: userId || null,
           clientId: input.client_id || null,
+          subscriptionId: null, // Will be updated when user subscribes
           title: input.title || "New Conversation",
         });
         console.error('[tRPC createConversation] Success! conversationId:', conversationId);
