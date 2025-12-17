@@ -13,6 +13,8 @@ import { webhookRouter } from "../routers/webhooks";
 import { seedCoachAvailability } from "../seed-availability";
 import { runMigrations } from "../run-migrations-startup";
 
+console.log("[App] All imports complete");
+
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
     const server = net.createServer();
@@ -32,26 +34,8 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
   throw new Error(`No available port found starting from ${startPort}`);
 }
 
-// Helper to run async operation with timeout
-function withTimeout<T>(promise: Promise<T>, timeoutMs: number, operation: string): Promise<T> {
-  return new Promise((resolve, reject) => {
-    const timer = setTimeout(() => {
-      reject(new Error(`${operation} timed out after ${timeoutMs}ms`));
-    }, timeoutMs);
-    
-    promise
-      .then(result => {
-        clearTimeout(timer);
-        resolve(result);
-      })
-      .catch(error => {
-        clearTimeout(timer);
-        reject(error);
-      });
-  });
-}
-
 async function startServer() {
+  console.log("[Startup] Initializing Express...");
   const app = express();
   const server = createServer(app);
   
@@ -65,7 +49,6 @@ async function startServer() {
   // Serve uploaded files
   const uploadDir = process.env.UPLOAD_DIR || "/opt/render/project/src/uploads";
   app.use("/uploads", express.static(uploadDir));
-  // OAuth removed - using guest checkout for Stripe
   
   // Manual seed endpoint (for when auto-seed doesn't work)
   app.get("/api/seed-availability", async (req, res) => {
@@ -82,6 +65,7 @@ async function startServer() {
       createContext,
     })
   );
+  
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);
@@ -92,21 +76,13 @@ async function startServer() {
   // Run migrations first to ensure tables exist
   console.log("[Startup] Running migrations...");
   try {
-    await withTimeout(runMigrations(), 60000, "Migrations");
+    await runMigrations();
     console.log("[Startup] Migrations complete");
   } catch (error) {
     console.error("[Startup] Migration error (continuing anyway):", error);
   }
-  
-  // Then seed coach availability if needed (with timeout)
-  console.log("[Startup] Seeding coach availability...");
-  try {
-    await withTimeout(seedCoachAvailability(), 30000, "Seeding");
-    console.log("[Startup] Seeding complete");
-  } catch (error) {
-    console.error("[Startup] Seeding error (continuing anyway):", error);
-  }
 
+  // Start the server FIRST - this is critical for Render health checks
   const preferredPort = parseInt(process.env.PORT || "3000");
   const port = await findAvailablePort(preferredPort);
 
@@ -116,7 +92,18 @@ async function startServer() {
 
   server.listen(port, () => {
     console.log(`✅ Server running on http://localhost:${port}/`);
-    console.log(`✅ All systems ready!`);
+    console.log(`✅ Server is ready to accept connections!`);
+    
+    // Seed coach availability AFTER server is listening (non-blocking)
+    // This runs in the background and doesn't block the server
+    console.log("[Startup] Starting background seeding...");
+    seedCoachAvailability()
+      .then(result => {
+        console.log("[Startup] Background seeding complete:", result);
+      })
+      .catch(error => {
+        console.error("[Startup] Background seeding failed:", error);
+      });
   });
 }
 
