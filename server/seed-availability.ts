@@ -5,7 +5,7 @@
 
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { coaches, coachAvailability } from "../drizzle/schema";
+import { users, coaches, coachAvailability } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
 
 export async function seedCoachAvailability(force: boolean = false) {
@@ -53,48 +53,77 @@ export async function seedCoachAvailability(force: boolean = false) {
     
     console.log("[Seed] Seeding coach availability...");
     
-    // Ensure coach exists
-    console.log("[Seed] Checking for existing coach...");
+    // First, ensure we have a user for the coach
+    console.log("[Seed] Checking for existing coach user...");
+    let coachUserId: number;
+    
+    const existingUser = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, "carl@purposefullive.com"))
+      .limit(1);
+    
+    if (existingUser.length === 0) {
+      console.log("[Seed] Creating coach user...");
+      const [newUser] = await db.insert(users).values({
+        openId: "coach_carl_" + Date.now(), // Unique openId
+        name: "Carl Visagie",
+        email: "carl@purposefullive.com",
+        role: "coach",
+      }).returning();
+      coachUserId = newUser.id;
+      console.log("[Seed] ✅ Coach user created with ID:", coachUserId);
+    } else {
+      coachUserId = existingUser[0].id;
+      console.log("[Seed] Found existing coach user with ID:", coachUserId);
+    }
+    
+    // Now ensure coach record exists
+    console.log("[Seed] Checking for existing coach record...");
     const existingCoach = await db
       .select()
       .from(coaches)
-      .where(eq(coaches.id, 1))
+      .where(eq(coaches.userId, coachUserId))
       .limit(1);
-    console.log("[Seed] Coach query complete, found:", existingCoach.length, "coaches");
+    
+    let coachId: number;
     
     if (existingCoach.length === 0) {
-      console.log("[Seed] Creating default coach (ID: 1)...");
-      await db.insert(coaches).values({
-        id: 1,
-        name: "Carl Visagie",
-        email: "carl@purposefullive.com",
-        bio: "Professional Life Coach specializing in holistic wellness and personal transformation",
-        specialties: "Emotional Wellness, Mental Health, Physical Fitness, Nutrition, Spiritual Wellness",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
-      console.log("[Seed] ✅ Coach created");
+      console.log("[Seed] Creating coach record...");
+      const [newCoach] = await db.insert(coaches).values({
+        userId: coachUserId,
+        specialization: "Holistic Wellness, Personal Transformation",
+        bio: "Professional Life Coach specializing in holistic wellness and personal transformation. Trained in evidence-based coaching methods.",
+        certifications: "ICF Certified Coach, NLP Practitioner",
+        yearsExperience: 10,
+        isActive: "active",
+      }).returning();
+      coachId = newCoach.id;
+      console.log("[Seed] ✅ Coach record created with ID:", coachId);
+    } else {
+      coachId = existingCoach[0].id;
+      console.log("[Seed] Found existing coach record with ID:", coachId);
     }
     
     // Create availability with correct schedule
     // Weekdays (Mon-Fri): 19:45 - 21:55 (7:45 PM - 9:55 PM)
     // Weekends (Sat-Sun): 10:30 - 16:30 (10:30 AM - 4:30 PM)
-    console.log("[Seed] Creating availability slots...");
+    console.log("[Seed] Creating availability slots for coach ID:", coachId);
     const availabilitySlots = [
       // Monday (1)
-      { coachId: 1, dayOfWeek: 1, startTime: "19:45", endTime: "21:55", isActive: true },
+      { coachId, dayOfWeek: 1, startTime: "19:45", endTime: "21:55", isActive: true },
       // Tuesday (2)
-      { coachId: 1, dayOfWeek: 2, startTime: "19:45", endTime: "21:55", isActive: true },
+      { coachId, dayOfWeek: 2, startTime: "19:45", endTime: "21:55", isActive: true },
       // Wednesday (3)
-      { coachId: 1, dayOfWeek: 3, startTime: "19:45", endTime: "21:55", isActive: true },
+      { coachId, dayOfWeek: 3, startTime: "19:45", endTime: "21:55", isActive: true },
       // Thursday (4)
-      { coachId: 1, dayOfWeek: 4, startTime: "19:45", endTime: "21:55", isActive: true },
+      { coachId, dayOfWeek: 4, startTime: "19:45", endTime: "21:55", isActive: true },
       // Friday (5)
-      { coachId: 1, dayOfWeek: 5, startTime: "19:45", endTime: "21:55", isActive: true },
+      { coachId, dayOfWeek: 5, startTime: "19:45", endTime: "21:55", isActive: true },
       // Saturday (6)
-      { coachId: 1, dayOfWeek: 6, startTime: "10:30", endTime: "16:30", isActive: true },
+      { coachId, dayOfWeek: 6, startTime: "10:30", endTime: "16:30", isActive: true },
       // Sunday (0)
-      { coachId: 1, dayOfWeek: 0, startTime: "10:30", endTime: "16:30", isActive: true },
+      { coachId, dayOfWeek: 0, startTime: "10:30", endTime: "16:30", isActive: true },
     ];
     
     for (let i = 0; i < availabilitySlots.length; i++) {
@@ -120,6 +149,7 @@ export async function seedCoachAvailability(force: boolean = false) {
     return { 
       success: true, 
       message: "Availability seeded successfully", 
+      coachId,
       slotsCreated: 7,
       schedule: {
         weekdays: "19:45 - 21:55",
