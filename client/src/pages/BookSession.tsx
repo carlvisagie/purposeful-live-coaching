@@ -60,8 +60,10 @@ export default function BookSession() {
   });
 
   const handleBookSession = () => {
+    console.log('handleBookSession called, selectedSlot:', selectedSlot);
     if (!selectedSlot) {
       toast.error("Please select a time slot");
+      console.log('No slot selected');
       return;
     }
 
@@ -76,6 +78,7 @@ export default function BookSession() {
     const sessionTypeId = sessionTypeMap[sessionType] || 2;
 
     // Create Stripe checkout with session details
+    console.log('Calling createCheckout.mutate with:', { sessionTypeId, scheduledDate: selectedSlot, notes });
     createCheckout.mutate({
       sessionTypeId,
       scheduledDate: selectedSlot,
