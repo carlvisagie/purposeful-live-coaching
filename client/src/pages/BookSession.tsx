@@ -301,7 +301,7 @@ export default function BookSession() {
           {selectedSlot && (
             <Button
               onClick={handleBookSession}
-              disabled={bookSession.isPending}
+              disabled={createCheckout.isPending}
               className="w-full"
               size="lg"
             >
