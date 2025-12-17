@@ -5,7 +5,7 @@
  * This is useful for adding indexes and schema changes without downtime.
  */
 
-import { router, publicProcedure } from "../trpc";
+import { router, publicProcedure } from "../_core/trpc";
 import { addPerformanceIndexes } from "../db/migrations/add-indexes";
 
 export const migrationsRouter = router({
