@@ -201,8 +201,14 @@ export const aiChatRouter = router({
         console.error('[tRPC createConversation] Success! conversationId:', conversationId);
         return { conversationId };
       } catch (error) {
-        console.error('[tRPC createConversation] ERROR:', error);
-        throw error;
+        console.error('[tRPC createConversation] FULL ERROR:', JSON.stringify(error, Object.getOwnPropertyNames(error)));
+        console.error('[tRPC createConversation] ERROR MESSAGE:', error instanceof Error ? error.message : String(error));
+        console.error('[tRPC createConversation] ERROR STACK:', error instanceof Error ? error.stack : 'No stack');
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: error instanceof Error ? error.message : "Failed to create conversation",
+          cause: error,
+        });
       }
     }),
 
