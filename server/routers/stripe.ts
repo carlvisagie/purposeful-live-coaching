@@ -19,12 +19,14 @@ export const stripeRouter = router({
    * Create Stripe checkout session for one-time human coaching session booking
    * Used by Hybrid/Premium subscribers to book their included human sessions
    */
-  createSessionCheckout: protectedProcedure
+  createSessionCheckout: publicProcedure
     .input(
       z.object({
         sessionTypeId: z.number(),
         scheduledDate: z.string(),
         notes: z.string().optional(),
+        guestEmail: z.string().email().optional(),
+        guestName: z.string().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -60,12 +62,12 @@ export const stripeRouter = router({
             quantity: 1,
           },
         ],
-        customer_email: ctx.user.email || undefined,
-        client_reference_id: ctx.user.id.toString(),
+        customer_email: ctx.user?.email || input.guestEmail || undefined,
+        client_reference_id: ctx.user?.id?.toString() || 'guest',
         metadata: {
-          user_id: ctx.user.id.toString(),
-          customer_email: ctx.user.email || "",
-          customer_name: ctx.user.name || "",
+          user_id: ctx.user?.id?.toString() || 'guest',
+          customer_email: ctx.user?.email || input.guestEmail || "",
+          customer_name: ctx.user?.name || input.guestName || "Guest",
           session_type_id: sessionType.id.toString(),
           session_type_name: sessionType.name,
           scheduled_date: input.scheduledDate,

@@ -77,19 +77,6 @@ export default function BookSession() {
     console.log('[BookSession] selectedSlot:', selectedSlot);
     console.log('[BookSession] user:', user);
     
-    // Check if user is logged in
-    if (!user) {
-      toast.error("Please log in to book a session");
-      // Save booking intent to localStorage so we can resume after login
-      localStorage.setItem('bookingIntent', JSON.stringify({
-        selectedSlot,
-        sessionType,
-        notes,
-      }));
-      window.location.href = '/login?redirect=/sessions/book';
-      return;
-    }
-    
     if (!selectedSlot) {
       toast.error("Please select a time slot");
       console.log('No slot selected');
