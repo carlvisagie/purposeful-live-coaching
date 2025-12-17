@@ -11,6 +11,13 @@
  * - client_id (foreign key to clients.id)
  * - subscription_id (foreign key to subscriptions.id)
  * - created_at (for sorting/filtering)
+ * 
+ * Usage:
+ * - Call via API: POST /api/trpc/migrations.addIndexes
+ * - Or import and call: await addPerformanceIndexes()
+ * 
+ * NOTE: Do NOT add self-executing code here as this file gets bundled with the main app.
+ * Any process.exit() calls would kill the entire application!
  */
 
 import postgres from 'postgres';
@@ -25,6 +32,7 @@ export async function addPerformanceIndexes() {
     max: 1,
     idle_timeout: 20,
     connect_timeout: 30,
+    ssl: 'require', // Required for Render PostgreSQL
   });
 
   try {
@@ -96,6 +104,7 @@ export async function addPerformanceIndexes() {
       console.log(`[Migration]   - ${row.indexname}`);
     });
     
+    console.log('[Migration] Migration completed successfully');
     return true;
   } catch (error) {
     console.error('[Migration] Migration failed:', error);
@@ -105,15 +114,9 @@ export async function addPerformanceIndexes() {
   }
 }
 
-// Run migration if called directly
-if (import.meta.url === `file://${process.argv[1]}`) {
-  addPerformanceIndexes()
-    .then(() => {
-      console.log('[Migration] Migration completed successfully');
-      process.exit(0);
-    })
-    .catch((error) => {
-      console.error('[Migration] Migration failed:', error);
-      process.exit(1);
-    });
-}
+// REMOVED: Self-executing code that was causing process.exit() when bundled
+// The old code used: if (import.meta.url === `file://${process.argv[1]}`)
+// This condition becomes TRUE when bundled by esbuild, causing the app to exit!
+// 
+// To run this migration manually, use the API endpoint instead:
+// POST /api/trpc/migrations.addIndexes
