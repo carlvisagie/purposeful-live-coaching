@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,7 @@ const SESSION_TYPES = [
 ];
 
 export default function BookSession() {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const [coachId] = useState(1); // Default coach
   const clientId = user?.id || 1;
@@ -61,6 +63,20 @@ export default function BookSession() {
 
   const handleBookSession = () => {
     console.log('handleBookSession called, selectedSlot:', selectedSlot);
+    
+    // Check if user is logged in
+    if (!user) {
+      toast.error("Please log in to book a session");
+      // Save booking intent to localStorage so we can resume after login
+      localStorage.setItem('bookingIntent', JSON.stringify({
+        selectedSlot,
+        sessionType,
+        notes,
+      }));
+      navigate('/login?redirect=/sessions/book');
+      return;
+    }
+    
     if (!selectedSlot) {
       toast.error("Please select a time slot");
       console.log('No slot selected');
