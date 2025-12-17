@@ -22,7 +22,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Streamdown } from "streamdown";
 import { useLocation } from "wouter";
 import { ConversationRating } from "@/components/ConversationRating";
-import { AIDisclosureDialog, useAIDisclosureReminder } from "@/components/AIDisclosureDialog";
+// AI Disclosure removed per user request
 import {
   AlertDialog,
   AlertDialogAction,
@@ -334,7 +334,7 @@ export default function AICoach() {
 
   return (
     <>
-      <AIDisclosureDialog />
+      {/* AI Disclosure removed per user request */}
       <div className="min-h-screen bg-gradient-to-br from-rose-50 via-purple-50 to-blue-50">
         {/* Header */}
         <header className="border-b border-gray-200 bg-white/95 backdrop-blur-sm sticky top-0 z-50">
