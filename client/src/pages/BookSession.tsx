@@ -316,14 +316,16 @@ export default function BookSession() {
 
           {/* Book Button */}
           {selectedSlot && (
-            <Button
-              onClick={handleBookSession}
-              disabled={createCheckout.isPending}
-              className="w-full"
-              size="lg"
-            >
-              Book Session
-            </Button>
+            <form onSubmit={(e) => { e.preventDefault(); handleBookSession(); }}>
+              <Button
+                type="submit"
+                disabled={createCheckout.isPending}
+                className="w-full"
+                size="lg"
+              >
+                Book Session
+              </Button>
+            </form>
           )}
         </div>
       </div>
