@@ -50,7 +50,8 @@ async function startServer() {
   const uploadDir = process.env.UPLOAD_DIR || "/opt/render/project/src/uploads";
   app.use("/uploads", express.static(uploadDir));
   
-  // Manual seed endpoint (for when auto-seed doesn't work)
+  // Manual seed endpoint - use this to seed availability after deployment
+  // Visit: https://your-app.onrender.com/api/seed-availability
   app.get("/api/seed-availability", async (req, res) => {
     const force = req.query.force === "true";
     const result = await seedCoachAvailability(force);
@@ -82,7 +83,7 @@ async function startServer() {
     console.error("[Startup] Migration error (continuing anyway):", error);
   }
 
-  // Start the server FIRST - this is critical for Render health checks
+  // Start the server - seeding is now manual via /api/seed-availability
   const preferredPort = parseInt(process.env.PORT || "3000");
   const port = await findAvailablePort(preferredPort);
 
@@ -92,18 +93,8 @@ async function startServer() {
 
   server.listen(port, () => {
     console.log(`✅ Server running on http://localhost:${port}/`);
-    console.log(`✅ Server is ready to accept connections!`);
-    
-    // Seed coach availability AFTER server is listening (non-blocking)
-    // This runs in the background and doesn't block the server
-    console.log("[Startup] Starting background seeding...");
-    seedCoachAvailability()
-      .then(result => {
-        console.log("[Startup] Background seeding complete:", result);
-      })
-      .catch(error => {
-        console.error("[Startup] Background seeding failed:", error);
-      });
+    console.log(`✅ All systems ready!`);
+    console.log(`📝 To seed availability, visit: /api/seed-availability`);
   });
 }
 
