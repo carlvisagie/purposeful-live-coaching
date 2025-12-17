@@ -3,23 +3,33 @@
  * Runs automatically on server startup if no availability exists
  */
 
-import { getDb } from "./db";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 import { coaches, coachAvailability } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
 
 export async function seedCoachAvailability(force: boolean = false) {
+  if (!process.env.DATABASE_URL) {
+    console.log("[Seed] DATABASE_URL not set, skipping seed");
+    return { success: false, message: "DATABASE_URL not set", skipped: true };
+  }
+
+  // Create a dedicated connection for seeding (same pattern as migrations)
+  let seedClient: postgres.Sql | null = null;
+  
   try {
     console.log("[Seed] Checking if coach availability needs to be seeded...");
+    console.log("[Seed] Creating dedicated database connection for seeding...");
     
-    // Get database connection (async to ensure it's ready)
-    console.log("[Seed] Getting database connection...");
-    const db = await getDb();
+    seedClient = postgres(process.env.DATABASE_URL, {
+      max: 1,
+      ssl: 'require',
+      connect_timeout: 30,
+      idle_timeout: 10,
+    });
     
-    if (!db) {
-      console.log("[Seed] Database not available, skipping seed");
-      return { success: false, message: "Database not available", skipped: true };
-    }
-    console.log("[Seed] Database connection established");
+    const db = drizzle(seedClient);
+    console.log("[Seed] Database connection created");
     
     // Check if availability already exists
     console.log("[Seed] Querying existing availability...");
@@ -31,6 +41,7 @@ export async function seedCoachAvailability(force: boolean = false) {
     
     if (existing.length > 0 && !force) {
       console.log("[Seed] Coach availability already exists, skipping seed");
+      await seedClient.end();
       return { success: true, message: "Availability already exists", skipped: true };
     }
     
@@ -101,6 +112,11 @@ export async function seedCoachAvailability(force: boolean = false) {
     console.log("[Seed]    Weekends (Sat-Sun): 10:30 - 16:30");
     console.log("[Seed] ✅ Booking system is now ready!");
     
+    // Close the dedicated connection
+    console.log("[Seed] Closing database connection...");
+    await seedClient.end();
+    console.log("[Seed] Database connection closed");
+    
     return { 
       success: true, 
       message: "Availability seeded successfully", 
@@ -114,6 +130,17 @@ export async function seedCoachAvailability(force: boolean = false) {
   } catch (error) {
     console.error("[Seed] Failed to seed coach availability:", error);
     console.error("[Seed] Error stack:", error instanceof Error ? error.stack : "No stack");
+    
+    // Make sure to close the connection on error
+    if (seedClient) {
+      try {
+        await seedClient.end();
+        console.log("[Seed] Database connection closed after error");
+      } catch (closeError) {
+        console.error("[Seed] Failed to close connection:", closeError);
+      }
+    }
+    
     return { 
       success: false, 
       message: error instanceof Error ? error.message : "Unknown error",
