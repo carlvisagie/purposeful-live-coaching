@@ -12,10 +12,12 @@ export async function seedCoachAvailability(force: boolean = false) {
     console.log("[Seed] Checking if coach availability needs to be seeded...");
     
     // Check if availability already exists
+    console.log("[Seed] Querying existing availability...");
     const existing = await db
       .select()
       .from(coachAvailability)
       .limit(1);
+    console.log("[Seed] Query complete, found:", existing.length, "records");
     
     if (existing.length > 0 && !force) {
       console.log("[Seed] Coach availability already exists, skipping seed");
@@ -25,16 +27,19 @@ export async function seedCoachAvailability(force: boolean = false) {
     if (force) {
       console.log("[Seed] Force flag set, deleting existing availability...");
       await db.delete(coachAvailability).where(eq(coachAvailability.coachId, 1));
+      console.log("[Seed] Existing availability deleted");
     }
     
     console.log("[Seed] Seeding coach availability...");
     
     // Ensure coach exists
+    console.log("[Seed] Checking for existing coach...");
     const existingCoach = await db
       .select()
       .from(coaches)
       .where(eq(coaches.id, 1))
       .limit(1);
+    console.log("[Seed] Coach query complete, found:", existingCoach.length, "coaches");
     
     if (existingCoach.length === 0) {
       console.log("[Seed] Creating default coach (ID: 1)...");
@@ -71,7 +76,9 @@ export async function seedCoachAvailability(force: boolean = false) {
       { coachId: 1, dayOfWeek: 0, startTime: "10:30", endTime: "16:30", isActive: true },
     ];
     
-    for (const slot of availabilitySlots) {
+    for (let i = 0; i < availabilitySlots.length; i++) {
+      const slot = availabilitySlots[i];
+      console.log(`[Seed] Creating slot ${i + 1}/7 for day ${slot.dayOfWeek}...`);
       await db.insert(coachAvailability).values({
         ...slot,
         createdAt: new Date(),
@@ -96,6 +103,7 @@ export async function seedCoachAvailability(force: boolean = false) {
     
   } catch (error) {
     console.error("[Seed] Failed to seed coach availability:", error);
+    console.error("[Seed] Error stack:", error instanceof Error ? error.stack : "No stack");
     return { 
       success: false, 
       message: error instanceof Error ? error.message : "Unknown error",

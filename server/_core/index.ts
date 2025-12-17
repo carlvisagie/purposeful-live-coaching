@@ -30,6 +30,25 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
   throw new Error(`No available port found starting from ${startPort}`);
 }
 
+// Helper to run async operation with timeout
+function withTimeout<T>(promise: Promise<T>, timeoutMs: number, operation: string): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      reject(new Error(`${operation} timed out after ${timeoutMs}ms`));
+    }, timeoutMs);
+    
+    promise
+      .then(result => {
+        clearTimeout(timer);
+        resolve(result);
+      })
+      .catch(error => {
+        clearTimeout(timer);
+        reject(error);
+      });
+  });
+}
+
 async function startServer() {
   const app = express();
   const server = createServer(app);
@@ -70,13 +89,21 @@ async function startServer() {
 
   // Run migrations first to ensure tables exist
   console.log("[Startup] Running migrations...");
-  await runMigrations();
-  console.log("[Startup] Migrations complete");
+  try {
+    await withTimeout(runMigrations(), 60000, "Migrations");
+    console.log("[Startup] Migrations complete");
+  } catch (error) {
+    console.error("[Startup] Migration error (continuing anyway):", error);
+  }
   
-  // Then seed coach availability if needed
+  // Then seed coach availability if needed (with timeout)
   console.log("[Startup] Seeding coach availability...");
-  await seedCoachAvailability();
-  console.log("[Startup] Seeding complete");
+  try {
+    await withTimeout(seedCoachAvailability(), 30000, "Seeding");
+    console.log("[Startup] Seeding complete");
+  } catch (error) {
+    console.error("[Startup] Seeding error (continuing anyway):", error);
+  }
 
   const preferredPort = parseInt(process.env.PORT || "3000");
   const port = await findAvailablePort(preferredPort);
@@ -91,4 +118,7 @@ async function startServer() {
   });
 }
 
-startServer().catch(console.error);
+startServer().catch(error => {
+  console.error("[Startup] Fatal error:", error);
+  process.exit(1);
+});
