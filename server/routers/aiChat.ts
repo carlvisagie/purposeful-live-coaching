@@ -184,7 +184,7 @@ export const aiChatRouter = router({
       z.object({
         title: z.string().optional(),
         client_id: z.number().optional(),
-      })
+      }).optional().default({})
     )
     .mutation(async ({ input, ctx }) => {
       // Demo mode: allow guest users (omit userId for guest users)
