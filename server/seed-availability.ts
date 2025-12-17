@@ -5,7 +5,7 @@
 
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { users, coaches, coachAvailability } from "../drizzle/schema";
+import { users, coaches, coachAvailability, sessionTypes } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
 
 export async function seedCoachAvailability(force: boolean = false) {
@@ -139,6 +139,59 @@ export async function seedCoachAvailability(force: boolean = false) {
     console.log("[Seed] ✅ Created 7 availability slots");
     console.log("[Seed]    Weekdays (Mon-Fri): 19:45 - 21:55");
     console.log("[Seed]    Weekends (Sat-Sun): 10:30 - 16:30");
+    
+    // Seed session types
+    console.log("[Seed] Checking for existing session types...");
+    const existingSessionTypes = await db
+      .select()
+      .from(sessionTypes)
+      .where(eq(sessionTypes.coachId, coachId))
+      .limit(1);
+    
+    if (existingSessionTypes.length === 0) {
+      console.log("[Seed] Creating session types...");
+      
+      // Create session types for the coach
+      const sessionTypeData = [
+        {
+          coachId,
+          name: "Initial Consultation",
+          description: "60-minute discovery session to understand your goals and create a personalized coaching plan.",
+          duration: 60,
+          price: 9900, // $99.00
+          isActive: "active",
+          displayOrder: 1,
+        },
+        {
+          coachId,
+          name: "Follow-up Session",
+          description: "45-minute coaching session to continue your transformation journey.",
+          duration: 45,
+          price: 7500, // $75.00
+          isActive: "active",
+          displayOrder: 2,
+        },
+        {
+          coachId,
+          name: "Deep Dive Session",
+          description: "90-minute intensive session for breakthrough work on specific challenges.",
+          duration: 90,
+          price: 14900, // $149.00
+          isActive: "active",
+          displayOrder: 3,
+        },
+      ];
+      
+      for (const sessionType of sessionTypeData) {
+        await db.insert(sessionTypes).values(sessionType);
+        console.log(`[Seed] ✅ Created session type: ${sessionType.name}`);
+      }
+      
+      console.log("[Seed] ✅ Created 3 session types");
+    } else {
+      console.log("[Seed] Session types already exist, skipping");
+    }
+    
     console.log("[Seed] ✅ Booking system is now ready!");
     
     // Close the dedicated connection
