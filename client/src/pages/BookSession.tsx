@@ -56,6 +56,18 @@ export default function BookSession() {
       }
     },
     onError: (error) => {
+      // Check if it's an authentication error
+      if (error.message.includes('UNAUTHORIZED') || error.data?.code === 'UNAUTHORIZED') {
+        toast.error("Please log in to book a session");
+        // Save booking intent
+        localStorage.setItem('bookingIntent', JSON.stringify({
+          selectedSlot,
+          sessionType,
+          notes,
+        }));
+        window.location.href = '/login?redirect=/sessions/book';
+        return;
+      }
       toast.error(`Failed to create checkout: ${error.message}`);
     },
   });
