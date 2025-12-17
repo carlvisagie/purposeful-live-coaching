@@ -44,21 +44,26 @@ export const stripeRouter = router({
         throw new Error("Session type not found");
       }
 
-      const priceId = sessionType.oneTimePriceId;
-
-      if (!priceId) {
-        throw new Error(`This session type is not available for booking. Please contact support.`);
-      }
-
       const origin = ctx.req.headers.origin || "http://localhost:3000";
 
+      // Get price from session type (stored in cents)
+      const priceInCents = sessionType.price || 9900; // Default to $99.00 if not set
+
       // Create Stripe checkout session for one-time payment
+      // Using price_data instead of pre-created price IDs for flexibility
       const session = await stripe.checkout.sessions.create({
         mode: 'payment',
         payment_method_types: ["card"],
         line_items: [
           {
-            price: priceId,
+            price_data: {
+              currency: 'usd',
+              product_data: {
+                name: sessionType.name,
+                description: `${sessionType.duration} minute coaching session`,
+              },
+              unit_amount: priceInCents,
+            },
             quantity: 1,
           },
         ],
