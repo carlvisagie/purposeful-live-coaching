@@ -11,6 +11,7 @@ import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { webhookRouter } from "../routers/webhooks";
 import { seedCoachAvailability } from "../seed-availability";
+import { updateSessionPrices } from "../update-session-prices";
 import { runMigrations } from "../run-migrations-startup";
 
 console.log("[App] All imports complete");
@@ -55,6 +56,12 @@ async function startServer() {
   app.get("/api/seed-availability", async (req, res) => {
     const force = req.query.force === "true";
     const result = await seedCoachAvailability(force);
+    res.json(result);
+  });
+  
+  // Update session prices endpoint
+  app.get("/api/update-session-prices", async (req, res) => {
+    const result = await updateSessionPrices();
     res.json(result);
   });
   

@@ -158,7 +158,7 @@ export async function seedCoachAvailability(force: boolean = false) {
           name: "Initial Consultation",
           description: "60-minute discovery session to understand your goals and create a personalized coaching plan.",
           duration: 60,
-          price: 9900, // $99.00
+          price: 17500, // $175.00
           isActive: "active",
           displayOrder: 1,
         },
@@ -167,16 +167,16 @@ export async function seedCoachAvailability(force: boolean = false) {
           name: "Follow-up Session",
           description: "45-minute coaching session to continue your transformation journey.",
           duration: 45,
-          price: 7500, // $75.00
+          price: 12500, // $125.00
           isActive: "active",
           displayOrder: 2,
         },
         {
           coachId,
-          name: "Deep Dive Session",
+          name: "Deep Dive Intensive",
           description: "90-minute intensive session for breakthrough work on specific challenges.",
           duration: 90,
-          price: 14900, // $149.00
+          price: 25000, // $250.00
           isActive: "active",
           displayOrder: 3,
         },
