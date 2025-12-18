@@ -40,7 +40,8 @@ import {
   Dumbbell,
   HeartPulse,
   Search,
-  Lock
+  Lock,
+  Puzzle
 } from "lucide-react";
 
 const wellnessModules = [
@@ -84,14 +85,18 @@ const wellnessModules = [
   { icon: TreePine, title: "Nature Connection", description: "Reconnect with the natural world for healing", category: "Advanced", color: "text-emerald-600", bgColor: "bg-emerald-50" },
   { icon: Dumbbell, title: "Strength Training", description: "Build physical and mental strength systematically", category: "Advanced", color: "text-red-600", bgColor: "bg-red-50" },
   { icon: HeartPulse, title: "Cardiovascular Health", description: "Optimize heart health and endurance for longevity", category: "Advanced", color: "text-rose-600", bgColor: "bg-rose-50" },
+  
+  // Special Category
+  { icon: Puzzle, title: "Autism Support", description: "Evidence-based support for parents and caregivers of children with autism", category: "Special", color: "text-blue-500", bgColor: "bg-blue-50" },
 ];
 
 const categories = [
-  { name: "All", count: 33, description: "Complete wellness transformation" },
+  { name: "All", count: 34, description: "Complete wellness transformation" },
   { name: "Core", count: 5, description: "Essential foundation pillars" },
   { name: "Lifestyle", count: 12, description: "Daily wellness practices" },
   { name: "Growth", count: 8, description: "Professional & personal development" },
   { name: "Advanced", count: 8, description: "Deep transformation work" },
+  { name: "Special", count: 1, description: "Specialized support programs" },
 ];
 
 export default function WellnessModules() {
