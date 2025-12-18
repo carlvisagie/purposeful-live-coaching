@@ -13,6 +13,24 @@ export interface TierLimits {
 }
 
 export const TIER_CONFIG: Record<string, TierLimits> = {
+  // Trial and Free Tiers
+  trial: {
+    aiModel: "gpt-4o",
+    messagesPerMonth: -1, // Unlimited during trial
+    wellnessModules: 33, // All modules
+    humanSessionsPerMonth: 0,
+    name: "7-Day Trial",
+    price: 0,
+  },
+  free: {
+    aiModel: "gpt-4o-mini",
+    messagesPerMonth: 5, // Very limited
+    wellnessModules: 5, // Basic modules only
+    humanSessionsPerMonth: 0,
+    name: "Free",
+    price: 0,
+  },
+  
   // AI Coaching Tiers
   ai_basic: {
     aiModel: "gpt-4o-mini",

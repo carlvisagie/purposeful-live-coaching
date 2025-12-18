@@ -1,0 +1,66 @@
+/**
+ * TrialBanner - Shows trial status and days remaining
+ */
+
+import { Clock, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+interface TrialBannerProps {
+  daysRemaining: number;
+  tier: string;
+  isTrialExpired: boolean;
+}
+
+export function TrialBanner({ daysRemaining, tier, isTrialExpired }: TrialBannerProps) {
+  // Don't show banner for paid users
+  if (tier === "basic" || tier === "premium" || tier === "elite") {
+    return null;
+  }
+
+  // Trial expired - show upgrade prompt
+  if (isTrialExpired || tier === "free") {
+    return (
+      <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-2 text-center text-sm">
+        <div className="flex items-center justify-center gap-2 flex-wrap">
+          <Clock className="h-4 w-4" />
+          <span>
+            {tier === "free" 
+              ? "You're on the Free tier with limited features." 
+              : "Your free trial has ended."}
+          </span>
+          <Button
+            size="sm"
+            variant="secondary"
+            className="bg-white text-orange-600 hover:bg-orange-50 h-7 px-3"
+            onClick={() => window.location.href = "/pricing"}
+          >
+            Upgrade Now
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Active trial - show days remaining
+  return (
+    <div className="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-4 py-2 text-center text-sm">
+      <div className="flex items-center justify-center gap-2 flex-wrap">
+        <Sparkles className="h-4 w-4" />
+        <span>
+          <strong>{daysRemaining} day{daysRemaining !== 1 ? "s" : ""}</strong> left in your free trial
+          {daysRemaining <= 2 && " - Don't lose access!"}
+        </span>
+        <Button
+          size="sm"
+          variant="secondary"
+          className="bg-white text-purple-600 hover:bg-purple-50 h-7 px-3"
+          onClick={() => window.location.href = "/pricing"}
+        >
+          {daysRemaining <= 2 ? "Subscribe Now" : "View Plans"}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+export default TrialBanner;

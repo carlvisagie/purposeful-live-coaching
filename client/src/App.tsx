@@ -46,6 +46,7 @@ import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import AdminSetup from "./pages/AdminSetup";
 import OwnerControlCenterV2 from "./pages/OwnerControlCenterV2";
+import TrialWrapper from "./components/TrialWrapper";
 
 
 function Router() {
@@ -121,7 +122,9 @@ function App() {
         >
         <TooltipProvider>
           <Toaster />
-          <Router />
+          <TrialWrapper>
+            <Router />
+          </TrialWrapper>
         </TooltipProvider>
         </ThemeProvider>
       </AuthProvider>

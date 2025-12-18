@@ -184,11 +184,12 @@ export const aiChatRouter = router({
       z.object({
         title: z.string().optional(),
         client_id: z.number().optional(),
+        userId: z.number().optional(), // Allow passing userId from trial system
       }).optional().default({})
     )
     .mutation(async ({ input, ctx }) => {
-      // Demo mode: allow guest users (omit userId for guest users)
-      const userId = ctx.user?.id;
+      // Use userId from input (trial system) or context (authenticated user)
+      const userId = input?.userId || ctx.user?.id;
       console.error('[tRPC createConversation] user_id:', userId, 'input:', JSON.stringify(input));
       
       try {
@@ -233,49 +234,22 @@ export const aiChatRouter = router({
         });
       }
 
-      // TIER DIFFERENTIATION: Check message limits
-      if (userId) {
-        const { getTierLimits, hasReachedMessageLimit } = await import("../_core/tierConfig");
-        const { subscriptions, usageTracking } = await import("../../drizzle/schema");
+      // TIER DIFFERENTIATION: Check message limits using trial system
+      // Import trial system for message limit checking
+      const { canSendAiMessage, getUserTierStatus } = await import("../trialSystem");
+      
+      // Get user ID from conversation if not in context
+      const effectiveUserId = userId || data.conversation.userId;
+      
+      if (effectiveUserId) {
+        // Check if user can send message based on tier limits
+        const limitCheck = await canSendAiMessage(effectiveUserId);
         
-        // Get user's active subscription
-        const [subscription] = await db
-          .select()
-          .from(subscriptions)
-          .where(eq(subscriptions.userId, userId))
-          .limit(1);
-
-        if (subscription) {
-          // Get current period usage
-          const [usage] = await db
-            .select()
-            .from(usageTracking)
-            .where(eq(usageTracking.subscriptionId, subscription.id))
-            .orderBy(desc(usageTracking.periodStart))
-            .limit(1);
-
-          const messagesUsed = usage?.aiMessagesUsed || 0;
-          const tier = subscription.tier;
-
-          // Check if user has reached their limit
-          if (hasReachedMessageLimit(messagesUsed, tier)) {
-            const limits = getTierLimits(tier);
-            throw new TRPCError({
-              code: "FORBIDDEN",
-              message: `You've reached your monthly message limit (${limits.messagesPerMonth} messages). Upgrade to ${tier === 'ai_basic' || tier === 'basic' ? 'Premium' : 'Elite'} for ${tier === 'ai_basic' || tier === 'basic' ? '500 messages' : 'unlimited messages'}.`,
-            });
-          }
-
-          // Increment usage counter
-          if (usage) {
-            await db
-              .update(usageTracking)
-              .set({ 
-                aiMessagesUsed: messagesUsed + 1,
-                updatedAt: new Date()
-              })
-              .where(eq(usageTracking.id, usage.id));
-          }
+        if (!limitCheck.allowed) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: limitCheck.reason || "Message limit reached. Please upgrade to continue.",
+          });
         }
       }
 
