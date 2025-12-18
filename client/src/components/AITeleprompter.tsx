@@ -410,14 +410,19 @@ export default function AITeleprompter({
       const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = true;
-      recognitionRef.current.interimResults = true;
+      recognitionRef.current.interimResults = false; // Only final results to avoid duplication
 
       recognitionRef.current.onresult = (event: any) => {
-        let transcript = '';
+        // Only process final results to avoid repetitive text
+        let finalTranscript = '';
         for (let i = event.resultIndex; i < event.results.length; i++) {
-          transcript += event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalTranscript += event.results[i][0].transcript + ' ';
+          }
         }
-        setClientInput(prev => prev + ' ' + transcript);
+        if (finalTranscript.trim()) {
+          setClientInput(prev => (prev ? prev + ' ' : '') + finalTranscript.trim());
+        }
       };
 
       recognitionRef.current.onerror = (event: any) => {

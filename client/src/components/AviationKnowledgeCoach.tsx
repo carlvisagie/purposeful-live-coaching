@@ -86,7 +86,7 @@ export function AviationKnowledgeCoach({ onClose }: AviationKnowledgeCoachProps)
       const SpeechRecognition = (window as any).webkitSpeechRecognition;
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = true;
-      recognitionRef.current.interimResults = true;
+      recognitionRef.current.interimResults = false; // Only final results to avoid duplication
       
       recognitionRef.current.onresult = (event: any) => {
         let finalTranscript = "";
