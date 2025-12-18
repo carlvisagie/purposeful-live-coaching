@@ -50,6 +50,7 @@ import { dbHealthRouter } from "./routers/dbHealth";
 import { trialRouter } from "./routers/trial";
 import { aiCoachRouter } from "./routers/aiCoach";
 import { sessionAnalysisRouter } from "./routers/sessionAnalysis";
+import { speakerTrainingRouter } from "./routers/speakerTraining";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -112,6 +113,7 @@ export const appRouter = router({
   trial: trialRouter,
   aiCoach: aiCoachRouter,
   sessionAnalysis: sessionAnalysisRouter,
+  speakerTraining: speakerTrainingRouter,
 });
 
 export type AppRouter = typeof appRouter;

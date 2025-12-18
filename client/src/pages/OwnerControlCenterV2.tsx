@@ -13,6 +13,7 @@ import {
   VideoOff, Volume2, Maximize2, Sparkles, MessageSquare
 } from "lucide-react";
 import AITeleprompter from "@/components/AITeleprompter";
+import SpeakerTraining from "@/components/SpeakerTraining";
 
 /**
  * OWNER CONTROL CENTER V2 - Session-Focused Command Center
@@ -34,6 +35,7 @@ export default function OwnerControlCenterV2() {
   const [audioLevel, setAudioLevel] = useState(0);
   const [videoEnabled, setVideoEnabled] = useState(true);
   const [audioEnabled, setAudioEnabled] = useState(true);
+  const [showSpeakerTraining, setShowSpeakerTraining] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
@@ -472,6 +474,36 @@ export default function OwnerControlCenterV2() {
             videoRef={videoRef}
             isSessionActive={isTestingEquipment || !!currentSession}
           />
+
+          {/* SPEAKER TRAINING MODE */}
+          {showSpeakerTraining ? (
+            <SpeakerTraining
+              onClose={() => setShowSpeakerTraining(false)}
+              className="mb-6"
+            />
+          ) : (
+            <Card className="mb-6 border-2 border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50 cursor-pointer hover:shadow-lg transition-shadow"
+              onClick={() => setShowSpeakerTraining(true)}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-3 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg text-white">
+                      <Brain className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg">Speaker Training Mode</h3>
+                      <p className="text-sm text-gray-600">Practice speaking, interviews, storytelling, and singing with AI feedback</p>
+                    </div>
+                  </div>
+                  <Button className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600">
+                    <Play className="h-4 w-4 mr-2" />
+                    Start Training
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Session Status Header */}
           <div className="flex items-center justify-between mb-6">
