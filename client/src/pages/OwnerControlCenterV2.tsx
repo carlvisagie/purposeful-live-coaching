@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import AITeleprompter from "@/components/AITeleprompter";
 import SpeakerTraining from "@/components/SpeakerTraining";
+import { AviationKnowledgeCoach } from "@/components/AviationKnowledgeCoach";
 
 /**
  * OWNER CONTROL CENTER V2 - Session-Focused Command Center
@@ -36,6 +37,7 @@ export default function OwnerControlCenterV2() {
   const [videoEnabled, setVideoEnabled] = useState(true);
   const [audioEnabled, setAudioEnabled] = useState(true);
   const [showSpeakerTraining, setShowSpeakerTraining] = useState(false);
+  const [showAviationCoach, setShowAviationCoach] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
@@ -504,6 +506,27 @@ export default function OwnerControlCenterV2() {
               </CardContent>
             </Card>
           )}
+
+          {/* Aviation Knowledge Coach Card */}
+          <Card className="border-2 border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50 cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setShowAviationCoach(true)}>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white">
+                    <span className="text-2xl">✈️</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg">Aviation Knowledge Coach</h3>
+                    <p className="text-sm text-gray-600">Master the 10 must-know areas for Senior Maintenance Manager</p>
+                  </div>
+                </div>
+                <Button className="bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600">
+                  <Target className="h-4 w-4 mr-2" />
+                  Start Learning
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Session Status Header */}
           <div className="flex items-center justify-between mb-6">
@@ -983,6 +1006,11 @@ export default function OwnerControlCenterV2() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Aviation Knowledge Coach Modal */}
+      {showAviationCoach && (
+        <AviationKnowledgeCoach onClose={() => setShowAviationCoach(false)} />
+      )}
     </div>
   );
 }
