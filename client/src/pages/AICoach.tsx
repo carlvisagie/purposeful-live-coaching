@@ -16,6 +16,8 @@ import {
   User,
   Mic,
   MicOff,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 // Guest access enabled - no login required
@@ -63,6 +65,11 @@ export default function AICoach() {
   const [userEmail, setUserEmail] = useState<string | null>(localStorage.getItem("plc_user_email"));
   const [conversationToDelete, setConversationToDelete] = useState<number | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [voiceEnabled, setVoiceEnabled] = useState(() => {
+    return localStorage.getItem('plc_voice_enabled') === 'true';
+  });
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const speechSynthRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   // Frictionless - no subscription required for AI chat
   const subscription = null;

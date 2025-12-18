@@ -19,6 +19,7 @@ import {
   Hand,
   Sparkles,
   Volume2,
+  VolumeX,
   Clock,
   Target,
   TrendingUp,
@@ -140,6 +141,10 @@ interface SpeakerTrainingProps {
 export default function SpeakerTraining({ onClose, className = "" }: SpeakerTrainingProps) {
   // State
   const [selectedMode, setSelectedMode] = useState<TrainingMode | null>(null);
+  const [voiceEnabled, setVoiceEnabled] = useState(true); // AI speaks through headset
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const speechQueueRef = useRef<string[]>([]);
   const [isSessionActive, setIsSessionActive] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [sessionDuration, setSessionDuration] = useState(0);
@@ -167,6 +172,59 @@ export default function SpeakerTraining({ onClose, className = "" }: SpeakerTrai
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const analysisIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // TTS mutation for AI voice output
+  const ttsMutation = trpc.tts.generateSpeech.useMutation({
+    onSuccess: async (data) => {
+      if (data.audioData && voiceEnabled) {
+        try {
+          const audioBlob = new Blob(
+            [Uint8Array.from(atob(data.audioData), c => c.charCodeAt(0))],
+            { type: data.mimeType }
+          );
+          const audioUrl = URL.createObjectURL(audioBlob);
+          
+          if (!audioRef.current) {
+            audioRef.current = new Audio();
+          }
+          
+          audioRef.current.src = audioUrl;
+          audioRef.current.onended = () => {
+            setIsSpeaking(false);
+            URL.revokeObjectURL(audioUrl);
+            // Process next in queue
+            if (speechQueueRef.current.length > 0) {
+              const nextText = speechQueueRef.current.shift();
+              if (nextText) speakText(nextText);
+            }
+          };
+          
+          setIsSpeaking(true);
+          await audioRef.current.play();
+        } catch (error) {
+          console.error('Audio playback error:', error);
+          setIsSpeaking(false);
+        }
+      }
+    },
+  });
+
+  // Speak text through headset
+  const speakText = useCallback((text: string) => {
+    if (!voiceEnabled || !text) return;
+    
+    if (isSpeaking) {
+      // Queue if already speaking
+      speechQueueRef.current.push(text);
+      return;
+    }
+    
+    ttsMutation.mutate({
+      text,
+      voice: "nova", // Warm, professional female voice
+      speed: 1.0,
+    });
+  }, [voiceEnabled, isSpeaking, ttsMutation]);
   
   // tRPC mutations
   const getPromptQuery = trpc.speakerTraining.getTrainingPrompt.useQuery(
@@ -188,11 +246,15 @@ export default function SpeakerTraining({ onClose, className = "" }: SpeakerTrai
       }
       if (data.immediateCorrection) {
         setCurrentCorrection(data.immediateCorrection);
+        // Speak correction through headset
+        speakText(data.immediateCorrection);
         // Clear after 5 seconds
         setTimeout(() => setCurrentCorrection(null), 5000);
       }
       if (data.encouragement) {
         setCurrentEncouragement(data.encouragement);
+        // Speak encouragement through headset
+        speakText(data.encouragement);
         setTimeout(() => setCurrentEncouragement(null), 4000);
       }
       setIsAnalyzing(false);
@@ -304,6 +366,19 @@ export default function SpeakerTraining({ onClose, className = "" }: SpeakerTrai
     setSessionDuration(0);
     setVisualScores([]);
     setLiveFeedback(null);
+    
+    // Greet user through headset
+    const modeTitle = MODE_CONFIG[selectedMode]?.title || "practice";
+    speakText(`Starting ${modeTitle} session. I'm watching and listening. Let's begin.`);
+    
+    // If there's a prompt, speak it after greeting
+    if (selectedMode !== "free_practice") {
+      setTimeout(() => {
+        if (currentPrompt) {
+          speakText(`Your prompt is: ${currentPrompt}`);
+        }
+      }, 3000);
+    }
     
     // Start timer
     timerRef.current = setInterval(() => {
@@ -809,7 +884,27 @@ export default function SpeakerTraining({ onClose, className = "" }: SpeakerTrai
           </div>
         )}
 
-        {/* Control Buttons */}
+        {/* Voice Toggle & Control Buttons */}
+        <div className="flex items-center gap-3 mb-2">
+          <Button
+            onClick={() => setVoiceEnabled(!voiceEnabled)}
+            variant={voiceEnabled ? "default" : "outline"}
+            size="sm"
+            className={voiceEnabled ? "bg-purple-600 hover:bg-purple-700" : ""}
+          >
+            {voiceEnabled ? (
+              <><Volume2 className="h-4 w-4 mr-2" />AI Voice ON</>
+            ) : (
+              <><VolumeX className="h-4 w-4 mr-2" />AI Voice OFF</>
+            )}
+          </Button>
+          {isSpeaking && (
+            <Badge className="bg-purple-100 text-purple-700 animate-pulse">
+              <Volume2 className="h-3 w-3 mr-1" />
+              Speaking...
+            </Badge>
+          )}
+        </div>
         <div className="flex gap-3">
           {!isSessionActive ? (
             <Button
