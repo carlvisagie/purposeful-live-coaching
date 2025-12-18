@@ -15,7 +15,7 @@ import {
 import AITeleprompter from "@/components/AITeleprompter";
 import SpeakerTraining from "@/components/SpeakerTraining";
 import { AviationKnowledgeCoach } from "@/components/AviationKnowledgeCoach";
-import { VapiVoiceCoach } from "@/components/VapiVoiceCoach";
+import { OpenAIVoiceCoach } from "@/components/OpenAIVoiceCoach";
 
 /**
  * OWNER CONTROL CENTER V2 - Session-Focused Command Center
@@ -1040,7 +1040,7 @@ export default function OwnerControlCenterV2() {
 
       {/* Real-Time Voice Coach Modal */}
       {showVoiceCoach && (
-        <VapiVoiceCoach 
+        <OpenAIVoiceCoach 
           mode="speaker_training" 
           onClose={() => setShowVoiceCoach(false)} 
         />
