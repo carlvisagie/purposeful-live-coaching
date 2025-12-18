@@ -81,8 +81,7 @@ export default function AICoach() {
   // Fetch usage stats for tier limits (works for anonymous users too)
   const { data: usageData } = trpc.subscriptions.getCurrentUsage.useQuery();
   
-  // DEBUG: Log usage data to console
-  console.log("[AICoach] usageData:", usageData);
+  // Usage data loaded from subscription API
 
   // Fetch selected conversation messages
   const { data: conversationData, refetch: refetchMessages } =
