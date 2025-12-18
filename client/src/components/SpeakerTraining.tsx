@@ -36,6 +36,7 @@ import {
   X,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
+import { useAISessionCoPilot, CoPilotStatusIndicator, CoPilotInsight } from "@/components/AISessionCoPilot";
 
 /**
  * SPEAKER TRAINING MODE
@@ -167,13 +168,41 @@ export default function SpeakerTraining({ onClose, className = "" }: SpeakerTrai
   const [showSummary, setShowSummary] = useState(false);
   const [sessionSummary, setSessionSummary] = useState<any>(null);
   
+  // AI Co-Pilot insights
+  const [coPilotInsights, setCoPilotInsights] = useState<CoPilotInsight[]>([]);
+  const [transcripts, setTranscripts] = useState<{text: string; speaker: string; time: Date}[]>([]);
+  
   // Refs
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const analysisIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // TTS mutation for AI voice output
+  // AI Session Co-Pilot - REAL-TIME VOICE COACHING
+  // This automatically connects when session starts and provides instant voice feedback
+  const coPilot = useAISessionCoPilot({
+    mode: selectedMode === "interview" ? "interview_prep" : "speaker_training",
+    isActive: isSessionActive && voiceEnabled,
+    videoRef,
+    onInsight: (insight) => {
+      setCoPilotInsights(prev => [...prev.slice(-20), insight]);
+      // Show warnings and crisis alerts prominently
+      if (insight.type === "warning") {
+        setCurrentCorrection(insight.message);
+        setTimeout(() => setCurrentCorrection(null), 5000);
+      } else if (insight.type === "crisis") {
+        toast.error(`🚨 ${insight.message}`, { duration: 10000 });
+      } else if (insight.type === "encouragement") {
+        setCurrentEncouragement(insight.message);
+        setTimeout(() => setCurrentEncouragement(null), 3000);
+      }
+    },
+    onTranscript: (text, speaker) => {
+      setTranscripts(prev => [...prev.slice(-50), { text, speaker, time: new Date() }]);
+    },
+  });
+
+  // TTS mutation for AI voice output (backup - Vapi handles primary voice)
   const ttsMutation = trpc.tts.generateSpeech.useMutation({
     onSuccess: async (data) => {
       if (data.audioData && voiceEnabled) {
@@ -947,12 +976,13 @@ export default function SpeakerTraining({ onClose, className = "" }: SpeakerTrai
               <><VolumeX className="h-4 w-4 mr-2" />AI Voice OFF</>
             )}
           </Button>
-          {isSpeaking && (
-            <Badge className="bg-purple-100 text-purple-700 animate-pulse">
-              <Volume2 className="h-3 w-3 mr-1" />
-              Speaking...
-            </Badge>
-          )}
+          {/* AI Co-Pilot Status - Shows real-time connection state */}
+          <CoPilotStatusIndicator 
+            isConnected={coPilot.isConnected}
+            isConnecting={coPilot.isConnecting}
+            isSpeaking={coPilot.isSpeaking}
+            error={coPilot.error}
+          />
         </div>
         <div className="flex gap-3">
           {!isSessionActive ? (
