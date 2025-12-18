@@ -11,21 +11,46 @@
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from "react";
 import { trpc } from "@/lib/trpc";
 
-// Generate a unique anonymous ID
+// Generate a unique anonymous ID (Safari-compatible)
 function generateAnonymousId(): string {
   const timestamp = Date.now().toString(36);
   const randomPart = Math.random().toString(36).substring(2, 15);
   return `anon_${timestamp}_${randomPart}`;
 }
 
+// Safely access localStorage (handles private browsing mode)
+function safeLocalStorage() {
+  try {
+    const testKey = "__test__";
+    localStorage.setItem(testKey, testKey);
+    localStorage.removeItem(testKey);
+    return localStorage;
+  } catch (e) {
+    // localStorage not available (private browsing, etc.)
+    return null;
+  }
+}
+
 // Get or create anonymous ID from localStorage
 function getOrCreateAnonymousId(): string {
   const STORAGE_KEY = "purposeful_anonymous_id";
-  let anonymousId = localStorage.getItem(STORAGE_KEY);
+  const storage = safeLocalStorage();
+  
+  if (!storage) {
+    // Fallback for private browsing - generate new ID each time
+    return generateAnonymousId();
+  }
+  
+  let anonymousId = storage.getItem(STORAGE_KEY);
   
   if (!anonymousId) {
     anonymousId = generateAnonymousId();
-    localStorage.setItem(STORAGE_KEY, anonymousId);
+    try {
+      storage.setItem(STORAGE_KEY, anonymousId);
+    } catch (e) {
+      // Storage quota exceeded or other error
+      console.warn("[Auth] Could not save anonymous ID to localStorage");
+    }
   }
   
   return anonymousId;
@@ -64,11 +89,20 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Default trial status for fallback
+const DEFAULT_TRIAL_STATUS: TrialStatus = {
+  tier: "trial",
+  trialEndsAt: null,
+  isTrialExpired: false,
+  daysRemaining: 7,
+};
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [trialStatus, setTrialStatus] = useState<TrialStatus | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [userId, setUserId] = useState<number | null>(null);
+  const [initError, setInitError] = useState<string | null>(null);
 
   // tRPC mutations
   const initializeUserMutation = trpc.trial.initializeUser.useMutation();
@@ -79,12 +113,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Initialize anonymous user on mount
   useEffect(() => {
+    let isMounted = true;
+    
     const initUser = async () => {
       try {
         const anonymousId = getOrCreateAnonymousId();
         
-        // Call server to create/retrieve user
-        const result = await initializeUserMutation.mutateAsync({ anonymousId });
+        // Call server to create/retrieve user with timeout
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error("Request timeout")), 10000)
+        );
+        
+        const result = await Promise.race([
+          initializeUserMutation.mutateAsync({ anonymousId }),
+          timeoutPromise
+        ]) as any;
+        
+        if (!isMounted) return;
         
         setUserId(result.userId);
         setUser({
@@ -102,6 +147,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         });
       } catch (error) {
         console.error("[Auth] Failed to initialize user:", error);
+        if (!isMounted) return;
+        
         // Fallback to local-only mode with mock user
         const anonymousId = getOrCreateAnonymousId();
         setUser({
@@ -110,18 +157,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           role: "user",
           anonymousId,
         });
-        setTrialStatus({
-          tier: "trial",
-          trialEndsAt: null,
-          isTrialExpired: false,
-          daysRemaining: 7,
-        });
+        setTrialStatus(DEFAULT_TRIAL_STATUS);
+        setInitError(error instanceof Error ? error.message : "Unknown error");
       } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
-    initUser();
+    // Small delay to ensure React is fully hydrated on mobile Safari
+    const timer = setTimeout(() => {
+      initUser();
+    }, 100);
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timer);
+    };
   }, []);
 
   // Update trial status when query returns

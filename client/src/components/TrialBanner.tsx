@@ -1,9 +1,12 @@
 /**
  * TrialBanner - Shows trial status and days remaining
+ * 
+ * Uses React Router for navigation (Safari-compatible)
  */
 
 import { Clock, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useLocation } from "wouter";
 
 interface TrialBannerProps {
   daysRemaining: number;
@@ -12,10 +15,16 @@ interface TrialBannerProps {
 }
 
 export function TrialBanner({ daysRemaining, tier, isTrialExpired }: TrialBannerProps) {
+  const [, setLocation] = useLocation();
+  
   // Don't show banner for paid users
   if (tier === "basic" || tier === "premium" || tier === "elite") {
     return null;
   }
+
+  const handleViewPlans = () => {
+    setLocation("/pricing");
+  };
 
   // Trial expired - show upgrade prompt
   if (isTrialExpired || tier === "free") {
@@ -32,7 +41,7 @@ export function TrialBanner({ daysRemaining, tier, isTrialExpired }: TrialBanner
             size="sm"
             variant="secondary"
             className="bg-white text-orange-600 hover:bg-orange-50 h-7 px-3"
-            onClick={() => window.location.href = "/pricing"}
+            onClick={handleViewPlans}
           >
             Upgrade Now
           </Button>
@@ -54,7 +63,7 @@ export function TrialBanner({ daysRemaining, tier, isTrialExpired }: TrialBanner
           size="sm"
           variant="secondary"
           className="bg-white text-purple-600 hover:bg-purple-50 h-7 px-3"
-          onClick={() => window.location.href = "/pricing"}
+          onClick={handleViewPlans}
         >
           {daysRemaining <= 2 ? "Subscribe Now" : "View Plans"}
         </Button>
