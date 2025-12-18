@@ -52,6 +52,9 @@ import { aiCoachRouter } from "./routers/aiCoach";
 import { sessionAnalysisRouter } from "./routers/sessionAnalysis";
 import { speakerTrainingRouter } from "./routers/speakerTraining";
 import { aviationKnowledgeRouter } from "./routers/aviationKnowledge";
+import { comprehensiveComplianceRouter } from "./routers/comprehensiveCompliance";
+import { realtimeVoiceRouter } from "./routers/realtimeVoice";
+import { platformIntelligenceRouter } from "./routers/platformIntelligence";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -116,6 +119,9 @@ export const appRouter = router({
   sessionAnalysis: sessionAnalysisRouter,
   speakerTraining: speakerTrainingRouter,
   aviationKnowledge: aviationKnowledgeRouter,
+  compliance: comprehensiveComplianceRouter,
+  realtimeVoice: realtimeVoiceRouter,
+  platformIntelligence: platformIntelligenceRouter,
 });
 
 export type AppRouter = typeof appRouter;

@@ -11,24 +11,12 @@
  * 5. GUIDES the coach through their headset with whispered advice
  * 6. PROTECTS compliance by catching medical/legal advice before it's spoken
  * 
- * Uses Vapi for real-time voice conversation - AI can interrupt and respond instantly.
+ * Uses OpenAI Realtime API for true real-time voice conversation.
  */
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { toast } from "sonner";
-
-// Vapi SDK types
-declare global {
-  interface Window {
-    Vapi: any;
-  }
-}
-
-// Your Vapi credentials
-const VAPI_PUBLIC_KEY = "4bdee076-6ac8-47e0-b41a-ec418eeb2b01";
-const ASSISTANT_IDS = {
-  ultimate: "f86598d0-74a6-4405-9455-a6e244a1c4e1",
-};
+import { trpc } from "@/lib/trpc";
 
 export type SessionMode = 
   | "speaker_training" 
@@ -44,7 +32,7 @@ interface AISessionCoPilotProps {
   videoRef?: React.RefObject<HTMLVideoElement>;
   onInsight?: (insight: CoPilotInsight) => void;
   onTranscript?: (text: string, speaker: "user" | "ai" | "client") => void;
-  assistantId?: string;
+  voice?: "alloy" | "echo" | "shimmer" | "ash" | "ballad" | "coral" | "sage" | "verse";
 }
 
 export interface CoPilotInsight {
@@ -56,101 +44,72 @@ export interface CoPilotInsight {
   actionRequired?: boolean;
 }
 
+// Map session modes to realtime voice modes
+const MODE_MAP: Record<SessionMode, "speaker_training" | "interview_prep" | "coaching_practice" | "compliance_monitor" | "singing"> = {
+  speaker_training: "speaker_training",
+  interview_prep: "interview_prep",
+  coaching_practice: "coaching_practice",
+  live_client_session: "compliance_monitor",
+  compliance_monitor: "compliance_monitor",
+  singing: "singing",
+};
+
 export function AISessionCoPilot({
   mode,
   isActive,
   videoRef,
   onInsight,
   onTranscript,
-  assistantId = ASSISTANT_IDS.ultimate,
+  voice = "coral",
 }: AISessionCoPilotProps) {
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isListening, setIsListening] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  const vapiRef = useRef<any>(null);
-  const sdkLoadedRef = useRef(false);
+  const wsRef = useRef<WebSocket | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const mediaStreamRef = useRef<MediaStream | null>(null);
+  const audioWorkletRef = useRef<AudioWorkletNode | null>(null);
+  const audioQueueRef = useRef<Float32Array[]>([]);
+  const isPlayingRef = useRef(false);
   const connectionAttemptRef = useRef(0);
 
-  // Load Vapi SDK on mount
-  useEffect(() => {
-    if (sdkLoadedRef.current) return;
-    
-    const existingScript = document.querySelector('script[src*="vapi"]');
-    if (existingScript) {
-      sdkLoadedRef.current = true;
-      return;
-    }
+  // Get session token from server
+  const getSessionToken = trpc.realtimeVoice.getSessionToken.useMutation();
 
-    const script = document.createElement("script");
-    script.src = "https://cdn.jsdelivr.net/npm/@vapi-ai/web@latest/dist/vapi.min.js";
-    script.async = true;
-    script.onload = () => {
-      console.log("[AI Co-Pilot] Vapi SDK loaded");
-      sdkLoadedRef.current = true;
-    };
-    script.onerror = () => {
-      console.error("[AI Co-Pilot] Failed to load Vapi SDK");
-      setError("Voice SDK failed to load");
-    };
-    document.body.appendChild(script);
-
-    return () => {
-      // Don't remove script on unmount - it's shared
-    };
-  }, []);
-
-  // Connect/disconnect based on isActive
-  useEffect(() => {
-    if (isActive && !isConnected && !isConnecting) {
-      connectVoice();
-    } else if (!isActive && isConnected) {
-      disconnectVoice();
-    }
-  }, [isActive]);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      if (vapiRef.current) {
-        try {
-          vapiRef.current.stop();
-        } catch (e) {
-          // Ignore cleanup errors
-        }
-      }
-    };
-  }, []);
-
-  // Connect to Vapi for real-time voice
+  // Connect to OpenAI Realtime API
   const connectVoice = useCallback(async () => {
-    if (!window.Vapi) {
-      // Wait for SDK to load
-      setTimeout(() => {
-        connectionAttemptRef.current++;
-        if (connectionAttemptRef.current < 10) {
-          connectVoice();
-        } else {
-          setError("Voice SDK not available");
-          toast.error("Voice coach unavailable - SDK failed to load");
-        }
-      }, 500);
-      return;
-    }
-
+    if (wsRef.current?.readyState === WebSocket.OPEN) return;
+    
     setIsConnecting(true);
     setError(null);
+    connectionAttemptRef.current++;
 
     try {
-      // Initialize Vapi
-      vapiRef.current = new window.Vapi(VAPI_PUBLIC_KEY);
+      // Get ephemeral token from server
+      const realtimeMode = MODE_MAP[mode] || "speaker_training";
+      const session = await getSessionToken.mutateAsync({ 
+        mode: realtimeMode, 
+        voice 
+      });
+      
+      if (!session.clientSecret) {
+        throw new Error("Failed to get session token");
+      }
 
-      // Event handlers
-      vapiRef.current.on("call-start", () => {
-        console.log("[AI Co-Pilot] Voice connected");
+      // Connect to OpenAI Realtime API
+      const ws = new WebSocket(
+        `wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-12-17`,
+        ["realtime", `openai-insecure-api-key.${session.clientSecret}`]
+      );
+
+      ws.onopen = async () => {
+        console.log("[AI Co-Pilot] Connected to OpenAI Realtime API");
         setIsConnected(true);
         setIsConnecting(false);
+        setError(null);
         toast.success("🎤 AI Coach connected - listening through your headset");
         
         onInsight?.({
@@ -160,82 +119,100 @@ export function AISessionCoPilot({
           confidence: 1,
           timestamp: new Date(),
         });
-      });
 
-      vapiRef.current.on("call-end", () => {
-        console.log("[AI Co-Pilot] Voice disconnected");
-        setIsConnected(false);
-        setIsSpeaking(false);
-      });
+        // Start capturing audio
+        await startAudioCapture();
+      };
 
-      vapiRef.current.on("speech-start", () => {
-        setIsSpeaking(true);
-      });
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        handleServerEvent(data);
+      };
 
-      vapiRef.current.on("speech-end", () => {
-        setIsSpeaking(false);
-      });
-
-      vapiRef.current.on("message", (message: any) => {
-        console.log("[AI Co-Pilot] Message:", message);
-        
-        if (message.type === "transcript" && message.transcriptType === "final") {
-          const speaker = message.role === "assistant" ? "ai" : "user";
-          onTranscript?.(message.transcript, speaker);
-          
-          // Parse AI responses for insights
-          if (speaker === "ai") {
-            parseAIResponse(message.transcript);
-          }
-        }
-      });
-
-      vapiRef.current.on("error", (error: any) => {
-        console.error("[AI Co-Pilot] Error:", error);
-        setError(error.message || "Connection failed");
+      ws.onerror = (error) => {
+        console.error("[AI Co-Pilot] WebSocket error:", error);
+        setError("Connection error");
         setIsConnecting(false);
         setIsConnected(false);
-        toast.error("Voice coach connection failed - retrying...");
         
         // Auto-retry once
-        setTimeout(() => {
-          if (isActive && !isConnected) {
-            connectVoice();
-          }
-        }, 2000);
-      });
+        if (connectionAttemptRef.current < 3 && isActive) {
+          setTimeout(() => connectVoice(), 2000);
+        }
+      };
 
-      // Start the call
-      await vapiRef.current.start(assistantId);
+      ws.onclose = () => {
+        console.log("[AI Co-Pilot] Disconnected");
+        setIsConnected(false);
+        setIsSpeaking(false);
+        setIsListening(false);
+        stopAudioCapture();
+      };
 
+      wsRef.current = ws;
     } catch (error: any) {
       console.error("[AI Co-Pilot] Connection error:", error);
-      setError(error.message);
+      setError(error.message || "Connection failed");
       setIsConnecting(false);
       toast.error(`Voice coach failed: ${error.message}`);
-    }
-  }, [assistantId, isActive, onInsight, onTranscript]);
-
-  // Disconnect voice
-  const disconnectVoice = useCallback(() => {
-    if (vapiRef.current) {
-      try {
-        vapiRef.current.stop();
-      } catch (e) {
-        // Ignore
+      
+      // Auto-retry once
+      if (connectionAttemptRef.current < 3 && isActive) {
+        setTimeout(() => connectVoice(), 2000);
       }
-      vapiRef.current = null;
     }
-    setIsConnected(false);
-    setIsConnecting(false);
-    setIsSpeaking(false);
-  }, []);
+  }, [mode, voice, isActive, getSessionToken, onInsight]);
+
+  // Handle server events
+  const handleServerEvent = useCallback((event: any) => {
+    switch (event.type) {
+      case "session.created":
+        console.log("[AI Co-Pilot] Session created");
+        break;
+
+      case "input_audio_buffer.speech_started":
+        setIsListening(true);
+        break;
+
+      case "input_audio_buffer.speech_stopped":
+        setIsListening(false);
+        break;
+
+      case "conversation.item.input_audio_transcription.completed":
+        const userTranscript = event.transcript;
+        onTranscript?.(userTranscript, "user");
+        break;
+
+      case "response.audio_transcript.done":
+        const aiText = event.transcript;
+        onTranscript?.(aiText, "ai");
+        parseAIResponse(aiText);
+        break;
+
+      case "response.audio.delta":
+        // Queue audio for playback
+        const audioData = base64ToFloat32Array(event.delta);
+        audioQueueRef.current.push(audioData);
+        if (!isPlayingRef.current) {
+          playAudioQueue();
+        }
+        break;
+
+      case "response.audio.done":
+        setIsSpeaking(false);
+        break;
+
+      case "error":
+        console.error("[AI Co-Pilot] Server error:", event.error);
+        setError(event.error?.message || "Server error");
+        break;
+    }
+  }, [onTranscript]);
 
   // Parse AI responses to extract insights
   const parseAIResponse = useCallback((text: string) => {
     const lowerText = text.toLowerCase();
     
-    // Detect insight types from AI response
     let insightType: CoPilotInsight["type"] = "observation";
     let category: CoPilotInsight["category"] = "behavioral";
     let actionRequired = false;
@@ -254,7 +231,6 @@ export function AISessionCoPilot({
       insightType = "suggestion";
     }
 
-    // Detect category
     if (lowerText.includes("eye") || lowerText.includes("look") || lowerText.includes("posture") || lowerText.includes("gesture")) {
       category = "visual";
     } else if (lowerText.includes("voice") || lowerText.includes("tone") || lowerText.includes("pace") || lowerText.includes("speak")) {
@@ -273,19 +249,161 @@ export function AISessionCoPilot({
     });
   }, [onInsight]);
 
-  // Send a message to the AI (for injecting context)
-  const sendContext = useCallback((context: string) => {
-    if (vapiRef.current && isConnected) {
-      // Vapi handles this through the conversation
-      console.log("[AI Co-Pilot] Context update:", context);
-    }
-  }, [isConnected]);
+  // Start capturing audio from microphone
+  const startAudioCapture = useCallback(async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        audio: {
+          sampleRate: 24000,
+          channelCount: 1,
+          echoCancellation: true,
+          noiseSuppression: true,
+        } 
+      });
+      mediaStreamRef.current = stream;
 
-  // Expose methods via ref or return
+      // Create audio context
+      const audioContext = new AudioContext({ sampleRate: 24000 });
+      audioContextRef.current = audioContext;
+
+      // Create source from microphone
+      const source = audioContext.createMediaStreamSource(stream);
+
+      // Load audio worklet for processing
+      await audioContext.audioWorklet.addModule(
+        URL.createObjectURL(new Blob([`
+          class AudioProcessor extends AudioWorkletProcessor {
+            process(inputs, outputs, parameters) {
+              const input = inputs[0];
+              if (input && input[0]) {
+                this.port.postMessage(input[0]);
+              }
+              return true;
+            }
+          }
+          registerProcessor('audio-processor', AudioProcessor);
+        `], { type: 'application/javascript' }))
+      );
+
+      const worklet = new AudioWorkletNode(audioContext, 'audio-processor');
+      worklet.port.onmessage = (event) => {
+        if (wsRef.current?.readyState === WebSocket.OPEN) {
+          const base64Audio = float32ArrayToBase64(event.data);
+          wsRef.current.send(JSON.stringify({
+            type: "input_audio_buffer.append",
+            audio: base64Audio,
+          }));
+        }
+      };
+
+      source.connect(worklet);
+      audioWorkletRef.current = worklet;
+
+      console.log("[AI Co-Pilot] Audio capture started");
+    } catch (error) {
+      console.error("[AI Co-Pilot] Failed to start audio capture:", error);
+      setError("Failed to access microphone");
+    }
+  }, []);
+
+  // Stop audio capture
+  const stopAudioCapture = useCallback(() => {
+    if (audioWorkletRef.current) {
+      audioWorkletRef.current.disconnect();
+      audioWorkletRef.current = null;
+    }
+    if (audioContextRef.current) {
+      audioContextRef.current.close();
+      audioContextRef.current = null;
+    }
+    if (mediaStreamRef.current) {
+      mediaStreamRef.current.getTracks().forEach(track => track.stop());
+      mediaStreamRef.current = null;
+    }
+  }, []);
+
+  // Play audio queue
+  const playAudioQueue = useCallback(async () => {
+    if (audioQueueRef.current.length === 0) {
+      isPlayingRef.current = false;
+      return;
+    }
+
+    isPlayingRef.current = true;
+    setIsSpeaking(true);
+
+    const audioContext = audioContextRef.current || new AudioContext({ sampleRate: 24000 });
+    
+    while (audioQueueRef.current.length > 0) {
+      const audioData = audioQueueRef.current.shift()!;
+      const buffer = audioContext.createBuffer(1, audioData.length, 24000);
+      buffer.getChannelData(0).set(audioData);
+      
+      const source = audioContext.createBufferSource();
+      source.buffer = buffer;
+      source.connect(audioContext.destination);
+      
+      await new Promise<void>((resolve) => {
+        source.onended = () => resolve();
+        source.start();
+      });
+    }
+
+    isPlayingRef.current = false;
+  }, []);
+
+  // Disconnect voice
+  const disconnectVoice = useCallback(() => {
+    if (wsRef.current) {
+      wsRef.current.close();
+      wsRef.current = null;
+    }
+    stopAudioCapture();
+    setIsConnected(false);
+    setIsConnecting(false);
+    setIsSpeaking(false);
+    setIsListening(false);
+  }, [stopAudioCapture]);
+
+  // Send context to AI
+  const sendContext = useCallback((context: string) => {
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({
+        type: "conversation.item.create",
+        item: {
+          type: "message",
+          role: "user",
+          content: [{ type: "input_text", text: context }],
+        },
+      }));
+      wsRef.current.send(JSON.stringify({
+        type: "response.create",
+      }));
+    }
+  }, []);
+
+  // Connect/disconnect based on isActive
+  useEffect(() => {
+    if (isActive && !isConnected && !isConnecting) {
+      connectionAttemptRef.current = 0;
+      connectVoice();
+    } else if (!isActive && isConnected) {
+      disconnectVoice();
+    }
+  }, [isActive, isConnected, isConnecting, connectVoice, disconnectVoice]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      disconnectVoice();
+    };
+  }, [disconnectVoice]);
+
   return {
     isConnected,
     isConnecting,
     isSpeaking,
+    isListening,
     error,
     connect: connectVoice,
     disconnect: disconnectVoice,
@@ -307,11 +425,13 @@ export function CoPilotStatusIndicator({
   isConnected, 
   isConnecting, 
   isSpeaking,
+  isListening,
   error,
 }: {
   isConnected: boolean;
   isConnecting: boolean;
   isSpeaking: boolean;
+  isListening?: boolean;
   error: string | null;
 }) {
   if (error) {
@@ -337,12 +457,14 @@ export function CoPilotStatusIndicator({
       <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm transition-all ${
         isSpeaking 
           ? "bg-purple-100 text-purple-700 animate-pulse" 
+          : isListening
+          ? "bg-blue-100 text-blue-700"
           : "bg-green-100 text-green-700"
       }`}>
         <div className={`w-2 h-2 rounded-full ${
-          isSpeaking ? "bg-purple-500 animate-bounce" : "bg-green-500"
+          isSpeaking ? "bg-purple-500 animate-bounce" : isListening ? "bg-blue-500 animate-pulse" : "bg-green-500"
         }`} />
-        <span>{isSpeaking ? "AI Speaking..." : "AI Listening"}</span>
+        <span>{isSpeaking ? "AI Speaking..." : isListening ? "Listening..." : "AI Ready"}</span>
       </div>
     );
   }
@@ -353,6 +475,35 @@ export function CoPilotStatusIndicator({
       <span>AI Coach Standby</span>
     </div>
   );
+}
+
+// Utility functions for audio conversion
+function float32ArrayToBase64(float32Array: Float32Array): string {
+  const int16Array = new Int16Array(float32Array.length);
+  for (let i = 0; i < float32Array.length; i++) {
+    const s = Math.max(-1, Math.min(1, float32Array[i]));
+    int16Array[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  const uint8Array = new Uint8Array(int16Array.buffer);
+  let binary = '';
+  for (let i = 0; i < uint8Array.length; i++) {
+    binary += String.fromCharCode(uint8Array[i]);
+  }
+  return btoa(binary);
+}
+
+function base64ToFloat32Array(base64: string): Float32Array {
+  const binary = atob(base64);
+  const uint8Array = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) {
+    uint8Array[i] = binary.charCodeAt(i);
+  }
+  const int16Array = new Int16Array(uint8Array.buffer);
+  const float32Array = new Float32Array(int16Array.length);
+  for (let i = 0; i < int16Array.length; i++) {
+    float32Array[i] = int16Array[i] / (int16Array[i] < 0 ? 0x8000 : 0x7FFF);
+  }
+  return float32Array;
 }
 
 export default AISessionCoPilot;

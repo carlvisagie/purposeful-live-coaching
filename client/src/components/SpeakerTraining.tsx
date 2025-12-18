@@ -981,6 +981,7 @@ export default function SpeakerTraining({ onClose, className = "" }: SpeakerTrai
             isConnected={coPilot.isConnected}
             isConnecting={coPilot.isConnecting}
             isSpeaking={coPilot.isSpeaking}
+            isListening={coPilot.isListening}
             error={coPilot.error}
           />
         </div>
