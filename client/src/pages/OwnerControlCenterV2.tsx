@@ -469,6 +469,8 @@ export default function OwnerControlCenterV2() {
             clientName={currentSession?.clientName || nextSession?.clientName || "Client"}
             sessionType={currentSession?.sessionType || nextSession?.sessionType || "General Coaching"}
             className="mb-6"
+            videoRef={videoRef}
+            isSessionActive={isTestingEquipment || !!currentSession}
           />
 
           {/* Session Status Header */}

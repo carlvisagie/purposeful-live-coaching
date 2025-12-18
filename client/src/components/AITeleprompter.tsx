@@ -24,29 +24,52 @@ import {
   Settings,
   ChevronDown,
   ChevronUp,
+  Eye,
+  Ear,
+  Activity,
+  AlertCircle,
+  TrendingUp,
+  User,
+  Video,
+  VideoOff,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 
 /**
- * AI Teleprompter Component
+ * AI Teleprompter Component - Enhanced with Live Session Analysis
  * 
  * Real-time AI coaching assistant that provides:
+ * - VISUAL ANALYSIS: Micro-expressions, body language, engagement
+ * - AUDIO ANALYSIS: Voice patterns, emotional undertones
  * - Suggested responses based on client input
  * - Emotional intelligence cues
  * - Compliance-safe language suggestions
  * - Quick copy-to-clipboard functionality
  * - Voice input support
- * - Expandable/collapsible view
+ * - Crisis detection alerts
  */
 
 interface TeleprompterSuggestion {
   id: string;
-  type: "response" | "empathy" | "technique" | "warning" | "transition";
+  type: "response" | "empathy" | "technique" | "warning" | "transition" | "observation" | "crisis";
   title: string;
   content: string;
   technique?: string;
-  priority: "low" | "medium" | "high";
+  priority: "low" | "medium" | "high" | "critical";
   timestamp: Date;
+}
+
+interface LiveAnalysis {
+  emotionalState: string;
+  engagementLevel: "low" | "medium" | "high";
+  stressLevel: "low" | "medium" | "high" | "critical";
+  bodyLanguage: {
+    posture: string;
+    eyeContact: string;
+    tension: string;
+  };
+  microExpressions: string[];
+  riskLevel: "none" | "low" | "medium" | "high" | "crisis";
 }
 
 interface AITeleprompterProps {
@@ -56,6 +79,10 @@ interface AITeleprompterProps {
   isExpanded?: boolean;
   onToggleExpand?: () => void;
   className?: string;
+  // New props for live analysis
+  videoRef?: React.RefObject<HTMLVideoElement>;
+  isSessionActive?: boolean;
+  onAnalysisUpdate?: (analysis: LiveAnalysis) => void;
 }
 
 // Pre-built coaching scripts for quick access
@@ -99,6 +126,9 @@ export default function AITeleprompter({
   isExpanded: externalExpanded,
   onToggleExpand,
   className = "",
+  videoRef,
+  isSessionActive = false,
+  onAnalysisUpdate,
 }: AITeleprompterProps) {
   const [isExpanded, setIsExpanded] = useState(externalExpanded ?? true);
   const [clientInput, setClientInput] = useState("");
@@ -109,8 +139,16 @@ export default function AITeleprompter({
   const [selectedCategory, setSelectedCategory] = useState<keyof typeof QUICK_SCRIPTS | null>(null);
   const [showQuickScripts, setShowQuickScripts] = useState(false);
   
+  // Live analysis state
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [liveAnalysis, setLiveAnalysis] = useState<LiveAnalysis | null>(null);
+  const [analysisEnabled, setAnalysisEnabled] = useState(true);
+  const [lastAnalysisTime, setLastAnalysisTime] = useState<Date | null>(null);
+  
   const suggestionsEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
+  const analysisIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // AI suggestion mutation
   const generateSuggestionMutation = trpc.aiCoach.generateCoachingSuggestion.useMutation({
@@ -131,11 +169,129 @@ export default function AITeleprompter({
     },
     onError: (error) => {
       console.error("AI suggestion error:", error);
-      // Fallback to local suggestions
       generateLocalSuggestions(clientInput);
       setIsGenerating(false);
     },
   });
+
+  // Session analysis mutation
+  const analyzeSessionMutation = trpc.sessionAnalysis.analyzeSessionMoment.useMutation({
+    onSuccess: (data) => {
+      if (data.overallState) {
+        const newAnalysis: LiveAnalysis = {
+          emotionalState: data.overallState.emotionalState,
+          engagementLevel: data.overallState.engagementLevel as "low" | "medium" | "high",
+          stressLevel: data.visual?.stressIndicators?.level || "low",
+          bodyLanguage: {
+            posture: data.visual?.bodyLanguage?.posture || "neutral",
+            eyeContact: data.visual?.bodyLanguage?.eyeContact || "direct",
+            tension: data.visual?.bodyLanguage?.tension || "low",
+          },
+          microExpressions: data.visual?.microExpressions?.detected || [],
+          riskLevel: data.overallState.riskLevel,
+        };
+        
+        setLiveAnalysis(newAnalysis);
+        setLastAnalysisTime(new Date());
+        onAnalysisUpdate?.(newAnalysis);
+
+        // Add insights as suggestions
+        if (data.insights && data.insights.length > 0) {
+          const insightSuggestions: TeleprompterSuggestion[] = data.insights.map((insight: any, index: number) => ({
+            id: `insight-${Date.now()}-${index}`,
+            type: insight.type || "observation",
+            title: insight.title,
+            content: insight.content,
+            technique: insight.technique,
+            priority: insight.priority || "medium",
+            timestamp: new Date(),
+          }));
+          setSuggestions(prev => [...insightSuggestions, ...prev].slice(0, 20)); // Keep last 20
+        }
+
+        // Crisis alert
+        if (data.overallState.riskLevel === "crisis" || data.overallState.riskLevel === "high") {
+          toast.error("⚠️ Risk Detected", {
+            description: data.overallState.recommendedAction,
+            duration: 10000,
+          });
+        }
+      }
+      setIsAnalyzing(false);
+    },
+    onError: (error) => {
+      console.error("Session analysis error:", error);
+      setIsAnalyzing(false);
+    },
+  });
+
+  // Capture video frame for analysis
+  const captureVideoFrame = useCallback((): string | null => {
+    if (!videoRef?.current || !canvasRef.current) return null;
+    
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    
+    if (!ctx || video.videoWidth === 0) return null;
+    
+    canvas.width = 640;
+    canvas.height = 480;
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    // Get base64 without the data URL prefix
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+    return dataUrl.split(',')[1];
+  }, [videoRef]);
+
+  // Run live analysis
+  const runAnalysis = useCallback(async () => {
+    if (!analysisEnabled || isAnalyzing) return;
+    
+    setIsAnalyzing(true);
+    
+    const frameBase64 = captureVideoFrame();
+    
+    try {
+      await analyzeSessionMutation.mutateAsync({
+        frameBase64: frameBase64 || undefined,
+        transcript: clientInput || undefined,
+        clientName,
+        sessionType,
+        sessionDuration: lastAnalysisTime 
+          ? Math.floor((Date.now() - lastAnalysisTime.getTime()) / 60000)
+          : 0,
+      });
+    } catch (error) {
+      console.error("Analysis failed:", error);
+      setIsAnalyzing(false);
+    }
+  }, [analysisEnabled, isAnalyzing, captureVideoFrame, clientInput, clientName, sessionType, lastAnalysisTime]);
+
+  // Start/stop analysis interval when session is active
+  useEffect(() => {
+    if (isSessionActive && analysisEnabled && videoRef?.current) {
+      // Create hidden canvas for frame capture
+      if (!canvasRef.current) {
+        canvasRef.current = document.createElement('canvas');
+      }
+      
+      // Run analysis every 5 seconds
+      analysisIntervalRef.current = setInterval(() => {
+        runAnalysis();
+      }, 5000);
+      
+      // Run initial analysis
+      setTimeout(runAnalysis, 1000);
+    }
+    
+    return () => {
+      if (analysisIntervalRef.current) {
+        clearInterval(analysisIntervalRef.current);
+        analysisIntervalRef.current = null;
+      }
+    };
+  }, [isSessionActive, analysisEnabled, videoRef, runAnalysis]);
 
   // Generate suggestions based on client input
   const generateSuggestions = useCallback(async () => {
@@ -163,7 +319,6 @@ export default function AITeleprompter({
     const lowerInput = input.toLowerCase();
     const newSuggestions: TeleprompterSuggestion[] = [];
 
-    // Detect emotional keywords and generate appropriate responses
     if (lowerInput.includes("anxious") || lowerInput.includes("worried") || lowerInput.includes("stress")) {
       newSuggestions.push({
         id: `local-${Date.now()}-1`,
@@ -221,7 +376,6 @@ export default function AITeleprompter({
       });
     }
 
-    // Add a general reflective response if no specific triggers found
     if (newSuggestions.length === 0) {
       newSuggestions.push({
         id: `local-${Date.now()}-6`,
@@ -229,15 +383,6 @@ export default function AITeleprompter({
         title: "Reflective Response",
         content: `I appreciate you sharing that. Can you tell me more about what that experience was like for you?`,
         technique: "Open-ended Inquiry",
-        priority: "medium",
-        timestamp: new Date(),
-      });
-      newSuggestions.push({
-        id: `local-${Date.now()}-7`,
-        type: "empathy",
-        title: "Validate & Explore",
-        content: `What you're describing sounds significant. How has this been affecting you day-to-day?`,
-        technique: "Impact Assessment",
         priority: "medium",
         timestamp: new Date(),
       });
@@ -334,7 +479,11 @@ export default function AITeleprompter({
       case "technique":
         return <Brain className="h-4 w-4 text-purple-500" />;
       case "warning":
-        return <AlertTriangle className="h-4 w-4 text-red-500" />;
+        return <AlertTriangle className="h-4 w-4 text-orange-500" />;
+      case "crisis":
+        return <AlertCircle className="h-4 w-4 text-red-500" />;
+      case "observation":
+        return <Eye className="h-4 w-4 text-blue-500" />;
       case "transition":
         return <MessageSquare className="h-4 w-4 text-blue-500" />;
       default:
@@ -344,6 +493,9 @@ export default function AITeleprompter({
 
   // Get background color for suggestion type
   const getSuggestionBg = (type: string, priority: string) => {
+    if (priority === "critical") {
+      return "bg-gradient-to-r from-red-50 to-rose-50 border-l-red-600";
+    }
     if (priority === "high") {
       return "bg-gradient-to-r from-amber-50 to-orange-50 border-l-orange-500";
     }
@@ -353,11 +505,36 @@ export default function AITeleprompter({
       case "technique":
         return "bg-gradient-to-r from-purple-50 to-indigo-50 border-l-purple-500";
       case "warning":
-        return "bg-gradient-to-r from-red-50 to-rose-50 border-l-red-500";
+        return "bg-gradient-to-r from-orange-50 to-amber-50 border-l-orange-500";
+      case "crisis":
+        return "bg-gradient-to-r from-red-50 to-rose-50 border-l-red-600";
+      case "observation":
+        return "bg-gradient-to-r from-blue-50 to-cyan-50 border-l-blue-500";
       case "transition":
         return "bg-gradient-to-r from-blue-50 to-cyan-50 border-l-blue-500";
       default:
         return "bg-gradient-to-r from-yellow-50 to-amber-50 border-l-yellow-500";
+    }
+  };
+
+  // Get stress level color
+  const getStressColor = (level: string) => {
+    switch (level) {
+      case "low": return "text-green-600 bg-green-100";
+      case "medium": return "text-yellow-600 bg-yellow-100";
+      case "high": return "text-orange-600 bg-orange-100";
+      case "critical": return "text-red-600 bg-red-100";
+      default: return "text-gray-600 bg-gray-100";
+    }
+  };
+
+  // Get engagement color
+  const getEngagementColor = (level: string) => {
+    switch (level) {
+      case "high": return "text-green-600 bg-green-100";
+      case "medium": return "text-blue-600 bg-blue-100";
+      case "low": return "text-orange-600 bg-orange-100";
+      default: return "text-gray-600 bg-gray-100";
     }
   };
 
@@ -368,14 +545,24 @@ export default function AITeleprompter({
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-lg">
             <Sparkles className="h-5 w-5" />
-            AI Coaching Teleprompter
-            {isGenerating && (
+            AI Coaching Co-Pilot
+            {(isGenerating || isAnalyzing) && (
               <RefreshCw className="h-4 w-4 animate-spin ml-2" />
             )}
           </CardTitle>
           <div className="flex items-center gap-2">
+            {/* Live Analysis Toggle */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setAnalysisEnabled(!analysisEnabled)}
+              className={`text-white hover:bg-white/20 ${analysisEnabled ? 'bg-white/20' : ''}`}
+              title={analysisEnabled ? "AI Analysis Active" : "AI Analysis Paused"}
+            >
+              {analysisEnabled ? <Eye className="h-4 w-4" /> : <VideoOff className="h-4 w-4" />}
+            </Button>
             <Badge variant="secondary" className="bg-white/20 text-white">
-              {suggestions.length} suggestions
+              {suggestions.length} insights
             </Badge>
             <Button
               variant="ghost"
@@ -387,9 +574,34 @@ export default function AITeleprompter({
             </Button>
           </div>
         </div>
+        
+        {/* Live Analysis Status Bar */}
+        {liveAnalysis && (
+          <div className="flex items-center gap-3 mt-2 text-sm">
+            <div className="flex items-center gap-1">
+              <Heart className="h-3 w-3" />
+              <span className="capitalize">{liveAnalysis.emotionalState}</span>
+            </div>
+            <Badge className={`text-xs ${getEngagementColor(liveAnalysis.engagementLevel)}`}>
+              <TrendingUp className="h-3 w-3 mr-1" />
+              {liveAnalysis.engagementLevel} engagement
+            </Badge>
+            <Badge className={`text-xs ${getStressColor(liveAnalysis.stressLevel)}`}>
+              <Activity className="h-3 w-3 mr-1" />
+              {liveAnalysis.stressLevel} stress
+            </Badge>
+            {liveAnalysis.riskLevel !== "none" && (
+              <Badge className="text-xs bg-red-100 text-red-700">
+                <AlertTriangle className="h-3 w-3 mr-1" />
+                {liveAnalysis.riskLevel} risk
+              </Badge>
+            )}
+          </div>
+        )}
+        
         {!expanded && suggestions.length > 0 && (
           <p className="text-sm text-white/80 mt-1 truncate">
-            Latest: {suggestions[suggestions.length - 1]?.content.substring(0, 60)}...
+            Latest: {suggestions[0]?.content.substring(0, 60)}...
           </p>
         )}
       </CardHeader>
@@ -397,6 +609,53 @@ export default function AITeleprompter({
       {/* Expandable Content */}
       {expanded && (
         <CardContent className="p-4 space-y-4">
+          {/* Live Analysis Panel */}
+          {liveAnalysis && (
+            <div className="p-3 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-semibold text-sm flex items-center gap-2">
+                  <Eye className="h-4 w-4 text-blue-600" />
+                  Live Client Analysis
+                </h4>
+                <span className="text-xs text-gray-500">
+                  Updated {lastAnalysisTime?.toLocaleTimeString()}
+                </span>
+              </div>
+              
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                <div>
+                  <p className="text-xs text-gray-500">Emotional State</p>
+                  <p className="font-medium capitalize">{liveAnalysis.emotionalState}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">Body Language</p>
+                  <p className="font-medium capitalize">{liveAnalysis.bodyLanguage.posture}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">Eye Contact</p>
+                  <p className="font-medium capitalize">{liveAnalysis.bodyLanguage.eyeContact}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">Tension</p>
+                  <p className="font-medium capitalize">{liveAnalysis.bodyLanguage.tension}</p>
+                </div>
+              </div>
+              
+              {liveAnalysis.microExpressions.length > 0 && (
+                <div className="mt-2">
+                  <p className="text-xs text-gray-500 mb-1">Micro-expressions detected:</p>
+                  <div className="flex flex-wrap gap-1">
+                    {liveAnalysis.microExpressions.map((expr, i) => (
+                      <Badge key={i} variant="outline" className="text-xs">
+                        {expr}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Input Section */}
           <div className="space-y-3">
             <div className="flex items-center gap-2">
@@ -509,8 +768,12 @@ export default function AITeleprompter({
             {suggestions.length === 0 ? (
               <div className="text-center py-8 text-gray-500">
                 <Brain className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                <p className="font-medium">Ready to assist</p>
-                <p className="text-sm">Enter what the client said to get AI-powered suggestions</p>
+                <p className="font-medium">AI Co-Pilot Ready</p>
+                <p className="text-sm">
+                  {isSessionActive 
+                    ? "Analyzing session... Insights will appear here" 
+                    : "Enter what the client said to get AI-powered suggestions"}
+                </p>
               </div>
             ) : (
               <>
@@ -529,6 +792,11 @@ export default function AITeleprompter({
                         <span className="font-semibold text-sm text-gray-800">
                           {suggestion.title}
                         </span>
+                        {suggestion.priority === "critical" && (
+                          <Badge variant="destructive" className="text-xs animate-pulse">
+                            URGENT
+                          </Badge>
+                        )}
                         {suggestion.priority === "high" && (
                           <Badge variant="destructive" className="text-xs">
                             Priority
