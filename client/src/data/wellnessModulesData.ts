@@ -1974,4 +1974,164 @@ export const wellnessModulesData: Record<string, any> = {
       "Lifestyle Optimization Checklist"
     ]
   },
+
+  // SPECIAL CATEGORY - AUTISM SUPPORT
+  "autism-support": {
+    icon: Heart,
+    title: "Autism Support",
+    description: "Evidence-based support for parents and caregivers of children with autism",
+    category: "Special",
+    color: "text-pink-500",
+    bgColor: "bg-pink-50",
+    longDescription: "A comprehensive, evidence-based program designed specifically for parents and caregivers of children on the autism spectrum. Learn proven strategies for supporting your child's development, managing challenging behaviors, and creating an environment where your child can thrive.",
+    benefits: [
+      "Understand autism spectrum disorders deeply",
+      "Learn evidence-based intervention strategies",
+      "Support communication and social development",
+      "Manage sensory sensitivities effectively",
+      "Track progress with ATEC and CARS assessments",
+      "Connect with resources and support networks"
+    ],
+    specialLink: "/autism",
+    lessons: [
+      { 
+        title: "Understanding Autism Spectrum Disorder", 
+        duration: "25 min", 
+        type: "reading",
+        description: "A comprehensive introduction to autism spectrum disorder, including current research, diagnostic criteria, and the neurodiversity perspective.",
+        keyPoints: [
+          "Autism is a neurodevelopmental difference, not a disease",
+          "The spectrum encompasses a wide range of presentations",
+          "Early intervention leads to better outcomes",
+          "Every autistic individual is unique"
+        ],
+        content: "Autism Spectrum Disorder (ASD) is a neurodevelopmental condition characterized by differences in social communication, sensory processing, and patterns of behavior and interests. The term 'spectrum' reflects the wide variation in challenges and strengths possessed by each person with autism. Current research suggests autism has a strong genetic component and involves differences in brain development and connectivity. Understanding autism through a neurodiversity lens means recognizing that autistic brains are wired differently—not defectively. This lesson covers the DSM-5 diagnostic criteria, the history of autism research, current prevalence rates (approximately 1 in 36 children), and the importance of early identification and intervention. You'll learn about the three levels of support needs and how to interpret your child's unique profile of strengths and challenges."
+      },
+      { 
+        title: "ATEC Assessment Guide", 
+        duration: "20 min", 
+        type: "exercise",
+        description: "Learn to use the Autism Treatment Evaluation Checklist (ATEC) to track your child's progress across key developmental areas.",
+        keyPoints: [
+          "ATEC measures four key areas of development",
+          "Lower scores indicate improvement",
+          "Regular assessments help track intervention effectiveness",
+          "Use ATEC to guide treatment decisions"
+        ],
+        content: "The Autism Treatment Evaluation Checklist (ATEC) is a free, validated assessment tool developed by the Autism Research Institute. It measures autism severity across four subscales: Speech/Language/Communication (14 items), Sociability (20 items), Sensory/Cognitive Awareness (18 items), and Health/Physical/Behavior (25 items). Total scores range from 0-180, with lower scores indicating less severe symptoms. In this exercise, you'll learn how to accurately complete the ATEC for your child, interpret the results, and use regular assessments (recommended monthly) to track progress over time. Many parents report that tracking ATEC scores helps them identify which interventions are most effective and provides motivation by documenting improvements that might otherwise go unnoticed."
+      },
+      { 
+        title: "Applied Behavior Analysis (ABA) Fundamentals", 
+        duration: "30 min", 
+        type: "video",
+        description: "Understand the principles of ABA therapy and how to apply behavioral strategies at home to support your child's learning.",
+        keyPoints: [
+          "ABA is the most researched autism intervention",
+          "Focus on positive reinforcement, not punishment",
+          "Break skills into small, teachable steps",
+          "Consistency across environments is crucial"
+        ],
+        content: "Applied Behavior Analysis (ABA) is the most extensively researched intervention for autism, with over 50 years of scientific evidence supporting its effectiveness. Modern ABA focuses on understanding why behaviors occur and using positive reinforcement to teach new skills and reduce challenging behaviors. This lesson covers the ABCs of behavior (Antecedent-Behavior-Consequence), discrete trial training, natural environment teaching, and how to implement ABA principles at home. You'll learn about positive reinforcement schedules, prompting and fading techniques, and how to create structured learning opportunities throughout your child's day. We emphasize ethical, child-centered ABA that respects your child's autonomy while building functional skills."
+      },
+      { 
+        title: "Communication Strategies", 
+        duration: "25 min", 
+        type: "reading",
+        description: "Explore various communication approaches including AAC, PECS, and strategies for supporting verbal and non-verbal communicators.",
+        keyPoints: [
+          "Communication is more than spoken words",
+          "AAC devices can unlock communication",
+          "Visual supports enhance understanding",
+          "Presume competence in all children"
+        ],
+        content: "Communication challenges are a core feature of autism, but every child can learn to communicate. This lesson explores the full range of communication supports, from low-tech picture exchange systems (PECS) to high-tech augmentative and alternative communication (AAC) devices. You'll learn about the importance of presuming competence—assuming your child understands more than they can express—and how to create a communication-rich environment. We cover visual schedules, social stories, video modeling, and strategies for supporting both verbal and non-verbal children. Research shows that AAC does not prevent speech development; in fact, it often facilitates spoken language. You'll learn how to choose appropriate communication supports and implement them consistently."
+      },
+      { 
+        title: "Sensory Processing & Regulation", 
+        duration: "22 min", 
+        type: "reading",
+        description: "Understand sensory processing differences and learn strategies to help your child regulate their sensory experiences.",
+        keyPoints: [
+          "Sensory differences are neurological, not behavioral",
+          "Children may be over- or under-sensitive to stimuli",
+          "Sensory diets provide needed input",
+          "Environmental modifications reduce overload"
+        ],
+        content: "Most autistic individuals experience sensory processing differences—they may be hypersensitive (over-responsive) or hyposensitive (under-responsive) to various sensory inputs including sound, light, touch, taste, smell, and movement. Understanding your child's unique sensory profile is essential for reducing distress and supporting regulation. This lesson teaches you to identify sensory triggers, create sensory-friendly environments, and develop a 'sensory diet'—a personalized activity plan that provides the sensory input your child needs throughout the day. You'll learn about proprioceptive and vestibular input, calming vs. alerting activities, and how to work with occupational therapists to address sensory needs."
+      },
+      { 
+        title: "Managing Challenging Behaviors", 
+        duration: "28 min", 
+        type: "video",
+        description: "Learn to understand the function of challenging behaviors and implement positive behavior support strategies.",
+        keyPoints: [
+          "All behavior is communication",
+          "Identify the function (escape, attention, sensory, tangible)",
+          "Prevent rather than react",
+          "Teach replacement behaviors"
+        ],
+        content: "Challenging behaviors like meltdowns, aggression, self-injury, and elopement are often the most stressful aspect of parenting an autistic child. This lesson reframes challenging behaviors as communication—your child is telling you something important about their needs, even if they can't use words. You'll learn functional behavior assessment (FBA) techniques to identify why behaviors occur, focusing on the four main functions: escape/avoidance, attention, sensory stimulation, and access to tangibles. Once you understand the function, you can implement positive behavior support strategies: modifying the environment to prevent triggers, teaching replacement behaviors that serve the same function, and responding consistently when behaviors occur. We emphasize proactive, respectful approaches that maintain your child's dignity."
+      },
+      { 
+        title: "Building Daily Routines", 
+        duration: "18 min", 
+        type: "practice",
+        description: "Create structured daily routines that provide predictability and reduce anxiety for your child.",
+        keyPoints: [
+          "Predictability reduces anxiety",
+          "Visual schedules support independence",
+          "Build in flexibility gradually",
+          "Celebrate small wins consistently"
+        ],
+        content: "Autistic children often thrive with structure and predictability. Unexpected changes can trigger significant anxiety and challenging behaviors. This practical lesson guides you through creating effective daily routines using visual schedules, timers, and transition warnings. You'll learn to balance structure with flexibility, gradually building your child's tolerance for change. We cover morning routines, school transitions, after-school schedules, and bedtime routines, with specific strategies for each. You'll also learn how to prepare your child for changes in routine using social stories, visual supports, and graduated exposure. The goal is not rigid adherence to schedules, but rather providing enough predictability that your child feels safe while building skills to handle life's inevitable changes."
+      },
+      { 
+        title: "Nutrition & Biomedical Approaches", 
+        duration: "24 min", 
+        type: "reading",
+        description: "Explore evidence-based nutritional interventions and biomedical approaches that may support your child's health.",
+        keyPoints: [
+          "Many autistic children have GI issues",
+          "Some dietary interventions show promise",
+          "Work with qualified practitioners",
+          "Track changes systematically"
+        ],
+        content: "Research shows that autistic children have higher rates of gastrointestinal issues, food selectivity, and nutritional deficiencies. This lesson explores evidence-based nutritional approaches, including the gluten-free/casein-free (GFCF) diet, specific carbohydrate diet (SCD), and targeted supplementation. We discuss the research behind common supplements like omega-3 fatty acids, vitamin D, probiotics, and methylated B vitamins. You'll learn how to work with functional medicine practitioners, implement dietary changes safely, and track your child's response systematically. We emphasize that biomedical interventions should complement, not replace, behavioral and educational interventions, and that any changes should be made under professional guidance."
+      },
+      { 
+        title: "Self-Care for Caregivers", 
+        duration: "20 min", 
+        type: "reading",
+        description: "Essential strategies for maintaining your own wellbeing while caring for a child with autism.",
+        keyPoints: [
+          "Caregiver burnout is real and common",
+          "You cannot pour from an empty cup",
+          "Build a support network",
+          "Celebrate progress, including your own"
+        ],
+        content: "Parenting an autistic child is a marathon, not a sprint. Research shows that parents of autistic children experience higher rates of stress, anxiety, depression, and physical health problems than parents of neurotypical children. This lesson focuses on you—the caregiver—and provides essential strategies for maintaining your wellbeing. You'll learn about recognizing burnout signs, building respite care into your routine, connecting with other autism parents, and practicing self-compassion. We discuss the grief cycle that many parents experience and how to find meaning and joy in your parenting journey. Remember: taking care of yourself is not selfish—it's essential for being the parent your child needs."
+      },
+      { 
+        title: "Building Your Support Team", 
+        duration: "22 min", 
+        type: "reading",
+        description: "Learn to navigate the autism services system and build an effective team of professionals and supports.",
+        keyPoints: [
+          "Early intervention services are often free",
+          "IEPs ensure appropriate education",
+          "Coordinate care across providers",
+          "Advocate effectively for your child"
+        ],
+        content: "Supporting an autistic child requires a village. This lesson helps you navigate the complex landscape of autism services, from early intervention programs (birth to 3) to school-based services, private therapies, and community supports. You'll learn about your child's legal rights under IDEA, how to request evaluations, and how to develop effective Individualized Education Programs (IEPs). We cover how to find and evaluate ABA providers, speech therapists, occupational therapists, and other specialists. You'll learn strategies for coordinating care across multiple providers, keeping organized records, and advocating effectively for your child's needs. We also discuss financial resources including insurance coverage, Medicaid waivers, and grants for autism services."
+      }
+    ],
+    exercises: [
+      "ATEC Assessment Worksheet",
+      "Sensory Profile Checklist",
+      "Behavior Tracking Log",
+      "Visual Schedule Templates",
+      "IEP Preparation Guide",
+      "Caregiver Self-Care Plan"
+    ]
+  },
 };
