@@ -22,6 +22,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Streamdown } from "streamdown";
 import { useLocation } from "wouter";
 import { ConversationRating } from "@/components/ConversationRating";
+import { EmailCapturePrompt } from "@/components/EmailCapturePrompt";
 // AI Disclosure removed per user request
 import {
   AlertDialog,
@@ -58,6 +59,8 @@ export default function AICoach() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [emailPromptDismissed, setEmailPromptDismissed] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(localStorage.getItem("plc_user_email"));
   const [conversationToDelete, setConversationToDelete] = useState<number | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -514,6 +517,15 @@ export default function AICoach() {
                   )}
                   <div ref={messagesEndRef} />
                 </CardContent>
+
+                {/* Smart Email Capture - Show after 5+ messages if not captured */}
+                {messages.length >= 5 && !emailPromptDismissed && !userEmail && (
+                  <EmailCapturePrompt
+                    messageCount={messages.length}
+                    onDismiss={() => setEmailPromptDismissed(true)}
+                    onEmailCaptured={(email) => setUserEmail(email)}
+                  />
+                )}
 
                 {/* Conversation Rating - Show after messages */}
                 {messages.length > 0 && (
