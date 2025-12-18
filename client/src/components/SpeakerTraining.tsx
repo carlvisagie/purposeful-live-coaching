@@ -270,6 +270,7 @@ export default function SpeakerTraining({ onClose, className = "" }: SpeakerTrai
   
   const analyzePresenceMutation = trpc.speakerTraining.analyzePresence.useMutation({
     onSuccess: (data) => {
+      console.log('[AI Coach] Analysis result:', data);
       setLiveFeedback(data as LiveFeedback);
       if (data.visual) {
         setVisualScores(prev => [...prev, {
@@ -280,23 +281,35 @@ export default function SpeakerTraining({ onClose, className = "" }: SpeakerTrai
           presence: data.visual.presence.score,
         }]);
       }
+      
+      // ALWAYS speak something after analysis
       if (data.immediateCorrection) {
         setCurrentCorrection(data.immediateCorrection);
-        // Speak correction through headset
         speakText(data.immediateCorrection);
-        // Clear after 5 seconds
         setTimeout(() => setCurrentCorrection(null), 5000);
-      }
-      if (data.encouragement) {
+      } else if (data.encouragement) {
         setCurrentEncouragement(data.encouragement);
-        // Speak encouragement through headset
         speakText(data.encouragement);
         setTimeout(() => setCurrentEncouragement(null), 4000);
+      } else {
+        // Fallback - always say something
+        const fallbacks = [
+          "Good, keep going.",
+          "I'm watching. Stay focused.",
+          "Keep your energy up.",
+          "You're doing well. Continue.",
+          "Stay present. I'm here.",
+        ];
+        const randomFallback = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+        speakText(randomFallback);
       }
       setIsAnalyzing(false);
     },
-    onError: () => {
+    onError: (error) => {
+      console.error('[AI Coach] Analysis failed:', error);
       setIsAnalyzing(false);
+      // Still speak on error so user knows system is trying
+      speakText("Analysis in progress. Keep practicing.");
     },
   });
   

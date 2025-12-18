@@ -279,8 +279,8 @@ Respond in JSON:
     "issue": "specific issue or null",
     "tip": "actionable tip"
   },
-  "immediateCorrection": "ONE thing to fix RIGHT NOW or null if doing well",
-  "encouragement": "specific positive observation"
+  "immediateCorrection": "ONE specific thing to fix RIGHT NOW - ALWAYS give something to work on, never null",
+  "encouragement": "ALWAYS give a specific positive observation - find something good to say"
 }`
             },
             {

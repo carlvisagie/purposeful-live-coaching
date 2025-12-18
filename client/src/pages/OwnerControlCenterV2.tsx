@@ -15,6 +15,7 @@ import {
 import AITeleprompter from "@/components/AITeleprompter";
 import SpeakerTraining from "@/components/SpeakerTraining";
 import { AviationKnowledgeCoach } from "@/components/AviationKnowledgeCoach";
+import { VapiVoiceCoach } from "@/components/VapiVoiceCoach";
 
 /**
  * OWNER CONTROL CENTER V2 - Session-Focused Command Center
@@ -38,6 +39,7 @@ export default function OwnerControlCenterV2() {
   const [audioEnabled, setAudioEnabled] = useState(true);
   const [showSpeakerTraining, setShowSpeakerTraining] = useState(false);
   const [showAviationCoach, setShowAviationCoach] = useState(false);
+  const [showVoiceCoach, setShowVoiceCoach] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
@@ -528,6 +530,30 @@ export default function OwnerControlCenterV2() {
             </CardContent>
           </Card>
 
+          {/* Real-Time Voice Coach Card - TRUE REAL-TIME CONVERSATION */}
+          <Card className="border-2 border-green-300 bg-gradient-to-r from-green-50 to-emerald-50 cursor-pointer hover:shadow-lg transition-shadow animate-pulse" onClick={() => setShowVoiceCoach(true)}>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white">
+                    <Mic className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg flex items-center gap-2">
+                      🎤 Real-Time Voice Coach
+                      <Badge className="bg-green-500 text-white text-xs">LIVE</Badge>
+                    </h3>
+                    <p className="text-sm text-gray-600">Talk to AI Coach - instant voice conversation through your headset</p>
+                  </div>
+                </div>
+                <Button className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600">
+                  <Volume2 className="h-4 w-4 mr-2" />
+                  Start Voice Call
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Session Status Header */}
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -1010,6 +1036,14 @@ export default function OwnerControlCenterV2() {
       {/* Aviation Knowledge Coach Modal */}
       {showAviationCoach && (
         <AviationKnowledgeCoach onClose={() => setShowAviationCoach(false)} />
+      )}
+
+      {/* Real-Time Voice Coach Modal */}
+      {showVoiceCoach && (
+        <VapiVoiceCoach 
+          mode="speaker_training" 
+          onClose={() => setShowVoiceCoach(false)} 
+        />
       )}
     </div>
   );
