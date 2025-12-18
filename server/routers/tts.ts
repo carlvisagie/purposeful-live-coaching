@@ -4,14 +4,14 @@
  */
 
 import { z } from "zod";
-import { protectedProcedure, router } from "../_core/trpc";
+import { publicProcedure, router } from "../_core/trpc";
 import { invokeLLM } from "../_core/llm";
 
 export const ttsRouter = router({
   /**
    * Generate speech audio from text using OpenAI TTS
    */
-  generateSpeech: protectedProcedure
+  generateSpeech: publicProcedure
     .input(
       z.object({
         text: z.string(),

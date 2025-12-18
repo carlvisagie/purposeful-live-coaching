@@ -209,6 +209,32 @@ export default function SpeakerTraining({ onClose, className = "" }: SpeakerTrai
     },
   });
 
+  // Fallback to browser speech synthesis
+  const speakWithBrowserTTS = useCallback((text: string) => {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+      utterance.volume = 1.0;
+      // Try to find a female voice
+      const voices = window.speechSynthesis.getVoices();
+      const femaleVoice = voices.find(v => v.name.includes('Female') || v.name.includes('Samantha') || v.name.includes('Victoria'));
+      if (femaleVoice) utterance.voice = femaleVoice;
+      
+      utterance.onstart = () => setIsSpeaking(true);
+      utterance.onend = () => {
+        setIsSpeaking(false);
+        // Process next in queue
+        if (speechQueueRef.current.length > 0) {
+          const nextText = speechQueueRef.current.shift();
+          if (nextText) speakText(nextText);
+        }
+      };
+      
+      window.speechSynthesis.speak(utterance);
+    }
+  }, []);
+
   // Speak text through headset
   const speakText = useCallback((text: string) => {
     if (!voiceEnabled || !text) return;
@@ -219,12 +245,22 @@ export default function SpeakerTraining({ onClose, className = "" }: SpeakerTrai
       return;
     }
     
-    ttsMutation.mutate({
-      text,
-      voice: "nova", // Warm, professional female voice
-      speed: 1.0,
-    });
-  }, [voiceEnabled, isSpeaking, ttsMutation]);
+    // Try OpenAI TTS first, fallback to browser
+    ttsMutation.mutate(
+      {
+        text,
+        voice: "nova", // Warm, professional female voice
+        speed: 1.0,
+      },
+      {
+        onError: () => {
+          // Fallback to browser speech synthesis
+          console.log('TTS API failed, using browser fallback');
+          speakWithBrowserTTS(text);
+        },
+      }
+    );
+  }, [voiceEnabled, isSpeaking, ttsMutation, speakWithBrowserTTS]);
   
   // tRPC mutations
   const getPromptQuery = trpc.speakerTraining.getTrainingPrompt.useQuery(
