@@ -80,6 +80,7 @@ function Router() {
 
       <Route path="/coach/dashboard" component={OwnerControlCenterV2} />
       <Route path="/owner" component={OwnerControlCenterV2} />
+      <Route path="/control-center" component={OwnerControlCenterV2} />
       <Route path="/autism" component={AutismDashboard} />
       <Route path="/autism/create-profile" component={CreateAutismProfile} />
       <Route path="/autism/profile/:id" component={AutismProfileDetail} />

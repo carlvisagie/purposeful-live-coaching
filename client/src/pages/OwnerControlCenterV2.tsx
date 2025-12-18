@@ -10,8 +10,9 @@ import {
   Users, Calendar, Video, DollarSign, Clock, TrendingUp, Search, Plus,
   BarChart3, Settings, Bell, CheckCircle2, AlertCircle, Activity,
   UserPlus, AlertTriangle, Target, Brain, Play, Zap, Timer, Mic, MicOff,
-  VideoOff, Volume2, Maximize2
+  VideoOff, Volume2, Maximize2, Sparkles, MessageSquare
 } from "lucide-react";
+import AITeleprompter from "@/components/AITeleprompter";
 
 /**
  * OWNER CONTROL CENTER V2 - Session-Focused Command Center
@@ -462,6 +463,13 @@ export default function OwnerControlCenterV2() {
               </div>
             </CardContent>
           </Card>
+
+          {/* AI COACHING TELEPROMPTER - PROMINENT SECTION */}
+          <AITeleprompter
+            clientName={currentSession?.clientName || nextSession?.clientName || "Client"}
+            sessionType={currentSession?.sessionType || nextSession?.sessionType || "General Coaching"}
+            className="mb-6"
+          />
 
           {/* Session Status Header */}
           <div className="flex items-center justify-between mb-6">
