@@ -46,8 +46,10 @@ import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import AdminSetup from "./pages/AdminSetup";
 import OwnerControlCenterV2 from "./pages/OwnerControlCenterV2";
+import OwnerControlCenterV3 from "./pages/OwnerControlCenterV3";
 import FreedomDashboard from "./pages/FreedomDashboard";
 import Settings from "./pages/Settings";
+import PopoutTeleprompter from "./pages/PopoutTeleprompter";
 import TrialWrapper from "./components/TrialWrapper";
 
 
@@ -80,9 +82,10 @@ function Router() {
       <Route path="/health-tracker" component={HealthTracker} />
       <Route path="/stress-relief" component={StressRelief} />
 
-      <Route path="/coach/dashboard" component={OwnerControlCenterV2} />
-      <Route path="/owner" component={OwnerControlCenterV2} />
-      <Route path="/control-center" component={OwnerControlCenterV2} />
+      <Route path="/coach/dashboard" component={OwnerControlCenterV3} />
+      <Route path="/owner" component={OwnerControlCenterV3} />
+      <Route path="/control-center" component={OwnerControlCenterV3} />
+      <Route path="/control-center-v2" component={OwnerControlCenterV2} />
       <Route path="/autism" component={AutismDashboard} />
       <Route path="/autism/create-profile" component={CreateAutismProfile} />
       <Route path="/autism/profile/:id" component={AutismProfileDetail} />
@@ -106,6 +109,7 @@ function Router() {
       <Route path="/freedom-dashboard" component={FreedomDashboard} />
       <Route path="/marketing" component={FreedomDashboard} />
       <Route path="/settings" component={Settings} />
+      <Route path="/teleprompter" component={PopoutTeleprompter} />
 
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
