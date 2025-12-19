@@ -47,6 +47,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import AdminSetup from "./pages/AdminSetup";
 import OwnerControlCenterV2 from "./pages/OwnerControlCenterV2";
 import FreedomDashboard from "./pages/FreedomDashboard";
+import Settings from "./pages/Settings";
 import TrialWrapper from "./components/TrialWrapper";
 
 
@@ -104,6 +105,7 @@ function Router() {
       <Route path="/freedom" component={FreedomDashboard} />
       <Route path="/freedom-dashboard" component={FreedomDashboard} />
       <Route path="/marketing" component={FreedomDashboard} />
+      <Route path="/settings" component={Settings} />
 
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
