@@ -11,7 +11,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { Phone, PhoneOff, Mic, MicOff, Volume2, VolumeX, Loader2, Brain, X } from "lucide-react";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface OpenAIVoiceCoachProps {
   mode?: "speaker_training" | "interview_prep" | "coaching_practice" | "compliance_monitor" | "singing";
