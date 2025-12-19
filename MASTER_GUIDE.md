@@ -525,6 +525,49 @@ A deep analysis of top competitors (Wysa, Youper, Calm, Headspace) revealed crit
 
 # CHANGELOG
 
+## CHANGELOG: Video-Analyzing Interview Coach with GPT-4 Vision (December 19, 2025)
+
+### MAJOR UPGRADE: The Interview Coach Now ACTUALLY WATCHES You!
+
+**Problem Solved:**
+- Previous coach only analyzed spoken words, not visual presentation
+- No feedback on eye contact, posture, facial expressions, or body language
+- Users reported coach was "aggressive" and not observant
+
+**What Was Built:**
+
+**1. Video Frame Capture System** (`client/src/components/AviationKnowledgeCoach.tsx`)
+- Captures video frames every 3 seconds during practice
+- Stores up to 5 key frames for comprehensive analysis
+- Hidden canvas element for frame extraction
+- Sends frames to server with speech transcript
+
+**2. GPT-4 Vision Integration** (`server/routers/aviationKnowledge.ts`)
+- Server accepts `videoFrames` array alongside speech transcript
+- Uses GPT-4 Vision to analyze BOTH audio AND visual presentation
+- Analyzes: eye contact, posture, facial expressions, gestures, energy
+
+**3. Warm, Adaptive Coaching Tone**
+- Detects user sentiment (nervous, confident, struggling)
+- Adapts coaching style based on detected state
+- Extra supportive for users who seem nervous
+- Always leads with genuine praise
+- Frames improvements as opportunities, never criticisms
+
+**4. Visual Feedback UI**
+- New "Visual Presentation Feedback" section in evaluation
+- Shows: Eye Contact, Posture, Voice & Tone, Energy & Presence
+- Beautiful purple-themed feedback cards
+- "Next Step" tip for actionable improvement
+
+**Files Changed:**
+- `client/src/components/AviationKnowledgeCoach.tsx` - Frame capture + UI
+- `server/routers/aviationKnowledge.ts` - GPT-4 Vision integration
+
+**Commit:** `2dbbe2f`
+
+---
+
 ## December 19, 2025 - Health Optimization System Added
 
 ### What Was Built
