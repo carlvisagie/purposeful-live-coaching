@@ -9,6 +9,8 @@
  * - AI hears in real-time (streaming audio)
  * - AI responds immediately through speakers/headset
  * - AI can interrupt when user says something wrong
+ * 
+ * Updated December 2024 to use correct GA API session configuration format.
  */
 
 import { z } from "zod";
@@ -86,24 +88,27 @@ export const realtimeVoiceRouter = router({
       const { sdp, mode, voice } = input;
       
       try {
-        // Create session config
+        // Create session config using the CORRECT format from OpenAI GA API docs
+        // Note: audio.input.transcription and turn_detection are nested under audio.input
         const sessionConfig = JSON.stringify({
           type: "realtime",
           model: "gpt-realtime",
           instructions: COACHING_INSTRUCTIONS[mode] || COACHING_INSTRUCTIONS.speaker_training,
-          audio: { 
-            output: { 
-              voice: voice 
-            } 
-          },
-          input_audio_transcription: {
-            model: "whisper-1",
-          },
-          turn_detection: {
-            type: "server_vad",
-            threshold: 0.5,
-            prefix_padding_ms: 300,
-            silence_duration_ms: 500,
+          audio: {
+            input: {
+              transcription: {
+                model: "whisper-1",
+              },
+              turn_detection: {
+                type: "server_vad",
+                threshold: 0.5,
+                prefix_padding_ms: 300,
+                silence_duration_ms: 500,
+              },
+            },
+            output: {
+              voice: voice,
+            },
           },
         });
 
@@ -154,25 +159,27 @@ export const realtimeVoiceRouter = router({
       const { mode, voice } = input;
       
       try {
-        // Create session config for ephemeral token
+        // Create session config using the CORRECT format from OpenAI GA API docs
         const sessionConfig = {
           session: {
             type: "realtime",
             model: "gpt-realtime",
             instructions: COACHING_INSTRUCTIONS[mode] || COACHING_INSTRUCTIONS.speaker_training,
             audio: {
+              input: {
+                transcription: {
+                  model: "whisper-1",
+                },
+                turn_detection: {
+                  type: "server_vad",
+                  threshold: 0.5,
+                  prefix_padding_ms: 300,
+                  silence_duration_ms: 500,
+                },
+              },
               output: {
                 voice: voice,
               },
-            },
-            input_audio_transcription: {
-              model: "whisper-1",
-            },
-            turn_detection: {
-              type: "server_vad",
-              threshold: 0.5,
-              prefix_padding_ms: 300,
-              silence_duration_ms: 500,
             },
           },
         };
@@ -196,8 +203,8 @@ export const realtimeVoiceRouter = router({
         const data = await response.json();
         
         return {
-          clientSecret: data.client_secret?.value || data.value,
-          expiresAt: data.client_secret?.expires_at || data.expires_at,
+          clientSecret: data.value,
+          expiresAt: data.expires_at,
           voice: voice,
           mode: mode,
         };
