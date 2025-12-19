@@ -16,6 +16,7 @@ import AITeleprompter from "@/components/AITeleprompter";
 import SpeakerTraining from "@/components/SpeakerTraining";
 import { AviationKnowledgeCoach } from "@/components/AviationKnowledgeCoach";
 import { OpenAIVoiceCoach } from "@/components/OpenAIVoiceCoach";
+import { SessionHealthDisclaimer } from "@/components/SessionHealthDisclaimer";
 
 /**
  * OWNER CONTROL CENTER V2 - Session-Focused Command Center
@@ -40,6 +41,8 @@ export default function OwnerControlCenterV2() {
   const [showSpeakerTraining, setShowSpeakerTraining] = useState(false);
   const [showAviationCoach, setShowAviationCoach] = useState(false);
   const [showVoiceCoach, setShowVoiceCoach] = useState(false);
+  const [showHealthCheck, setShowHealthCheck] = useState(false);
+  const [pendingAction, setPendingAction] = useState<"voice" | "speaker" | "aviation" | null>(null);
   const [showNotifications, setShowNotifications] = useState(false);
   const [, setLocation] = useLocation();
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -614,7 +617,7 @@ export default function OwnerControlCenterV2() {
           </Card>
 
           {/* Real-Time Voice Coach Card - TRUE REAL-TIME CONVERSATION */}
-          <Card className="border-2 border-green-300 bg-gradient-to-r from-green-50 to-emerald-50 cursor-pointer hover:shadow-lg transition-shadow animate-pulse" onClick={() => setShowVoiceCoach(true)}>
+          <Card className="border-2 border-green-300 bg-gradient-to-r from-green-50 to-emerald-50 cursor-pointer hover:shadow-lg transition-shadow animate-pulse" onClick={() => { setPendingAction("voice"); setShowHealthCheck(true); }}>
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
@@ -631,7 +634,7 @@ export default function OwnerControlCenterV2() {
                 </div>
                 <Button 
                     className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
-                    onClick={() => setShowVoiceCoach(true)}
+                    onClick={(e) => { e.stopPropagation(); setPendingAction("voice"); setShowHealthCheck(true); }}
                   >
                   <Volume2 className="h-4 w-4 mr-2" />
                   Start Voice Call
@@ -1122,6 +1125,22 @@ export default function OwnerControlCenterV2() {
       {/* Aviation Knowledge Coach Modal */}
       {showAviationCoach && (
         <AviationKnowledgeCoach onClose={() => setShowAviationCoach(false)} />
+      )}
+
+      {/* Health Check Modal - Shows before coaching sessions */}
+      {showHealthCheck && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <SessionHealthDisclaimer
+            sessionType={pendingAction === "voice" ? "voice_coach" : "ai_coach"}
+            onProceed={() => {
+              setShowHealthCheck(false);
+              if (pendingAction === "voice") setShowVoiceCoach(true);
+              else if (pendingAction === "speaker") setShowSpeakerTraining(true);
+              else if (pendingAction === "aviation") setShowAviationCoach(true);
+              setPendingAction(null);
+            }}
+          />
+        </div>
       )}
 
       {/* Real-Time Voice Coach Modal */}

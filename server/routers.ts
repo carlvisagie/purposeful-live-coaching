@@ -55,6 +55,7 @@ import { aviationKnowledgeRouter } from "./routers/aviationKnowledge";
 import { comprehensiveComplianceRouter } from "./routers/comprehensiveCompliance";
 import { realtimeVoiceRouter } from "./routers/realtimeVoice";
 import { platformIntelligenceRouter } from "./routers/platformIntelligence";
+import { healthOptimizationRouter } from "./routers/healthOptimization";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -122,6 +123,7 @@ export const appRouter = router({
   compliance: comprehensiveComplianceRouter,
   realtimeVoice: realtimeVoiceRouter,
   platformIntelligence: platformIntelligenceRouter,
+  healthOptimization: healthOptimizationRouter,
 });
 
 export type AppRouter = typeof appRouter;
