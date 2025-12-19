@@ -2,7 +2,7 @@
 ## Single Source of Truth
 
 **Last Updated:** December 19, 2025  
-**Status: 🟢 PLATFORM 90% COMPLETE - 10X Adaptive Voice Coaching deployed, beta launch ready  
+**Status: 🟢 PLATFORM 92% COMPLETE - Session-to-Profile Extraction + CliffsNotes deployed  
 **Owner:** Carl Visagie  
 **Production URL:** https://purposefullivecoaching.com  
 **Repository:** https://github.com/carlvisagie/purposeful-live-coaching
@@ -833,6 +833,122 @@ Pushed to GitHub, Render auto-deploying.
    - Asks permission before challenging
    - Checks in frequently
    - Never criticizes harshly
+
+---
+
+## CHANGELOG: Session-to-Profile Extraction System (December 19, 2025)
+
+### Comprehensive Client Intelligence from Voice Sessions
+
+**Problem Identified:** Voice coaching sessions weren't automatically feeding into the unified client profile. Coaches had no "CliffsNotes" before sessions, and valuable session insights were being lost.
+
+**Research Foundation:**
+- ICF Core Competencies (2025): Trust, Communication, Growth
+- SOAP Notes: Subjective, Objective, Assessment, Plan
+- DAP Notes: Data, Assessment, Plan  
+- BIRP Notes: Behavior, Intervention, Response, Plan
+- AI coaching summarization best practices (Insight7, Otter.ai, Grain)
+
+### Solution: Comprehensive Session-to-Profile Extraction
+
+**What Gets Extracted (Automatically):**
+
+| Category | Data Extracted |
+|----------|---------------|
+| Demographics | Age, location, occupation, industry, relationship status |
+| Goals | Primary goal (exact words), secondary goals, motivation, timeline, success metrics |
+| Observations | Presenting concerns, strengths, growth areas, behavioral patterns, emotional patterns, risk indicators |
+| Session Doc | Topics discussed, techniques used, client responses, breakthroughs, challenges, emotional journey |
+| Progress | Goal progress (0-100%), milestones achieved, behavioral changes, confidence change |
+| Action Plan | Homework, commitments, follow-up items, next session focus |
+| Relationship | Rapport level (1-10), trust indicators, communication preferences, effective/ineffective approaches |
+| Next Session | CliffsNotes summary, where we left off, recommended focus, questions to explore, techniques to try, things to avoid |
+
+**SOAP Notes Generation:**
+- **Subjective:** Client's self-reported feelings, concerns, goals in their own words
+- **Objective:** Observable behaviors, tone, engagement level, measurable data
+- **Assessment:** Clinical impression, progress evaluation, patterns observed
+- **Plan:** Next steps, homework, follow-up items, recommended focus
+
+### Pre-Session CliffsNotes
+
+Before each voice coaching session, coaches now see:
+
+```
+🎯 QUICK SUMMARY (2-3 sentences)
+What's the essential context the coach needs to know?
+
+📍 WHERE WE LEFT OFF
+- Last session's main topic
+- Any unfinished business
+- Outstanding action items
+
+💡 KEY INSIGHTS FROM HISTORY
+- What works for this client
+- What doesn't work
+- Known triggers to avoid
+- Communication preferences
+
+🎯 RECOMMENDED FOCUS
+- Suggested topic for this session
+- Questions to explore
+- Techniques that might help
+
+⚠️ WATCH FOR
+- Any risk indicators
+- Patterns to monitor
+- Things the client might be avoiding
+
+🌟 CELEBRATE
+- Recent wins to acknowledge
+- Progress to highlight
+- Strengths to reinforce
+```
+
+### User Experience Flow
+
+1. **Before Session:** CliffsNotes modal shows with session brief
+2. **Quick Stats:** Total sessions, rapport level, last session date
+3. **Start Session:** Click to begin voice coaching
+4. **During Session:** Real-time adaptive coaching with emotional intelligence
+5. **End Session:** Automatic extraction saves insights to profile
+6. **Toast Notification:** "📊 Session insights saved to your profile!"
+
+### New API Endpoints
+
+| Endpoint | Purpose |
+|----------|--------|
+| `sessionProfileExtraction.extractFromSession` | Extract comprehensive data from transcript |
+| `sessionProfileExtraction.generateCliffsNotes` | Generate pre-session brief |
+| `sessionProfileExtraction.getClientProfile` | Get full client profile with all extracted data |
+| `sessionProfileExtraction.getSessionHistory` | Get session history with summaries |
+| `sessionProfileExtraction.generateSOAPNotes` | Generate professional SOAP documentation |
+
+### Files Created/Modified
+
+**New Files:**
+- `server/routers/sessionProfileExtraction.ts` - Comprehensive extraction router (600+ lines)
+
+**Modified Files:**
+- `server/routers.ts` - Added sessionProfileExtraction router
+- `client/src/components/OpenAIVoiceCoach.tsx` - Added CliffsNotes modal and auto-extraction
+
+### Deployment
+
+Commit: `35c7782` - "Add comprehensive session-to-profile extraction system"
+Pushed to GitHub, Render auto-deploying.
+
+### Testing Instructions
+
+1. Go to Control Center → Real-Time Voice Coach
+2. Before session starts, you'll see the CliffsNotes modal with:
+   - Session brief (if returning user)
+   - Quick stats (total sessions, rapport level, last session)
+3. Click "Start Session" to begin
+4. Have a conversation with the AI coach
+5. End the session
+6. See toast: "📊 Session insights saved to your profile!"
+7. Check client profile - it should now have extracted data
 
 ---
 
