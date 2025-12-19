@@ -479,4 +479,56 @@
 
 ---
 
+# CHANGELOG
+
+## December 19, 2025 - Health Optimization System Added
+
+### What Was Built
+
+**1. Health Optimization Router** (`server/routers/healthOptimization.ts`)
+- Full API exposing the existing health schema
+- Endpoints: `getHealthStatus`, `getProfile`, `submitHealthIntake`, `updateDailyMetrics`, `addBiomarker`, `getHealthSummary`
+- Calculates biological age, mortality risk factors, and profile completeness
+
+**2. Health Intake Questionnaire** (`client/src/components/HealthIntakeQuestionnaire.tsx`)
+- 8-step comprehensive health assessment wizard
+- Collects: Demographics, Current Health, Goals, Medical History, Lifestyle, Sleep/Stress, Mental Health, Consent
+- Evidence-based questions aligned with longevity science research
+- Takes ~5 minutes to complete
+
+**3. Session Health Disclaimer** (`client/src/components/SessionHealthDisclaimer.tsx`)
+- Shows before AI/Live coaching sessions
+- Encourages users to complete health assessment for optimal coaching
+- Includes medical disclaimer: "This is wellness coaching, not medical advice"
+- Users can skip but are reminded that coaching will be less personalized
+
+**4. Integration with Voice Coach**
+- When clicking "Start Voice Call", health check shows first
+- If health assessment completed: Shows quick confirmation and proceeds
+- If not completed: Prompts user to complete or skip
+- All coaching sessions now have health context
+
+### Why This Matters
+
+> "We can not do a proper diagnosis without understanding clients health"
+
+This system ensures:
+- Every coaching interaction is personalized to the client's health profile
+- Coaches (AI and human) know about conditions, medications, goals
+- Proper disclaimers protect the platform legally
+- Data collection enables future mortality screening and biomarker tracking
+
+### Files Changed
+- `server/routers/healthOptimization.ts` (NEW)
+- `server/routers.ts` (added healthOptimization router)
+- `client/src/components/HealthIntakeQuestionnaire.tsx` (NEW)
+- `client/src/components/SessionHealthDisclaimer.tsx` (NEW)
+- `client/src/pages/OwnerControlCenterV2.tsx` (integrated health check)
+
+### Deployment
+Pushed to GitHub: Commit `356a789`
+Render auto-deploys.
+
+---
+
 **This is the SINGLE SOURCE OF TRUTH for the Purposeful Live Coaching platform. All other documentation has been archived.**
