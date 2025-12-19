@@ -2,7 +2,7 @@
 ## Single Source of Truth
 
 **Last Updated:** December 19, 2025  
-**Status: 🟢 PLATFORM 85% COMPLETE - Launch-ready, hardened, and competitive features addednt  
+**Status: 🟢 PLATFORM 90% COMPLETE - 10X Adaptive Voice Coaching deployed, beta launch ready  
 **Owner:** Carl Visagie  
 **Production URL:** https://purposefullivecoaching.com  
 **Repository:** https://github.com/carlvisagie/purposeful-live-coaching
@@ -722,6 +722,117 @@ Settings page (`/settings`) was returning 404 error. The gear icon in the header
 ### Deployment
 Pushed to GitHub: Commits `8812eef` and `3f4bfc0`
 Render auto-deployed successfully.
+
+---
+
+## CHANGELOG: 10X Adaptive Emotional Intelligence Voice Coaching (December 19, 2025)
+
+### CRITICAL UPGRADE - Make-or-Break Feature for Client Retention
+
+**Problem Identified:** User tested the Real-Time Voice Coach and found it:
+- Aggressive/harsh tone (like a drill sergeant)
+- Not listening to client needs
+- Giving generic/unhelpful responses
+- Not adapting to user's emotional state
+
+**User Quote:** "I'm not going to learn shit from her" - This was losing clients.
+
+### Solution: 10X Adaptive Emotional Intelligence System
+
+**Research Foundation:**
+- Working alliance is the #1 predictor of coaching outcomes (Graßmann et al., 2020 - 291 citations)
+- Mirroring creates subconscious trust and rapport
+- Pacing and leading: match their state first, then gently guide
+- Psychological safety enables learning and growth
+
+### New Coach Personas
+
+| Coach | Mode | Personality |
+|-------|------|-------------|
+| **Alex** | Speaker Training | Warm, perceptive mentor who notices subtle shifts |
+| **Jordan** | Interview Prep | Strategic, confidence-building, believes in you |
+| **Morgan** | Coaching Practice | Wise, patient teacher who models excellence |
+| **Sam** | Compliance Monitor | Supportive guardrail, explains the WHY |
+| **Riley** | Singing Coach | Encouraging, celebrates uniqueness |
+
+### Adaptive Features Built
+
+**1. Real-Time Emotional Detection**
+- Short responses → "I sense something shifted. What's coming up for you?"
+- Pushback/resistance → "Let me adjust my approach. What would be more helpful?"
+- Repeated mistakes → "Let's pause. Take a breath. You're doing better than you think."
+- Energy drops → "I want to make sure this is landing. How are you feeling?"
+- Excitement/flow → "Yes! That's exactly it! You're in the zone!"
+
+**2. Permission-Based Challenging**
+- "Would you be open to some direct feedback?"
+- "Can I push you a little here? I think you can handle more."
+- "I have an observation that might be uncomfortable. Want to hear it?"
+
+**3. Frequent Check-Ins**
+- "How's this feeling for you?"
+- "Is this the kind of feedback that's helpful?"
+- "On a scale of 1-10, how confident are you feeling right now?"
+- "What would make this session most valuable for you?"
+
+**4. Energy Mirroring**
+- If nervous/quiet → Be gentle, warm, speak softly
+- If excited/fast → Match energy, ride momentum
+- If frustrated → Slow down, soften voice, acknowledge feelings
+- If confident → Be more direct, challenge appropriately
+
+### New Database Schema
+
+**`voice_coaching_preferences` table:**
+- preferredStyle (supportive, direct, challenging, exploratory)
+- preferredPace (slow, moderate, fast)
+- preferredEnergy (calm, balanced, high-energy)
+- feedbackDirectness (gentle, balanced, direct)
+- challengeLevel (low, medium, high)
+- effectiveApproaches (JSON - what works)
+- ineffectiveApproaches (JSON - what doesn't)
+- coachNotes (observations about this user)
+- knownTriggers (things that cause frustration)
+- rapportLevel (1-10 trust score)
+
+**`voice_coaching_feedback` table:**
+- Session ratings and qualitative feedback
+- Style/pace ratings (too_soft, just_right, too_harsh)
+- Confidence change tracking (-5 to +5)
+- What worked / what didn't work
+
+**`voice_coaching_session_logs` table:**
+- Detailed session analytics
+- Emotional journey tracking
+- Breakthrough and struggle moments
+- Adaptations made during session
+
+### Files Changed
+
+| File | Change |
+|------|--------|
+| `server/routers/realtimeVoice.ts` | Complete prompt overhaul with 10X adaptive EQ |
+| `drizzle/voiceCoachingSchema.ts` | New preference/feedback/log tables |
+| `server/routers/voiceCoachingPreferences.ts` | New API for preferences and feedback |
+| `drizzle/schema.ts` | Added voiceCoachingSchema export |
+| `server/routers.ts` | Added voiceCoachingPreferencesRouter |
+
+### Deployment
+
+Commit: `7022b25` - "10X Adaptive Emotional Intelligence Voice Coaching System"
+Pushed to GitHub, Render auto-deploying.
+
+### Testing Instructions
+
+1. Go to Control Center → Real-Time Voice Coach
+2. Start a session in any mode (Speaker Training, Interview Prep, etc.)
+3. Notice the coach:
+   - Greets you warmly
+   - Asks how you're feeling
+   - Adapts to your energy level
+   - Asks permission before challenging
+   - Checks in frequently
+   - Never criticizes harshly
 
 ---
 
