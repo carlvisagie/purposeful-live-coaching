@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import {
   Users, Calendar, Video, DollarSign, Clock, TrendingUp, Search, Plus,
   BarChart3, Settings, Bell, CheckCircle2, AlertCircle, Activity,
@@ -40,6 +40,8 @@ export default function OwnerControlCenterV2() {
   const [showSpeakerTraining, setShowSpeakerTraining] = useState(false);
   const [showAviationCoach, setShowAviationCoach] = useState(false);
   const [showVoiceCoach, setShowVoiceCoach] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [, setLocation] = useLocation();
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
@@ -273,17 +275,92 @@ export default function OwnerControlCenterV2() {
                 ${adminStatsData.revenueMTD.toLocaleString()}
               </Badge>
 
-              <Button variant="ghost" size="icon">
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => setShowNotifications(!showNotifications)}
+                className="relative"
+                title="Notifications"
+              >
                 <Bell className="h-5 w-5" />
+                {adminStatsData.pendingCrisisAlerts > 0 && (
+                  <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full text-[10px] text-white flex items-center justify-center">
+                    {adminStatsData.pendingCrisisAlerts}
+                  </span>
+                )}
               </Button>
 
-              <Button variant="ghost" size="icon">
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => setLocation('/my-profile')}
+                title="Settings & Profile"
+              >
                 <Settings className="h-5 w-5" />
               </Button>
             </div>
           </div>
         </div>
       </header>
+
+      {/* Notifications Dropdown */}
+      {showNotifications && (
+        <div className="fixed right-4 top-16 z-50 w-80 bg-white rounded-lg shadow-xl border border-gray-200 animate-in fade-in slide-in-from-top-2">
+          <div className="p-4 border-b border-gray-100">
+            <div className="flex items-center justify-between">
+              <h3 className="font-semibold">Notifications</h3>
+              <Button variant="ghost" size="sm" onClick={() => setShowNotifications(false)}>×</Button>
+            </div>
+          </div>
+          <div className="max-h-96 overflow-y-auto">
+            {adminStatsData.pendingCrisisAlerts > 0 ? (
+              <div className="p-4 border-b border-gray-100 bg-red-50">
+                <div className="flex items-start gap-3">
+                  <AlertTriangle className="h-5 w-5 text-red-600 mt-0.5" />
+                  <div>
+                    <p className="font-medium text-red-900">Crisis Alert</p>
+                    <p className="text-sm text-red-700">{adminStatsData.pendingCrisisAlerts} alert(s) require attention</p>
+                    <Button 
+                      variant="destructive" 
+                      size="sm" 
+                      className="mt-2"
+                      onClick={() => { setActiveTab('admin'); setShowNotifications(false); }}
+                    >
+                      View Now
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="p-8 text-center text-gray-500">
+                <Bell className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                <p>No new notifications</p>
+              </div>
+            )}
+            {todaysSessions.length > 0 && (
+              <div className="p-4 border-b border-gray-100">
+                <div className="flex items-start gap-3">
+                  <Calendar className="h-5 w-5 text-blue-600 mt-0.5" />
+                  <div>
+                    <p className="font-medium">Today's Sessions</p>
+                    <p className="text-sm text-gray-600">{todaysSessions.length} session(s) scheduled</p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="p-3 border-t border-gray-100 bg-gray-50">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="w-full"
+              onClick={() => { setActiveTab('admin'); setShowNotifications(false); }}
+            >
+              View All Notifications
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* Main Content */}
       <div className="container max-w-7xl mx-auto px-4 py-8">
