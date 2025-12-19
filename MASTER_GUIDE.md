@@ -1432,3 +1432,60 @@ Added to `server/routers.ts`:
 
 **Last Updated:** December 18, 2025 - 8:35 PM GMT+1
 **Updated By:** Manus AI Agent
+
+
+---
+
+## 🔧 DECEMBER 19, 2025 - PLATFORM AUDIT & BUG FIXES
+
+### Issues Fixed
+
+#### 1. Control Center Header Buttons (FIXED)
+**Problem:** Bell (notifications) and Settings icons did nothing when clicked.
+**Solution:** 
+- Bell now opens a notifications dropdown showing crisis alerts and today's sessions
+- Settings now navigates to /my-profile page
+
+**Files Changed:**
+- `client/src/pages/OwnerControlCenterV2.tsx` - Added onClick handlers and notifications dropdown
+
+#### 2. OpenAI Realtime Voice API (FIXED)
+**Problem:** "API version mismatch" and "unknown_parameter" errors when connecting to AI Voice Coach.
+**Solution:** Updated from deprecated WebSocket to WebRTC (OpenAI GA API):
+- Changed endpoint from `/v1/realtime/client_secrets` to `/v1/realtime/calls`
+- Changed model from `gpt-4o-realtime-preview-2024-12-17` to `gpt-realtime`
+- Changed session config from `input_audio_transcription` at root to `audio.input.transcription`
+
+**Files Changed:**
+- `server/routers/realtimeVoice.ts` - Updated to WebRTC unified interface
+- `client/src/components/AISessionCoPilot.tsx` - Added WebRTC peer connection
+- `client/src/components/OpenAIVoiceCoach.tsx` - Added WebRTC peer connection
+
+### Platform Audit Results
+
+**Working Features Verified:**
+- ✅ AI Coach (text-based) - Responds with detailed coaching
+- ✅ Wellness Modules (34 modules) - All accessible
+- ✅ Lesson Viewer with video player
+- ✅ Stripe checkout integration
+- ✅ Session booking flow
+- ✅ Coach availability management
+- ✅ Landing page and navigation
+
+### Commits Made:
+- `106f177` - Fix Control Center header buttons
+- `3fc4933` - Fix AI Coach: Switch from deprecated WebSocket to WebRTC
+- `b21e63b` - Fix build: Add useAISessionCoPilot hook export
+
+### Self-Learning Compliance Suite Added
+- Comprehensive compliance module with 6 categories + crisis detection
+- Platform intelligence engine for self-evolving research validation
+- Truth Keepers integration for evidence-based treatment discovery
+- All modules now track effectiveness and auto-evolve based on client feedback
+
+**Files Created:**
+- `server/comprehensiveCompliance.ts`
+- `server/routers/comprehensiveCompliance.ts`
+- `server/platformIntelligence.ts`
+- `server/routers/platformIntelligence.ts`
+- `client/src/components/ComplianceMonitor.tsx`
