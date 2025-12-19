@@ -46,6 +46,7 @@ export function AviationKnowledgeCoach({ onClose }: AviationKnowledgeCoachProps)
   const videoRef = useRef<HTMLVideoElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const recognitionRef = useRef<any>(null);
+  const lastResultIndexRef = useRef<number>(0); // Track last processed result index to prevent duplication
 
   // Fetch knowledge areas
   const { data: knowledgeAreas } = trpc.aviationKnowledge.getKnowledgeAreas.useQuery();
@@ -90,12 +91,17 @@ export function AviationKnowledgeCoach({ onClose }: AviationKnowledgeCoachProps)
       
       recognitionRef.current.onresult = (event: any) => {
         let finalTranscript = "";
-        for (let i = 0; i < event.results.length; i++) {
+        // Only process NEW results starting from lastResultIndexRef
+        // This prevents re-processing results that were already added
+        for (let i = lastResultIndexRef.current; i < event.results.length; i++) {
           if (event.results[i].isFinal) {
             finalTranscript += event.results[i][0].transcript + " ";
           }
         }
-        if (finalTranscript) {
+        // Update the last processed index
+        lastResultIndexRef.current = event.results.length;
+        
+        if (finalTranscript.trim()) {
           setTranscript(prev => prev + finalTranscript);
         }
       };
@@ -128,6 +134,7 @@ export function AviationKnowledgeCoach({ onClose }: AviationKnowledgeCoachProps)
     setIsRecording(true);
     setTranscript("");
     setEvaluation(null);
+    lastResultIndexRef.current = 0; // Reset the result index tracker
     
     if (recognitionRef.current) {
       recognitionRef.current.start();
