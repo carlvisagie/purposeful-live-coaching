@@ -43,6 +43,9 @@ export * from "./relationshipSchema";
 export * from "./sleepOptimizationSchema";
 export * from "./stressSchema";
 
+// Export voice coaching schema (10X Adaptive Emotional Intelligence)
+export * from "./voiceCoachingSchema";
+
 // Export advanced features
 export * from "./gamificationSchema";
 export * from "./integrationsSchema";
