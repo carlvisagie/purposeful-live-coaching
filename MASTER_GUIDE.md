@@ -610,4 +610,31 @@ Render auto-deploys.
 
 ---
 
+## CHANGELOG: Settings Page Fix (December 19, 2025)
+
+### Issue Found
+Settings page (`/settings`) was returning 404 error. The gear icon in the header linked to a non-existent page.
+
+### Root Cause
+- Settings.tsx was created but had incorrect import path for `useAuth` hook
+- Import was `@/hooks/useAuth` but correct path is `@/_core/hooks/useAuth`
+
+### Fix Applied
+- Commit `8812eef`: Created Settings.tsx with 4 tabs (Profile, Notifications, Preferences, Security)
+- Commit `3f4bfc0`: Fixed useAuth import path
+
+### Settings Page Features
+| Tab | Features |
+|-----|----------|
+| Profile | First Name, Last Name, Email, Phone, Timezone |
+| Notifications | Email/Push/SMS toggles, Daily Reminder, Weekly Report, Session Reminders |
+| Preferences | Dark Mode, Sound Effects, Auto-play Videos |
+| Security | Change Password, Subscription info, Upgrade Plan, Log Out, Delete Account |
+
+### Deployment
+Pushed to GitHub: Commits `8812eef` and `3f4bfc0`
+Render auto-deployed successfully.
+
+---
+
 **This is the SINGLE SOURCE OF TRUTH for the Purposeful Live Coaching platform. All other documentation has been archived.**
