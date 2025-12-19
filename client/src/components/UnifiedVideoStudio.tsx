@@ -63,7 +63,7 @@ import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/contexts/AuthContext";
 import SpeakerTraining from "./SpeakerTraining";
-import { SessionHealthDisclaimer } from "./SessionHealthDisclaimer";
+// SessionHealthDisclaimer removed - not needed for owner/coach control center
 
 type StudioMode = "test" | "train" | "coach" | "voice";
 type VoiceCoachType = "speaker_training" | "interview_prep" | "coaching_practice" | "compliance_monitor" | "singing";
@@ -183,9 +183,7 @@ export function UnifiedVideoStudio({
   const [selectedScriptCategory, setSelectedScriptCategory] = useState<keyof typeof QUICK_SCRIPTS | null>(null);
   const [copiedScript, setCopiedScript] = useState<string | null>(null);
   
-  // Health disclaimer
-  const [showHealthDisclaimer, setShowHealthDisclaimer] = useState(false);
-  const [pendingMode, setPendingMode] = useState<StudioMode | null>(null);
+  // Note: Health disclaimer removed - this is the owner/coach control center, not client view
   
   // Speaker training state
   const [showSpeakerTraining, setShowSpeakerTraining] = useState(false);
@@ -602,7 +600,7 @@ export function UnifiedVideoStudio({
     setTimeout(() => setCopiedScript(null), 2000);
   };
 
-  // Handle mode change with health disclaimer
+  // Handle mode change - no health disclaimer needed for coach/owner
   const handleModeChange = (newMode: StudioMode) => {
     // Stop any active sessions when switching modes
     if (isVoiceConnected) {
@@ -613,25 +611,16 @@ export function UnifiedVideoStudio({
     }
     setShowSpeakerTraining(false);
     
-    if (newMode === "voice" || newMode === "train") {
-      setPendingMode(newMode);
-      setShowHealthDisclaimer(true);
-    } else {
-      setMode(newMode);
+    // Set the mode directly - coach/owner doesn't need health onboarding
+    setMode(newMode);
+    
+    // Auto-show speaker training when Train mode selected
+    if (newMode === "train") {
+      setShowSpeakerTraining(true);
     }
   };
 
-  // Confirm health disclaimer
-  const confirmHealthDisclaimer = () => {
-    if (pendingMode) {
-      setMode(pendingMode);
-      if (pendingMode === "train") {
-        setShowSpeakerTraining(true);
-      }
-      setPendingMode(null);
-    }
-    setShowHealthDisclaimer(false);
-  };
+
 
   // Cleanup on unmount
   useEffect(() => {
@@ -667,16 +656,7 @@ export function UnifiedVideoStudio({
 
   return (
     <div className={`space-y-4 ${className}`}>
-      {/* Health Disclaimer Modal */}
-      {showHealthDisclaimer && (
-        <SessionHealthDisclaimer
-          onAccept={confirmHealthDisclaimer}
-          onDecline={() => {
-            setShowHealthDisclaimer(false);
-            setPendingMode(null);
-          }}
-        />
-      )}
+
 
       {/* Speaker Training Full Screen */}
       {showSpeakerTraining && (
