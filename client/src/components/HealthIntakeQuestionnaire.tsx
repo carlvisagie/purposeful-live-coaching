@@ -4,7 +4,8 @@
  * Evidence-based approach using longevity science research
  */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -92,9 +93,12 @@ const MENTAL_HEALTH_CONCERNS = [
   "Work stress",
 ];
 
+const HEALTH_INTAKE_STORAGE_KEY = "purposeful_health_intake_pending";
+
 export function HealthIntakeQuestionnaire({ onComplete, onSkip }: HealthIntakeQuestionnaireProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const { toast } = useToast();
+  const { user, isAuthenticated } = useAuth();
   
   // Form state
   const [formData, setFormData] = useState({
@@ -206,7 +210,8 @@ export function HealthIntakeQuestionnaire({ onComplete, onSkip }: HealthIntakeQu
       return;
     }
     
-    submitMutation.mutate({
+    // Prepare the intake data
+    const intakeData = {
       dateOfBirth: formData.dateOfBirth || undefined,
       biologicalSex: formData.biologicalSex || undefined,
       height: formData.height ? parseFloat(formData.height) : undefined,
@@ -232,8 +237,34 @@ export function HealthIntakeQuestionnaire({ onComplete, onSkip }: HealthIntakeQu
       lastPhysicalExam: formData.lastPhysicalExam || undefined,
       consentToHealthTracking: formData.consentToHealthTracking,
       understandsNotMedicalAdvice: formData.understandsNotMedicalAdvice,
-    });
+    };
+    
+    // If user is authenticated, submit to server
+    // Otherwise, save to localStorage for later submission
+    if (isAuthenticated && user) {
+      submitMutation.mutate(intakeData);
+    } else {
+      // Save to localStorage for submission after signup/login
+      try {
+        localStorage.setItem(HEALTH_INTAKE_STORAGE_KEY, JSON.stringify({
+          data: intakeData,
+          savedAt: new Date().toISOString(),
+        }));
+        toast({
+          title: "Health Profile Saved!",
+          description: "Your information is saved and will be synced when you sign up.",
+        });
+        onComplete();
+      } catch (e) {
+        toast({
+          title: "Error",
+          description: "Could not save your information. Please try again.",
+          variant: "destructive",
+        });
+      }
+    }
   };
+
   
   const progress = (currentStep / STEPS.length) * 100;
   
