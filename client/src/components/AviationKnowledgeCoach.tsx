@@ -44,6 +44,9 @@ export function AviationKnowledgeCoach({ onClose }: AviationKnowledgeCoachProps)
   const [isEvaluating, setIsEvaluating] = useState(false);
   
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [capturedFrames, setCapturedFrames] = useState<string[]>([]);
+  const frameIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const recognitionRef = useRef<any>(null);
   const lastResultIndexRef = useRef<number>(0); // Track last processed result index to prevent duplication
@@ -120,6 +123,54 @@ export function AviationKnowledgeCoach({ onClose }: AviationKnowledgeCoachProps)
     }
   };
 
+
+  // Capture video frame as base64
+  const captureFrame = (): string | null => {
+    if (!videoRef.current || !canvasRef.current) return null;
+    
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    
+    if (!ctx || video.videoWidth === 0) return null;
+    
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    ctx.drawImage(video, 0, 0);
+    
+    return canvas.toDataURL('image/jpeg', 0.7);
+  };
+
+  // Start capturing frames during recording
+  const startFrameCapture = () => {
+    setCapturedFrames([]);
+    // Capture a frame every 3 seconds for analysis
+    frameIntervalRef.current = setInterval(() => {
+      const frame = captureFrame();
+      if (frame) {
+        setCapturedFrames(prev => {
+          // Keep max 5 frames (15 seconds of key moments)
+          const newFrames = [...prev, frame];
+          return newFrames.slice(-5);
+        });
+      }
+    }, 3000);
+    
+    // Capture initial frame immediately
+    setTimeout(() => {
+      const frame = captureFrame();
+      if (frame) setCapturedFrames([frame]);
+    }, 500);
+  };
+
+  // Stop frame capture
+  const stopFrameCapture = () => {
+    if (frameIntervalRef.current) {
+      clearInterval(frameIntervalRef.current);
+      frameIntervalRef.current = null;
+    }
+  };
+
   // Stop camera
   const stopCamera = () => {
     if (videoRef.current?.srcObject) {
@@ -136,6 +187,9 @@ export function AviationKnowledgeCoach({ onClose }: AviationKnowledgeCoachProps)
     setEvaluation(null);
     lastResultIndexRef.current = 0; // Reset the result index tracker
     
+    // Start capturing video frames for visual analysis
+    startFrameCapture();
+    
     if (recognitionRef.current) {
       recognitionRef.current.start();
     }
@@ -145,11 +199,18 @@ export function AviationKnowledgeCoach({ onClose }: AviationKnowledgeCoachProps)
   const stopRecording = async () => {
     setIsRecording(false);
     
+    // Stop frame capture
+    stopFrameCapture();
+    
+    // Capture one final frame
+    const finalFrame = captureFrame();
+    const allFrames = finalFrame ? [...capturedFrames, finalFrame] : capturedFrames;
+    
     if (recognitionRef.current) {
       recognitionRef.current.stop();
     }
 
-    // Evaluate the response
+    // Evaluate the response with video frames for visual analysis
     if (transcript && selectedArea && verbalPrompt) {
       setIsEvaluating(true);
       try {
@@ -157,6 +218,7 @@ export function AviationKnowledgeCoach({ onClose }: AviationKnowledgeCoachProps)
           areaId: selectedArea,
           prompt: verbalPrompt.prompt,
           response: transcript,
+          videoFrames: allFrames, // Send frames for GPT-4 Vision analysis
         });
         setEvaluation(result);
       } catch (error) {
@@ -495,6 +557,7 @@ export function AviationKnowledgeCoach({ onClose }: AviationKnowledgeCoachProps)
           playsInline
           className="w-full h-full object-cover"
         />
+        <canvas ref={canvasRef} className="hidden" />
         {isRecording && (
           <div className="absolute top-4 left-4 flex items-center gap-2 bg-red-600 text-white px-3 py-1 rounded-full text-sm">
             <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
@@ -614,6 +677,64 @@ export function AviationKnowledgeCoach({ onClose }: AviationKnowledgeCoachProps)
             <div className="bg-blue-50 rounded-lg p-3">
               <p className="font-medium text-blue-800 mb-2">📝 Suggested Response</p>
               <p className="text-sm text-blue-700">{evaluation.suggestedResponse}</p>
+            </div>
+          )}
+
+          {/* Visual Presentation Feedback */}
+          {evaluation.deliveryFeedback && (
+            <div className="bg-purple-50 rounded-lg p-3">
+              <p className="font-medium text-purple-800 mb-3">🎥 Visual Presentation Feedback</p>
+              <div className="space-y-2 text-sm">
+                {evaluation.deliveryFeedback.eyeContact && (
+                  <div className="flex items-start gap-2">
+                    <span className="text-purple-600">👁️</span>
+                    <div>
+                      <span className="font-medium text-purple-700">Eye Contact: </span>
+                      <span className="text-purple-600">{evaluation.deliveryFeedback.eyeContact}</span>
+                    </div>
+                  </div>
+                )}
+                {evaluation.deliveryFeedback.posture && (
+                  <div className="flex items-start gap-2">
+                    <span className="text-purple-600">🧍</span>
+                    <div>
+                      <span className="font-medium text-purple-700">Posture: </span>
+                      <span className="text-purple-600">{evaluation.deliveryFeedback.posture}</span>
+                    </div>
+                  </div>
+                )}
+                {evaluation.deliveryFeedback.voiceTone && (
+                  <div className="flex items-start gap-2">
+                    <span className="text-purple-600">🎤</span>
+                    <div>
+                      <span className="font-medium text-purple-700">Voice & Tone: </span>
+                      <span className="text-purple-600">{evaluation.deliveryFeedback.voiceTone}</span>
+                    </div>
+                  </div>
+                )}
+                {evaluation.deliveryFeedback.energy && (
+                  <div className="flex items-start gap-2">
+                    <span className="text-purple-600">⚡</span>
+                    <div>
+                      <span className="font-medium text-purple-700">Energy & Presence: </span>
+                      <span className="text-purple-600">{evaluation.deliveryFeedback.energy}</span>
+                    </div>
+                  </div>
+                )}
+                {evaluation.deliveryFeedback.overallPresence && (
+                  <div className="mt-2 pt-2 border-t border-purple-200">
+                    <p className="text-purple-700 italic">{evaluation.deliveryFeedback.overallPresence}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Next Step Tip */}
+          {evaluation.nextStepTip && (
+            <div className="bg-indigo-50 rounded-lg p-3">
+              <p className="font-medium text-indigo-800 mb-1">🎯 Next Step</p>
+              <p className="text-sm text-indigo-700">{evaluation.nextStepTip}</p>
             </div>
           )}
 

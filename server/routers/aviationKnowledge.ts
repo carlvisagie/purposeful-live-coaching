@@ -1150,7 +1150,8 @@ export const aviationKnowledgeRouter = router({
       areaId: z.string(),
       prompt: z.string(),
       response: z.string(),
-      frameBase64: z.string().optional(), // For delivery analysis
+      frameBase64: z.string().optional(), // Legacy single frame
+      videoFrames: z.array(z.string()).optional(), // Multiple frames for comprehensive visual analysis
     }))
     .mutation(async ({ input }) => {
       const area = KNOWLEDGE_BASE[input.areaId as KnowledgeArea];
@@ -1232,13 +1233,34 @@ Respond in JSON format:
   "nextStepTip": "One actionable tip for their next practice"
 }`;
 
+        // Build messages - include video frames if available for visual analysis
+        const frames = input.videoFrames || (input.frameBase64 ? [input.frameBase64] : []);
+        
+        let userContent: any;
+        if (frames.length > 0) {
+          // Use GPT-4 Vision to analyze both speech AND visual presentation
+          userContent = [
+            { 
+              type: "text", 
+              text: `PROMPT: ${input.prompt}\n\nCANDIDATE'S SPOKEN RESPONSE:\n${input.response}\n\nPlease analyze BOTH their spoken response AND their visual presentation in the images. Look carefully at their eye contact, posture, facial expressions, gestures, and overall presence.` 
+            },
+            ...frames.map(frame => ({
+              type: "image_url",
+              image_url: { url: frame, detail: "low" }
+            }))
+          ];
+        } else {
+          userContent = `PROMPT: ${input.prompt}\n\nCANDIDATE'S RESPONSE:\n${input.response}`;
+        }
+
         const response = await openai.chat.completions.create({
           model: "gpt-4o",
           messages: [
             { role: "system", content: systemPrompt },
-            { role: "user", content: `PROMPT: ${input.prompt}\n\nCANDIDATE'S RESPONSE:\n${input.response}` }
+            { role: "user", content: userContent }
           ],
           response_format: { type: "json_object" },
+          max_tokens: 2000,
         });
 
         const evaluation = JSON.parse(response.choices[0].message.content || "{}");
