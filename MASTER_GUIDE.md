@@ -609,8 +609,33 @@ Pushed to GitHub: Commit `ab6b6ed`
 Render auto-deploys.
 
 ---
+## CHANGELOG: Choice-Based Onboarding (December 19, 2025)
+### Research-Driven Implementation
+Based on research showing 70% of users prefer conversational data gathering over forms, we implemented a choice-based onboarding system.
 
-## CHANGELOG: Speech-to-Text Fix (December 19, 2025)
+### What Changed
+Users now see two options when starting AI coaching:
+1. **"Let's Chat"** (Conversational) - AI learns about user naturally through conversation
+2. **"Complete Profile"** (Form) - Traditional health intake questionnaire
+
+### Self-Learning Platform
+- `onboardingAnalytics.ts` tracks which option users choose
+- Platform learns from user behavior over time
+- Data helps optimize the onboarding experience
+
+### Files Added
+- `client/src/lib/onboardingAnalytics.ts` - Tracks user preferences
+- `client/src/components/OnboardingChoice.tsx` - Choice UI component
+
+### Files Modified
+- `SessionHealthDisclaimer.tsx` - Now shows choice between chat vs form
+- `HealthIntakeQuestionnaire.tsx` - Works without login (saves to localStorage)
+
+### Commit
+`742f102` - Add choice-based onboarding: conversational vs form
+
+---
+## CHANGELOG: Speech-to-Text Fix (December 19, 2025))
 
 ### Issue Found
 Speech-to-text in the Aviation Knowledge Coach (Interview Prep) was producing duplicated text. Users would speak once but the transcript would repeat the same content multiple times.
