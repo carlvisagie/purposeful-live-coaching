@@ -27,7 +27,7 @@ export type SessionMode =
   | "compliance_monitor"
   | "singing";
 
-interface AISessionCoPilotProps {
+interface UseAISessionCoPilotProps {
   mode: SessionMode;
   isActive: boolean;
   videoRef?: React.RefObject<HTMLVideoElement>;
@@ -55,14 +55,20 @@ const MODE_MAP: Record<SessionMode, "speaker_training" | "interview_prep" | "coa
   singing: "singing",
 };
 
-export function AISessionCoPilot({
+/**
+ * useAISessionCoPilot Hook
+ * 
+ * The main hook for integrating AI voice coaching into any component.
+ * Returns connection state and control functions.
+ */
+export function useAISessionCoPilot({
   mode,
   isActive,
   videoRef,
   onInsight,
   onTranscript,
   voice = "coral",
-}: AISessionCoPilotProps) {
+}: UseAISessionCoPilotProps) {
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -79,7 +85,7 @@ export function AISessionCoPilot({
   const createWebRTCSession = trpc.realtimeVoice.createWebRTCSession.useMutation();
 
   // Connect to OpenAI Realtime API via WebRTC
-  const connectVoice = useCallback(async () => {
+  const connect = useCallback(async () => {
     if (peerConnectionRef.current) return;
     
     setIsConnecting(true);
@@ -98,11 +104,12 @@ export function AISessionCoPilot({
       audioEl.autoplay = true;
       audioElementRef.current = audioEl;
       
-      // When we receive audio from OpenAI, play it
+      // When we receive audio from OpenAI, play it through headset
       pc.ontrack = (event) => {
         console.log("[AI Co-Pilot] Received audio track from OpenAI");
         audioEl.srcObject = event.streams[0];
         setIsSpeaking(true);
+        toast.success("🔊 AI Coach speaking through your headset");
       };
 
       // Get microphone access
@@ -152,11 +159,13 @@ export function AISessionCoPilot({
         if (pc.iceGatheringState === "complete") {
           resolve();
         } else {
-          pc.onicegatheringstatechange = () => {
+          const checkState = () => {
             if (pc.iceGatheringState === "complete") {
+              pc.removeEventListener("icegatheringstatechange", checkState);
               resolve();
             }
           };
+          pc.addEventListener("icegatheringstatechange", checkState);
           // Timeout after 5 seconds
           setTimeout(resolve, 5000);
         }
@@ -210,18 +219,18 @@ export function AISessionCoPilot({
         }
       };
 
-    } catch (error: any) {
-      console.error("[AI Co-Pilot] Connection error:", error);
-      setError(error.message || "Connection failed");
+    } catch (err: any) {
+      console.error("[AI Co-Pilot] Connection error:", err);
+      setError(err.message || "Connection failed");
       setIsConnecting(false);
-      toast.error(`Voice coach failed: ${error.message}`);
+      toast.error(`Voice coach failed: ${err.message}`);
       
       // Clean up on error
-      disconnectVoice();
+      disconnect();
       
       // Auto-retry once
       if (connectionAttemptRef.current < 3 && isActive) {
-        setTimeout(() => connectVoice(), 2000);
+        setTimeout(() => connect(), 2000);
       }
     }
   }, [mode, voice, isActive, createWebRTCSession, onInsight]);
@@ -265,6 +274,8 @@ export function AISessionCoPilot({
 
   // Parse AI responses to extract insights
   const parseAIResponse = useCallback((text: string) => {
+    if (!text) return;
+    
     const lowerText = text.toLowerCase();
     
     let insightType: CoPilotInsight["type"] = "observation";
@@ -304,7 +315,7 @@ export function AISessionCoPilot({
   }, [onInsight]);
 
   // Disconnect and clean up
-  const disconnectVoice = useCallback(() => {
+  const disconnect = useCallback(() => {
     // Close data channel
     if (dataChannelRef.current) {
       dataChannelRef.current.close();
@@ -338,20 +349,28 @@ export function AISessionCoPilot({
   useEffect(() => {
     if (isActive && !isConnected && !isConnecting) {
       connectionAttemptRef.current = 0;
-      connectVoice();
+      connect();
     } else if (!isActive && isConnected) {
-      disconnectVoice();
+      disconnect();
     }
-  }, [isActive, isConnected, isConnecting, connectVoice, disconnectVoice]);
+  }, [isActive, isConnected, isConnecting, connect, disconnect]);
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      disconnectVoice();
+      disconnect();
     };
-  }, [disconnectVoice]);
+  }, [disconnect]);
 
-  return null; // This component doesn't render anything visible
+  return {
+    isConnected,
+    isConnecting,
+    isSpeaking,
+    isListening,
+    error,
+    connect,
+    disconnect,
+  };
 }
 
 // Status indicator component for UI
@@ -408,6 +427,22 @@ export function CoPilotStatusIndicator({
       <span className="text-sm">AI Coach Ready</span>
     </div>
   );
+}
+
+// Component version (for backwards compatibility)
+interface AISessionCoPilotProps {
+  mode: SessionMode;
+  isActive: boolean;
+  videoRef?: React.RefObject<HTMLVideoElement>;
+  onInsight?: (insight: CoPilotInsight) => void;
+  onTranscript?: (text: string, speaker: "user" | "ai" | "client") => void;
+  voice?: "alloy" | "echo" | "shimmer" | "ash" | "ballad" | "coral" | "sage" | "verse" | "marin";
+}
+
+export function AISessionCoPilot(props: AISessionCoPilotProps) {
+  // Just use the hook internally - component doesn't render anything
+  useAISessionCoPilot(props);
+  return null;
 }
 
 export default AISessionCoPilot;
