@@ -2,12 +2,12 @@
  * REALTIME VOICE ROUTER
  * 
  * Enables true real-time voice conversation with AI Coach using OpenAI Realtime API.
- * The AI listens continuously and can respond/interrupt instantly.
+ * Uses WebRTC for browser connections (recommended by OpenAI for consistent performance).
  * 
- * This creates a WebSocket-based voice session where:
+ * This creates a WebRTC-based voice session where:
  * - User speaks through microphone
  * - AI hears in real-time (streaming audio)
- * - AI responds immediately through speakers
+ * - AI responds immediately through speakers/headset
  * - AI can interrupt when user says something wrong
  */
 
@@ -73,29 +73,98 @@ Be encouraging but honest. Help them improve.`,
 
 export const realtimeVoiceRouter = router({
   /**
-   * Get a session token for OpenAI Realtime API
-   * This token is used by the client to establish a WebSocket connection
+   * Create a WebRTC session using the unified interface
+   * Client sends SDP offer, server returns SDP answer
+   */
+  createWebRTCSession: publicProcedure
+    .input(z.object({
+      sdp: z.string(), // Client's SDP offer
+      mode: z.enum(["speaker_training", "interview_prep", "coaching_practice", "compliance_monitor", "singing"]),
+      voice: z.enum(["alloy", "echo", "shimmer", "ash", "ballad", "coral", "sage", "verse", "marin"]).default("coral"),
+    }))
+    .mutation(async ({ input }) => {
+      const { sdp, mode, voice } = input;
+      
+      try {
+        // Create session config
+        const sessionConfig = JSON.stringify({
+          type: "realtime",
+          model: "gpt-realtime",
+          instructions: COACHING_INSTRUCTIONS[mode] || COACHING_INSTRUCTIONS.speaker_training,
+          audio: { 
+            output: { 
+              voice: voice 
+            } 
+          },
+          input_audio_transcription: {
+            model: "whisper-1",
+          },
+          turn_detection: {
+            type: "server_vad",
+            threshold: 0.5,
+            prefix_padding_ms: 300,
+            silence_duration_ms: 500,
+          },
+        });
+
+        // Create FormData with SDP and session config
+        const formData = new FormData();
+        formData.set("sdp", sdp);
+        formData.set("session", sessionConfig);
+
+        // Call OpenAI's unified interface endpoint
+        const response = await fetch("https://api.openai.com/v1/realtime/calls", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+          },
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const error = await response.text();
+          console.error("[Realtime WebRTC] Session creation failed:", error);
+          throw new Error(`Failed to create realtime session: ${response.statusText} - ${error}`);
+        }
+
+        // Return the SDP answer from OpenAI
+        const sdpAnswer = await response.text();
+        
+        return {
+          sdp: sdpAnswer,
+          mode: mode,
+          voice: voice,
+        };
+      } catch (error) {
+        console.error("[Realtime WebRTC] Error:", error);
+        throw new Error("Failed to initialize realtime voice session");
+      }
+    }),
+
+  /**
+   * Legacy: Get a session token for ephemeral key method (fallback)
+   * This uses the client_secrets endpoint for direct WebRTC connection
    */
   getSessionToken: publicProcedure
     .input(z.object({
       mode: z.enum(["speaker_training", "interview_prep", "coaching_practice", "compliance_monitor", "singing"]),
-      voice: z.enum(["alloy", "echo", "shimmer", "ash", "ballad", "coral", "sage", "verse"]).default("coral"),
+      voice: z.enum(["alloy", "echo", "shimmer", "ash", "ballad", "coral", "sage", "verse", "marin"]).default("coral"),
     }))
     .mutation(async ({ input }) => {
       const { mode, voice } = input;
       
       try {
-        // Create ephemeral token for client-side Realtime API connection
-        const response = await fetch("https://api.openai.com/v1/realtime/sessions", {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            model: "gpt-4o-realtime-preview-2024-12-17",
-            voice: voice,
+        // Create session config for ephemeral token
+        const sessionConfig = {
+          session: {
+            type: "realtime",
+            model: "gpt-realtime",
             instructions: COACHING_INSTRUCTIONS[mode] || COACHING_INSTRUCTIONS.speaker_training,
+            audio: {
+              output: {
+                voice: voice,
+              },
+            },
             input_audio_transcription: {
               model: "whisper-1",
             },
@@ -103,9 +172,19 @@ export const realtimeVoiceRouter = router({
               type: "server_vad",
               threshold: 0.5,
               prefix_padding_ms: 300,
-              silence_duration_ms: 500, // Quick response after user stops
+              silence_duration_ms: 500,
             },
-          }),
+          },
+        };
+
+        // Create ephemeral token for client-side connection
+        const response = await fetch("https://api.openai.com/v1/realtime/client_secrets", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(sessionConfig),
         });
 
         if (!response.ok) {
@@ -117,9 +196,8 @@ export const realtimeVoiceRouter = router({
         const data = await response.json();
         
         return {
-          sessionId: data.id,
-          clientSecret: data.client_secret?.value,
-          expiresAt: data.client_secret?.expires_at,
+          clientSecret: data.client_secret?.value || data.value,
+          expiresAt: data.client_secret?.expires_at || data.expires_at,
           voice: voice,
           mode: mode,
         };
@@ -135,6 +213,7 @@ export const realtimeVoiceRouter = router({
   getVoices: publicProcedure.query(() => {
     return [
       { id: "coral", name: "Coral", description: "Warm, professional female voice - recommended for coaching" },
+      { id: "marin", name: "Marin", description: "Clear, articulate voice - great for instructions" },
       { id: "sage", name: "Sage", description: "Calm, wise female voice" },
       { id: "alloy", name: "Alloy", description: "Neutral, balanced voice" },
       { id: "echo", name: "Echo", description: "Warm male voice" },
