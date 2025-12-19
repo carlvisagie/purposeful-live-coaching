@@ -1202,4 +1202,63 @@ Pushed to GitHub, Render auto-deploying.
 
 ---
 
+## 🚀 STRATEGIC ROADMAP - Future Vision (Annotated December 19, 2025)
+
+### The Self-Evolving Platform Vision
+
+**Core Principle:** Every feature, ability, and piece of content on this platform should automatically cycle in the latest and greatest. Nothing stays stale.
+
+### What Gets Auto-Updated
+
+| Category | Examples | Update Mechanism |
+|----------|----------|------------------|
+| **Code & Infrastructure** | All server/client code, dependencies, security patches | Automated CI/CD with testing |
+| **AI Models** | GPT versions, voice recognition, face recognition | API version management |
+| **Research & Knowledge** | Coaching techniques, psychology research, best practices | Truth Keepers system (expand to all content) |
+| **Lessons & Content** | All coaching modules, exercises, worksheets | Version control with freshness tracking |
+| **Recognition Systems** | Voice recognition accuracy, face/feature detection | Model updates, retraining pipelines |
+| **Observation Abilities** | Emotional detection, behavioral analysis | Continuous learning from sessions |
+
+### Truth Keepers Model → Everything
+
+The Truth Keepers system (auto-updating knowledge with citations and freshness tracking) will be applied to:
+- All coaching content
+- All lessons and exercises
+- All research-backed techniques
+- All compliance/regulatory information
+- All health and wellness guidance
+
+### New Offerings Planned
+
+#### Music & Performance Lessons (Family Package Potential)
+
+| Offering | Description | Status |
+|----------|-------------|--------|
+| **Voice Lessons** | Beyond singing - speaking voice development, projection, clarity | Planned |
+| **Piano Lessons** | AI-guided piano instruction with real-time feedback | Planned |
+| **Guitar Lessons** | AI-guided guitar instruction with chord recognition | Planned |
+
+**Delivery Model:** To be determined - likely real-time AI coaching with:
+- Audio analysis for pitch/timing feedback
+- Visual recognition for hand positioning (piano/guitar)
+- Progressive curriculum with adaptive difficulty
+- Practice tracking and encouragement
+
+**Package Options:**
+- Individual subscriptions
+- Family package (multiple users, shared progress, family activities)
+
+### Implementation Notes
+
+> "How we actually do it we will still hammer out when we decide to actually do it" - This section is for strategic annotation, not immediate implementation.
+
+When ready to implement:
+1. Research best-in-class music education AI
+2. Evaluate audio analysis APIs for instrument feedback
+3. Design curriculum structure
+4. Build or integrate practice tracking
+5. Create family account management system
+
+---
+
 **This is the SINGLE SOURCE OF TRUTH for the Purposeful Live Coaching platform. All other documentation has been archived.**
