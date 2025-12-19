@@ -17,6 +17,7 @@ import SpeakerTraining from "@/components/SpeakerTraining";
 import { AviationKnowledgeCoach } from "@/components/AviationKnowledgeCoach";
 import { OpenAIVoiceCoach } from "@/components/OpenAIVoiceCoach";
 import { SessionHealthDisclaimer } from "@/components/SessionHealthDisclaimer";
+import { PlatformManagement } from "@/components/PlatformManagement";
 
 /**
  * OWNER CONTROL CENTER V2 - Session-Focused Command Center
@@ -888,7 +889,7 @@ export default function OwnerControlCenterV2() {
 
         {/* SECONDARY TABS */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:inline-grid">
+          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-grid">
             <TabsTrigger value="clients">
               <Users className="h-4 w-4 mr-2" />
               Clients
@@ -896,6 +897,10 @@ export default function OwnerControlCenterV2() {
             <TabsTrigger value="analytics">
               <BarChart3 className="h-4 w-4 mr-2" />
               Analytics
+            </TabsTrigger>
+            <TabsTrigger value="platform">
+              <Settings className="h-4 w-4 mr-2" />
+              Platform
             </TabsTrigger>
             <TabsTrigger value="admin">
               <Settings className="h-4 w-4 mr-2" />
@@ -1036,6 +1041,11 @@ export default function OwnerControlCenterV2() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* PLATFORM MANAGEMENT TAB */}
+          <TabsContent value="platform" className="space-y-6">
+            <PlatformManagement />
           </TabsContent>
 
           {/* ADMIN TAB */}
