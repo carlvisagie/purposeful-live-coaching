@@ -1152,4 +1152,54 @@ This system ensures every client feels like they've finally found their home - f
 
 ---
 
+## 📋 Unified Client Profile Export System (December 19, 2025)
+
+### What Was Built
+
+Comprehensive, printable/emailable client profile documents that include EVERYTHING in one place.
+
+### What's Included in Export
+
+| Section | Contents |
+|---------|----------|
+| **Client Overview** | Name, email, phone, age, location, status, start date, profile completeness |
+| **Professional Info** | Job title, company, industry, career goals |
+| **Goals & Progress** | Primary goal (their words), motivation, timeline, progress % with visual bar |
+| **Identity Architecture** | Core values, life mission, target identity |
+| **Behavioral Patterns** | Communication style, energy pattern, stress responses |
+| **Health & Wellness** | Sleep, exercise, diet, mental health notes |
+| **Session History** | All coaching sessions with summaries, key moments, homework |
+| **Voice Coaching Sessions** | Emotional journey, breakthroughs, adaptations, transcripts |
+| **Media Files** | Audio, video, documents with transcriptions & URLs |
+| **AI Conversations** | Total conversations, messages, recent topics |
+| **Coaching Preferences** | What works, what doesn't, preferred style |
+| **Risk Indicators** | Crisis flags, risk level |
+| **CliffsNotes** | Where we left off, recommended focus, wins to celebrate |
+
+### Export Options
+
+1. **Preview** - View profile in modal before exporting
+2. **Print / Save as PDF** - Opens print dialog for PDF generation
+3. **Download HTML** - Beautiful, styled HTML document
+4. **Download JSON** - Raw data for portability
+5. **Email Profile** - Opens email client with profile
+
+### UI Location
+
+- **Client Detail Page** → "Export Profile" dropdown button in header
+- Works with clientId or userId
+- Loading states and toast notifications
+
+### Files Created
+
+- `server/routers/clientProfileExport.ts` - API endpoint
+- `client/src/components/ClientProfileExport.tsx` - UI component
+
+### Deployment
+
+Commits: `5494ff5`, `ea75b78`
+Pushed to GitHub, Render auto-deploying.
+
+---
+
 **This is the SINGLE SOURCE OF TRUTH for the Purposeful Live Coaching platform. All other documentation has been archived.**
