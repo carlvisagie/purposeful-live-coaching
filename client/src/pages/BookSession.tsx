@@ -410,9 +410,9 @@ export default function BookSession() {
                         {slotsData?.slots.map(slot => {
                           const slotDate = new Date(slot);
                           const timeString = slotDate.toLocaleTimeString("en-US", {
-                            hour: "numeric",
+                            hour: "2-digit",
                             minute: "2-digit",
-                            hour12: true,
+                            hour12: false,
                           });
 
                           return (

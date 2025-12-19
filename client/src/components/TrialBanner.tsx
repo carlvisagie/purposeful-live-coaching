@@ -12,13 +12,19 @@ interface TrialBannerProps {
   daysRemaining: number;
   tier: string;
   isTrialExpired: boolean;
+  userRole?: "user" | "client" | "coach" | "admin";
 }
 
-export function TrialBanner({ daysRemaining, tier, isTrialExpired }: TrialBannerProps) {
+export function TrialBanner({ daysRemaining, tier, isTrialExpired, userRole }: TrialBannerProps) {
   const [, setLocation] = useLocation();
   
   // Don't show banner for paid users
   if (tier === "basic" || tier === "premium" || tier === "elite") {
+    return null;
+  }
+  
+  // Don't show banner for coaches or admins - they're the owners!
+  if (userRole === "coach" || userRole === "admin") {
     return null;
   }
 

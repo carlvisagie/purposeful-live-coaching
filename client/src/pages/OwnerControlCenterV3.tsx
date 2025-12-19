@@ -378,7 +378,7 @@ export default function OwnerControlCenterV3() {
                           {isNow && <Badge variant="destructive" className="text-xs">LIVE</Badge>}
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          {sessionTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • {session.duration || 60}min
+                          {sessionTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })} • {session.duration || 60}min
                         </p>
                       </div>
                     </div>

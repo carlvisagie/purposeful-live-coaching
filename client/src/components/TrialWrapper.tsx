@@ -28,7 +28,7 @@ function LoadingFallback({ children }: { children: ReactNode }) {
 }
 
 export function TrialWrapper({ children }: TrialWrapperProps) {
-  const { trialStatus, isLoading } = useAuth();
+  const { trialStatus, isLoading, user } = useAuth();
 
   // Always render children - never block on loading
   // This prevents blank page issues on mobile Safari
@@ -39,6 +39,7 @@ export function TrialWrapper({ children }: TrialWrapperProps) {
           daysRemaining={trialStatus.daysRemaining || 0}
           tier={trialStatus.tier || "free"}
           isTrialExpired={trialStatus.isTrialExpired || false}
+          userRole={user?.role}
         />
       )}
       <div className="flex-1">
