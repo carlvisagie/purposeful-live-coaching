@@ -58,6 +58,7 @@ import { platformIntelligenceRouter } from "./routers/platformIntelligence";
 import { healthOptimizationRouter } from "./routers/healthOptimization";
 import { voiceCoachingPreferencesRouter } from "./routers/voiceCoachingPreferences";
 import { sessionProfileExtractionRouter } from "./routers/sessionProfileExtraction";
+import { clientProfileExportRouter } from "./routers/clientProfileExport";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -128,6 +129,7 @@ export const appRouter = router({
   healthOptimization: healthOptimizationRouter,
   voiceCoachingPreferences: voiceCoachingPreferencesRouter,
   sessionProfileExtraction: sessionProfileExtractionRouter,
+  clientProfileExport: clientProfileExportRouter,
 });
 
 export type AppRouter = typeof appRouter;
