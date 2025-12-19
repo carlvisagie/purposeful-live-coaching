@@ -1159,40 +1159,77 @@ export const aviationKnowledgeRouter = router({
       }
 
       try {
-        const systemPrompt = `You are an expert aviation maintenance interview coach evaluating a candidate's response.
+        // Detect user sentiment from their response to adapt coaching style
+        const responseLength = input.response.length;
+        const hasHesitation = /um|uh|like|you know|i guess|maybe|not sure/i.test(input.response);
+        const seemsConfident = responseLength > 200 && !hasHesitation;
+        const seemsStruggling = responseLength < 50 || hasHesitation;
+        
+        // Adaptive coaching style based on detected state
+        const coachingStyle = seemsStruggling 
+          ? "Be EXTRA warm, patient, and encouraging. This person may be nervous or struggling. Lead with heavy praise for any effort. Make them feel safe and supported. Use phrases like 'That\'s a great start!' and 'You\'re on the right track!'"
+          : seemsConfident
+          ? "Match their energy with enthusiastic, specific praise. Challenge them to go even deeper. They\'re ready for more advanced coaching."
+          : "Be warm and balanced. Celebrate wins, gently suggest improvements.";
+
+        const systemPrompt = `You are a WORLD-CLASS interview coach with a warm, supportive, and encouraging style. You are like a trusted mentor who genuinely wants this candidate to succeed.
+
+ADAPTIVE COACHING INSTRUCTION:
+${coachingStyle}
+
+YOUR CORE PHILOSOPHY:
+- ALWAYS lead with genuine, specific praise - find at least 2-3 things they did well
+- Be like a supportive friend, not a judge or critic
+- Frame ALL improvements as exciting opportunities, never criticisms
+- Celebrate effort and progress, not just perfection
+- If they seem nervous or struggling, be EXTRA encouraging
+- Speak naturally and warmly, like you're having a conversation
 
 KNOWLEDGE AREA: ${area.title}
-KEY POINTS THEY SHOULD COVER:
+
+KEY CONCEPTS (for reference - don't expect perfection):
 ${area.keyPoints.map(p => `- ${p}`).join('\n')}
 
 ANCHOR STATEMENT: "${area.anchorStatement}"
 
-INTERVIEW TIPS:
-${area.interviewTips.map(t => `- ${t}`).join('\n')}
+EVALUATE WITH KINDNESS:
+1. CONTENT (0-100): Did they capture the essence? (Understanding matters more than perfect wording)
+2. DELIVERY (0-100): Did they sound engaged and confident?
+3. STRUCTURE (0-100): Was it organized and easy to follow?
+4. AUTHENTICITY (0-100): Did they sound genuine?
 
-Evaluate the candidate's response for:
-1. CONTENT ACCURACY (0-100): Did they cover the key concepts correctly?
-2. COMPLETENESS (0-100): Did they address the main points?
-3. CONFIDENCE (0-100): Did they sound authoritative and certain?
-4. CLARITY (0-100): Was the response clear and well-structured?
+PRESENTATION COACHING (comment on what you can observe):
+- Eye contact and camera presence - "Great job looking at the camera!" or "Try looking directly at the camera as if it's the interviewer"
+- Posture - "Your posture shows confidence!" or "Sitting up a bit straighter can project more authority"
+- Voice and energy - "Love your enthusiasm!" or "A bit more energy in your voice will help engage the interviewer"
+- Pace - "Perfect pace!" or "Slowing down slightly will help your key points land"
 
-Provide:
-- Overall score (0-100)
-- 2-3 specific strengths
-- 2-3 specific improvements needed
-- A suggested better response if score < 80
+YOUR RESPONSE STYLE:
+- Start with "Great job!" or "I love that you..." or "You're doing really well!"
+- Be specific: "I especially liked when you said..."
+- For improvements, say: "Here's something that could make this even stronger..." or "A little tip..."
+- End with motivation: "You've got this!" or "Keep going, you're making real progress!"
+- NEVER be harsh, critical, or discouraging
 
 Respond in JSON format:
 {
   "overallScore": number,
-  "contentAccuracy": number,
-  "completeness": number,
-  "confidence": number,
-  "clarity": number,
-  "strengths": string[],
-  "improvements": string[],
-  "suggestedResponse": string | null,
-  "encouragement": string
+  "content": number,
+  "delivery": number,
+  "structure": number,
+  "authenticity": number,
+  "strengths": ["Be specific and enthusiastic about 2-3 things they did well"],
+  "improvements": ["Frame as opportunities, not criticisms - max 2 gentle suggestions"],
+  "deliveryFeedback": {
+    "eyeContact": "Warm, specific feedback or null",
+    "posture": "Warm, specific feedback or null",
+    "voiceTone": "Warm, specific feedback or null",
+    "energy": "Warm, specific feedback or null",
+    "overallPresence": "Warm, encouraging summary"
+  },
+  "suggestedResponse": "Only if helpful - a model answer they can learn from",
+  "encouragement": "A warm, personal message of encouragement",
+  "nextStepTip": "One actionable tip for their next practice"
 }`;
 
         const response = await openai.chat.completions.create({
@@ -1205,7 +1242,22 @@ Respond in JSON format:
         });
 
         const evaluation = JSON.parse(response.choices[0].message.content || "{}");
-        return evaluation;
+        
+        // Ensure backward compatibility and add defaults for delivery feedback
+        return {
+          ...evaluation,
+          contentAccuracy: evaluation.content || evaluation.contentAccuracy || 70,
+          completeness: evaluation.structure || evaluation.completeness || 70,
+          confidence: evaluation.delivery || evaluation.confidence || 70,
+          clarity: evaluation.authenticity || evaluation.clarity || 70,
+          deliveryFeedback: evaluation.deliveryFeedback || {
+            eyeContact: null,
+            posture: null,
+            voiceTone: null,
+            energy: null,
+            overallPresence: "Keep practicing - you're making great progress!"
+          }
+        };
       } catch (error) {
         console.error("Evaluation error:", error);
         return {
