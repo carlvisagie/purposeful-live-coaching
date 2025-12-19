@@ -10,7 +10,7 @@ import {
   Users, Calendar, Video, DollarSign, Clock, TrendingUp, Search, Plus,
   BarChart3, Settings, Bell, CheckCircle2, AlertCircle, Activity,
   UserPlus, AlertTriangle, Target, Brain, Play, Zap, Timer, Mic, MicOff,
-  VideoOff, Volume2, Maximize2, Sparkles, MessageSquare
+  VideoOff, Volume2, Maximize2, Sparkles, MessageSquare, Eye
 } from "lucide-react";
 import AITeleprompter from "@/components/AITeleprompter";
 import SpeakerTraining from "@/components/SpeakerTraining";
@@ -19,6 +19,7 @@ import { OpenAIVoiceCoach } from "@/components/OpenAIVoiceCoach";
 import { SessionHealthDisclaimer } from "@/components/SessionHealthDisclaimer";
 import { PlatformManagement } from "@/components/PlatformManagement";
 import { AICoachPerformance } from "@/components/AICoachPerformance";
+import { BehavioralAnalysisDashboard } from "@/components/BehavioralAnalysisDashboard";
 
 /**
  * OWNER CONTROL CENTER V2 - Session-Focused Command Center
@@ -890,7 +891,7 @@ export default function OwnerControlCenterV2() {
 
         {/* SECONDARY TABS */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
+          <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:inline-grid">
             <TabsTrigger value="clients">
               <Users className="h-4 w-4 mr-2" />
               Clients
@@ -906,6 +907,10 @@ export default function OwnerControlCenterV2() {
             <TabsTrigger value="ai-coaches">
               <Brain className="h-4 w-4 mr-2" />
               AI Coaches
+            </TabsTrigger>
+            <TabsTrigger value="behavioral">
+              <Eye className="h-4 w-4 mr-2" />
+              Behavioral
             </TabsTrigger>
             <TabsTrigger value="admin">
               <Settings className="h-4 w-4 mr-2" />
@@ -1056,6 +1061,11 @@ export default function OwnerControlCenterV2() {
           {/* AI COACHES PERFORMANCE TAB */}
           <TabsContent value="ai-coaches" className="space-y-6">
             <AICoachPerformance />
+          </TabsContent>
+
+          {/* BEHAVIORAL ANALYSIS TAB */}
+          <TabsContent value="behavioral" className="space-y-6">
+            <BehavioralAnalysisDashboard />
           </TabsContent>
 
           {/* ADMIN TAB */}
