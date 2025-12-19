@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { trpc } from "@/lib/trpc";
+import StreakCounter from "@/components/StreakCounter";
+import WellnessTrendChart from "@/components/WellnessTrendChart";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -194,6 +196,12 @@ export default function MissionControl() {
                   </CardContent>
                 </Card>
               </Link>
+            </div>
+
+            {/* Progress & Gamification */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <StreakCounter />
+              <WellnessTrendChart />
             </div>
 
             {/* Today's Focus */}
