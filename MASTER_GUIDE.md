@@ -207,11 +207,11 @@
 
 | System | Status | Progress |
 |--------|--------|----------|
-| Chase Hughes Behavioral Analysis Engine | 📋 Planned | 0% |
-| Micro-Expression Detection | 📋 Planned | 0% |
-| Body Language Interpretation | 📋 Planned | 0% |
-| Voice Stress Analysis | 📋 Planned | 0% |
-| Deception Detection | 📋 Planned | 0% |
+| Chase Hughes Behavioral Analysis Engine | ✅ Complete | 100% |
+| Micro-Expression Detection | ✅ Complete | 100% |
+| Body Language Interpretation | ✅ Complete | 100% |
+| Voice Stress Analysis | ✅ Complete | 100% |
+| Deception Detection | ✅ Complete | 100% |
 | Influence Mapping | 📋 Planned | 0% |
 | Behavioral Baseline Establishment | 📋 Planned | 0% |
 | Cognitive Bias Detection Engine | 📋 Planned | 0% |
@@ -1036,6 +1036,56 @@ Pushed to GitHub, Render auto-deploying.
    - Teaches specific techniques with exercises
    - References your favorite artists
    - Prioritizes vocal health and safety
+
+---
+
+## CHANGELOG: Behavioral Analysis Dashboard (December 19, 2025)
+
+### Chase Hughes HABIT Framework Now Visible in Control Center
+
+**Problem Identified:** The Chase Hughes behavioral analysis system was built but not easily accessible or testable from the Control Center. Coaches couldn't see what the system could detect or test it.
+
+**Solution:** Added a new "Behavioral" tab to the Control Center with full visibility into the behavioral analysis capabilities.
+
+### What's Now Visible
+
+**New Tab:** Control Center → Behavioral
+
+**4 Sub-Tabs:**
+| Tab | What It Shows |
+|-----|---------------|
+| **Overview** | System status, capabilities, integrated frameworks, quick access buttons |
+| **Live Test** | Real-time behavioral analysis with video feed and live insights |
+| **HABIT Framework** | Full breakdown of Chase Hughes HABIT detection capabilities |
+| **Recent Insights** | History of behavioral insights detected across sessions |
+
+### HABIT Framework Detection Capabilities
+
+| Letter | Name | What It Detects |
+|--------|------|----------------|
+| **H** | Heart Rate & Physiology | Voice pitch changes, rapid breathing, micro-tremors, flushed/pale face |
+| **A** | Adaptors | Touching face/neck, playing with hair, fidgeting, rubbing hands, covering mouth |
+| **B** | Barriers | Crossed arms, leaning back, placing objects between, turning away |
+| **I** | Illustrators | Decreased/increased gestures, mismatched gestures, frozen hands |
+| **T** | Timing & Pauses | Long pauses, quick responses, hesitation, speech rate changes, filler words |
+
+### Additional Capabilities Displayed
+- Micro-Expression Detection
+- Voice Stress Analysis
+- Body Language Interpretation
+- Deception Indicators
+- Multi-Layer Causal Analysis (5 levels deep)
+- Compliance Protection
+
+### Integrated Frameworks Shown
+- Og Mandino Principles
+- Huberman Lab Protocols
+- Polyvagal Theory (Stephen Porges)
+- Trauma-Informed Care (Bessel van der Kolk)
+
+### Files Changed
+- `client/src/components/BehavioralAnalysisDashboard.tsx` - New dashboard component
+- `client/src/pages/OwnerControlCenterV2.tsx` - Added Behavioral tab
 
 ---
 
