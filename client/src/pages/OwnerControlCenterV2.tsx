@@ -577,7 +577,10 @@ export default function OwnerControlCenterV2() {
                       <p className="text-sm text-gray-600">Practice speaking, interviews, storytelling, and singing with AI feedback</p>
                     </div>
                   </div>
-                  <Button className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600">
+                  <Button 
+                    className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600"
+                    onClick={(e) => { e.stopPropagation(); setShowSpeakerTraining(true); }}
+                  >
                     <Play className="h-4 w-4 mr-2" />
                     Start Training
                   </Button>
@@ -599,7 +602,10 @@ export default function OwnerControlCenterV2() {
                     <p className="text-sm text-gray-600">Master the 10 must-know areas for Senior Maintenance Manager</p>
                   </div>
                 </div>
-                <Button className="bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600">
+                <Button 
+                  className="bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600"
+                  onClick={(e) => { e.stopPropagation(); setShowAviationCoach(true); }}
+                >
                   <Target className="h-4 w-4 mr-2" />
                   Start Learning
                 </Button>
