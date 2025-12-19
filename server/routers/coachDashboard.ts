@@ -8,7 +8,7 @@
 import { z } from "zod";
 import { publicProcedure, router } from "../_core/trpc";
 import { db } from "../db";
-import { clients, aiChatMessages, aiChatConversations } from "../../drizzle/schema";
+import { clients, aiChatMessages, aiChatConversations, subscriptions, voicePrints, faceEmbeddings } from "../../drizzle/schema";
 import { eq, desc, and, sql, gte } from "drizzle-orm";
 
 export const coachDashboardRouter = router({
@@ -21,11 +21,46 @@ export const coachDashboardRouter = router({
       orderBy: [desc(clients.updatedAt)],
     });
 
-    return allClients.map(client => ({
-      ...client,
-      // Calculate profile completeness on the fly if not set
-      profileCompleteness: client.profileCompleteness || calculateCompleteness(client),
-    }));
+    // Get all subscriptions
+    const allSubscriptions = await db.query.subscriptions.findMany({
+      where: eq(subscriptions.status, "active"),
+    });
+    const subsByUserId = new Map(allSubscriptions.map(s => [s.userId, s]));
+
+    // Get all voice prints
+    const allVoicePrints = await db.query.voicePrints.findMany({
+      where: eq(voicePrints.isActive, "active"),
+    });
+    const voiceByUserId = new Map(allVoicePrints.map(v => [v.userId, v]));
+
+    // Get all face embeddings
+    const allFaceEmbeddings = await db.query.faceEmbeddings.findMany({
+      where: eq(faceEmbeddings.isActive, "active"),
+    });
+    const faceByUserId = new Map(allFaceEmbeddings.map(f => [f.userId, f]));
+
+    return allClients.map(client => {
+      const subscription = subsByUserId.get(client.userId || 0);
+      const voicePrint = voiceByUserId.get(client.userId || 0);
+      const faceEmbedding = faceByUserId.get(client.userId || 0);
+
+      return {
+        ...client,
+        // Subscription info
+        subscriptionTier: subscription?.tier || null,
+        subscriptionStatus: subscription?.status || null,
+        // Voice recognition
+        voiceEnrolled: !!voicePrint,
+        voiceAccuracy: voicePrint?.verificationAccuracy || 0,
+        voiceQuality: voicePrint?.enrollmentQuality || null,
+        // Face recognition
+        faceEnrolled: !!faceEmbedding,
+        faceAccuracy: faceEmbedding?.verificationAccuracy || 0,
+        faceQuality: faceEmbedding?.enrollmentQuality || null,
+        // Calculate profile completeness on the fly if not set
+        profileCompleteness: client.profileCompleteness || calculateCompleteness(client),
+      };
+    });
   }),
 
   /**

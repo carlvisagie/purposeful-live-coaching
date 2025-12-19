@@ -18,6 +18,7 @@ import { AviationKnowledgeCoach } from "@/components/AviationKnowledgeCoach";
 import { OpenAIVoiceCoach } from "@/components/OpenAIVoiceCoach";
 import { SessionHealthDisclaimer } from "@/components/SessionHealthDisclaimer";
 import { PlatformManagement } from "@/components/PlatformManagement";
+import { AICoachPerformance } from "@/components/AICoachPerformance";
 
 /**
  * OWNER CONTROL CENTER V2 - Session-Focused Command Center
@@ -889,7 +890,7 @@ export default function OwnerControlCenterV2() {
 
         {/* SECONDARY TABS */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-grid">
+          <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
             <TabsTrigger value="clients">
               <Users className="h-4 w-4 mr-2" />
               Clients
@@ -901,6 +902,10 @@ export default function OwnerControlCenterV2() {
             <TabsTrigger value="platform">
               <Settings className="h-4 w-4 mr-2" />
               Platform
+            </TabsTrigger>
+            <TabsTrigger value="ai-coaches">
+              <Brain className="h-4 w-4 mr-2" />
+              AI Coaches
             </TabsTrigger>
             <TabsTrigger value="admin">
               <Settings className="h-4 w-4 mr-2" />
@@ -1046,6 +1051,11 @@ export default function OwnerControlCenterV2() {
           {/* PLATFORM MANAGEMENT TAB */}
           <TabsContent value="platform" className="space-y-6">
             <PlatformManagement />
+          </TabsContent>
+
+          {/* AI COACHES PERFORMANCE TAB */}
+          <TabsContent value="ai-coaches" className="space-y-6">
+            <AICoachPerformance />
           </TabsContent>
 
           {/* ADMIN TAB */}
