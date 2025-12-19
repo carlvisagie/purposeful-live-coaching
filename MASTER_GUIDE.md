@@ -2,7 +2,7 @@
 ## Single Source of Truth
 
 **Last Updated:** December 19, 2025  
-**Status: 🟢 PLATFORM 92% COMPLETE - Session-to-Profile Extraction + CliffsNotes deployed  
+**Status: 🟢 PLATFORM 93% COMPLETE - Memphis Soulful Singing Coach deployed  
 **Owner:** Carl Visagie  
 **Production URL:** https://purposefullivecoaching.com  
 **Repository:** https://github.com/carlvisagie/purposeful-live-coaching
@@ -949,6 +949,93 @@ Pushed to GitHub, Render auto-deploying.
 5. End the session
 6. See toast: "📊 Session insights saved to your profile!"
 7. Check client profile - it should now have extracted data
+
+---
+
+## CHANGELOG: Memphis Soulful Singing Coach (December 19, 2025)
+
+### World-Class Vocal Training for Teddy Swims, Chris Stapleton, Jelly Roll Style
+
+**Problem Identified:** The previous singing coach was too generic. User wanted a specialized coach that could teach the soulful, raspy, powerful vocal style of artists like Teddy Swims, Chris Stapleton, and Jelly Roll - taking someone from zero to hero.
+
+**Research Conducted:**
+- Teddy Swims vocal technique (mix voice, gritty onset, soulful baritone)
+- Chris Stapleton vocal technique (twang, power, country-soul)
+- Jelly Roll vocal technique (raw authenticity, emotional dynamics)
+- Safe rasp/grit techniques (false cord, vocal fry, gritty onset)
+- Professional vocal coaching best practices
+
+### Solution: Memphis - The Soulful Singing Coach
+
+**Coach Identity:**
+- **Name:** Memphis
+- **Specialty:** Soulful, powerful singing (Teddy Swims, Chris Stapleton, Jelly Roll style)
+- **Philosophy:** "Anyone can learn to sing with soul. It's not about having a 'gift' - it's about learning the techniques, building the foundation, and then letting go."
+
+### Zero-to-Hero Curriculum
+
+| Phase | Focus | Key Techniques |
+|-------|-------|----------------|
+| **Phase 1: Foundation** | Breath support, natural voice, pitch accuracy | Diaphragmatic breathing, hissing exercise, pitch matching |
+| **Phase 2: Building Blocks** | Chest voice, mix voice, twang | "Mum mum mum" scales, "Nay nay nay" slides, "Meow" twang exercise |
+| **Phase 3: Adding Soul** | Safe rasp/grit, gritty onset, dynamics | Vocal fry, false cord technique, "HUH!" onset, whisper-to-explosion |
+| **Phase 4: Artist-Specific** | Teddy Swims, Chris Stapleton, Jelly Roll styles | Song-specific training, style techniques |
+
+### Artist-Specific Training
+
+**Teddy Swims Style:**
+- Mix voice and smooth transitions
+- Gritty onsets on emotional peaks
+- R&B runs and riffs
+- Practice song: "Lose Control"
+
+**Chris Stapleton Style:**
+- Heavy chest voice with twang
+- Growly tone on sustained notes
+- Volume as emotion
+- Practice song: "Tennessee Whiskey"
+
+**Jelly Roll Style:**
+- Raw, unpolished authenticity
+- Storytelling through dynamics
+- Rasp on emotional peaks only
+- Practice song: "Save Me"
+
+### Safety Features Built In
+
+- **Rasp Safety:** "If it hurts, STOP. Good rasp feels buzzy and effortless. Bad rasp feels scratchy and strained."
+- **Practice Limits:** Rasp practice limited to 5 minutes max when learning
+- **Tension Detection:** Coach detects and addresses vocal tension immediately
+- **Rest Reminders:** "Rest days are as important as practice days."
+
+### Warm-Up Routine (Every Session)
+
+1. Lip trills (brrrrr) - wakes up voice without strain
+2. Sirens - low to high, back down
+3. Humming on scales - feel the buzz
+4. "Mum mum mum" going down - chest voice activation
+5. "Hey!" calls - power activation
+
+### Deployment
+
+Commit: `338c8f5` - "Add world-class soulful singing coach 'Memphis'"
+Pushed to GitHub, Render auto-deploying.
+
+### Testing Instructions
+
+1. Go to Control Center → Real-Time Voice Coach
+2. Select "Singing" mode
+3. You'll be greeted by Memphis
+4. Try these prompts:
+   - "I'm a complete beginner, where do I start?"
+   - "I want to sing like Teddy Swims"
+   - "How do I get that raspy sound safely?"
+   - "Can you teach me Tennessee Whiskey?"
+5. Notice the coach:
+   - Starts with foundation (breath support)
+   - Teaches specific techniques with exercises
+   - References your favorite artists
+   - Prioritizes vocal health and safety
 
 ---
 
