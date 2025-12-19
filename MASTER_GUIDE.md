@@ -610,6 +610,26 @@ Render auto-deploys.
 
 ---
 
+## CHANGELOG: Speech-to-Text Fix (December 19, 2025)
+
+### Issue Found
+Speech-to-text in the Aviation Knowledge Coach (Interview Prep) was producing duplicated text. Users would speak once but the transcript would repeat the same content multiple times.
+
+### Root Cause
+- The Web Speech API with `continuous = true` mode re-sends all previous results on each `onresult` event
+- The code was iterating through ALL results and appending to transcript, causing duplication
+- Line 99: `setTranscript(prev => prev + finalTranscript)` was re-adding already processed results
+
+### Fix Applied
+- Commit `d457a98`: Added `lastResultIndexRef` to track which results have been processed
+- Now only processes NEW results starting from the last processed index
+- Reset the index tracker when starting a new recording
+
+### Files Changed
+- `client/src/components/AviationKnowledgeCoach.tsx`
+
+---
+
 ## CHANGELOG: Settings Page Fix (December 19, 2025)
 
 ### Issue Found
