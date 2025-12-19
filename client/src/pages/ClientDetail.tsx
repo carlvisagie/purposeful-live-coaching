@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Mail, Phone, Calendar, Target, FileText, Brain, TrendingUp, Plus } from "lucide-react";
+import { ClientProfileExport } from "@/components/ClientProfileExport";
 
 export default function ClientDetail() {
   const [, params] = useRoute("/clients/:id");
@@ -79,9 +80,12 @@ export default function ClientDetail() {
                 </div>
               </div>
             </div>
-            <Badge variant={client.status === "active" ? "default" : "secondary"} className="text-sm px-4 py-2">
-              {client.status.charAt(0).toUpperCase() + client.status.slice(1)}
-            </Badge>
+            <div className="flex items-center gap-3">
+              <ClientProfileExport clientId={clientId} clientName={client.name} />
+              <Badge variant={client.status === "active" ? "default" : "secondary"} className="text-sm px-4 py-2">
+                {client.status.charAt(0).toUpperCase() + client.status.slice(1)}
+              </Badge>
+            </div>
           </div>
         </div>
       </header>
