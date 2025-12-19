@@ -11,13 +11,16 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { Phone, PhoneOff, Mic, MicOff, Volume2, VolumeX, Loader2, Brain, X } from "lucide-react";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
+import { useAuth } from "@/hooks/useAuth";
 
 interface OpenAIVoiceCoachProps {
   mode?: "speaker_training" | "interview_prep" | "coaching_practice" | "compliance_monitor" | "singing";
   onClose?: () => void;
+  showCliffsNotes?: boolean;
 }
 
-export function OpenAIVoiceCoach({ mode = "speaker_training", onClose }: OpenAIVoiceCoachProps) {
+export function OpenAIVoiceCoach({ mode = "speaker_training", onClose, showCliffsNotes = true }: OpenAIVoiceCoachProps) {
+  const { user } = useAuth();
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -26,6 +29,8 @@ export function OpenAIVoiceCoach({ mode = "speaker_training", onClose }: OpenAIV
   const [currentSpeaker, setCurrentSpeaker] = useState<"user" | "assistant" | null>(null);
   const [volumeLevel, setVolumeLevel] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [showPreSession, setShowPreSession] = useState(showCliffsNotes);
+  const [sessionStartTime, setSessionStartTime] = useState<Date | null>(null);
   
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
   const dataChannelRef = useRef<RTCDataChannel | null>(null);
@@ -35,6 +40,13 @@ export function OpenAIVoiceCoach({ mode = "speaker_training", onClose }: OpenAIV
 
   // Get WebRTC session from server
   const createWebRTCSession = trpc.realtimeVoice.createWebRTCSession.useMutation();
+  
+  // Session extraction and CliffsNotes
+  const extractFromSession = trpc.sessionProfileExtraction.extractFromSession.useMutation();
+  const { data: cliffsNotes, isLoading: cliffsNotesLoading } = trpc.sessionProfileExtraction.generateCliffsNotes.useQuery(
+    { userId: user?.id?.toString() || "" },
+    { enabled: !!user?.id && showPreSession }
+  );
 
   // Auto-scroll transcript
   useEffect(() => {
@@ -164,6 +176,7 @@ export function OpenAIVoiceCoach({ mode = "speaker_training", onClose }: OpenAIV
       setError(null);
       toast.success("🎤 Connected! AI Coach will speak through your headset");
       setTranscript(prev => [...prev, "🟢 Connected to AI Coach - speak now!"]);
+      setSessionStartTime(new Date());
 
       // Handle connection state changes
       pc.onconnectionstatechange = () => {
@@ -234,8 +247,28 @@ export function OpenAIVoiceCoach({ mode = "speaker_training", onClose }: OpenAIV
     }
   }, []);
 
-  // End voice call
-  const endCall = useCallback(() => {
+  // End voice call and extract session data
+  const endCall = useCallback(async () => {
+    // Calculate session duration
+    const sessionDuration = sessionStartTime 
+      ? Math.round((new Date().getTime() - sessionStartTime.getTime()) / 1000)
+      : 0;
+    
+    // Extract session data if we have a transcript
+    if (user?.id && transcript.length > 2) {
+      try {
+        const fullTranscript = transcript.join('\n');
+        await extractFromSession.mutateAsync({
+          userId: user.id.toString(),
+          transcript: fullTranscript,
+          sessionMode: mode,
+          sessionDuration,
+        });
+        toast.success("📊 Session insights saved to your profile!");
+      } catch (err) {
+        console.error("[SessionExtraction] Failed to extract:", err);
+      }
+    }
     // Close data channel
     if (dataChannelRef.current) {
       dataChannelRef.current.close();
@@ -263,7 +296,8 @@ export function OpenAIVoiceCoach({ mode = "speaker_training", onClose }: OpenAIV
     setIsConnected(false);
     setIsConnecting(false);
     setCurrentSpeaker(null);
-  }, []);
+    setSessionStartTime(null);
+  }, [user?.id, transcript, mode, sessionStartTime, extractFromSession]);
 
   // Toggle mute
   const toggleMute = useCallback(() => {
@@ -296,6 +330,91 @@ export function OpenAIVoiceCoach({ mode = "speaker_training", onClose }: OpenAIV
       default: return "Voice Coach";
     }
   };
+
+  // Pre-session CliffsNotes view
+  if (showPreSession && cliffsNotes) {
+    return (
+      <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+        <div className="bg-gradient-to-b from-slate-800 to-slate-900 rounded-2xl p-6 w-full max-w-lg mx-4 shadow-2xl max-h-[80vh] overflow-y-auto">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center">
+                <Brain className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h2 className="text-white font-semibold">Session Preparation</h2>
+                <p className="text-slate-400 text-sm">{getModeTitle()}</p>
+              </div>
+            </div>
+            <button 
+              onClick={() => { onClose?.(); }}
+              className="text-slate-400 hover:text-white transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </div>
+
+          {/* CliffsNotes Content */}
+          {cliffsNotesLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
+              <span className="ml-3 text-slate-400">Loading session brief...</span>
+            </div>
+          ) : (
+            <div className="bg-slate-900/50 rounded-lg p-4 mb-6 border border-slate-700">
+              <div className="prose prose-invert prose-sm max-w-none">
+                <div className="text-slate-300 whitespace-pre-wrap text-sm leading-relaxed">
+                  {cliffsNotes.cliffsNotes}
+                </div>
+              </div>
+              
+              {/* Quick Stats */}
+              <div className="mt-4 pt-4 border-t border-slate-700 grid grid-cols-3 gap-4 text-center">
+                <div>
+                  <p className="text-2xl font-bold text-purple-400">{cliffsNotes.totalSessions}</p>
+                  <p className="text-xs text-slate-500">Total Sessions</p>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-green-400">{cliffsNotes.rapportLevel}/10</p>
+                  <p className="text-xs text-slate-500">Rapport Level</p>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-blue-400">
+                    {cliffsNotes.lastSessionDate 
+                      ? new Date(cliffsNotes.lastSessionDate).toLocaleDateString() 
+                      : 'New'}
+                  </p>
+                  <p className="text-xs text-slate-500">Last Session</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Start Session Button */}
+          <div className="flex gap-3">
+            <button
+              onClick={() => setShowPreSession(false)}
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-500 text-white rounded-full font-medium transition-colors"
+            >
+              <Phone className="w-5 h-5" />
+              Start Session
+            </button>
+            <button
+              onClick={() => { onClose?.(); }}
+              className="px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-full font-medium transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+
+          <p className="text-center text-slate-500 text-xs mt-4">
+            💡 Review the brief above before starting your session
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
