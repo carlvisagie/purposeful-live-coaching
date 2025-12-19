@@ -2,6 +2,8 @@ console.log("[App] Starting application...");
 import "dotenv/config";
 console.log("[App] dotenv loaded");
 import express from "express";
+import rateLimit from "express-rate-limit";
+import helmet from "helmet";
 import { createServer } from "http";
 import net from "net";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
@@ -40,12 +42,63 @@ async function startServer() {
   const app = express();
   const server = createServer(app);
   
+  // Security headers
+  app.use(helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://js.stripe.com"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        fontSrc: ["'self'", "https://fonts.gstatic.com"],
+        imgSrc: ["'self'", "data:", "blob:", "https:"],
+        connectSrc: ["'self'", "https://api.stripe.com", "wss:", "https:"],
+        frameSrc: ["'self'", "https://js.stripe.com"],
+        mediaSrc: ["'self'", "blob:"],
+      },
+    },
+    crossOriginEmbedderPolicy: false, // Required for some third-party integrations
+  }));
+  
   // Stripe webhooks need raw body - register BEFORE body parser
   app.use("/api/webhooks", express.raw({ type: "application/json" }), webhookRouter);
   
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
+  
+  // Rate limiting for API protection
+  const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+    message: { error: "Too many requests, please try again later." },
+    standardHeaders: true,
+    legacyHeaders: false,
+    skip: (req) => {
+      // Skip rate limiting for webhooks and health checks
+      return req.path.startsWith("/api/webhooks") || req.path === "/api/health";
+    },
+  });
+  
+  // Apply rate limiting to API routes
+  app.use("/api", apiLimiter);
+  
+  // Stricter rate limiting for auth endpoints
+  const authLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: 10, // Limit each IP to 10 login attempts per hour
+    message: { error: "Too many login attempts, please try again later." },
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+  
+  // Apply stricter rate limiting to auth endpoints
+  app.use("/api/trpc/auth.login", authLimiter);
+  app.use("/api/trpc/auth.register", authLimiter);
+  
+  // Health check endpoint
+  app.get("/api/health", (req, res) => {
+    res.json({ status: "healthy", timestamp: new Date().toISOString() });
+  });
   
   // Serve uploaded files
   const uploadDir = process.env.UPLOAD_DIR || "/opt/render/project/src/uploads";
