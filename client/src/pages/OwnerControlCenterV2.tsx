@@ -623,7 +623,10 @@ export default function OwnerControlCenterV2() {
                     <p className="text-sm text-gray-600">Talk to AI Coach - instant voice conversation through your headset</p>
                   </div>
                 </div>
-                <Button className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600">
+                <Button 
+                    className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
+                    onClick={() => setShowVoiceCoach(true)}
+                  >
                   <Volume2 className="h-4 w-4 mr-2" />
                   Start Voice Call
                 </Button>
