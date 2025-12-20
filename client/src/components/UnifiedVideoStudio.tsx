@@ -126,20 +126,40 @@ const VOICE_COACHES = {
 // Quick coaching scripts for teleprompter
 const QUICK_SCRIPTS = {
   opening: [
+    // Discovery Call Opening - Pattern Interrupt
+    "Hi [NAME], this is Carl from Purposeful Live Coaching. Before we dive in, I want you to know - this isn't a sales call. This is YOUR time. I'm here to understand where you are, where you want to be, and whether I can genuinely help you get there. If I can't, I'll tell you. Fair enough?",
+    // Regular Session Opening
     "Thank you for joining me today. Before we begin, I want you to know this is a safe space where you can share openly.",
     "I'm glad you're here. Let's start by checking in - how are you feeling right now, in this moment?",
     "Welcome back! I've been looking forward to our session. What's been on your mind since we last spoke?",
   ],
   empathy: [
+    // Discovery Call - Pain Excavation
+    "So if I'm hearing you right, you're dealing with [THEIR WORDS]. How long has this been going on? And how is that affecting other areas of your life - your relationships, your energy, your confidence?",
+    // Scale Question - Makes them sell themselves
+    "On a scale of 1-10, how urgent is it for you to change this? And what made you pick that number instead of something lower?",
+    // Regular Empathy
     "I hear you, and that sounds really challenging. It takes courage to share that.",
     "Thank you for trusting me with this. Your feelings are completely valid.",
     "That must be difficult to carry. I appreciate you opening up about this.",
   ],
   grounding: [
+    // Future Self Visualization - Discovery Call
+    "I want you to imagine something with me. It's 90 days from now. You wake up and something is different. The weight you've been carrying? It's gone. You look in the mirror and you see someone who is [confident/in control/at peace]. What does your morning look like? How do you feel?",
+    // Future Pacing - Identity Shift
+    "That person you just described? That's not a fantasy. That's who you actually are underneath all the noise. My job is to help you remove what's blocking you from being that person every single day.",
+    // Regular Grounding
     "Let's pause for a moment. Can you take a deep breath with me? Inhale for 4 counts... hold for 4... exhale for 6...",
     "I notice this is bringing up strong emotions. Let's ground ourselves - can you name 5 things you can see right now?",
   ],
   closing: [
+    // Discovery Call Close - Social Proof + Bridge
+    "What you're describing is exactly what my clients come to me with. The gap between where you are and where you want to be isn't as big as it feels. It's usually 2-3 key shifts that change everything. I have a few spots open this month. Based on what you've shared, I genuinely believe I can help you. Are you ready to do the work?",
+    // Assumptive Close
+    "Here's what I'd suggest. Let's get you started this week while everything we talked about is fresh. I'll send you a link right after this call. Sound good?",
+    // Handle Hesitation
+    "What happens if you don't do anything? Where will you be in 90 days if nothing changes? The best time to start was yesterday. The second best time is today.",
+    // Regular Closing
     "We've covered a lot today. What's one insight you're taking away from our conversation?",
     "Before we end, what's one small action you feel ready to take this week?",
     "Thank you for your openness today. Remember, progress isn't always linear, and you're doing important work.",
