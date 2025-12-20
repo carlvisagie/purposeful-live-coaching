@@ -1,5 +1,22 @@
 console.log("[App] Starting application...");
 import "dotenv/config";
+import * as Sentry from "@sentry/node";
+
+// Initialize Sentry error monitoring
+if (process.env.SENTRY_DSN) {
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    environment: process.env.NODE_ENV || "development",
+    tracesSampleRate: 0.1, // Capture 10% of transactions for performance monitoring
+    integrations: [
+      Sentry.httpIntegration(),
+      Sentry.expressIntegration(),
+    ],
+  });
+  console.log("[App] Sentry error monitoring initialized");
+} else {
+  console.log("[App] Sentry DSN not configured - error monitoring disabled");
+}
 console.log("[App] dotenv loaded");
 import express from "express";
 import rateLimit from "express-rate-limit";
@@ -95,9 +112,29 @@ async function startServer() {
   app.use("/api/trpc/auth.login", authLimiter);
   app.use("/api/trpc/auth.register", authLimiter);
   
-  // Health check endpoint
-  app.get("/api/health", (req, res) => {
-    res.json({ status: "healthy", timestamp: new Date().toISOString() });
+  // Health check endpoint with database status
+  app.get("/api/health", async (req, res) => {
+    try {
+      // Check database connection
+      const { db } = await import("../db");
+      await db.execute("SELECT 1");
+      
+      res.json({
+        status: "healthy",
+        timestamp: new Date().toISOString(),
+        database: "connected",
+        uptime: process.uptime(),
+        memory: Math.round(process.memoryUsage().heapUsed / 1024 / 1024) + "MB"
+      });
+    } catch (error) {
+      console.error("[Health Check] Database error:", error);
+      res.status(503).json({
+        status: "unhealthy",
+        timestamp: new Date().toISOString(),
+        database: "disconnected",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
   });
   
   // Serve uploaded files
@@ -132,6 +169,11 @@ async function startServer() {
     await setupVite(app, server);
   } else {
     serveStatic(app);
+  }
+
+  // Sentry error handler - must be after all routes
+  if (process.env.SENTRY_DSN) {
+    Sentry.setupExpressErrorHandler(app);
   }
 
   // Run migrations first to ensure tables exist
