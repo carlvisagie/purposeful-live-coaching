@@ -43,16 +43,29 @@ export function TrialWrapper({ children }: TrialWrapperProps) {
   // Check if current route is an owner/admin route
   const isOwnerRoute = OWNER_ROUTES.some(route => location.startsWith(route));
 
+  // Check if user is owner by email
+  const isOwnerEmail = user?.email && [
+    "carl@purposefullivecoaching.com",
+    "carl@visagie.co.za",
+    "admin@purposefullivecoaching.com",
+  ].includes(user.email.toLowerCase());
+
+  // Check if user is coach/admin role
+  const isOwnerRole = user?.role === "coach" || user?.role === "admin";
+
+  // Show banner for everyone EXCEPT owners (by route, email, or role)
+  const shouldShowBanner = !isOwnerRoute && !isOwnerEmail && !isOwnerRole;
+
   // Always render children - never block on loading
   // This prevents blank page issues on mobile Safari
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Don't show banner on owner routes - they own the platform! */}
-      {!isLoading && trialStatus && !isOwnerRoute && (
+      {/* Show banner for guests and clients, not owners */}
+      {!isLoading && shouldShowBanner && (
         <TrialBanner
-          daysRemaining={trialStatus.daysRemaining || 0}
-          tier={trialStatus.tier || "free"}
-          isTrialExpired={trialStatus.isTrialExpired || false}
+          daysRemaining={trialStatus?.daysRemaining || 7}
+          tier={trialStatus?.tier || "trial"}
+          isTrialExpired={trialStatus?.isTrialExpired || false}
           userRole={user?.role}
           userEmail={user?.email}
         />

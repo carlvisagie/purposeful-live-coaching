@@ -46,7 +46,7 @@ export function TrialBanner({ daysRemaining, tier, isTrialExpired, userRole, use
   };
 
   // Trial expired - show upgrade prompt
-  if (isTrialExpired || tier === "free") {
+  if (isTrialExpired) {
     return (
       <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-2 text-center text-sm">
         <div className="flex items-center justify-center gap-2 flex-wrap">
@@ -69,7 +69,7 @@ export function TrialBanner({ daysRemaining, tier, isTrialExpired, userRole, use
     );
   }
 
-  // Active trial - show days remaining
+  // Active trial or guest - show trial banner
   return (
     <div className="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-4 py-2 text-center text-sm">
       <div className="flex items-center justify-center gap-2 flex-wrap">
@@ -84,7 +84,7 @@ export function TrialBanner({ daysRemaining, tier, isTrialExpired, userRole, use
           className="bg-white text-purple-600 hover:bg-purple-50 h-7 px-3"
           onClick={handleViewPlans}
         >
-          {daysRemaining <= 2 ? "Subscribe Now" : "View Plans"}
+          View Plans
         </Button>
       </div>
     </div>
