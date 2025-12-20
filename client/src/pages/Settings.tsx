@@ -20,8 +20,10 @@ import {
   Smartphone,
   LogOut,
   Trash2,
-  ArrowLeft
+  ArrowLeft,
+  Clock
 } from "lucide-react";
+import AvailabilityEditor from "@/components/AvailabilityEditor";
 import { Link } from "wouter";
 
 export default function Settings() {
@@ -83,10 +85,14 @@ export default function Settings() {
 
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <Tabs defaultValue="profile" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-flex">
+          <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-flex">
             <TabsTrigger value="profile" className="flex items-center gap-2">
               <User className="h-4 w-4" />
               <span className="hidden sm:inline">Profile</span>
+            </TabsTrigger>
+            <TabsTrigger value="schedule" className="flex items-center gap-2">
+              <Clock className="h-4 w-4" />
+              <span className="hidden sm:inline">Schedule</span>
             </TabsTrigger>
             <TabsTrigger value="notifications" className="flex items-center gap-2">
               <Bell className="h-4 w-4" />
@@ -142,6 +148,11 @@ export default function Settings() {
                 </Button>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Schedule Tab */}
+          <TabsContent value="schedule">
+            <AvailabilityEditor coachId={1} />
           </TabsContent>
 
           {/* Notifications Tab */}
