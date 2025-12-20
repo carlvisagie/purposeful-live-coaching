@@ -681,9 +681,9 @@ export const schedulingRouter = router({
         { dayOfWeek: 3, startTime: '19:30', endTime: '21:30' }, // Wednesday
         { dayOfWeek: 4, startTime: '19:30', endTime: '21:30' }, // Thursday
         { dayOfWeek: 5, startTime: '19:30', endTime: '21:30' }, // Friday
-        // Weekends: 10:30 - 21:30 (extended to include evening)
-        { dayOfWeek: 6, startTime: '10:30', endTime: '21:30' }, // Saturday
-        { dayOfWeek: 0, startTime: '10:30', endTime: '21:30' }, // Sunday
+        // Weekends: 10:30 - 16:30
+        { dayOfWeek: 6, startTime: '10:30', endTime: '16:30' }, // Saturday
+        { dayOfWeek: 0, startTime: '10:30', endTime: '16:30' }, // Sunday
       ];
 
       for (const slot of availabilitySlots) {
