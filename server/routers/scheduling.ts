@@ -445,9 +445,40 @@ export const schedulingRouter = router({
     }),
 
   /**
-   * Get sessions for a coach in a date range
+   * Get all upcoming sessions for a coach (PUBLIC - for owner dashboard)
+   * No date range required - returns next 30 days of sessions
    */
-  getCoachSessions: protectedProcedure
+  getCoachSessions: publicProcedure
+    .input(
+      z.object({
+        coachId: z.number(),
+      })
+    )
+    .query(async ({ input }) => {
+      const startDate = new Date();
+      startDate.setHours(0, 0, 0, 0);
+      const endDate = new Date();
+      endDate.setDate(endDate.getDate() + 30);
+      endDate.setHours(23, 59, 59, 999);
+      
+      const sessionsData = await getCoachSessions(
+        input.coachId,
+        startDate,
+        endDate
+      );
+      
+      // Flatten the session data for easier frontend consumption
+      return sessionsData.map(s => ({
+        ...s.session,
+        clientName: s.client?.name || 'Guest',
+        clientEmail: s.client?.email || '',
+      }));
+    }),
+
+  /**
+   * Get sessions for a coach in a specific date range (PROTECTED)
+   */
+  getCoachSessionsRange: protectedProcedure
     .input(
       z.object({
         coachId: z.number(),
