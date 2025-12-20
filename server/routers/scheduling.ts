@@ -385,7 +385,7 @@ export const schedulingRouter = router({
   /**
    * Cancel a session
    */
-  cancelSession: protectedProcedure
+  cancelSession: publicProcedure
     .input(
       z.object({
         session_id: z.number(),
