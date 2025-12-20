@@ -1,11 +1,11 @@
 /**
- * TrialWrapper - Wraps the app to show trial banner and upgrade prompts
+ * TrialWrapper - Shows trial banner to ALL visitors
  * 
- * Made robust for mobile Safari - never blocks rendering
+ * FRICTIONLESS: No login required. Everyone sees the trial banner.
+ * Only hidden on owner routes (control-center, owner, admin, settings)
  */
 
-import { ReactNode, Suspense } from "react";
-import { useAuth } from "@/contexts/AuthContext";
+import { ReactNode } from "react";
 import { useLocation } from "wouter";
 import { TrialBanner } from "./TrialBanner";
 
@@ -21,53 +21,20 @@ const OWNER_ROUTES = [
   "/settings",
 ];
 
-// Loading fallback that shows children immediately
-function LoadingFallback({ children }: { children: ReactNode }) {
-  return (
-    <div className="flex flex-col min-h-screen">
-      {/* Show a minimal banner placeholder while loading */}
-      <div className="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-4 py-2 text-center text-sm opacity-50">
-        <span>Loading...</span>
-      </div>
-      <div className="flex-1">
-        {children}
-      </div>
-    </div>
-  );
-}
-
 export function TrialWrapper({ children }: TrialWrapperProps) {
-  const { trialStatus, isLoading, user } = useAuth();
   const [location] = useLocation();
 
-  // Check if current route is an owner/admin route
+  // Only hide banner on owner routes - show for EVERYONE else
   const isOwnerRoute = OWNER_ROUTES.some(route => location.startsWith(route));
 
-  // Check if user is owner by email
-  const isOwnerEmail = user?.email && [
-    "carl@purposefullivecoaching.com",
-    "carl@visagie.co.za",
-    "admin@purposefullivecoaching.com",
-  ].includes(user.email.toLowerCase());
-
-  // Check if user is coach/admin role
-  const isOwnerRole = user?.role === "coach" || user?.role === "admin";
-
-  // Show banner for everyone EXCEPT owners (by route, email, or role)
-  const shouldShowBanner = !isOwnerRoute && !isOwnerEmail && !isOwnerRole;
-
-  // Always render children - never block on loading
-  // This prevents blank page issues on mobile Safari
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Show banner for guests and clients, not owners */}
-      {!isLoading && shouldShowBanner && (
+      {/* Show banner for ALL visitors except on owner routes */}
+      {!isOwnerRoute && (
         <TrialBanner
-          daysRemaining={trialStatus?.daysRemaining || 7}
-          tier={trialStatus?.tier || "trial"}
-          isTrialExpired={trialStatus?.isTrialExpired || false}
-          userRole={user?.role}
-          userEmail={user?.email}
+          daysRemaining={7}
+          tier="trial"
+          isTrialExpired={false}
         />
       )}
       <div className="flex-1">

@@ -1,82 +1,34 @@
 /**
- * TrialBanner - Shows trial status and days remaining
+ * TrialBanner - Shows "7 days free trial" to ALL visitors
  * 
- * Uses React Router for navigation (Safari-compatible)
+ * FRICTIONLESS: No login required. No auth checks.
+ * Just shows the banner to drive conversions.
  */
 
-import { Clock, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 
 interface TrialBannerProps {
-  daysRemaining: number;
-  tier: string;
-  isTrialExpired: boolean;
-  userRole?: "user" | "client" | "coach" | "admin";
-  userEmail?: string;
+  daysRemaining?: number;
+  tier?: string;
+  isTrialExpired?: boolean;
 }
 
-// Owner emails that should never see the trial banner
-const OWNER_EMAILS = [
-  "carl@purposefullivecoaching.com",
-  "carl@visagie.co.za",
-  "admin@purposefullivecoaching.com",
-];
-
-export function TrialBanner({ daysRemaining, tier, isTrialExpired, userRole, userEmail }: TrialBannerProps) {
+export function TrialBanner({ daysRemaining = 7 }: TrialBannerProps) {
   const [, setLocation] = useLocation();
-  
-  // Don't show banner for owners - they own the platform!
-  if (userEmail && OWNER_EMAILS.includes(userEmail.toLowerCase())) {
-    return null;
-  }
-  
-  // Don't show banner for paid users
-  if (tier === "basic" || tier === "premium" || tier === "elite") {
-    return null;
-  }
-  
-  // Don't show banner for coaches or admins - they're the owners!
-  if (userRole === "coach" || userRole === "admin") {
-    return null;
-  }
 
   const handleViewPlans = () => {
     setLocation("/pricing");
   };
 
-  // Trial expired - show upgrade prompt
-  if (isTrialExpired) {
-    return (
-      <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-2 text-center text-sm">
-        <div className="flex items-center justify-center gap-2 flex-wrap">
-          <Clock className="h-4 w-4" />
-          <span>
-            {tier === "free" 
-              ? "You're on the Free tier with limited features." 
-              : "Your free trial has ended."}
-          </span>
-          <Button
-            size="sm"
-            variant="secondary"
-            className="bg-white text-orange-600 hover:bg-orange-50 h-7 px-3"
-            onClick={handleViewPlans}
-          >
-            Upgrade Now
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  // Active trial or guest - show trial banner
+  // Simple banner for ALL visitors
   return (
     <div className="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-4 py-2 text-center text-sm">
       <div className="flex items-center justify-center gap-2 flex-wrap">
         <Sparkles className="h-4 w-4" />
         <span>
           <strong>{daysRemaining} day{daysRemaining !== 1 ? "s" : ""}</strong> left in your free trial
-          {daysRemaining <= 2 && " - Don't lose access!"}
         </span>
         <Button
           size="sm"
