@@ -40,8 +40,8 @@ export default function OwnerControlCenterV3() {
   const { data: user } = trpc.auth.me.useQuery();
   
   // Coach queries - Owner dashboard always uses coachId 1
-  const { data: allClients } = trpc.coachDashboard.getAllClients.useQuery(undefined, { enabled: !!user });
-  const { data: coachStats } = trpc.coachDashboard.getStats.useQuery(undefined, { enabled: !!user });
+  const { data: allClients } = trpc.coachDashboard.getAllClients.useQuery(undefined, { enabled: true });  // Always enabled for owner dashboard
+  const { data: coachStats } = trpc.coachDashboard.getStats.useQuery(undefined, { enabled: true });  // Always enabled for owner dashboard
   const { data: coachSessions } = trpc.scheduling.getCoachSessions.useQuery(
     { coachId: 1 },  // Owner's coach ID - always fetch owner's sessions
     { enabled: true }  // Always enabled for owner dashboard
