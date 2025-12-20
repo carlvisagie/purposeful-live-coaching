@@ -232,18 +232,44 @@ export const schedulingRouter = router({
         });
       }
 
-      // For free sessions, create a temporary client record or use guest booking
-      // TODO: Implement proper guest booking flow
-      const tempClientId = 999; // Placeholder
+      // Create or find guest client record
+      const db = await import("../db").then(m => m.getDb());
+      if (!db) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Database connection failed",
+        });
+      }
+
+      const { clients } = await import("../../drizzle/schema");
+      const { eq } = await import("drizzle-orm");
+
+      // Check if client already exists by email
+      let clientId: number;
+      const existingClient = await db.select().from(clients).where(eq(clients.email, input.clientEmail)).limit(1);
+      
+      if (existingClient.length > 0) {
+        clientId = existingClient[0].id;
+      } else {
+        // Create new guest client
+        const newClient = await db.insert(clients).values({
+          coachId,
+          name: input.clientName,
+          email: input.clientEmail,
+          status: "guest",
+          goals: "Free Discovery Call",
+        }).returning({ id: clients.id });
+        clientId = newClient[0].id;
+      }
 
       // Create session
       await createSession({
         coachId,
-        client_id: tempClientId,
+        client_id: clientId,
         scheduledDate: scheduledDateTime,
         duration,
         sessionType: "Free Discovery Call",
-        notes: input.notes,
+        notes: input.notes || `Guest booking: ${input.clientName} (${input.clientEmail})`,
         status: "scheduled",
       });
 
