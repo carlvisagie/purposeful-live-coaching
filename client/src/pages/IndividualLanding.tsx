@@ -229,6 +229,7 @@ export default function IndividualLanding() {
             <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
               Purposeful Live Coaching
             </h1>
+            <span className="ml-2 px-2 py-1 text-xs font-bold uppercase bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-full">Beta</span>
           </div>
           
           <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">

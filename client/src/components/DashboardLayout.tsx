@@ -195,6 +195,7 @@ function DashboardLayoutContent({
                     <span className="font-semibold tracking-tight truncate">
                       {APP_TITLE}
                     </span>
+                    <span className="ml-2 px-1.5 py-0.5 text-[10px] font-bold uppercase bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-full">Beta</span>
                   </div>
                   <button
                     onClick={toggleSidebar}
