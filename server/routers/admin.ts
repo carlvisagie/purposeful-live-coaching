@@ -312,23 +312,23 @@ export const adminRouter = router({
         .where(eq(coachAvailability.coachId, 1));
 
       // Create availability with correct schedule
-      // Weekdays: 19:45 - 21:45 (7:45 PM - 9:45 PM)
-      // Weekends: 09:00 - 16:30 (9:00 AM - 4:30 PM)
+      // Weekdays: 19:30 - 21:30 (7:30 PM - 9:30 PM)
+      // Weekends: 10:30 - 16:30 (10:30 AM - 4:30 PM)
       const availabilitySlots = [
         // Monday (1)
-        { coachId: 1, dayOfWeek: 1, startTime: "19:45", endTime: "21:45", isActive: true },
+        { coachId: 1, dayOfWeek: 1, startTime: "19:30", endTime: "21:30", isActive: true },
         // Tuesday (2)
-        { coachId: 1, dayOfWeek: 2, startTime: "19:45", endTime: "21:45", isActive: true },
+        { coachId: 1, dayOfWeek: 2, startTime: "19:30", endTime: "21:30", isActive: true },
         // Wednesday (3)
-        { coachId: 1, dayOfWeek: 3, startTime: "19:45", endTime: "21:45", isActive: true },
+        { coachId: 1, dayOfWeek: 3, startTime: "19:30", endTime: "21:30", isActive: true },
         // Thursday (4)
-        { coachId: 1, dayOfWeek: 4, startTime: "19:45", endTime: "21:45", isActive: true },
+        { coachId: 1, dayOfWeek: 4, startTime: "19:30", endTime: "21:30", isActive: true },
         // Friday (5)
-        { coachId: 1, dayOfWeek: 5, startTime: "19:45", endTime: "21:45", isActive: true },
+        { coachId: 1, dayOfWeek: 5, startTime: "19:30", endTime: "21:30", isActive: true },
         // Saturday (6)
-        { coachId: 1, dayOfWeek: 6, startTime: "09:00", endTime: "16:30", isActive: true },
+        { coachId: 1, dayOfWeek: 6, startTime: "10:30", endTime: "16:30", isActive: true },
         // Sunday (0)
-        { coachId: 1, dayOfWeek: 0, startTime: "09:00", endTime: "16:30", isActive: true },
+        { coachId: 1, dayOfWeek: 0, startTime: "10:30", endTime: "16:30", isActive: true },
       ];
 
       for (const slot of availabilitySlots) {
@@ -341,7 +341,7 @@ export const adminRouter = router({
 
       return {
         success: true,
-        message: "Availability created: Weekdays 19:45-21:45, Weekends 09:00-16:30",
+        message: "Availability created: Weekdays 19:30-21:30, Weekends 10:30-16:30",
         slotsCreated: 7,
       };
     }),

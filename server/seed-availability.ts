@@ -106,20 +106,20 @@ export async function seedCoachAvailability(force: boolean = false) {
     }
     
     // Create availability with correct schedule
-    // Weekdays (Mon-Fri): 19:45 - 21:55 (7:45 PM - 9:55 PM)
+    // Weekdays (Mon-Fri): 19:30 - 21:30 (7:30 PM - 9:30 PM)
     // Weekends (Sat-Sun): 10:30 - 16:30 (10:30 AM - 4:30 PM)
     console.log("[Seed] Creating availability slots for coach ID:", coachId);
     const availabilitySlots = [
       // Monday (1)
-      { coachId, dayOfWeek: 1, startTime: "19:45", endTime: "21:55", isActive: true },
+      { coachId, dayOfWeek: 1, startTime: "19:30", endTime: "21:30", isActive: true },
       // Tuesday (2)
-      { coachId, dayOfWeek: 2, startTime: "19:45", endTime: "21:55", isActive: true },
+      { coachId, dayOfWeek: 2, startTime: "19:30", endTime: "21:30", isActive: true },
       // Wednesday (3)
-      { coachId, dayOfWeek: 3, startTime: "19:45", endTime: "21:55", isActive: true },
+      { coachId, dayOfWeek: 3, startTime: "19:30", endTime: "21:30", isActive: true },
       // Thursday (4)
-      { coachId, dayOfWeek: 4, startTime: "19:45", endTime: "21:55", isActive: true },
+      { coachId, dayOfWeek: 4, startTime: "19:30", endTime: "21:30", isActive: true },
       // Friday (5)
-      { coachId, dayOfWeek: 5, startTime: "19:45", endTime: "21:55", isActive: true },
+      { coachId, dayOfWeek: 5, startTime: "19:30", endTime: "21:30", isActive: true },
       // Saturday (6)
       { coachId, dayOfWeek: 6, startTime: "10:30", endTime: "16:30", isActive: true },
       // Sunday (0)
@@ -137,7 +137,7 @@ export async function seedCoachAvailability(force: boolean = false) {
     }
     
     console.log("[Seed] ✅ Created 7 availability slots");
-    console.log("[Seed]    Weekdays (Mon-Fri): 19:45 - 21:55");
+    console.log("[Seed]    Weekdays (Mon-Fri): 19:30 - 21:30");
     console.log("[Seed]    Weekends (Sat-Sun): 10:30 - 16:30");
     
     // Seed session types
@@ -205,7 +205,7 @@ export async function seedCoachAvailability(force: boolean = false) {
       coachId,
       slotsCreated: 7,
       schedule: {
-        weekdays: "19:45 - 21:55",
+        weekdays: "19:30 - 21:30",
         weekends: "10:30 - 16:30"
       }
     };
