@@ -115,6 +115,8 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   console.log("[Webhook] Processing checkout.session.completed");
   console.log("[Webhook] Session mode:", session.mode);
   console.log("[Webhook] Metadata:", session.metadata);
+  console.log("[Webhook] Customer:", session.customer);
+  console.log("[Webhook] Customer Email:", session.customer_email);
 
   const db = await getDb();
   if (!db) {
@@ -122,26 +124,54 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     return;
   }
 
-  const userId = session.metadata?.user_id;
+  // For guest checkout, we need to get/create user from customer email
+  let userId = session.metadata?.user_id;
   const customerEmail = session.customer_email || session.metadata?.customer_email;
   const customerName = session.metadata?.customer_name;
-
-  if (!userId) {
-    console.error("[Webhook] Missing user_id in metadata");
-    return;
-  }
+  const tier = session.metadata?.tier;
 
   // Check if this is a one-time payment (coaching session booking) or subscription
   if (session.mode === 'payment') {
+    if (!userId) {
+      console.error("[Webhook] Missing user_id for payment mode");
+      return;
+    }
     // ONE-TIME PAYMENT: Create coaching session booking
     await handleSessionBooking(session, db, parseInt(userId));
     return;
   }
 
-  // SUBSCRIPTION: Handle subscription creation
-  const productId = session.metadata?.product_id;
-  if (!productId) {
-    console.error("[Webhook] Missing product_id for subscription");
+  // SUBSCRIPTION MODE: Handle guest checkout - create user if needed
+  if (!userId && customerEmail) {
+    console.log("[Webhook] Guest checkout - looking up or creating user for:", customerEmail);
+    
+    // Check if user exists by email
+    const existingUser = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, customerEmail))
+      .limit(1);
+    
+    if (existingUser.length > 0) {
+      userId = existingUser[0].id.toString();
+      console.log("[Webhook] Found existing user:", userId);
+    } else {
+      // Create new user
+      const [newUser] = await db
+        .insert(users)
+        .values({
+          email: customerEmail,
+          name: customerName || customerEmail.split('@')[0],
+          role: 'client',
+        })
+        .returning({ id: users.id });
+      userId = newUser.id.toString();
+      console.log("[Webhook] Created new user:", userId);
+    }
+  }
+
+  if (!userId) {
+    console.error("[Webhook] Cannot determine user - no user_id and no customer_email");
     return;
   }
 
@@ -155,20 +185,44 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 
   // Fetch full subscription details
   const stripeSubscription: any = await stripe.subscriptions.retrieve(subscriptionId);
+  
+  // Determine product_id from tier or subscription metadata
+  const productId = tier || session.metadata?.product_id || stripeSubscription.metadata?.tier || 'ai_basic';
 
-  // Create subscription record
-  await db.insert(subscriptions).values({
-    userId: parseInt(userId),
-    productId: productId,
-    stripeSubscriptionId: subscriptionId,
-    stripeCustomerId: session.customer as string,
-    stripePriceId: stripeSubscription.items.data[0].price.id,
-    status: mapStripeStatus(stripeSubscription.status),
-    currentPeriodStart: new Date(stripeSubscription.current_period_start * 1000),
-    currentPeriodEnd: new Date(stripeSubscription.current_period_end * 1000),
-  });
+  console.log("[Webhook] Creating subscription for user:", userId, "product:", productId);
 
-  console.log(`[Webhook] Created subscription record for user ${userId}`);
+  // Check if subscription already exists (avoid duplicates)
+  const existingSub = await db
+    .select()
+    .from(subscriptions)
+    .where(eq(subscriptions.stripeSubscriptionId, subscriptionId))
+    .limit(1);
+
+  if (existingSub.length > 0) {
+    console.log("[Webhook] Subscription already exists, updating...");
+    await db
+      .update(subscriptions)
+      .set({
+        status: mapStripeStatus(stripeSubscription.status),
+        currentPeriodStart: new Date(stripeSubscription.current_period_start * 1000),
+        currentPeriodEnd: new Date(stripeSubscription.current_period_end * 1000),
+      })
+      .where(eq(subscriptions.stripeSubscriptionId, subscriptionId));
+  } else {
+    // Create subscription record
+    await db.insert(subscriptions).values({
+      userId: parseInt(userId),
+      productId: productId,
+      tier: productId,
+      stripeSubscriptionId: subscriptionId,
+      stripeCustomerId: session.customer as string,
+      stripePriceId: stripeSubscription.items.data[0].price.id,
+      status: mapStripeStatus(stripeSubscription.status),
+      currentPeriodStart: new Date(stripeSubscription.current_period_start * 1000),
+      currentPeriodEnd: new Date(stripeSubscription.current_period_end * 1000),
+    });
+    console.log(`[Webhook] Created subscription record for user ${userId}`);
+  }
 }
 
 /**
