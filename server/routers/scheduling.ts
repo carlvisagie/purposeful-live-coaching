@@ -265,7 +265,7 @@ export const schedulingRouter = router({
       // Create session
       await createSession({
         coachId,
-        client_id: clientId,
+        clientId: clientId,
         scheduledDate: scheduledDateTime,
         duration,
         sessionType: "Free Discovery Call",
