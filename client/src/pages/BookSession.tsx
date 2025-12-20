@@ -6,15 +6,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Calendar, Clock, CheckCircle2, User, Users } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const SESSION_TYPES = [
-  { value: "initial", label: "Initial Consultation (60 min)", duration: 60 },
-  { value: "follow-up", label: "Follow-up Session (45 min)", duration: 45 },
-  { value: "check-in", label: "Quick Check-in (30 min)", duration: 30 },
+  { value: "discovery", label: "🎁 Free Discovery Call (15 min)", duration: 15, price: 0, free: true },
+  { value: "initial", label: "Initial Consultation (60 min)", duration: 60, price: 9900 },
+  { value: "follow-up", label: "Follow-up Session (45 min)", duration: 45, price: 7500 },
+  { value: "check-in", label: "Quick Check-in (30 min)", duration: 30, price: 4900 },
 ];
 
 // Coach profiles - both you and your wife
@@ -48,9 +50,16 @@ export default function BookSession() {
   const clientId = user?.id || 1;
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
-  const [sessionType, setSessionType] = useState("follow-up");
+  const [sessionType, setSessionType] = useState("discovery"); // Default to free discovery call
   const [notes, setNotes] = useState("");
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [guestName, setGuestName] = useState("");
+  const [guestEmail, setGuestEmail] = useState("");
+  const [showFreeBookingSuccess, setShowFreeBookingSuccess] = useState(false);
+  
+  // Check if selected session is free
+  const selectedSessionType = SESSION_TYPES.find(t => t.value === sessionType);
+  const isFreeSession = selectedSessionType?.free === true;
   const bookButtonRef = useRef<HTMLButtonElement>(null);
 
   // Get current month for calendar
@@ -75,6 +84,17 @@ export default function BookSession() {
       enabled: selectedDate !== null && selectedCoach !== null,
     }
   );
+
+  // Book free session (no payment required)
+  const bookFreeSession = trpc.scheduling.bookFreeSession.useMutation({
+    onSuccess: () => {
+      setShowFreeBookingSuccess(true);
+      toast.success("Your free discovery call has been booked!");
+    },
+    onError: (error) => {
+      toast.error(`Failed to book session: ${error.message}`);
+    },
+  });
 
   // Create Stripe checkout session for payment
   const createCheckout = trpc.stripe.createSessionCheckout.useMutation({
@@ -108,7 +128,7 @@ export default function BookSession() {
     console.log('[BookSession] handleBookSession called');
     console.log('[BookSession] selectedSlot:', selectedSlot);
     console.log('[BookSession] selectedCoach:', selectedCoach);
-    console.log('[BookSession] user:', user);
+    console.log('[BookSession] isFreeSession:', isFreeSession);
     
     if (!selectedCoach) {
       toast.error("Please select a coach");
@@ -117,11 +137,32 @@ export default function BookSession() {
     
     if (!selectedSlot) {
       toast.error("Please select a time slot");
-      console.log('No slot selected');
       return;
     }
 
-    // Get session type ID (map from value to ID)
+    // For free sessions, require name and email (no login needed)
+    if (isFreeSession) {
+      if (!guestName.trim()) {
+        toast.error("Please enter your name");
+        return;
+      }
+      if (!guestEmail.trim() || !guestEmail.includes('@')) {
+        toast.error("Please enter a valid email");
+        return;
+      }
+      
+      // Book free session directly - no payment
+      bookFreeSession.mutate({
+        sessionTypeId: 0, // Discovery call
+        scheduledDate: selectedSlot,
+        clientEmail: guestEmail,
+        clientName: guestName,
+        notes,
+      });
+      return;
+    }
+
+    // For paid sessions, use Stripe checkout
     const sessionTypeMap: Record<string, number> = {
       "initial": 1,
       "follow-up": 2,
@@ -130,8 +171,6 @@ export default function BookSession() {
 
     const sessionTypeId = sessionTypeMap[sessionType] || 2;
 
-    // Create Stripe checkout with session details
-    console.log('Calling createCheckout.mutate with:', { sessionTypeId, scheduledDate: selectedSlot, notes, coachId: selectedCoach });
     createCheckout.mutate({
       sessionTypeId,
       scheduledDate: selectedSlot,
@@ -433,6 +472,41 @@ export default function BookSession() {
                 </Card>
               )}
 
+              {/* Guest Info for Free Sessions */}
+              {selectedSlot && isFreeSession && (
+                <Card className="border-green-200 bg-green-50">
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <span>🎉</span> Free Discovery Call - Your Info
+                    </CardTitle>
+                    <CardDescription>No payment required! Just tell us how to reach you.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Label htmlFor="guestName">Your Name *</Label>
+                      <Input
+                        id="guestName"
+                        placeholder="Enter your name"
+                        value={guestName}
+                        onChange={(e) => setGuestName(e.target.value)}
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="guestEmail">Your Email *</Label>
+                      <Input
+                        id="guestEmail"
+                        type="email"
+                        placeholder="your@email.com"
+                        value={guestEmail}
+                        onChange={(e) => setGuestEmail(e.target.value)}
+                        className="mt-1"
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
               {/* Notes */}
               {selectedSlot && (
                 <Card>
@@ -457,10 +531,19 @@ export default function BookSession() {
                   id="book-session-btn"
                   type="button"
                   onClick={handleBookSession}
-                  disabled={createCheckout.isPending}
-                  className="w-full h-12 px-6 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-md font-medium hover:from-purple-700 hover:to-blue-700 disabled:opacity-50 transition-all"
+                  disabled={createCheckout.isPending || bookFreeSession.isPending}
+                  className={`w-full h-12 px-6 text-white rounded-md font-medium disabled:opacity-50 transition-all ${
+                    isFreeSession 
+                      ? 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700'
+                      : 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700'
+                  }`}
                 >
-                  {createCheckout.isPending ? 'Processing...' : `Book Session with ${selectedCoachData?.name}`}
+                  {(createCheckout.isPending || bookFreeSession.isPending) 
+                    ? 'Processing...' 
+                    : isFreeSession 
+                      ? `🎁 Book FREE Discovery Call with ${selectedCoachData?.name}`
+                      : `Book Session with ${selectedCoachData?.name}`
+                  }
                 </button>
               )}
             </div>
@@ -468,7 +551,36 @@ export default function BookSession() {
         </>
       )}
 
-      {/* Confirmation Dialog */}
+      {/* Free Booking Success Dialog */}
+      <Dialog open={showFreeBookingSuccess} onOpenChange={setShowFreeBookingSuccess}>
+        <DialogContent>
+          <DialogHeader>
+            <div className="mx-auto mb-4">
+              <CheckCircle2 className="h-12 w-12 text-green-500" />
+            </div>
+            <DialogTitle className="text-center">🎉 Discovery Call Booked!</DialogTitle>
+            <DialogDescription className="text-center space-y-2">
+              <p>Your FREE discovery call with {selectedCoachData?.name} has been scheduled!</p>
+              <p className="font-medium">We'll send confirmation details to: {guestEmail}</p>
+              <p className="text-sm text-muted-foreground">Check your email for the meeting link and calendar invite.</p>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="sm:justify-center">
+            <Button onClick={() => {
+              setShowFreeBookingSuccess(false);
+              // Reset form
+              setSelectedSlot(null);
+              setGuestName("");
+              setGuestEmail("");
+              setNotes("");
+            }} className="bg-green-600 hover:bg-green-700">
+              Done
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Paid Session Confirmation Dialog */}
       <Dialog open={showConfirmation} onOpenChange={setShowConfirmation}>
         <DialogContent>
           <DialogHeader>
