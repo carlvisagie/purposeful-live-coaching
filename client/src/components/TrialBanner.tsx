@@ -13,10 +13,23 @@ interface TrialBannerProps {
   tier: string;
   isTrialExpired: boolean;
   userRole?: "user" | "client" | "coach" | "admin";
+  userEmail?: string;
 }
 
-export function TrialBanner({ daysRemaining, tier, isTrialExpired, userRole }: TrialBannerProps) {
+// Owner emails that should never see the trial banner
+const OWNER_EMAILS = [
+  "carl@purposefullivecoaching.com",
+  "carl@visagie.co.za",
+  "admin@purposefullivecoaching.com",
+];
+
+export function TrialBanner({ daysRemaining, tier, isTrialExpired, userRole, userEmail }: TrialBannerProps) {
   const [, setLocation] = useLocation();
+  
+  // Don't show banner for owners - they own the platform!
+  if (userEmail && OWNER_EMAILS.includes(userEmail.toLowerCase())) {
+    return null;
+  }
   
   // Don't show banner for paid users
   if (tier === "basic" || tier === "premium" || tier === "elite") {

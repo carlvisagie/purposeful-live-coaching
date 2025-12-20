@@ -40,6 +40,7 @@ export function TrialWrapper({ children }: TrialWrapperProps) {
           tier={trialStatus.tier || "free"}
           isTrialExpired={trialStatus.isTrialExpired || false}
           userRole={user?.role}
+          userEmail={user?.email}
         />
       )}
       <div className="flex-1">
