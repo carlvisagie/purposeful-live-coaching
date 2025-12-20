@@ -124,54 +124,60 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     return;
   }
 
-  // For guest checkout, we need to get/create user from customer email
-  let userId = session.metadata?.user_id;
-  const customerEmail = session.customer_email || session.metadata?.customer_email;
-  const customerName = session.metadata?.customer_name;
+  // Get user info from Stripe customer (standard - payment info = user info)
   const tier = session.metadata?.tier;
-
-  // Check if this is a one-time payment (coaching session booking) or subscription
-  if (session.mode === 'payment') {
-    if (!userId) {
-      console.error("[Webhook] Missing user_id for payment mode");
-      return;
+  const stripeCustomerId = session.customer as string;
+  
+  // Fetch customer details from Stripe (name + email entered during payment)
+  let customerEmail: string | null = session.customer_email;
+  let customerName: string | null = null;
+  
+  if (stripeCustomerId) {
+    try {
+      const stripeCustomer = await stripe.customers.retrieve(stripeCustomerId) as Stripe.Customer;
+      customerEmail = customerEmail || stripeCustomer.email;
+      customerName = stripeCustomer.name;
+      console.log("[Webhook] Got customer from Stripe:", customerEmail, customerName);
+    } catch (err) {
+      console.error("[Webhook] Failed to fetch Stripe customer:", err);
     }
-    // ONE-TIME PAYMENT: Create coaching session booking
-    await handleSessionBooking(session, db, parseInt(userId));
+  }
+
+  if (!customerEmail) {
+    console.error("[Webhook] No customer email - cannot create user");
     return;
   }
 
-  // SUBSCRIPTION MODE: Handle guest checkout - create user if needed
-  if (!userId && customerEmail) {
-    console.log("[Webhook] Guest checkout - looking up or creating user for:", customerEmail);
-    
-    // Check if user exists by email
-    const existingUser = await db
-      .select()
-      .from(users)
-      .where(eq(users.email, customerEmail))
-      .limit(1);
-    
-    if (existingUser.length > 0) {
-      userId = existingUser[0].id.toString();
-      console.log("[Webhook] Found existing user:", userId);
-    } else {
-      // Create new user
-      const [newUser] = await db
-        .insert(users)
-        .values({
-          email: customerEmail,
-          name: customerName || customerEmail.split('@')[0],
-          role: 'client',
-        })
-        .returning({ id: users.id });
-      userId = newUser.id.toString();
-      console.log("[Webhook] Created new user:", userId);
-    }
+  // Find or create user from Stripe payment info
+  let userId: number;
+  const existingUser = await db
+    .select()
+    .from(users)
+    .where(eq(users.email, customerEmail))
+    .limit(1);
+  
+  if (existingUser.length > 0) {
+    userId = existingUser[0].id;
+    console.log("[Webhook] Found existing user:", userId);
+  } else {
+    // Create new user from Stripe payment info
+    const [newUser] = await db
+      .insert(users)
+      .values({
+        email: customerEmail,
+        name: customerName || customerEmail.split('@')[0],
+        role: 'client',
+        openId: `stripe_${stripeCustomerId}`, // Use Stripe customer ID as openId
+      })
+      .returning({ id: users.id });
+    userId = newUser.id;
+    console.log("[Webhook] Created new user from Stripe payment info:", userId);
   }
 
-  if (!userId) {
-    console.error("[Webhook] Cannot determine user - no user_id and no customer_email");
+  // Check if this is a one-time payment (coaching session booking) or subscription
+  if (session.mode === 'payment') {
+    // ONE-TIME PAYMENT: Create coaching session booking
+    await handleSessionBooking(session, db, userId);
     return;
   }
 
