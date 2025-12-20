@@ -54,6 +54,23 @@ export default function Pricing() {
   // AI Coaching Tiers
   const aiTiers = [
     {
+      id: "free_discovery",
+      name: "Free Discovery",
+      price: 0,
+      description: "Try before you commit",
+      icon: <Sparkles className="h-6 w-6" />,
+      color: "border-green-500",
+      popular: false,
+      free: true,
+      features: [
+        "15-minute discovery call",
+        "Meet your coach",
+        "Discuss your goals",
+        "No commitment required",
+        "Book instantly",
+      ],
+    },
+    {
       id: "ai_basic",
       name: "Basic",
       price: 29,
@@ -107,6 +124,23 @@ export default function Pricing() {
 
   // Human Coaching Tiers
   const humanTiers = [
+    {
+      id: "free_discovery",
+      name: "Free Discovery",
+      price: 0,
+      description: "Try before you commit",
+      icon: <Sparkles className="h-6 w-6" />,
+      color: "border-green-500",
+      popular: false,
+      free: true,
+      features: [
+        "15-minute discovery call",
+        "Meet your coach",
+        "Discuss your goals",
+        "No commitment required",
+        "Book instantly",
+      ],
+    },
     {
       id: "human_basic",
       name: "Starter",
@@ -197,7 +231,7 @@ export default function Pricing() {
         </Tabs>
 
         {/* Pricing Cards */}
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
           {activeTiers.map((tier) => (
             <Card
               key={tier.id}
@@ -236,10 +270,10 @@ export default function Pricing() {
 
               <CardFooter>
                 <Button
-                  className="w-full"
+                  className={`w-full ${(tier as any).free ? 'bg-green-600 hover:bg-green-700 text-white' : ''}`}
                   size="lg"
-                  variant={tier.popular ? "default" : "outline"}
-                  onClick={() => handleSubscribe(tier.id, tier.price)}
+                  variant={tier.popular ? "default" : (tier as any).free ? "default" : "outline"}
+                  onClick={() => (tier as any).free ? setLocation('/sessions/book') : handleSubscribe(tier.id, tier.price)}
                   disabled={loadingTier === tier.id || isCurrentTier(tier.id)}
                 >
                   {loadingTier === tier.id ? (
@@ -249,6 +283,8 @@ export default function Pricing() {
                     </>
                   ) : isCurrentTier(tier.id) ? (
                     "Current Plan"
+                  ) : (tier as any).free ? (
+                    "Book Free Call →"
                   ) : (
                     "Get Started"
                   )}
