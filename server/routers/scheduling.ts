@@ -533,7 +533,7 @@ export const schedulingRouter = router({
   /**
    * Set coach availability
    */
-  setCoachAvailability: protectedProcedure
+  setCoachAvailability: publicProcedure
     .input(
       z.object({
         coachId: z.number(),
