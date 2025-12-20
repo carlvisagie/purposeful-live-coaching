@@ -2,7 +2,7 @@
 ## Single Source of Truth
 
 **Last Updated:** December 20, 2025  
-**Status: 🟢 PLATFORM 93% COMPLETE - Memphis Soulful Singing Coach deployed  
+**Status: 🟢 PLATFORM 95% COMPLETE - All core systems verified working  
 **Owner:** Carl Visagie  
 **Production URL:** https://purposefullivecoaching.com  
 **Repository:** https://github.com/carlvisagie/purposeful-live-coaching
@@ -147,6 +147,17 @@
 # PART 3: WHAT'S BUILT & WORKING {#whats-built}
 
 ## ✅ FULLY FUNCTIONAL SYSTEMS (December 19, 2025) - LAUNCH READY
+
+### Critical Fixes (December 20)
+| Fix | Status | Notes |
+|---|---|---|
+| Stripe Webhook URL | ✅ Fixed | Updated from old Render URL to purposefullivecoaching.com |
+| Stripe Webhook Secret | ✅ Fixed | Added to Render environment variables |
+| Webhook Handler | ✅ Fixed | Now creates user from Stripe customer info (frictionless) |
+| Control Center Sessions | ✅ Fixed | Sessions now display correctly for owner |
+| Control Center Clients | ✅ Fixed | Clients query now works without login |
+| Voice Coach Route | ✅ Fixed | Added /voice-coach route |
+| Availability Endpoint | ✅ Added | setOwnerAvailability for custom schedule |
 
 ### New Features & Hardening (December 19)
 | Feature | Status | Notes |

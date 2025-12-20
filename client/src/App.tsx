@@ -50,6 +50,7 @@ import OwnerControlCenterV3 from "./pages/OwnerControlCenterV3";
 import FreedomDashboard from "./pages/FreedomDashboard";
 import Settings from "./pages/Settings";
 import PopoutTeleprompter from "./pages/PopoutTeleprompter";
+import VoiceCoach from "./pages/VoiceCoach";
 import TrialWrapper from "./components/TrialWrapper";
 
 
@@ -110,6 +111,7 @@ function Router() {
       <Route path="/marketing" component={FreedomDashboard} />
       <Route path="/settings" component={Settings} />
       <Route path="/teleprompter" component={PopoutTeleprompter} />
+      <Route path="/voice-coach" component={VoiceCoach} />
 
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}

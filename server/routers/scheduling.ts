@@ -658,4 +658,48 @@ export const schedulingRouter = router({
         slotsCreated: availabilitySlots.length,
       };
     }),
+
+  /**
+   * Set Carl's custom availability:
+   * Weekdays (Mon-Fri): 19:30 - 21:30
+   * Weekends (Sat-Sun): 10:30 - 16:30
+   */
+  setOwnerAvailability: publicProcedure
+    .input(z.object({ coachId: z.number() }))
+    .mutation(async ({ input }) => {
+      // Clear existing availability first
+      const existing = await getCoachAvailability(input.coachId);
+      for (const slot of existing) {
+        await deleteCoachAvailability(slot.id);
+      }
+
+      // Carl's custom availability
+      const availabilitySlots = [
+        // Weekdays: 19:30 - 21:30
+        { dayOfWeek: 1, startTime: '19:30', endTime: '21:30' }, // Monday
+        { dayOfWeek: 2, startTime: '19:30', endTime: '21:30' }, // Tuesday
+        { dayOfWeek: 3, startTime: '19:30', endTime: '21:30' }, // Wednesday
+        { dayOfWeek: 4, startTime: '19:30', endTime: '21:30' }, // Thursday
+        { dayOfWeek: 5, startTime: '19:30', endTime: '21:30' }, // Friday
+        // Weekends: 10:30 - 16:30
+        { dayOfWeek: 6, startTime: '10:30', endTime: '16:30' }, // Saturday
+        { dayOfWeek: 0, startTime: '10:30', endTime: '16:30' }, // Sunday
+      ];
+
+      for (const slot of availabilitySlots) {
+        await upsertCoachAvailability({
+          coachId: input.coachId,
+          dayOfWeek: slot.dayOfWeek,
+          startTime: slot.startTime,
+          endTime: slot.endTime,
+          isActive: true,
+        });
+      }
+
+      return {
+        success: true,
+        message: 'Owner availability set: Weekdays 19:30-21:30, Weekends 10:30-16:30',
+        slotsCreated: availabilitySlots.length,
+      };
+    }),
 });
