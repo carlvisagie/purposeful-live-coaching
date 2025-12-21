@@ -14,14 +14,23 @@
  * 
  * Architecture:
  * 1. ProfileGuard.getContext() - MUST be called before ANY AI interaction
- * 2. Returns full client context or throws error
+ * 2. Returns full client context from the UNIFIED CLIENT PROFILE
  * 3. Logs every access for audit trail
  * 4. Alerts on failures so we can fix issues immediately
  * 5. Provides AI-ready context string that modules MUST use
+ * 
+ * THE UNIFIED CLIENT PROFILE is the SINGLE SOURCE OF TRUTH:
+ * - Every chat message
+ * - Every phone call transcript
+ * - Every video session
+ * - Every button pushed
+ * - Every link clicked
+ * - Every program browsed, started, completed
+ * - ALL client data in ONE place
  */
 
 import { db } from "./db";
-import { users } from "../drizzle/schema";
+import { users, clients } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
 
 // ============================================================================
@@ -31,29 +40,80 @@ import { eq } from "drizzle-orm";
 export interface ClientContext {
   // Identity
   userId: number;
+  clientId: number | null;
   name: string | null;
   email: string | null;
+  phone: string | null;
   
-  // Goals & Challenges
+  // Basic Info
+  age: number | null;
+  dateOfBirth: Date | null;
+  locationCity: string | null;
+  locationState: string | null;
+  locationCountry: string | null;
+  relationshipStatus: string | null;
+  hasChildren: string | null;
+  
+  // Professional
+  jobTitle: string | null;
+  company: string | null;
+  industry: string | null;
+  careerGoals: string | null;
+  
+  // Goals & Motivation
   primaryGoal: string | null;
-  secondaryGoal: string | null;
-  mainChallenges: string[];
+  goalTimeline: string | null;
+  motivation: string | null;
+  
+  // Identity Architecture
+  currentIdentity: string | null;
+  targetIdentity: string | null;
+  identityGap: string | null;
+  coreValues: string | null;
+  lifeMission: string | null;
+  
+  // Behavioral Patterns
+  procrastinationTriggers: string | null;
+  energyPattern: string | null;
+  stressResponses: string | null;
+  
+  // Health & Wellness
+  sleepHours: number | null;
+  exerciseFrequency: string | null;
+  dietPattern: string | null;
+  mentalHealthNotes: string | null;
+  
+  // Financial
+  savingsLevel: string | null;
+  hasDebt: string | null;
+  monthlyExpensesEstimate: number | null;
   
   // Communication
   communicationStyle: string | null;
-  triggers: string[];
+  preferredContact: string | null;
+  bestTimeToReach: string | null;
   
-  // Preferences
+  // Crisis Indicators
+  suicideRiskLevel: string | null;
+  crisisFlags: string | null;
+  
+  // Notes & Status
+  notes: string | null;
+  status: string | null;
+  startDate: Date | null;
+  
+  // Legacy fields (from users table)
+  secondaryGoal: string | null;
+  mainChallenges: string[];
+  triggers: string[];
   timezone: string | null;
   availability: string | null;
-  
-  // Extended metadata
   metadata: Record<string, any>;
   
   // Profile completeness
   profileCompleteness: number;
   
-  // For AI prompts
+  // For AI prompts - THE MOST IMPORTANT FIELD
   aiContextString: string;
   
   // Audit
@@ -82,6 +142,7 @@ export interface ProfileGuardConfig {
 interface ProfileAccessLog {
   timestamp: Date;
   userId: number;
+  clientId: number | null;
   moduleName: string;
   success: boolean;
   profileCompleteness: number;
@@ -120,8 +181,6 @@ function raiseAlert(alert: Omit<ProfileAlert, "timestamp">): void {
   const prefix = alert.severity === "critical" ? "🚨 CRITICAL" : 
                  alert.severity === "error" ? "❌ ERROR" : "⚠️ WARNING";
   console.error(`[ProfileGuard] ${prefix}: ${alert.message} (Module: ${alert.moduleName})`);
-  
-  // In production, this would send to monitoring system (Sentry, PagerDuty, etc.)
 }
 
 // ============================================================================
@@ -130,6 +189,10 @@ function raiseAlert(alert: Omit<ProfileAlert, "timestamp">): void {
 
 /**
  * Get client context - MUST be called before ANY AI interaction
+ * 
+ * This pulls from the UNIFIED CLIENT PROFILE (clients table) which contains
+ * EVERYTHING we know about this person - every interaction, every click,
+ * every conversation, every insight.
  * 
  * This is the ONLY way to get client context. There is no backdoor.
  * If this fails, the AI interaction should NOT proceed.
@@ -146,6 +209,7 @@ export async function getClientContext(
       logAccess({
         timestamp: new Date(),
         userId: 0,
+        clientId: null,
         moduleName: config.moduleName,
         success: true,
         profileCompleteness: 0,
@@ -153,27 +217,11 @@ export async function getClientContext(
     }
     
     // Return minimal context for anonymous users
-    return {
-      userId: 0,
-      name: null,
-      email: null,
-      primaryGoal: null,
-      secondaryGoal: null,
-      mainChallenges: [],
-      communicationStyle: null,
-      triggers: [],
-      timezone: null,
-      availability: null,
-      metadata: {},
-      profileCompleteness: 0,
-      aiContextString: "\n\n[NEW USER - No profile data yet. Learn about them through natural conversation.]",
-      loadedAt: new Date(),
-      loadedBy: config.moduleName,
-    };
+    return createEmptyContext(config.moduleName);
   }
   
   try {
-    // Load user profile
+    // First, load user for basic auth info
     const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
     
     if (!user) {
@@ -187,6 +235,7 @@ export async function getClientContext(
       logAccess({
         timestamp: new Date(),
         userId,
+        clientId: null,
         moduleName: config.moduleName,
         success: false,
         profileCompleteness: 0,
@@ -196,13 +245,21 @@ export async function getClientContext(
       return null;
     }
     
-    // Parse JSON fields safely
+    // Now load the UNIFIED CLIENT PROFILE - this is where ALL the good stuff is
+    const [client] = await db.select().from(clients).where(eq(clients.userId, userId)).limit(1);
+    
+    // If no client profile exists yet, we still have basic user info
+    // This happens for brand new users who haven't had their profile populated yet
+    
+    // Parse JSON fields safely from user table (legacy)
     const mainChallenges = parseJsonArray(user.mainChallenges);
     const triggers = parseJsonArray(user.triggers);
     const metadata = parseJsonObject(user.metadata);
     
-    // Calculate actual profile completeness
-    const profileCompleteness = calculateProfileCompleteness(user);
+    // Calculate profile completeness based on client profile (if exists)
+    const profileCompleteness = client 
+      ? calculateProfileCompleteness(client, user)
+      : calculateBasicCompleteness(user);
     
     // Check minimum completeness requirement
     if (config.minProfileCompleteness && profileCompleteness < config.minProfileCompleteness) {
@@ -214,33 +271,89 @@ export async function getClientContext(
       });
     }
     
-    // Build AI context string
-    const aiContextString = buildAIContextString({
-      name: user.name,
-      primaryGoal: user.primaryGoal,
-      secondaryGoal: user.secondaryGoal,
-      mainChallenges,
-      communicationStyle: user.communicationStyle,
-      triggers,
-      timezone: user.timezone,
-      availability: user.availability,
-      metadata,
-    });
+    // Build the comprehensive AI context string
+    const aiContextString = buildAIContextString(client, user, mainChallenges, triggers, metadata);
     
     const context: ClientContext = {
+      // Identity
       userId,
-      name: user.name,
-      email: user.email,
-      primaryGoal: user.primaryGoal,
+      clientId: client?.id || null,
+      name: client?.name || user.name,
+      email: client?.email || user.email,
+      phone: client?.phone || null,
+      
+      // Basic Info (from Unified Client Profile)
+      age: client?.age || null,
+      dateOfBirth: client?.dateOfBirth || null,
+      locationCity: client?.locationCity || null,
+      locationState: client?.locationState || null,
+      locationCountry: client?.locationCountry || null,
+      relationshipStatus: client?.relationshipStatus || null,
+      hasChildren: client?.hasChildren || null,
+      
+      // Professional
+      jobTitle: client?.jobTitle || null,
+      company: client?.company || null,
+      industry: client?.industry || null,
+      careerGoals: client?.careerGoals || null,
+      
+      // Goals & Motivation
+      primaryGoal: client?.primaryGoal || user.primaryGoal,
+      goalTimeline: client?.goalTimeline || null,
+      motivation: client?.motivation || null,
+      
+      // Identity Architecture
+      currentIdentity: client?.currentIdentity || null,
+      targetIdentity: client?.targetIdentity || null,
+      identityGap: client?.identityGap || null,
+      coreValues: client?.coreValues || null,
+      lifeMission: client?.lifeMission || null,
+      
+      // Behavioral Patterns
+      procrastinationTriggers: client?.procrastinationTriggers || null,
+      energyPattern: client?.energyPattern || null,
+      stressResponses: client?.stressResponses || null,
+      
+      // Health & Wellness
+      sleepHours: client?.sleepHours ? parseFloat(String(client.sleepHours)) : null,
+      exerciseFrequency: client?.exerciseFrequency || null,
+      dietPattern: client?.dietPattern || null,
+      mentalHealthNotes: client?.mentalHealthNotes || null,
+      
+      // Financial
+      savingsLevel: client?.savingsLevel || null,
+      hasDebt: client?.hasDebt || null,
+      monthlyExpensesEstimate: client?.monthlyExpensesEstimate || null,
+      
+      // Communication
+      communicationStyle: client?.communicationStyle || user.communicationStyle,
+      preferredContact: client?.preferredContact || null,
+      bestTimeToReach: client?.bestTimeToReach || null,
+      
+      // Crisis Indicators
+      suicideRiskLevel: client?.suicideRiskLevel || null,
+      crisisFlags: client?.crisisFlags || null,
+      
+      // Notes & Status
+      notes: client?.notes || null,
+      status: client?.status || null,
+      startDate: client?.startDate || null,
+      
+      // Legacy fields (from users table)
       secondaryGoal: user.secondaryGoal,
       mainChallenges,
-      communicationStyle: user.communicationStyle,
       triggers,
       timezone: user.timezone,
       availability: user.availability,
       metadata,
+      
+      // Profile completeness
       profileCompleteness,
+      
+      // THE MOST IMPORTANT FIELD - what Sage actually sees
       aiContextString,
+      
+      // Audit
       loadedAt: new Date(),
       loadedBy: config.moduleName,
     };
@@ -250,6 +363,7 @@ export async function getClientContext(
       logAccess({
         timestamp: new Date(),
         userId,
+        clientId: client?.id || null,
         moduleName: config.moduleName,
         success: true,
         profileCompleteness,
@@ -266,6 +380,8 @@ export async function getClientContext(
       });
     }
     
+    console.log(`[ProfileGuard] Loaded profile for ${context.name || 'Unknown'} (userId: ${userId}, clientId: ${context.clientId}) - ${profileCompleteness}% complete`);
+    
     return context;
     
   } catch (error) {
@@ -279,6 +395,7 @@ export async function getClientContext(
     logAccess({
       timestamp: new Date(),
       userId,
+      clientId: null,
       moduleName: config.moduleName,
       success: false,
       profileCompleteness: 0,
@@ -315,6 +432,63 @@ export async function requireClientContext(
 // HELPER FUNCTIONS
 // ============================================================================
 
+function createEmptyContext(moduleName: string): ClientContext {
+  return {
+    userId: 0,
+    clientId: null,
+    name: null,
+    email: null,
+    phone: null,
+    age: null,
+    dateOfBirth: null,
+    locationCity: null,
+    locationState: null,
+    locationCountry: null,
+    relationshipStatus: null,
+    hasChildren: null,
+    jobTitle: null,
+    company: null,
+    industry: null,
+    careerGoals: null,
+    primaryGoal: null,
+    goalTimeline: null,
+    motivation: null,
+    currentIdentity: null,
+    targetIdentity: null,
+    identityGap: null,
+    coreValues: null,
+    lifeMission: null,
+    procrastinationTriggers: null,
+    energyPattern: null,
+    stressResponses: null,
+    sleepHours: null,
+    exerciseFrequency: null,
+    dietPattern: null,
+    mentalHealthNotes: null,
+    savingsLevel: null,
+    hasDebt: null,
+    monthlyExpensesEstimate: null,
+    communicationStyle: null,
+    preferredContact: null,
+    bestTimeToReach: null,
+    suicideRiskLevel: null,
+    crisisFlags: null,
+    notes: null,
+    status: null,
+    startDate: null,
+    secondaryGoal: null,
+    mainChallenges: [],
+    triggers: [],
+    timezone: null,
+    availability: null,
+    metadata: {},
+    profileCompleteness: 0,
+    aiContextString: "\n\n[NEW USER - No profile data yet. Learn about them through natural conversation and REMEMBER what they share!]",
+    loadedAt: new Date(),
+    loadedBy: moduleName,
+  };
+}
+
 function parseJsonArray(value: any): string[] {
   if (!value) return [];
   if (Array.isArray(value)) return value;
@@ -337,84 +511,188 @@ function parseJsonObject(value: any): Record<string, any> {
   }
 }
 
-function calculateProfileCompleteness(user: any): number {
+function calculateBasicCompleteness(user: any): number {
   const fields = [
     user.name,
     user.primaryGoal,
     user.mainChallenges,
     user.communicationStyle,
-    user.triggers,
-    user.timezone,
-    user.availability,
   ];
   
   const filledFields = fields.filter(f => f && (typeof f !== "string" || f.trim() !== ""));
   return Math.round((filledFields.length / fields.length) * 100);
 }
 
-function buildAIContextString(profile: {
-  name: string | null;
-  primaryGoal: string | null;
-  secondaryGoal: string | null;
-  mainChallenges: string[];
-  communicationStyle: string | null;
-  triggers: string[];
-  timezone: string | null;
-  availability: string | null;
-  metadata: Record<string, any>;
-}): string {
-  const parts: string[] = [];
+function calculateProfileCompleteness(client: any, user: any): number {
+  // Weight important fields more heavily
+  const criticalFields = [
+    client.name || user.name,
+    client.primaryGoal || user.primaryGoal,
+    client.phone || client.email,
+  ];
   
-  // Always start with this header so AI knows context is available
-  parts.push("\n\n---\n## 👤 WHAT YOU KNOW ABOUT THIS CLIENT (USE THIS!)");
+  const importantFields = [
+    client.motivation,
+    client.currentIdentity,
+    client.targetIdentity,
+    client.coreValues,
+    client.communicationStyle || user.communicationStyle,
+  ];
   
-  if (profile.name) {
-    parts.push(`**Name:** ${profile.name} - USE THEIR NAME naturally in conversation!`);
+  const niceToHaveFields = [
+    client.age,
+    client.jobTitle,
+    client.locationCity,
+    client.sleepHours,
+    client.exerciseFrequency,
+    client.energyPattern,
+  ];
+  
+  const criticalFilled = criticalFields.filter(f => f && (typeof f !== "string" || f.trim() !== "")).length;
+  const importantFilled = importantFields.filter(f => f && (typeof f !== "string" || f.trim() !== "")).length;
+  const niceToHaveFilled = niceToHaveFields.filter(f => f && (typeof f !== "string" || f.trim() !== "")).length;
+  
+  // Weighted score: critical (50%), important (35%), nice-to-have (15%)
+  const criticalScore = (criticalFilled / criticalFields.length) * 50;
+  const importantScore = (importantFilled / importantFields.length) * 35;
+  const niceToHaveScore = (niceToHaveFilled / niceToHaveFields.length) * 15;
+  
+  return Math.round(criticalScore + importantScore + niceToHaveScore);
+}
+
+function buildAIContextString(
+  client: any | null,
+  user: any,
+  mainChallenges: string[],
+  triggers: string[],
+  metadata: Record<string, any>
+): string {
+  const sections: string[] = [];
+  
+  // Always start with this header
+  sections.push("\n\n---\n## 👤 UNIFIED CLIENT PROFILE - EVERYTHING YOU KNOW ABOUT THIS PERSON\n");
+  sections.push("**USE THIS INFORMATION! Reference it naturally. Show you REMEMBER them.**\n");
+  
+  // --- BASIC INFO ---
+  const basicInfo: string[] = [];
+  const name = client?.name || user.name;
+  if (name) basicInfo.push(`**Name:** ${name} - USE THEIR NAME naturally!`);
+  if (client?.age) basicInfo.push(`Age: ${client.age}`);
+  if (client?.dateOfBirth) basicInfo.push(`Birthday: ${new Date(client.dateOfBirth).toLocaleDateString()}`);
+  if (client?.locationCity || client?.locationState || client?.locationCountry) {
+    const location = [client.locationCity, client.locationState, client.locationCountry].filter(Boolean).join(', ');
+    basicInfo.push(`Location: ${location}`);
+  }
+  if (client?.relationshipStatus) basicInfo.push(`Relationship: ${client.relationshipStatus}`);
+  if (client?.hasChildren) basicInfo.push(`Has Children: ${client.hasChildren}`);
+  if (basicInfo.length > 0) {
+    sections.push(`### 👤 WHO THEY ARE\n${basicInfo.join('\n')}`);
   }
   
-  if (profile.primaryGoal) {
-    parts.push(`**Primary Goal:** ${profile.primaryGoal}`);
+  // --- PROFESSIONAL INFO ---
+  const professionalInfo: string[] = [];
+  if (client?.jobTitle) professionalInfo.push(`Job Title: ${client.jobTitle}`);
+  if (client?.company) professionalInfo.push(`Company: ${client.company}`);
+  if (client?.industry) professionalInfo.push(`Industry: ${client.industry}`);
+  if (client?.careerGoals) professionalInfo.push(`Career Goals: ${client.careerGoals}`);
+  if (professionalInfo.length > 0) {
+    sections.push(`### 💼 PROFESSIONAL LIFE\n${professionalInfo.join('\n')}`);
   }
   
-  if (profile.secondaryGoal) {
-    parts.push(`**Secondary Goal:** ${profile.secondaryGoal}`);
+  // --- GOALS & MOTIVATION (MOST IMPORTANT) ---
+  const goalsInfo: string[] = [];
+  const primaryGoal = client?.primaryGoal || user.primaryGoal;
+  if (primaryGoal) goalsInfo.push(`🎯 **PRIMARY GOAL:** ${primaryGoal}`);
+  if (client?.goalTimeline) goalsInfo.push(`Timeline: ${client.goalTimeline}`);
+  if (client?.motivation) goalsInfo.push(`What Drives Them: ${client.motivation}`);
+  if (user.secondaryGoal) goalsInfo.push(`Secondary Goal: ${user.secondaryGoal}`);
+  if (goalsInfo.length > 0) {
+    sections.push(`### 🎯 THEIR GOALS & MOTIVATION\n${goalsInfo.join('\n')}`);
   }
   
-  if (profile.mainChallenges.length > 0) {
-    parts.push(`**Challenges They've Shared:** ${profile.mainChallenges.join(", ")}`);
+  // --- IDENTITY ARCHITECTURE ---
+  const identityInfo: string[] = [];
+  if (client?.currentIdentity) identityInfo.push(`Current Identity: ${client.currentIdentity}`);
+  if (client?.targetIdentity) identityInfo.push(`Who They Want to Become: ${client.targetIdentity}`);
+  if (client?.identityGap) identityInfo.push(`The Gap: ${client.identityGap}`);
+  if (client?.coreValues) identityInfo.push(`Core Values: ${client.coreValues}`);
+  if (client?.lifeMission) identityInfo.push(`Life Mission: ${client.lifeMission}`);
+  if (identityInfo.length > 0) {
+    sections.push(`### 🔥 IDENTITY & VALUES\n${identityInfo.join('\n')}`);
   }
   
-  if (profile.communicationStyle) {
-    parts.push(`**Communication Preference:** ${profile.communicationStyle}`);
+  // --- CHALLENGES & TRIGGERS ---
+  const challengeInfo: string[] = [];
+  if (mainChallenges.length > 0) challengeInfo.push(`Challenges: ${mainChallenges.join(', ')}`);
+  if (triggers.length > 0) challengeInfo.push(`⚠️ TRIGGERS TO AVOID: ${triggers.join(', ')}`);
+  if (client?.procrastinationTriggers) challengeInfo.push(`Procrastination Triggers: ${client.procrastinationTriggers}`);
+  if (client?.stressResponses) challengeInfo.push(`How They Handle Stress: ${client.stressResponses}`);
+  if (challengeInfo.length > 0) {
+    sections.push(`### 🧠 CHALLENGES & PATTERNS\n${challengeInfo.join('\n')}`);
   }
   
-  if (profile.triggers.length > 0) {
-    parts.push(`**⚠️ TRIGGERS TO AVOID:** ${profile.triggers.join(", ")}`);
+  // --- HEALTH & WELLNESS ---
+  const healthInfo: string[] = [];
+  if (client?.sleepHours) healthInfo.push(`Sleep: ${client.sleepHours} hours`);
+  if (client?.exerciseFrequency) healthInfo.push(`Exercise: ${client.exerciseFrequency}`);
+  if (client?.dietPattern) healthInfo.push(`Diet: ${client.dietPattern}`);
+  if (client?.energyPattern) healthInfo.push(`Energy Pattern: ${client.energyPattern}`);
+  if (client?.mentalHealthNotes) healthInfo.push(`Mental Health Notes: ${client.mentalHealthNotes}`);
+  if (metadata.sleepPatterns) healthInfo.push(`Sleep Patterns: ${metadata.sleepPatterns}`);
+  if (metadata.stressors?.length) healthInfo.push(`Current Stressors: ${metadata.stressors.join(', ')}`);
+  if (metadata.healthConcerns?.length) healthInfo.push(`Health Concerns: ${metadata.healthConcerns.join(', ')}`);
+  if (healthInfo.length > 0) {
+    sections.push(`### 💪 HEALTH & WELLNESS\n${healthInfo.join('\n')}`);
   }
   
-  if (profile.timezone) {
-    parts.push(`**Timezone:** ${profile.timezone}`);
+  // --- FINANCIAL SITUATION ---
+  const financialInfo: string[] = [];
+  if (client?.savingsLevel) financialInfo.push(`Savings: ${client.savingsLevel}`);
+  if (client?.hasDebt) financialInfo.push(`Has Debt: ${client.hasDebt}`);
+  if (client?.monthlyExpensesEstimate) financialInfo.push(`Monthly Expenses: ~$${client.monthlyExpensesEstimate}`);
+  if (financialInfo.length > 0) {
+    sections.push(`### 💰 FINANCIAL CONTEXT\n${financialInfo.join('\n')}`);
   }
   
-  // Add metadata insights
-  if (profile.metadata.sleepPatterns) {
-    parts.push(`**Sleep Patterns:** ${profile.metadata.sleepPatterns}`);
-  }
-  if (profile.metadata.stressors?.length) {
-    parts.push(`**Current Stressors:** ${profile.metadata.stressors.join(", ")}`);
-  }
-  if (profile.metadata.healthConcerns?.length) {
-    parts.push(`**Health Concerns:** ${profile.metadata.healthConcerns.join(", ")}`);
-  }
-  
-  if (parts.length === 1) {
-    // Only header, no actual data
-    return "\n\n[NEW USER - No profile data yet. Learn about them through natural conversation and REMEMBER what they share!]";
+  // --- COMMUNICATION PREFERENCES ---
+  const commInfo: string[] = [];
+  const commStyle = client?.communicationStyle || user.communicationStyle;
+  if (commStyle) commInfo.push(`Communication Style: ${commStyle}`);
+  if (client?.preferredContact) commInfo.push(`Preferred Contact: ${client.preferredContact}`);
+  if (client?.bestTimeToReach) commInfo.push(`Best Time: ${client.bestTimeToReach}`);
+  if (user.timezone) commInfo.push(`Timezone: ${user.timezone}`);
+  if (commInfo.length > 0) {
+    sections.push(`### 💬 HOW TO COMMUNICATE WITH THEM\n${commInfo.join('\n')}`);
   }
   
-  parts.push("\n**CRITICAL:** Reference this information naturally. Show you REMEMBER them. This is what creates trust and loyalty.");
+  // --- CRISIS INDICATORS (CRITICAL SAFETY INFO) ---
+  const crisisInfo: string[] = [];
+  if (client?.suicideRiskLevel && client.suicideRiskLevel !== 'none') {
+    crisisInfo.push(`🚨 SUICIDE RISK LEVEL: ${client.suicideRiskLevel}`);
+  }
+  if (client?.crisisFlags) crisisInfo.push(`Crisis Flags: ${client.crisisFlags}`);
+  if (crisisInfo.length > 0) {
+    sections.push(`### 🚨 CRISIS AWARENESS (HANDLE WITH CARE)\n${crisisInfo.join('\n')}`);
+  }
   
-  return parts.join("\n");
+  // --- NOTES & STATUS ---
+  const notesInfo: string[] = [];
+  if (client?.notes) notesInfo.push(`Notes: ${client.notes}`);
+  if (client?.status) notesInfo.push(`Status: ${client.status}`);
+  if (client?.startDate) notesInfo.push(`Client Since: ${new Date(client.startDate).toLocaleDateString()}`);
+  if (notesInfo.length > 0) {
+    sections.push(`### 📝 NOTES & HISTORY\n${notesInfo.join('\n')}`);
+  }
+  
+  // If we have almost no data, return new user message
+  if (sections.length <= 2) {
+    return "\n\n[NEW USER - No profile data yet. Learn about them through natural conversation and REMEMBER what they share! Everything they tell you should be saved to their Unified Client Profile.]";
+  }
+  
+  // Add critical reminder at the end
+  sections.push("\n**CRITICAL:** Reference this information naturally. Show you REMEMBER them. This is what creates trust and loyalty. They should feel like the ONLY person you've ever talked to.");
+  
+  return sections.join('\n\n');
 }
 
 // ============================================================================

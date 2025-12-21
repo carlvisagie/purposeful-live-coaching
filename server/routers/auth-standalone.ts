@@ -9,7 +9,7 @@ import * as db from "../db-auth";
 import { TRPCError } from "@trpc/server";
 import crypto from "crypto";
 import { eq } from "drizzle-orm";
-import { subscriptions, usageTracking } from "../../drizzle/schema";
+import { subscriptions, usageTracking, clients, coaches } from "../../drizzle/schema";
 import { db as drizzleDb } from "../db";
 
 // Simple password hashing (in production, use bcrypt)
@@ -113,6 +113,52 @@ export const authRouter = router({
         createdAt: now,
         updatedAt: now,
       });
+
+      // ============================================================
+      // CREATE UNIFIED CLIENT PROFILE
+      // This is the SINGLE SOURCE OF TRUTH for all client data.
+      // Every interaction, every click, every conversation goes here.
+      // ============================================================
+      try {
+        // Get or create a default coach (the platform owner)
+        let [defaultCoach] = await drizzleDb
+          .select()
+          .from(coaches)
+          .limit(1);
+        
+        if (!defaultCoach) {
+          // Create a default coach if none exists
+          [defaultCoach] = await drizzleDb
+            .insert(coaches)
+            .values({
+              userId: user.id, // First user becomes the coach
+              specialization: "Life Coaching",
+              bio: "Platform Coach",
+              isActive: "true",
+              createdAt: now,
+              updatedAt: now,
+            })
+            .returning();
+        }
+        
+        // Create the Unified Client Profile linked to this user
+        await drizzleDb.insert(clients).values({
+          coachId: defaultCoach.id,
+          userId: user.id, // Link to user account
+          name: input.name || "New Client",
+          email: input.email,
+          status: "active",
+          startDate: now,
+          createdAt: now,
+          updatedAt: now,
+        });
+        
+        console.log(`[Auth] Created Unified Client Profile for user ${user.id}`);
+      } catch (clientError) {
+        // Don't fail registration if client creation fails
+        // The profile can be created later
+        console.error(`[Auth] Failed to create client profile:`, clientError);
+      }
 
       return {
         user: {

@@ -356,6 +356,7 @@ export function withClickTracking<P extends object>(
       props.onClick?.(e);
     };
     
-    return <WrappedComponent {...props} onClick={handleClick} />;
+    const Component = WrappedComponent as React.ComponentType<any>;
+    return <Component {...props} onClick={handleClick} />;
   };
 }
