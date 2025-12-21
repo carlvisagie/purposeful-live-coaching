@@ -12,7 +12,8 @@ import {
   Target, Brain, TrendingUp, Zap, Heart, CheckCircle2, AlertTriangle,
   Flame, Award, Activity, Calendar, ArrowRight, Sparkles, Video,
   MessageCircle, BookOpen, Clock, FileText, CreditCard, Sun, Moon,
-  Droplet, Apple, Dumbbell, Users, Settings, LogOut, Bell, Search
+  Droplet, Apple, Dumbbell, Users, Settings, LogOut, Bell, Search,
+  Headphones, Timer, Wind, Mic, GraduationCap
 } from "lucide-react";
 
 /**
@@ -203,6 +204,147 @@ export default function MissionControl() {
               <StreakCounter />
               <WellnessTrendChart />
             </div>
+
+            {/* AI Experiences - Premium Features */}
+            <Card className="border-2 border-gradient-to-r from-purple-200 to-pink-200">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-purple-500" />
+                  AI Experiences
+                  <Badge className="ml-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white">Premium</Badge>
+                </CardTitle>
+                <CardDescription>Immersive AI-powered wellness experiences designed just for you</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {/* Sleep Stories */}
+                  <Link href="/sleep-stories">
+                    <div className="group p-4 border-2 border-indigo-200 rounded-xl hover:border-indigo-400 hover:shadow-lg cursor-pointer transition-all bg-gradient-to-br from-indigo-50 to-purple-50">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="h-12 w-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
+                          <Moon className="h-6 w-6 text-white" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-indigo-900">Sleep Stories</h3>
+                          <p className="text-xs text-indigo-600">AI-Generated</p>
+                        </div>
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-3">
+                        Personalized bedtime stories crafted by AI to help you drift into peaceful sleep
+                      </p>
+                      <div className="flex items-center text-indigo-600 text-sm font-medium group-hover:translate-x-1 transition-transform">
+                        Start Dreaming <ArrowRight className="h-4 w-4 ml-1" />
+                      </div>
+                    </div>
+                  </Link>
+
+                  {/* Focus Coach */}
+                  <Link href="/focus-coach">
+                    <div className="group p-4 border-2 border-orange-200 rounded-xl hover:border-orange-400 hover:shadow-lg cursor-pointer transition-all bg-gradient-to-br from-orange-50 to-amber-50">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="h-12 w-12 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center">
+                          <Timer className="h-6 w-6 text-white" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-orange-900">Focus Coach</h3>
+                          <p className="text-xs text-orange-600">Pomodoro + AI</p>
+                        </div>
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-3">
+                        Deep work sessions with adaptive soundscapes and AI coaching breaks
+                      </p>
+                      <div className="flex items-center text-orange-600 text-sm font-medium group-hover:translate-x-1 transition-transform">
+                        Start Focus <ArrowRight className="h-4 w-4 ml-1" />
+                      </div>
+                    </div>
+                  </Link>
+
+                  {/* AI Meditation */}
+                  <Link href="/ai-meditation">
+                    <div className="group p-4 border-2 border-teal-200 rounded-xl hover:border-teal-400 hover:shadow-lg cursor-pointer transition-all bg-gradient-to-br from-teal-50 to-cyan-50">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="h-12 w-12 rounded-full bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center">
+                          <Wind className="h-6 w-6 text-white" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-teal-900">AI Meditation</h3>
+                          <p className="text-xs text-teal-600">Adaptive Guidance</p>
+                        </div>
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-3">
+                        Real-time meditation that adapts to your breathing and emotional state
+                      </p>
+                      <div className="flex items-center text-teal-600 text-sm font-medium group-hover:translate-x-1 transition-transform">
+                        Begin Session <ArrowRight className="h-4 w-4 ml-1" />
+                      </div>
+                    </div>
+                  </Link>
+
+                  {/* Just Talk */}
+                  <Link href="/just-talk">
+                    <div className="group p-4 border-2 border-pink-200 rounded-xl hover:border-pink-400 hover:shadow-lg cursor-pointer transition-all bg-gradient-to-br from-pink-50 to-rose-50">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="h-12 w-12 rounded-full bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center">
+                          <Mic className="h-6 w-6 text-white" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-pink-900">Just Talk</h3>
+                          <p className="text-xs text-pink-600">24/7 Support</p>
+                        </div>
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-3">
+                        Empathetic AI companion ready to listen whenever you need to talk
+                      </p>
+                      <div className="flex items-center text-pink-600 text-sm font-medium group-hover:translate-x-1 transition-transform">
+                        Start Talking <ArrowRight className="h-4 w-4 ml-1" />
+                      </div>
+                    </div>
+                  </Link>
+
+                  {/* Structured Programs */}
+                  <Link href="/programs">
+                    <div className="group p-4 border-2 border-emerald-200 rounded-xl hover:border-emerald-400 hover:shadow-lg cursor-pointer transition-all bg-gradient-to-br from-emerald-50 to-green-50">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="h-12 w-12 rounded-full bg-gradient-to-br from-emerald-500 to-green-500 flex items-center justify-center">
+                          <GraduationCap className="h-6 w-6 text-white" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-emerald-900">Programs</h3>
+                          <p className="text-xs text-emerald-600">Guided Journeys</p>
+                        </div>
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-3">
+                        Multi-week structured programs for anxiety, mindfulness, and stress
+                      </p>
+                      <div className="flex items-center text-emerald-600 text-sm font-medium group-hover:translate-x-1 transition-transform">
+                        Explore Programs <ArrowRight className="h-4 w-4 ml-1" />
+                      </div>
+                    </div>
+                  </Link>
+
+                  {/* Stress Relief */}
+                  <Link href="/stress-relief">
+                    <div className="group p-4 border-2 border-violet-200 rounded-xl hover:border-violet-400 hover:shadow-lg cursor-pointer transition-all bg-gradient-to-br from-violet-50 to-purple-50">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="h-12 w-12 rounded-full bg-gradient-to-br from-violet-500 to-purple-500 flex items-center justify-center">
+                          <Heart className="h-6 w-6 text-white" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-violet-900">Stress Relief</h3>
+                          <p className="text-xs text-violet-600">Instant Calm</p>
+                        </div>
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-3">
+                        Quick breathing exercises and calming techniques for immediate relief
+                      </p>
+                      <div className="flex items-center text-violet-600 text-sm font-medium group-hover:translate-x-1 transition-transform">
+                        Find Calm <ArrowRight className="h-4 w-4 ml-1" />
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Today's Focus */}
             <Card>
