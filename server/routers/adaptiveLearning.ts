@@ -6,6 +6,8 @@
 import { z } from "zod";
 import { protectedProcedure, router } from "../_core/trpc";
 import { db } from "../db";
+import { ProfileGuard } from "../profileGuard";
+import { SelfLearning } from "../selfLearningIntegration";
 import {
   techniqueEffectiveness,
   clientPatterns,
@@ -114,6 +116,12 @@ export const adaptiveLearningRouter = router({
       })
     )
     .mutation(async ({ input }) => {
+      // PROFILE GUARD - Load client context for feedback
+      const clientContext = await ProfileGuard.getClientContext(input.client_id, {
+        moduleName: "adaptive_learning",
+        logAccess: true,
+      });
+      
       await db.insert(recommendationFeedback).values(input);
       return { success: true };
     }),
@@ -153,7 +161,13 @@ export const adaptiveLearningRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      const { clientId, ...updates } = input;
+      const { client_id: clientId, ...updates } = input;
+      
+      // PROFILE GUARD - Load client context for outcome tracking
+      const clientContext = await ProfileGuard.getClientContext(clientId, {
+        moduleName: "adaptive_learning",
+        logAccess: true,
+      });
 
       // Check if outcome tracking exists
       const existing = await db
@@ -206,10 +220,16 @@ export const adaptiveLearningRouter = router({
   getOutcome: protectedProcedure
     .input(z.object({ client_id: z.number() }))
     .query(async ({ input }) => {
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(input.client_id, {
+        moduleName: "adaptive_learning",
+        logAccess: true,
+      });
+      
       const outcomes = await db
         .select()
         .from(adaptiveOutcomeTracking)
-        .where(eq(adaptiveOutcomeTracking.clientId, input.clientId))
+        .where(eq(adaptiveOutcomeTracking.clientId, input.client_id))
         .limit(1);
 
       return { outcome: outcomes[0] || null };

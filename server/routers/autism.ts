@@ -2,6 +2,8 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { router, protectedProcedure } from "../_core/trpc";
 import { db } from "../db";
+import { ProfileGuard } from "../profileGuard";
+import { SelfLearning } from "../selfLearningIntegration";
 import {
   autismProfiles,
   interventionPlans,
@@ -45,6 +47,11 @@ export const autismRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      // PROFILE GUARD - Load client context for autism transformation
+      const clientContext = await ProfileGuard.getClientContext(ctx.user.id, {
+        moduleName: "autism_transformation",
+        logAccess: true,
+      });
       const [profile] = await db.insert(autismProfiles).values({
         userId: ctx.user.id,
         childName: input.childName,
@@ -68,6 +75,12 @@ export const autismRouter = router({
     }),
 
   getMyProfiles: protectedProcedure.query(async ({ ctx }) => {
+    // PROFILE GUARD - Load client context
+    const clientContext = await ProfileGuard.getClientContext(ctx.user.id, {
+      moduleName: "autism_transformation",
+      logAccess: true,
+    });
+    
     const profiles = await db
       .select()
       .from(autismProfiles)
@@ -88,6 +101,12 @@ export const autismRouter = router({
   getProfile: protectedProcedure
     .input(z.object({ profileId: z.number() }))
     .query(async ({ ctx, input }) => {
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(ctx.user.id, {
+        moduleName: "autism_transformation",
+        logAccess: true,
+      });
+      
       const [profile] = await db
         .select()
         .from(autismProfiles)

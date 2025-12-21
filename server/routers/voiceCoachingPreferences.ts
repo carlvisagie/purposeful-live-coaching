@@ -17,6 +17,8 @@ import { db } from "../db";
 import { voiceCoachingPreferences, voiceCoachingFeedback, voiceCoachingSessionLogs } from "../../drizzle/schema";
 import { eq, desc } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
+import { ProfileGuard } from "../profileGuard";
+import { SelfLearning } from "../selfLearningIntegration";
 
 export const voiceCoachingPreferencesRouter = router({
   /**
@@ -28,6 +30,15 @@ export const voiceCoachingPreferencesRouter = router({
     }))
     .query(async ({ input }) => {
       const { userId } = input;
+      
+      // PROFILE GUARD - Load client context for voice preferences
+      const numericUserId = parseInt(userId, 10);
+      if (!isNaN(numericUserId)) {
+        await ProfileGuard.getClientContext(numericUserId, {
+          moduleName: "voice_coaching_preferences",
+          logAccess: true,
+        });
+      }
       
       try {
         const preferences = await db
@@ -136,6 +147,15 @@ export const voiceCoachingPreferencesRouter = router({
     }))
     .mutation(async ({ input }) => {
       const { userId, ...feedbackData } = input;
+      
+      // PROFILE GUARD - Load client context for feedback submission
+      const numericUserId = parseInt(userId, 10);
+      if (!isNaN(numericUserId)) {
+        await ProfileGuard.getClientContext(numericUserId, {
+          moduleName: "voice_coaching_preferences",
+          logAccess: true,
+        });
+      }
       
       try {
         // Get user's preference record

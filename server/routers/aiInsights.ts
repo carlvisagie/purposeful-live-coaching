@@ -4,6 +4,8 @@ import { getDb } from "../db";
 import { aiInsights, journalEntries, emotionLogs } from "../../drizzle/schema";
 import { eq, desc, and } from "drizzle-orm";
 import { invokeLLM } from "../_core/llm";
+import { ProfileGuard } from "../profileGuard";
+import { SelfLearning } from "../selfLearningIntegration";
 
 /**
  * AI Insights Router
@@ -23,6 +25,12 @@ export const aiInsightsRouter = router({
       clientId: z.number(),
     }))
     .query(async ({ input, ctx }) => {
+      // PROFILE GUARD - Load client context for AI insights
+      const clientContext = await ProfileGuard.getClientContext(input.clientId, {
+        moduleName: "ai_insights",
+        logAccess: true,
+      });
+      
       const db = await getDb();
       if (!db) throw new Error("Database not available");
 
@@ -44,6 +52,12 @@ export const aiInsightsRouter = router({
       clientId: z.number(),
     }))
     .mutation(async ({ input, ctx }) => {
+      // PROFILE GUARD - Load client context for insight generation
+      const clientContext = await ProfileGuard.getClientContext(input.clientId, {
+        moduleName: "ai_insights",
+        logAccess: true,
+      });
+      
       const db = await getDb();
       if (!db) throw new Error("Database not available");
 

@@ -582,6 +582,9 @@ export const aiChatRouter = router({
       }
 
       // Track interaction for self-learning
+      // Note: crisisFlag detection is handled separately - for now default to "none"
+      const crisisFlag = "none"; // TODO: Implement crisis detection from AI response
+      
       SelfLearning.trackInteraction({
         moduleType: "ai_chat",
         userId: userId || undefined,
@@ -592,7 +595,7 @@ export const aiChatRouter = router({
           messageLength: input.message.length,
           responseLength: aiResponse.length,
           crisisFlag,
-          isFirstMessage: messages.length <= 2,
+          isFirstMessage: messageCount <= 2,
         },
       });
 
