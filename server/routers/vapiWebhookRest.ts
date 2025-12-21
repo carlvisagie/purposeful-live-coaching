@@ -459,6 +459,8 @@ vapiWebhookRestRouter.post("/webhook", async (req, res) => {
           silenceTimeoutSeconds: 30,
           maxDurationSeconds: 3600,
           backchannelingEnabled: true,
+          backgroundSound: "off", // Disable call center background noise
+          backgroundDenoisingEnabled: true, // Filter out background noise from caller
         },
       };
       
