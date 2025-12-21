@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import AvailabilityEditor from "@/components/AvailabilityEditor";
 import { Link } from "wouter";
+import NotificationSettings from "@/components/NotificationSettings";
 
 export default function Settings() {
   const { user, logout } = useAuth();
@@ -254,6 +255,9 @@ export default function Settings() {
                 </Button>
               </CardContent>
             </Card>
+            
+            {/* Push Notifications Card */}
+            <NotificationSettings className="mt-6" />
           </TabsContent>
 
           {/* Preferences Tab */}

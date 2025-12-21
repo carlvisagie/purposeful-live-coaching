@@ -60,6 +60,9 @@ import { voiceCoachingPreferencesRouter } from "./routers/voiceCoachingPreferenc
 import { sessionProfileExtractionRouter } from "./routers/sessionProfileExtraction";
 import { clientProfileExportRouter } from "./routers/clientProfileExport";
 import { aiCoachPerformanceRouter } from "./routers/aiCoachPerformance";
+import { pushNotificationsRouter } from "./routers/pushNotifications";
+import { structuredProgramsRouter } from "./routers/structuredPrograms";
+import { justTalkRouter } from "./routers/justTalk";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -132,6 +135,11 @@ export const appRouter = router({
   sessionProfileExtraction: sessionProfileExtractionRouter,
   clientProfileExport: clientProfileExportRouter,
   aiCoachPerformance: aiCoachPerformanceRouter,
+  
+  // New competitive gap features
+  pushNotifications: pushNotificationsRouter,
+  structuredPrograms: structuredProgramsRouter,
+  justTalk: justTalkRouter,
 });
 
 export type AppRouter = typeof appRouter;

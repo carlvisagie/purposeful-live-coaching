@@ -53,6 +53,8 @@ import PopoutTeleprompter from "./pages/PopoutTeleprompter";
 import VoiceCoach from "./pages/VoiceCoach";
 import OurScience from "./pages/OurScience";
 import TrialWrapper from "./components/TrialWrapper";
+import Programs from "./pages/Programs";
+import JustTalk from "./pages/JustTalk";
 
 
 function Router() {
@@ -116,6 +118,13 @@ function Router() {
       <Route path="/our-science" component={OurScience} />
       <Route path="/research" component={OurScience} />
       <Route path="/evidence" component={OurScience} />
+      
+      {/* New competitive gap features */}
+      <Route path="/programs" component={Programs} />
+      <Route path="/structured-programs" component={Programs} />
+      <Route path="/just-talk" component={JustTalk} />
+      <Route path="/talk" component={JustTalk} />
+      <Route path="/support" component={JustTalk} />
 
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
