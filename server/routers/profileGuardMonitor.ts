@@ -11,7 +11,7 @@
  */
 
 import { z } from "zod";
-import { router, publicProcedure, protectedProcedure } from "../trpc";
+import { router, publicProcedure, protectedProcedure } from "../_core/trpc";
 import ProfileGuard from "../profileGuard";
 
 export const profileGuardMonitorRouter = router({

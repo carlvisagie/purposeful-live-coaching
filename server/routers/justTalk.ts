@@ -10,7 +10,7 @@
  * Research: Wysa and Headspace's "Ebb" prove demand for always-available emotional support
  */
 
-import { router, publicProcedure, protectedProcedure } from "../trpc";
+import { router, publicProcedure, protectedProcedure } from "../_core/trpc";
 import { z } from "zod";
 import OpenAI from "openai";
 import SelfLearning from "../selfLearningIntegration";

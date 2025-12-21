@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { router, publicProcedure, protectedProcedure } from "../trpc";
+import { router, publicProcedure, protectedProcedure } from "../_core/trpc";
 import OpenAI from "openai";
 import SelfLearning from "../selfLearningIntegration";
 import ProfileGuard from "../profileGuard";

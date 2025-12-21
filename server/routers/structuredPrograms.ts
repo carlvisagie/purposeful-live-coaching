@@ -9,7 +9,7 @@
  * Research: Users who complete structured programs have 3x higher retention
  */
 
-import { router, publicProcedure, protectedProcedure } from "../trpc";
+import { router, publicProcedure, protectedProcedure } from "../_core/trpc";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import SelfLearning from "../selfLearningIntegration";

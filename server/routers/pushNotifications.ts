@@ -11,7 +11,7 @@
  * Research: Push notifications drive 2-3x higher daily engagement
  */
 
-import { router, publicProcedure, protectedProcedure } from "../trpc";
+import { router, publicProcedure, protectedProcedure } from "../_core/trpc";
 import { z } from "zod";
 import { db } from "../../db";
 import { eq, and, lt, isNull, sql } from "drizzle-orm";
