@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { publicProcedure, router } from "../_core/trpc";
 import OpenAI from "openai";
+import ProfileGuard from "../profileGuard";
+import SelfLearning from "../selfLearningIntegration";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -22,9 +24,16 @@ export const aiCoachRouter = router({
         clientName: z.string().optional().default("Client"),
         sessionType: z.string().optional().default("General Coaching"),
         clientContext: z.string().optional().default(""),
+        userId: z.number().optional(),
       })
     )
     .mutation(async ({ input }) => {
+      // PROFILE GUARD - Load client context
+      const profileContext = await ProfileGuard.getClientContext(input.userId, {
+        moduleName: "ai_coach",
+        logAccess: true,
+      });
+      
       const { clientInput, clientName, sessionType, clientContext } = input;
 
       try {
@@ -115,9 +124,16 @@ Respond in JSON format with a "suggestions" array.`;
     .input(
       z.object({
         text: z.string().min(1),
+        userId: z.number().optional(),
       })
     )
     .mutation(async ({ input }) => {
+      // PROFILE GUARD - Load client context
+      const profileContext = await ProfileGuard.getClientContext(input.userId, {
+        moduleName: "ai_coach",
+        logAccess: true,
+      });
+      
       try {
         const response = await openai.chat.completions.create({
           model: "gpt-4o",

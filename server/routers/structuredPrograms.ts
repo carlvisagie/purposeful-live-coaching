@@ -13,6 +13,7 @@ import { router, publicProcedure, protectedProcedure } from "../_core/trpc";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import SelfLearning from "../selfLearningIntegration";
+import ProfileGuard from "../profileGuard";
 
 // In-memory program data (in production, this would be in the database)
 const FLAGSHIP_PROGRAMS = [
@@ -342,8 +343,15 @@ export const structuredProgramsRouter = router({
 
   // Get today's content for enrolled program
   getTodaysContent: protectedProcedure
-    .input(z.object({ enrollmentId: z.number() }))
+    .input(z.object({ enrollmentId: z.number(), userId: z.number().optional() }))
     .query(async ({ ctx, input }) => {
+      // PROFILE GUARD - Load client context for personalization
+      const effectiveUserId = input.userId || ctx.user?.id;
+      const clientContext = await ProfileGuard.getClientContext(effectiveUserId, {
+        moduleName: "structured_programs",
+        logAccess: true,
+      });
+      
       // In production, fetch from database based on enrollment progress
       // For demo, return day 1 of first program
       const program = FLAGSHIP_PROGRAMS[0];
@@ -378,9 +386,27 @@ export const structuredProgramsRouter = router({
       moodBefore: z.number().min(1).max(10).optional(),
       moodAfter: z.number().min(1).max(10).optional(),
       timeSpentMinutes: z.number().optional(),
-      notes: z.string().optional()
+      notes: z.string().optional(),
+      userId: z.number().optional()
     }))
     .mutation(async ({ ctx, input }) => {
+      // PROFILE GUARD - Load client context and track progress
+      const effectiveUserId = input.userId || ctx.user?.id;
+      const clientContext = await ProfileGuard.getClientContext(effectiveUserId, {
+        moduleName: "structured_programs",
+        logAccess: true,
+      });
+      
+      // Track outcome for self-learning
+      if (effectiveUserId && input.moodBefore && input.moodAfter) {
+        SelfLearning.trackOutcome(effectiveUserId, "structured_programs", {
+          moodBefore: input.moodBefore,
+          moodAfter: input.moodAfter,
+          improvement: input.moodAfter - input.moodBefore,
+          dayNumber: input.dayNumber,
+        }).catch(console.error);
+      }
+      
       // In production, save completion to database
       
       const isLastDay = input.dayNumber === 42; // Example for 6-week program

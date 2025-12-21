@@ -252,9 +252,17 @@ End with a simple "Let's begin."`;
       sessionId: z.string(),
       minutesRemaining: z.number(),
       task: z.string().optional(),
-      feeling: z.enum(["focused", "distracted", "tired", "energized"]).optional()
+      feeling: z.enum(["focused", "distracted", "tired", "energized"]).optional(),
+      userId: z.number().optional(),
     }))
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "focus_coach",
+        logAccess: true,
+      });
       const prompt = `You are a supportive focus coach. Someone is ${input.minutesRemaining} minutes into their focus session.
 ${input.task ? `They're working on: ${input.task}` : ""}
 ${input.feeling ? `They're feeling: ${input.feeling}` : ""}
@@ -290,9 +298,17 @@ Keep it natural and supportive.`;
   generateBreakGuidance: protectedProcedure
     .input(z.object({
       breakType: z.enum(["breathing", "stretch", "eyes", "meditation", "movement", "hydration"]),
-      breakDuration: z.number()
+      breakDuration: z.number(),
+      userId: z.number().optional(),
     }))
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "focus_coach",
+        logAccess: true,
+      });
       const activity = BREAK_ACTIVITIES.find(a => a.id === input.breakType);
       
       const guidancePrompts: Record<string, string> = {
@@ -364,9 +380,17 @@ Keep the tone warm and supportive. This is a break from focused work.`
       distractionCount: z.number().default(0),
       completedTask: z.boolean().default(false),
       energyLevel: z.enum(["low", "medium", "high"]).optional(),
-      focusQuality: z.enum(["poor", "fair", "good", "excellent"]).optional()
+      focusQuality: z.enum(["poor", "fair", "good", "excellent"]).optional(),
+      userId: z.number().optional(),
     }))
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "focus_coach",
+        logAccess: true,
+      });
       // Generate personalized completion message
       const prompt = `You are a supportive focus coach. Someone just completed a ${input.actualDuration}-minute focus session.
 ${input.task ? `They worked on: ${input.task}` : ""}
@@ -435,9 +459,17 @@ Be genuine, not cheesy.`;
   // Get focus statistics
   getStats: protectedProcedure
     .input(z.object({
-      period: z.enum(["day", "week", "month"]).default("week")
+      period: z.enum(["day", "week", "month"]).default("week"),
+      userId: z.number().optional(),
     }))
     .query(async ({ input, ctx }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "focus_coach",
+        logAccess: true,
+      });
       // In production, fetch from database
       return {
         period: input.period,

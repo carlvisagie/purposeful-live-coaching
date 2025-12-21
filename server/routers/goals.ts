@@ -24,6 +24,8 @@ import {
 } from "../../drizzle/schema";
 import { eq, and, desc, gte, lte, sql } from "drizzle-orm";
 import { db } from "../db";
+import ProfileGuard from "../profileGuard";
+import SelfLearning from "../selfLearningIntegration";
 
 // ============================================================================
 // GOAL PROFILE
@@ -32,8 +34,15 @@ import { db } from "../db";
 export const goalsRouter = router({
   // Get or create user's goal profile
   getProfile: protectedProcedure
-    .query(async ({ ctx }) => {
-      const userId = ctx.user.id;
+    .input(z.object({ userId: z.number().optional() }).optional())
+    .query(async ({ ctx, input }) => {
+      const userId = input?.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "goals",
+        logAccess: true,
+      });
       
       let profile = await db.query.goalProfiles.findFirst({
         where: eq(goalProfiles.userId, userId),
@@ -78,9 +87,16 @@ export const goalsRouter = router({
       priority: z.enum(['low', 'medium', 'high', 'critical']).optional(),
       isPublic: z.boolean().optional(),
       relatedHabitId: z.string().optional(),
+      userId: z.number().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
-      const userId = ctx.user.id;
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "goals",
+        logAccess: true,
+      });
       
       // Get or create profile
       let profile = await db.query.goalProfiles.findFirst({
@@ -143,9 +159,16 @@ export const goalsRouter = router({
     .input(z.object({
       status: z.enum(['active', 'completed', 'abandoned', 'paused']).optional(),
       category: z.string().optional(),
+      userId: z.number().optional(),
     }).optional())
     .query(async ({ ctx, input }) => {
-      const userId = ctx.user.id;
+      const userId = input?.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "goals",
+        logAccess: true,
+      });
       
       const conditions = [eq(goals.userId, userId)];
       
@@ -169,9 +192,16 @@ export const goalsRouter = router({
   getById: protectedProcedure
     .input(z.object({
       goalId: z.string(),
+      userId: z.number().optional(),
     }))
     .query(async ({ ctx, input }) => {
-      const userId = ctx.user.id;
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "goals",
+        logAccess: true,
+      });
       
       const goal = await db.query.goals.findFirst({
         where: and(
@@ -220,9 +250,16 @@ export const goalsRouter = router({
       currentValue: z.number().optional(),
       targetValue: z.number().optional(),
       targetDate: z.string().optional(),
+      userId: z.number().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
-      const userId = ctx.user.id;
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "goals",
+        logAccess: true,
+      });
       const { goalId, ...updates } = input;
       
       // Verify ownership
@@ -277,9 +314,16 @@ export const goalsRouter = router({
       currentValue: z.number(),
       notes: z.string().optional(),
       momentum: z.enum(['accelerating', 'steady', 'slowing', 'stalled']).optional(),
+      userId: z.number().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
-      const userId = ctx.user.id;
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "goals",
+        logAccess: true,
+      });
       
       // Verify ownership
       const goal = await db.query.goals.findFirst({
@@ -330,9 +374,24 @@ export const goalsRouter = router({
   complete: protectedProcedure
     .input(z.object({
       goalId: z.string(),
+      userId: z.number().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
-      const userId = ctx.user.id;
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "goals",
+        logAccess: true,
+      });
+      
+      // Track goal completion for self-learning
+      if (userId) {
+        SelfLearning.trackOutcome(userId, "goals", {
+          goalCompleted: true,
+          goalId: input.goalId,
+        }).catch(console.error);
+      }
       
       // Verify ownership
       const goal = await db.query.goals.findFirst({
@@ -372,9 +431,16 @@ export const goalsRouter = router({
     .input(z.object({
       goalId: z.string(),
       reason: z.string().optional(),
+      userId: z.number().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
-      const userId = ctx.user.id;
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "goals",
+        logAccess: true,
+      });
       
       // Verify ownership
       const goal = await db.query.goals.findFirst({
@@ -422,9 +488,16 @@ export const goalsRouter = router({
       targetValue: z.number().optional(),
       targetDate: z.string().optional(),
       sequenceOrder: z.number().int().optional(),
+      userId: z.number().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
-      const userId = ctx.user.id;
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "goals",
+        logAccess: true,
+      });
       
       // Verify goal ownership
       const goal = await db.query.goals.findFirst({
@@ -458,9 +531,16 @@ export const goalsRouter = router({
   achieveMilestone: protectedProcedure
     .input(z.object({
       milestoneId: z.string(),
+      userId: z.number().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
-      const userId = ctx.user.id;
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "goals",
+        logAccess: true,
+      });
       
       // Verify ownership
       const milestone = await db.query.goalMilestones.findFirst({
@@ -490,8 +570,15 @@ export const goalsRouter = router({
 
   // Get goal statistics
   getStats: protectedProcedure
-    .query(async ({ ctx }) => {
-      const userId = ctx.user.id;
+    .input(z.object({ userId: z.number().optional() }).optional())
+    .query(async ({ ctx, input }) => {
+      const userId = input?.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "goals",
+        logAccess: true,
+      });
       
       const profile = await db.query.goalProfiles.findFirst({
         where: eq(goalProfiles.userId, userId),

@@ -217,9 +217,17 @@ Generate the complete meditation script:`;
       detectedState: z.enum(["relaxed", "restless", "distracted", "tense", "sleepy", "focused"]),
       minutesIn: z.number(),
       totalDuration: z.number(),
-      meditationType: z.string()
+      meditationType: z.string(),
+      userId: z.number().optional(),
     }))
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "ai_meditation",
+        logAccess: true,
+      });
       const guidancePrompts: Record<string, string> = {
         relaxed: "The user is relaxed. Provide brief, minimal guidance to maintain their state without disrupting it.",
         restless: "The user seems restless. Gently acknowledge this without judgment and offer a grounding technique.",
@@ -281,9 +289,17 @@ Keep it gentle and supportive.`;
       moodAfter: z.string().optional(),
       focusRating: z.number().min(1).max(5).optional(),
       relaxationRating: z.number().min(1).max(5).optional(),
-      notes: z.string().optional()
+      notes: z.string().optional(),
+      userId: z.number().optional(),
     }))
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "ai_meditation",
+        logAccess: true,
+      });
       // Generate personalized insights
       let insights = "";
       
@@ -343,9 +359,17 @@ Be warm and encouraging.`;
         "after_conflict",
         "feeling_overwhelmed",
         "need_focus"
-      ])
+      ]),
+      userId: z.number().optional(),
     }))
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "ai_meditation",
+        logAccess: true,
+      });
       const situationConfig: Record<string, { type: string; duration: number; technique: string }> = {
         stressed_at_work: { type: "breathing", duration: 3, technique: "box breathing" },
         cant_sleep: { type: "sleep", duration: 10, technique: "body relaxation" },
@@ -398,9 +422,17 @@ Total length should be appropriate for ${config.duration} minutes when read slow
   // Get meditation statistics
   getStats: protectedProcedure
     .input(z.object({
-      period: z.enum(["week", "month", "year"]).default("week")
+      period: z.enum(["week", "month", "year"]).default("week"),
+      userId: z.number().optional(),
     }))
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "ai_meditation",
+        logAccess: true,
+      });
       // In production, fetch from database
       return {
         period: input.period,

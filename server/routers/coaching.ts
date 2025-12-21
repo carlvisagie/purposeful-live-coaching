@@ -11,6 +11,8 @@ import {
   sessions 
 } from "../../drizzle/schema";
 import { eq, and, desc, sql } from "drizzle-orm";
+import ProfileGuard from "../profileGuard";
+import SelfLearning from "../selfLearningIntegration";
 
 /**
  * Coaching platform API routers
@@ -23,12 +25,22 @@ import { eq, and, desc, sql } from "drizzle-orm";
 
 export const coachesRouter = router({
   // Get current coach profile
-  getProfile: protectedProcedure.query(async ({ ctx }) => {
-    const coach = await db.query.coaches.findFirst({
-      where: eq(coaches.userId, ctx.user.id),
-    });
-    return coach;
-  }),
+  getProfile: protectedProcedure
+    .input(z.object({ userId: z.number().optional() }).optional())
+    .query(async ({ ctx, input }) => {
+      const userId = input?.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "coaching",
+        logAccess: true,
+      });
+      
+      const coach = await db.query.coaches.findFirst({
+        where: eq(coaches.userId, userId),
+      });
+      return coach;
+    }),
 
   // Create coach profile
   createProfile: protectedProcedure
@@ -37,11 +49,23 @@ export const coachesRouter = router({
       bio: z.string().optional(),
       certifications: z.string().optional(),
       yearsExperience: z.number().optional(),
+      userId: z.number().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "coaching",
+        logAccess: true,
+      });
+      
       const [coach] = await db.insert(coaches).values({
-        userId: ctx.user.id,
-        ...input,
+        userId: userId,
+        specialization: input.specialization,
+        bio: input.bio,
+        certifications: input.certifications,
+        yearsExperience: input.yearsExperience,
       });
       return coach;
     }),
@@ -54,10 +78,19 @@ export const coachesRouter = router({
       certifications: z.string().optional(),
       yearsExperience: z.number().optional(),
       isActive: z.enum(["true", "false"]).optional(),
+      userId: z.number().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "coaching",
+        logAccess: true,
+      });
+      
       const coach = await db.query.coaches.findFirst({
-        where: eq(coaches.userId, ctx.user.id),
+        where: eq(coaches.userId, userId),
       });
 
       if (!coach) {
@@ -78,10 +111,20 @@ export const coachesRouter = router({
 
 export const clientsRouter = router({
   // List all clients for current coach
-  list: protectedProcedure.query(async ({ ctx }) => {
-    const coach = await db.query.coaches.findFirst({
-      where: eq(coaches.userId, ctx.user.id),
-    });
+  list: protectedProcedure
+    .input(z.object({ userId: z.number().optional() }).optional())
+    .query(async ({ ctx, input }) => {
+      const userId = input?.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "coaching",
+        logAccess: true,
+      });
+      
+      const coach = await db.query.coaches.findFirst({
+        where: eq(coaches.userId, userId),
+      });
 
     if (!coach) {
       throw new Error("Coach profile not found. Please create a coach profile first.");
@@ -97,10 +140,18 @@ export const clientsRouter = router({
 
   // Get single client details
   get: protectedProcedure
-    .input(z.object({ id: z.number() }))
+    .input(z.object({ id: z.number(), userId: z.number().optional() }))
     .query(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "coaching",
+        logAccess: true,
+      });
+      
       const coach = await db.query.coaches.findFirst({
-        where: eq(coaches.userId, ctx.user.id),
+        where: eq(coaches.userId, userId),
       });
 
       if (!coach) {
@@ -130,10 +181,19 @@ export const clientsRouter = router({
       dateOfBirth: z.date().optional(),
       goals: z.string().optional(),
       notes: z.string().optional(),
+      userId: z.number().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "coaching",
+        logAccess: true,
+      });
+      
       const coach = await db.query.coaches.findFirst({
-        where: eq(coaches.userId, ctx.user.id),
+        where: eq(coaches.userId, userId),
       });
 
       if (!coach) {
@@ -159,10 +219,19 @@ export const clientsRouter = router({
       goals: z.string().optional(),
       notes: z.string().optional(),
       status: z.enum(["active", "inactive", "completed"]).optional(),
+      userId: z.number().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "coaching",
+        logAccess: true,
+      });
+      
       const coach = await db.query.coaches.findFirst({
-        where: eq(coaches.userId, ctx.user.id),
+        where: eq(coaches.userId, userId),
       });
 
       if (!coach) {
@@ -183,10 +252,18 @@ export const clientsRouter = router({
 
   // Delete client
   delete: protectedProcedure
-    .input(z.object({ id: z.number() }))
+    .input(z.object({ id: z.number(), userId: z.number().optional() }))
     .mutation(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "coaching",
+        logAccess: true,
+      });
+      
       const coach = await db.query.coaches.findFirst({
-        where: eq(coaches.userId, ctx.user.id),
+        where: eq(coaches.userId, userId),
       });
 
       if (!coach) {
@@ -204,10 +281,18 @@ export const clientsRouter = router({
 
   // Get client statistics
   getStats: protectedProcedure
-    .input(z.object({ id: z.number() }))
+    .input(z.object({ id: z.number(), userId: z.number().optional() }))
     .query(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "coaching",
+        logAccess: true,
+      });
+      
       const coach = await db.query.coaches.findFirst({
-        where: eq(coaches.userId, ctx.user.id),
+        where: eq(coaches.userId, userId),
       });
 
       if (!coach) {
@@ -260,10 +345,19 @@ export const journalRouter = router({
     .input(z.object({ 
       clientId: z.number(),
       limit: z.number().optional().default(50),
+      userId: z.number().optional(),
     }))
     .query(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "coaching",
+        logAccess: true,
+      });
+      
       const coach = await db.query.coaches.findFirst({
-        where: eq(coaches.userId, ctx.user.id),
+        where: eq(coaches.userId, userId),
       });
 
       if (!coach) {
@@ -293,8 +387,16 @@ export const journalRouter = router({
 
   // Get single journal entry
   get: protectedProcedure
-    .input(z.object({ id: z.number() }))
+    .input(z.object({ id: z.number(), userId: z.number().optional() }))
     .query(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "coaching",
+        logAccess: true,
+      });
+      
       const entry = await db.query.journalEntries.findFirst({
         where: eq(journalEntries.id, input.id),
       });
@@ -305,7 +407,7 @@ export const journalRouter = router({
 
       // Verify coach owns this client
       const coach = await db.query.coaches.findFirst({
-        where: eq(coaches.userId, ctx.user.id),
+        where: eq(coaches.userId, userId),
       });
 
       if (!coach) {
@@ -339,10 +441,19 @@ export const journalRouter = router({
       copingEffectiveness: z.number().min(1).max(10).optional(),
       resilienceScore: z.number().min(1).max(100).optional(),
       isPrivate: z.enum(["true", "false"]).optional(),
+      userId: z.number().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "coaching",
+        logAccess: true,
+      });
+      
       const coach = await db.query.coaches.findFirst({
-        where: eq(coaches.userId, ctx.user.id),
+        where: eq(coaches.userId, userId),
       });
 
       if (!coach) {
@@ -467,10 +578,19 @@ export const emotionLogsRouter = router({
     .input(z.object({ 
       clientId: z.number(),
       limit: z.number().optional().default(100),
+      userId: z.number().optional(),
     }))
     .query(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "coaching",
+        logAccess: true,
+      });
+      
       const coach = await db.query.coaches.findFirst({
-        where: eq(coaches.userId, ctx.user.id),
+        where: eq(coaches.userId, userId),
       });
 
       if (!coach) {
@@ -509,10 +629,19 @@ export const emotionLogsRouter = router({
       physicalSensations: z.string().optional(),
       thoughts: z.string().optional(),
       behaviors: z.string().optional(),
+      userId: z.number().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "coaching",
+        logAccess: true,
+      });
+      
       const coach = await db.query.coaches.findFirst({
-        where: eq(coaches.userId, ctx.user.id),
+        where: eq(coaches.userId, userId),
       });
 
       if (!coach) {
@@ -541,10 +670,19 @@ export const emotionLogsRouter = router({
     .input(z.object({ 
       clientId: z.number(),
       days: z.number().optional().default(30),
+      userId: z.number().optional(),
     }))
     .query(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "coaching",
+        logAccess: true,
+      });
+      
       const coach = await db.query.coaches.findFirst({
-        where: eq(coaches.userId, ctx.user.id),
+        where: eq(coaches.userId, userId),
       });
 
       if (!coach) {
@@ -600,10 +738,18 @@ export const emotionLogsRouter = router({
 export const copingStrategiesRouter = router({
   // List coping strategies for a client
   list: protectedProcedure
-    .input(z.object({ clientId: z.number() }))
+    .input(z.object({ clientId: z.number(), userId: z.number().optional() }))
     .query(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "coaching",
+        logAccess: true,
+      });
+      
       const coach = await db.query.coaches.findFirst({
-        where: eq(coaches.userId, ctx.user.id),
+        where: eq(coaches.userId, userId),
       });
 
       if (!coach) {
@@ -637,10 +783,19 @@ export const copingStrategiesRouter = router({
       strategyName: z.string().min(1, "Strategy name is required"),
       description: z.string().optional(),
       category: z.string().optional(),
+      userId: z.number().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "coaching",
+        logAccess: true,
+      });
+      
       const coach = await db.query.coaches.findFirst({
-        where: eq(coaches.userId, ctx.user.id),
+        where: eq(coaches.userId, userId),
       });
 
       if (!coach) {
@@ -669,8 +824,17 @@ export const copingStrategiesRouter = router({
     .input(z.object({
       id: z.number(),
       effectiveness: z.number().min(1).max(10),
+      userId: z.number().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "coaching",
+        logAccess: true,
+      });
+      
       const strategy = await db.query.copingStrategies.findFirst({
         where: eq(copingStrategies.id, input.id),
       });
@@ -681,7 +845,7 @@ export const copingStrategiesRouter = router({
 
       // Verify coach owns this client
       const coach = await db.query.coaches.findFirst({
-        where: eq(coaches.userId, ctx.user.id),
+        where: eq(coaches.userId, userId),
       });
 
       if (!coach) {
@@ -726,10 +890,19 @@ export const aiInsightsRouter = router({
     .input(z.object({ 
       clientId: z.number(),
       limit: z.number().optional().default(20),
+      userId: z.number().optional(),
     }))
     .query(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "coaching",
+        logAccess: true,
+      });
+      
       const coach = await db.query.coaches.findFirst({
-        where: eq(coaches.userId, ctx.user.id),
+        where: eq(coaches.userId, userId),
       });
 
       if (!coach) {
@@ -759,8 +932,16 @@ export const aiInsightsRouter = router({
 
   // Mark insight as read
   markRead: protectedProcedure
-    .input(z.object({ id: z.number() }))
+    .input(z.object({ id: z.number(), userId: z.number().optional() }))
     .mutation(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "coaching",
+        logAccess: true,
+      });
+      
       const insight = await db.query.aiInsights.findFirst({
         where: eq(aiInsights.id, input.id),
       });
@@ -771,7 +952,7 @@ export const aiInsightsRouter = router({
 
       // Verify coach owns this client
       const coach = await db.query.coaches.findFirst({
-        where: eq(coaches.userId, ctx.user.id),
+        where: eq(coaches.userId, userId),
       });
 
       if (!coach) {
@@ -807,10 +988,19 @@ export const sessionsRouter = router({
     .input(z.object({ 
       clientId: z.number(),
       limit: z.number().optional().default(50),
+      userId: z.number().optional(),
     }))
     .query(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "coaching",
+        logAccess: true,
+      });
+      
       const coach = await db.query.coaches.findFirst({
-        where: eq(coaches.userId, ctx.user.id),
+        where: eq(coaches.userId, userId),
       });
 
       if (!coach) {
@@ -837,10 +1027,19 @@ export const sessionsRouter = router({
       duration: z.number().min(15).max(480), // 15 min to 8 hours
       sessionType: z.string().optional(),
       notes: z.string().optional(),
+      userId: z.number().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "coaching",
+        logAccess: true,
+      });
+      
       const coach = await db.query.coaches.findFirst({
-        where: eq(coaches.userId, ctx.user.id),
+        where: eq(coaches.userId, userId),
       });
 
       if (!coach) {
@@ -871,10 +1070,19 @@ export const sessionsRouter = router({
   getOrCreateSession: protectedProcedure
     .input(z.object({
       clientId: z.number(),
+      userId: z.number().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "coaching",
+        logAccess: true,
+      });
+      
       const coach = await db.query.coaches.findFirst({
-        where: eq(coaches.userId, ctx.user.id),
+        where: eq(coaches.userId, userId),
       });
 
       if (!coach) {
@@ -928,8 +1136,17 @@ export const sessionsRouter = router({
     .input(z.object({
       sessionId: z.number(),
       note: z.string().min(1, "Note cannot be empty"),
+      userId: z.number().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "coaching",
+        logAccess: true,
+      });
+      
       const session = await db.query.sessions.findFirst({
         where: eq(sessions.id, input.sessionId),
       });
@@ -939,7 +1156,7 @@ export const sessionsRouter = router({
       }
 
       const coach = await db.query.coaches.findFirst({
-        where: eq(coaches.userId, ctx.user.id),
+        where: eq(coaches.userId, userId),
       });
 
       if (!coach || session.coachId !== coach.id) {
@@ -970,8 +1187,17 @@ export const sessionsRouter = router({
       sessionType: z.string().optional(),
       notes: z.string().optional(),
       status: z.enum(["scheduled", "completed", "cancelled", "no-show"]).optional(),
+      userId: z.number().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "coaching",
+        logAccess: true,
+      });
+      
       const { id, ...updateData } = input;
 
       const session = await db.query.sessions.findFirst({
@@ -983,7 +1209,7 @@ export const sessionsRouter = router({
       }
 
       const coach = await db.query.coaches.findFirst({
-        where: eq(coaches.userId, ctx.user.id),
+        where: eq(coaches.userId, userId),
       });
 
       if (!coach || session.coachId !== coach.id) {

@@ -27,6 +27,8 @@ import {
 } from "../../drizzle/healthOptimizationSchema";
 import { eq, desc, and, gte, lte } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
+import ProfileGuard from "../profileGuard";
+import SelfLearning from "../selfLearningIntegration";
 
 // Health Intake Questionnaire Schema
 const healthIntakeSchema = z.object({
@@ -166,11 +168,21 @@ export const healthOptimizationRouter = router({
   /**
    * Check if user has completed health intake
    */
-  hasCompletedIntake: protectedProcedure.query(async ({ ctx }) => {
-    const profile = await db
-      .select()
-      .from(healthOptimizationProfiles)
-      .where(eq(healthOptimizationProfiles.userId, ctx.user.id))
+  hasCompletedIntake: protectedProcedure
+    .input(z.object({ userId: z.number().optional() }).optional())
+    .query(async ({ ctx, input }) => {
+      const userId = input?.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "health_optimization",
+        logAccess: true,
+      });
+      
+      const profile = await db
+        .select()
+        .from(healthOptimizationProfiles)
+        .where(eq(healthOptimizationProfiles.userId, userId))
       .limit(1);
     
     return {
@@ -183,8 +195,16 @@ export const healthOptimizationRouter = router({
    * Submit health intake questionnaire
    */
   submitHealthIntake: protectedProcedure
-    .input(healthIntakeSchema)
+    .input(healthIntakeSchema.extend({ userId: z.number().optional() }))
     .mutation(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "health_optimization",
+        logAccess: true,
+      });
+      
       const profileId = uuidv4();
       
       // Calculate chronological age if DOB provided
@@ -198,7 +218,7 @@ export const healthOptimizationRouter = router({
       // Create health profile
       await db.insert(healthOptimizationProfiles).values({
         id: profileId,
-        userId: ctx.user.id,
+        userId: userId,
         overallHealth: input.overallHealth,
         chronologicalAge,
         primaryGoal: input.primaryGoal,
@@ -220,7 +240,7 @@ export const healthOptimizationRouter = router({
         await db.insert(dailyHealthMetrics).values({
           id: uuidv4(),
           profileId,
-          userId: ctx.user.id,
+          userId: userId,
           metricDate: new Date(),
           weight: input.weight?.toString(),
           sleepQuality: input.sleepQuality,
@@ -239,11 +259,21 @@ export const healthOptimizationRouter = router({
   /**
    * Get user's health profile
    */
-  getHealthProfile: protectedProcedure.query(async ({ ctx }) => {
-    const profile = await db
-      .select()
-      .from(healthOptimizationProfiles)
-      .where(eq(healthOptimizationProfiles.userId, ctx.user.id))
+  getHealthProfile: protectedProcedure
+    .input(z.object({ userId: z.number().optional() }).optional())
+    .query(async ({ ctx, input }) => {
+      const userId = input?.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "health_optimization",
+        logAccess: true,
+      });
+      
+      const profile = await db
+        .select()
+        .from(healthOptimizationProfiles)
+        .where(eq(healthOptimizationProfiles.userId, userId))
       .limit(1);
     
     if (!profile.length) {
@@ -265,13 +295,21 @@ export const healthOptimizationRouter = router({
    * Add biomarker entry (lab results)
    */
   addBiomarkers: protectedProcedure
-    .input(biomarkerEntrySchema)
+    .input(biomarkerEntrySchema.extend({ userId: z.number().optional() }))
     .mutation(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "health_optimization",
+        logAccess: true,
+      });
+      
       // Get profile
       const profile = await db
         .select()
         .from(healthOptimizationProfiles)
-        .where(eq(healthOptimizationProfiles.userId, ctx.user.id))
+        .where(eq(healthOptimizationProfiles.userId, userId))
         .limit(1);
       
       if (!profile.length) {
@@ -281,7 +319,7 @@ export const healthOptimizationRouter = router({
       await db.insert(biomarkers).values({
         id: uuidv4(),
         profileId: profile[0].id,
-        userId: ctx.user.id,
+        userId: userId,
         testDate: new Date(input.testDate),
         testSource: input.testSource,
         fastingGlucose: input.fastingGlucose?.toString(),
@@ -315,11 +353,21 @@ export const healthOptimizationRouter = router({
   /**
    * Get biomarker history
    */
-  getBiomarkers: protectedProcedure.query(async ({ ctx }) => {
-    const results = await db
-      .select()
-      .from(biomarkers)
-      .where(eq(biomarkers.userId, ctx.user.id))
+  getBiomarkers: protectedProcedure
+    .input(z.object({ userId: z.number().optional() }).optional())
+    .query(async ({ ctx, input }) => {
+      const userId = input?.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "health_optimization",
+        logAccess: true,
+      });
+      
+      const results = await db
+        .select()
+        .from(biomarkers)
+        .where(eq(biomarkers.userId, userId))
       .orderBy(desc(biomarkers.testDate));
     
     return results;
@@ -329,12 +377,20 @@ export const healthOptimizationRouter = router({
    * Log daily health metrics
    */
   logDailyMetrics: protectedProcedure
-    .input(dailyMetricsSchema)
+    .input(dailyMetricsSchema.extend({ userId: z.number().optional() }))
     .mutation(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "health_optimization",
+        logAccess: true,
+      });
+      
       const profile = await db
         .select()
         .from(healthOptimizationProfiles)
-        .where(eq(healthOptimizationProfiles.userId, ctx.user.id))
+        .where(eq(healthOptimizationProfiles.userId, userId))
         .limit(1);
       
       if (!profile.length) {
@@ -344,7 +400,7 @@ export const healthOptimizationRouter = router({
       await db.insert(dailyHealthMetrics).values({
         id: uuidv4(),
         profileId: profile[0].id,
-        userId: ctx.user.id,
+        userId: userId,
         metricDate: new Date(input.metricDate),
         restingHeartRate: input.restingHeartRate,
         hrv: input.hrv,
@@ -369,8 +425,17 @@ export const healthOptimizationRouter = router({
   getDailyMetrics: protectedProcedure
     .input(z.object({
       days: z.number().default(30),
+      userId: z.number().optional(),
     }).optional())
     .query(async ({ ctx, input }) => {
+      const userId = input?.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "health_optimization",
+        logAccess: true,
+      });
+      
       const days = input?.days || 30;
       const startDate = new Date();
       startDate.setDate(startDate.getDate() - days);
@@ -380,7 +445,7 @@ export const healthOptimizationRouter = router({
         .from(dailyHealthMetrics)
         .where(
           and(
-            eq(dailyHealthMetrics.userId, ctx.user.id),
+            eq(dailyHealthMetrics.userId, userId),
             gte(dailyHealthMetrics.metricDate, startDate)
           )
         )
@@ -393,12 +458,22 @@ export const healthOptimizationRouter = router({
    * Get health summary for AI Coach context
    * This is what gets passed to the AI before each session
    */
-  getHealthSummaryForAI: protectedProcedure.query(async ({ ctx }) => {
-    // Get profile
-    const profile = await db
-      .select()
-      .from(healthOptimizationProfiles)
-      .where(eq(healthOptimizationProfiles.userId, ctx.user.id))
+  getHealthSummaryForAI: protectedProcedure
+    .input(z.object({ userId: z.number().optional() }).optional())
+    .query(async ({ ctx, input }) => {
+      const userId = input?.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "health_optimization",
+        logAccess: true,
+      });
+      
+      // Get profile
+      const profile = await db
+        .select()
+        .from(healthOptimizationProfiles)
+        .where(eq(healthOptimizationProfiles.userId, userId))
       .limit(1);
     
     if (!profile.length) {
@@ -414,7 +489,7 @@ export const healthOptimizationRouter = router({
     const latestMetrics = await db
       .select()
       .from(dailyHealthMetrics)
-      .where(eq(dailyHealthMetrics.userId, ctx.user.id))
+      .where(eq(dailyHealthMetrics.userId, userId))
       .orderBy(desc(dailyHealthMetrics.metricDate))
       .limit(1);
     
@@ -422,7 +497,7 @@ export const healthOptimizationRouter = router({
     const latestBiomarkers = await db
       .select()
       .from(biomarkers)
-      .where(eq(biomarkers.userId, ctx.user.id))
+      .where(eq(biomarkers.userId, userId))
       .orderBy(desc(biomarkers.testDate))
       .limit(1);
     
@@ -485,11 +560,21 @@ export const healthOptimizationRouter = router({
    * Calculate mortality risk factors (simplified)
    * Based on research from Peter Attia's "Outlive"
    */
-  getMortalityRiskAssessment: protectedProcedure.query(async ({ ctx }) => {
-    const profile = await db
-      .select()
-      .from(healthOptimizationProfiles)
-      .where(eq(healthOptimizationProfiles.userId, ctx.user.id))
+  getMortalityRiskAssessment: protectedProcedure
+    .input(z.object({ userId: z.number().optional() }).optional())
+    .query(async ({ ctx, input }) => {
+      const userId = input?.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "health_optimization",
+        logAccess: true,
+      });
+      
+      const profile = await db
+        .select()
+        .from(healthOptimizationProfiles)
+        .where(eq(healthOptimizationProfiles.userId, userId))
       .limit(1);
     
     if (!profile.length) {

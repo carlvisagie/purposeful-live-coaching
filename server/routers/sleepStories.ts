@@ -267,9 +267,18 @@ Generate the complete sleep story now:`;
   generateNarration: protectedProcedure
     .input(z.object({
       story: z.string(),
-      voice: z.enum(["alloy", "echo", "fable", "onyx", "nova", "shimmer"]).default("nova")
+      voice: z.enum(["alloy", "echo", "fable", "onyx", "nova", "shimmer"]).default("nova"),
+      userId: z.number().optional(),
     }))
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "sleep_stories",
+        logAccess: true,
+      });
+      
       try {
         // For long stories, we'd need to chunk this
         // OpenAI TTS has a 4096 character limit per request
@@ -383,9 +392,18 @@ Generate the complete sleep story now:`;
       title: z.string(),
       story: z.string(),
       theme: z.string(),
-      metadata: z.any()
+      metadata: z.any(),
+      userId: z.number().optional(),
     }))
     .mutation(async ({ input, ctx }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "sleep_stories",
+        logAccess: true,
+      });
+      
       // In production, save to database
       return {
         success: true,

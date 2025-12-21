@@ -4,6 +4,8 @@ import { db } from "../db";
 import { dailyCheckIns, habits, habitCompletions } from "../../drizzle/schema";
 import { eq, and, desc, gte, lte, sql } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
+import ProfileGuard from "../profileGuard";
+import SelfLearning from "../selfLearningIntegration";
 
 export const dailyCheckInsRouter = router({
   /**
@@ -18,11 +20,29 @@ export const dailyCheckInsRouter = router({
         reflection: z.string().optional(),
         wins: z.string().optional(),
         lessons: z.string().optional(),
+        userId: z.number().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "daily_check_ins",
+        logAccess: true,
+      });
+      
+      // Track check-in for self-learning
+      if (userId) {
+        SelfLearning.trackOutcome(userId, "daily_check_ins", {
+          checkInType: input.type,
+          hasGratitude: !!input.gratitude,
+          hasIntention: !!input.intention,
+        }).catch(console.error);
+      }
+      
       const checkIn = await db.insert(dailyCheckIns).values({
-        userId: ctx.user.id,
+        userId: userId,
         type: input.type,
         gratitude: input.gratitude,
         intention: input.intention,
@@ -41,13 +61,22 @@ export const dailyCheckInsRouter = router({
     .input(
       z.object({
         limit: z.number().optional().default(7),
+        userId: z.number().optional(),
       })
     )
     .query(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "daily_check_ins",
+        logAccess: true,
+      });
+      
       const checkIns = await db
         .select()
         .from(dailyCheckIns)
-        .where(eq(dailyCheckIns.userId, ctx.user.id))
+        .where(eq(dailyCheckIns.userId, userId))
         .orderBy(desc(dailyCheckIns.createdAt))
         .limit(input.limit);
 
@@ -62,15 +91,24 @@ export const dailyCheckInsRouter = router({
       z.object({
         startDate: z.string(),
         endDate: z.string(),
+        userId: z.number().optional(),
       })
     )
     .query(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "daily_check_ins",
+        logAccess: true,
+      });
+      
       const checkIns = await db
         .select()
         .from(dailyCheckIns)
         .where(
           and(
-            eq(dailyCheckIns.userId, ctx.user.id),
+            eq(dailyCheckIns.userId, userId),
             gte(dailyCheckIns.createdAt, new Date(input.startDate)),
             lte(dailyCheckIns.createdAt, new Date(input.endDate))
           )
@@ -83,18 +121,28 @@ export const dailyCheckInsRouter = router({
   /**
    * Get today's check-ins
    */
-  getToday: protectedProcedure.query(async ({ ctx }) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
+  getToday: protectedProcedure
+    .input(z.object({ userId: z.number().optional() }).optional())
+    .query(async ({ ctx, input }) => {
+      const userId = input?.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "daily_check_ins",
+        logAccess: true,
+      });
+      
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
 
-    const checkIns = await db
-      .select()
-      .from(dailyCheckIns)
-      .where(
-        and(
-          eq(dailyCheckIns.userId, ctx.user.id),
+      const checkIns = await db
+        .select()
+        .from(dailyCheckIns)
+        .where(
+          and(
+            eq(dailyCheckIns.userId, userId),
           gte(dailyCheckIns.createdAt, today),
           lte(dailyCheckIns.createdAt, tomorrow)
         )
@@ -120,11 +168,20 @@ export const dailyCheckInsRouter = router({
         color: z.string().optional(),
         frequency: z.enum(["daily", "weekly"]).default("daily"),
         targetDays: z.string().optional(),
+        userId: z.number().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "daily_check_ins",
+        logAccess: true,
+      });
+      
       const habit = await db.insert(habits).values({
-        userId: ctx.user.id,
+        userId: userId,
         ...input,
       }).returning();
 
@@ -134,11 +191,21 @@ export const dailyCheckInsRouter = router({
   /**
    * Get all habits
    */
-  getHabits: protectedProcedure.query(async ({ ctx }) => {
-    const userHabits = await db
-      .select()
-      .from(habits)
-      .where(and(eq(habits.userId, ctx.user.id), eq(habits.isActive, true)))
+  getHabits: protectedProcedure
+    .input(z.object({ userId: z.number().optional() }).optional())
+    .query(async ({ ctx, input }) => {
+      const userId = input?.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "daily_check_ins",
+        logAccess: true,
+      });
+      
+      const userHabits = await db
+        .select()
+        .from(habits)
+        .where(and(eq(habits.userId, userId), eq(habits.isActive, true)))
       .orderBy(desc(habits.createdAt));
 
     return userHabits;
@@ -152,9 +219,18 @@ export const dailyCheckInsRouter = router({
       z.object({
         habitId: z.string(),
         notes: z.string().optional(),
+        userId: z.number().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "daily_check_ins",
+        logAccess: true,
+      });
+      
       const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
 
       // Check if already completed today
@@ -164,7 +240,7 @@ export const dailyCheckInsRouter = router({
         .where(
           and(
             eq(habitCompletions.habitId, input.habitId),
-            eq(habitCompletions.userId, ctx.user.id),
+            eq(habitCompletions.userId, userId),
             eq(habitCompletions.date, today)
           )
         )
@@ -180,7 +256,7 @@ export const dailyCheckInsRouter = router({
       // Create completion
       const completion = await db.insert(habitCompletions).values({
         habitId: input.habitId,
-        userId: ctx.user.id,
+        userId: userId,
         date: today,
         notes: input.notes,
       }).returning();
@@ -220,16 +296,25 @@ export const dailyCheckInsRouter = router({
         habitId: z.string(),
         startDate: z.string(),
         endDate: z.string(),
+        userId: z.number().optional(),
       })
     )
     .query(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "daily_check_ins",
+        logAccess: true,
+      });
+      
       const completions = await db
         .select()
         .from(habitCompletions)
         .where(
           and(
             eq(habitCompletions.habitId, input.habitId),
-            eq(habitCompletions.userId, ctx.user.id),
+            eq(habitCompletions.userId, userId),
             gte(habitCompletions.date, input.startDate),
             lte(habitCompletions.date, input.endDate)
           )
@@ -243,13 +328,21 @@ export const dailyCheckInsRouter = router({
    * Delete a habit
    */
   deleteHabit: protectedProcedure
-    .input(z.object({ habitId: z.string() }))
+    .input(z.object({ habitId: z.string(), userId: z.number().optional() }))
     .mutation(async ({ ctx, input }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "daily_check_ins",
+        logAccess: true,
+      });
+      
       await db
         .update(habits)
         .set({ isActive: false })
         .where(
-          and(eq(habits.id, input.habitId), eq(habits.userId, ctx.user.id))
+          and(eq(habits.id, input.habitId), eq(habits.userId, userId))
         );
 
       return { success: true };

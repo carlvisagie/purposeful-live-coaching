@@ -11,6 +11,8 @@ import { transcribeAudio } from "../_core/voiceTranscription";
 import { db } from "../db";
 import { liveSessionTranscripts, coachGuidance, sessions, coaches, clients, users } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
+import ProfileGuard from "../profileGuard";
+import SelfLearning from "../selfLearningIntegration";
 
 /**
  * Analyze transcript segment for emotions and triggers
@@ -222,9 +224,18 @@ export const liveSessionRouter = router({
         sessionId: z.number(),
         audioUrl: z.string().url(),
         speaker: z.enum(["client", "coach"]),
+        userId: z.number().optional(),
       })
     )
     .mutation(async ({ input, ctx }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "live_session",
+        logAccess: true,
+      });
+      
       try {
         // Transcribe audio using Whisper
         const transcription = await transcribeAudio({
@@ -272,9 +283,18 @@ export const liveSessionRouter = router({
         sessionId: z.number(),
         transcriptText: z.string(),
         speaker: z.enum(["client", "coach"]),
+        userId: z.number().optional(),
       })
     )
     .mutation(async ({ input, ctx }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "live_session",
+        logAccess: true,
+      });
+      
       try {
         // Get recent transcript context (last 5 segments)
         const recentTranscripts = await db
@@ -329,8 +349,16 @@ export const liveSessionRouter = router({
    * Get all coaching prompts for a session
    */
   getSessionPrompts: protectedProcedure
-    .input(z.object({ sessionId: z.number() }))
-    .query(async ({ input }) => {
+    .input(z.object({ sessionId: z.number(), userId: z.number().optional() }))
+    .query(async ({ input, ctx }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "live_session",
+        logAccess: true,
+      });
+      
       const prompts = await db
         .select()
         .from(coachGuidance)
@@ -344,8 +372,16 @@ export const liveSessionRouter = router({
    * Get session transcript
    */
   getSessionTranscript: protectedProcedure
-    .input(z.object({ sessionId: z.number() }))
-    .query(async ({ input }) => {
+    .input(z.object({ sessionId: z.number(), userId: z.number().optional() }))
+    .query(async ({ input, ctx }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "live_session",
+        logAccess: true,
+      });
+      
       const transcript = await db
         .select()
         .from(liveSessionTranscripts)
@@ -365,9 +401,16 @@ export const liveSessionRouter = router({
         clientId: z.number().optional(),
         clientName: z.string().optional(),
         sessionType: z.string().default('coaching'),
+        userId: z.number().optional(),
       })
     )
     .mutation(async ({ input }) => {
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(input.userId, {
+        moduleName: "live_session",
+        logAccess: true,
+      });
+      
       try {
         // Ensure default coach exists (for frictionless demo sessions)
         let coachId = input.coach_id;
@@ -442,8 +485,16 @@ export const liveSessionRouter = router({
     }),
 
   generateSessionSummary: protectedProcedure
-    .input(z.object({ sessionId: z.number() }))
-    .mutation(async ({ input }) => {
+    .input(z.object({ sessionId: z.number(), userId: z.number().optional() }))
+    .mutation(async ({ input, ctx }) => {
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "live_session",
+        logAccess: true,
+      });
+      
       try {
         // Get full transcript
         const transcript = await db

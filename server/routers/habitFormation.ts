@@ -17,6 +17,8 @@ import {
 } from "../../drizzle/schema";
 import { eq, and, desc, gte, lte, sql } from "drizzle-orm";
 import { db } from "../db";
+import ProfileGuard from "../profileGuard";
+import SelfLearning from "../selfLearningIntegration";
 
 export const habitFormationRouter = router({
   // ============================================================================
@@ -25,8 +27,15 @@ export const habitFormationRouter = router({
 
   // Get or create user's habit profile
   getProfile: protectedProcedure
-    .query(async ({ ctx }) => {
-      const userId = ctx.user.id;
+    .input(z.object({ userId: z.number().optional() }).optional())
+    .query(async ({ ctx, input }) => {
+      const userId = input?.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "habit_formation",
+        logAccess: true,
+      });
       
       let profile = await db.query.habitProfiles.findFirst({
         where: eq(habitProfiles.userId, userId),
@@ -71,9 +80,16 @@ export const habitFormationRouter = router({
       targetFrequency: z.enum(['daily', 'weekly', 'custom']).optional(),
       targetDuration: z.number().int().optional(), // minutes
       difficulty: z.number().int().min(1).max(10).optional(),
+      userId: z.number().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
-      const userId = ctx.user.id;
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "habit_formation",
+        logAccess: true,
+      });
       
       // Get or create profile
       let profile = await db.query.habitProfiles.findFirst({
@@ -155,9 +171,16 @@ export const habitFormationRouter = router({
     .input(z.object({
       status: z.enum(['active', 'paused', 'mastered', 'abandoned']).optional(),
       category: z.string().optional(),
+      userId: z.number().optional(),
     }).optional())
     .query(async ({ ctx, input }) => {
-      const userId = ctx.user.id;
+      const userId = input?.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "habit_formation",
+        logAccess: true,
+      });
       
       const conditions = [eq(habits.userId, userId)];
       
@@ -181,9 +204,16 @@ export const habitFormationRouter = router({
   getById: protectedProcedure
     .input(z.object({
       habitId: z.string(),
+      userId: z.number().optional(),
     }))
     .query(async ({ ctx, input }) => {
-      const userId = ctx.user.id;
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "habit_formation",
+        logAccess: true,
+      });
       
       const habit = await db.query.habits.findFirst({
         where: and(
@@ -223,9 +253,16 @@ export const habitFormationRouter = router({
       status: z.enum(['active', 'paused', 'mastered', 'abandoned']).optional(),
       targetFrequency: z.enum(['daily', 'weekly', 'custom']).optional(),
       targetDuration: z.number().int().optional(),
+      userId: z.number().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
-      const userId = ctx.user.id;
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "habit_formation",
+        logAccess: true,
+      });
       const { habitId, ...updates } = input;
       
       // Verify ownership
@@ -265,9 +302,25 @@ export const habitFormationRouter = router({
       location: z.string().optional(),
       notes: z.string().optional(),
       resistanceLevel: z.number().int().min(1).max(10).optional(), // How hard was it to start?
+      userId: z.number().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
-      const userId = ctx.user.id;
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "habit_formation",
+        logAccess: true,
+      });
+      
+      // Track habit completion for self-learning
+      if (userId && input.completed) {
+        SelfLearning.trackOutcome(userId, "habit_formation", {
+          habitId: input.habitId,
+          completed: input.completed,
+          resistanceLevel: input.resistanceLevel,
+        }).catch(console.error);
+      }
       
       // Verify ownership
       const habit = await db.query.habits.findFirst({
@@ -401,8 +454,15 @@ export const habitFormationRouter = router({
 
   // Get today's habit checklist
   getTodayChecklist: protectedProcedure
-    .query(async ({ ctx }) => {
-      const userId = ctx.user.id;
+    .input(z.object({ userId: z.number().optional() }).optional())
+    .query(async ({ ctx, input }) => {
+      const userId = input?.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "habit_formation",
+        logAccess: true,
+      });
       
       // Get all active habits
       const activeHabits = await db.query.habits.findMany({
@@ -442,9 +502,16 @@ export const habitFormationRouter = router({
     .input(z.object({
       habitId: z.string(),
       days: z.number().int().min(7).max(365).optional(),
+      userId: z.number().optional(),
     }))
     .query(async ({ ctx, input }) => {
-      const userId = ctx.user.id;
+      const userId = input.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "habit_formation",
+        logAccess: true,
+      });
       const days = input.days || 30;
       
       // Verify ownership
@@ -486,8 +553,15 @@ export const habitFormationRouter = router({
 
   // Get habit statistics
   getStats: protectedProcedure
-    .query(async ({ ctx }) => {
-      const userId = ctx.user.id;
+    .input(z.object({ userId: z.number().optional() }).optional())
+    .query(async ({ ctx, input }) => {
+      const userId = input?.userId || ctx.user?.id;
+      
+      // PROFILE GUARD - Load client context
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "habit_formation",
+        logAccess: true,
+      });
       
       const profile = await db.query.habitProfiles.findFirst({
         where: eq(habitProfiles.userId, userId),
