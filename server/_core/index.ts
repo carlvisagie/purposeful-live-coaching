@@ -29,6 +29,7 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { webhookRouter } from "../routers/webhooks";
+import { vapiWebhookRestRouter } from "../routers/vapiWebhookRest";
 import { seedCoachAvailability } from "../seed-availability";
 import { updateSessionPrices } from "../update-session-prices";
 import { runMigrations } from "../run-migrations-startup";
@@ -79,9 +80,15 @@ async function startServer() {
   // Stripe webhooks need raw body - register BEFORE body parser
   app.use("/api/webhooks", express.raw({ type: "application/json" }), webhookRouter);
   
+  // Vapi webhooks need JSON body - register AFTER body parser is set up below
+  // We'll add it after the body parser
+  
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
+  
+  // Vapi webhooks - needs JSON body parser
+  app.use("/api/vapi", vapiWebhookRestRouter);
   
   // Rate limiting for API protection
   const apiLimiter = rateLimit({
