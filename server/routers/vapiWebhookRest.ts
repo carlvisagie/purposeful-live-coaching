@@ -7,10 +7,9 @@
 
 import { Router } from "express";
 import { getDb } from "../db";
-import { users, clients, phoneCallerRegistry } from "../../drizzle/schema";
+import { clients } from "../../drizzle/schema";
 import { eq, or, sql } from "drizzle-orm";
-import { ProfileGuard } from "../profileGuard";
-import { SelfLearning } from "../selfLearningIntegration";
+// ProfileGuard and SelfLearning will be integrated with Unified Client Profile later
 import { CONVERSION_SKILLS_PROMPT, detectConversionMoment, trackConversionAttempt } from "../services/conversionSkills";
 import { analyzeVoiceCharacteristics, generateRapportStrategy, getQuickRapportGuidance, saveVoiceProfile } from "../services/voiceAnalysis";
 
@@ -187,74 +186,34 @@ async function findCallerByPhone(phoneNumber: string) {
   const db = await getDb();
   if (!db) return null;
   
-  // Normalize phone number
+  // Normalize phone number - strip all non-digits
   const normalizedPhone = phoneNumber.replace(/\D/g, '');
+  const last10Digits = normalizedPhone.slice(-10);
   
-  // Try phone caller registry first (may not exist yet)
-  let registry = null;
-  try {
-    if (db.query.phoneCallerRegistry) {
-      registry = await db.query.phoneCallerRegistry.findFirst({
-        where: (reg: any, { eq }: any) => eq(reg.phoneNumber, normalizedPhone),
-      });
-      
-      if (registry?.userId) {
-        const user = await db.query.users.findFirst({
-          where: (u: any, { eq }: any) => eq(u.id, registry.userId),
-        });
-        if (user) {
-          return { type: 'user' as const, user, registry };
-        }
-      }
-      
-      if (registry?.clientId) {
-        const client = await db.query.clients.findFirst({
-          where: (c: any, { eq }: any) => eq(c.id, registry.clientId),
-        });
-        if (client) {
-          return { type: 'client' as const, client, registry };
-        }
-      }
-    }
-  } catch (e) {
-    // phone_caller_registry table may not exist yet - that's OK
-    console.log('[VapiWebhook] phoneCallerRegistry not available, using fallback lookup');
-  }
+  console.log(`[VapiWebhook] Looking up caller: ${phoneNumber} -> normalized: ${normalizedPhone}`);
   
-  // Try to find by phone in users table
-  try {
-    const user = await db.query.users.findFirst({
-      where: (u: any, { or, eq, like }: any) => or(
-        eq(u.phone, phoneNumber),
-        eq(u.phone, normalizedPhone),
-        like(u.phone, `%${normalizedPhone.slice(-10)}%`)
-      ),
-    });
-    
-    if (user) {
-      return { type: 'user' as const, user, registry: null };
-    }
-  } catch (e) {
-    console.log('[VapiWebhook] Error looking up user by phone:', e);
-  }
-  
-  // Try to find by phone in clients table
+  // Look up in clients table (Unified Client Profile)
+  // This is the SINGLE source of truth for all client data
   try {
     const client = await db.query.clients.findFirst({
       where: (c: any, { or, eq, like }: any) => or(
         eq(c.phone, phoneNumber),
         eq(c.phone, normalizedPhone),
-        like(c.phone, `%${normalizedPhone.slice(-10)}%`)
+        eq(c.phone, `+${normalizedPhone}`),
+        like(c.phone, `%${last10Digits}`)
       ),
     });
     
     if (client) {
-      return { type: 'client' as const, client, registry: null };
+      console.log(`[VapiWebhook] Found client: ${client.name} (ID: ${client.id})`);
+      return { type: 'client' as const, client };
     }
   } catch (e) {
-    console.log('[VapiWebhook] Error looking up client by phone:', e);
+    console.error('[VapiWebhook] Error looking up client by phone:', e);
   }
   
+  // If not found in clients, this is a new caller
+  console.log(`[VapiWebhook] No existing client found for phone: ${phoneNumber}`);
   return null;
 }
 
@@ -266,32 +225,27 @@ async function buildPersonalizedPrompt(phoneNumber: string) {
   let profileContext = '';
   let selfLearningInsights = '';
   
-  if (callerInfo) {
+  if (callerInfo && callerInfo.type === 'client') {
     isReturning = true;
+    const client = callerInfo.client;
+    clientName = client.name || '';
     
-    if (callerInfo.type === 'user') {
-      clientName = callerInfo.user.name || '';
-      
-      // Get ProfileGuard context
-      try {
-        const profileGuard = new ProfileGuard();
-        const context = await profileGuard.getContextForUser(callerInfo.user.id);
-        profileContext = context || '';
-      } catch (e) {
-        console.error('[VapiWebhook] ProfileGuard error:', e);
-      }
-      
-      // Get SelfLearning insights
-      try {
-        const selfLearning = new SelfLearning();
-        const insights = await selfLearning.getInsightsForUser(callerInfo.user.id);
-        selfLearningInsights = insights || '';
-      } catch (e) {
-        console.error('[VapiWebhook] SelfLearning error:', e);
-      }
-    } else if (callerInfo.type === 'client') {
-      clientName = callerInfo.client.name || '';
+    // Build profile context from Unified Client Profile
+    const profileParts: string[] = [];
+    
+    if (client.goals) {
+      profileParts.push(`**Goals:** ${client.goals}`);
     }
+    if (client.notes) {
+      profileParts.push(`**Notes:** ${client.notes}`);
+    }
+    if (client.status) {
+      profileParts.push(`**Status:** ${client.status}`);
+    }
+    
+    profileContext = profileParts.join('\n');
+    
+    console.log(`[VapiWebhook] Built profile context for ${clientName}`);
   }
   
   // Build personalized system prompt
@@ -334,19 +288,16 @@ async function extractAndSaveInsights(phoneNumber: string, transcript: string, c
   
   if (!callerInfo) {
     console.log('[VapiWebhook] No caller found for phone:', phoneNumber);
+    // For new callers, we could create a new client profile here in the future
     return;
   }
   
-  // Use ProfileGuard to extract and save insights
-  try {
-    const profileGuard = new ProfileGuard();
-    
-    if (callerInfo.type === 'user') {
-      await profileGuard.processConversation(callerInfo.user.id, transcript, 'phone_call');
-    }
-  } catch (e) {
-    console.error('[VapiWebhook] Error extracting insights:', e);
-  }
+  // Log the call for the client's Unified Profile
+  console.log(`[VapiWebhook] Saving call insights for client: ${callerInfo.client.name}`);
+  
+  // TODO: In the future, update the client's notes with call summary
+  // For now, just log that we received the transcript
+  console.log(`[VapiWebhook] Transcript length: ${transcript.length} chars`);
 }
 
 // ============================================================================
@@ -430,26 +381,18 @@ vapiWebhookRestRouter.post("/webhook", async (req, res) => {
         
         // Save voice profile for future calls
         const callerInfo = await findCallerByPhone(phoneNumber);
-        if (callerInfo) {
-          const userId = callerInfo.type === 'user' ? callerInfo.user.id : undefined;
-          const clientId = callerInfo.type === 'client' ? callerInfo.client.id : undefined;
+        if (callerInfo && callerInfo.type === 'client') {
+          const clientId = callerInfo.client.id;
           
-          if (userId || clientId) {
+          try {
             await saveVoiceProfile(
-              { oderId: undefined, clientId },
+              { userId: undefined, clientId },
               voiceCharacteristics,
               rapportStrategy
             );
-          }
-          
-          // Update via SelfLearning
-          if (callerInfo.type === 'user') {
-            try {
-              const selfLearning = new SelfLearning();
-              await selfLearning.learnFromConversation(callerInfo.user.id, transcript, 'phone_call');
-            } catch (e) {
-              console.error('[VapiWebhook] SelfLearning error:', e);
-            }
+            console.log(`[VapiWebhook] Saved voice profile for client: ${callerInfo.client.name}`);
+          } catch (e) {
+            console.error('[VapiWebhook] Error saving voice profile:', e);
           }
         }
       }
