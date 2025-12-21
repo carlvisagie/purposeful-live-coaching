@@ -66,6 +66,7 @@ import { justTalkRouter } from "./routers/justTalk";
 import { sleepStoriesRouter } from "./routers/sleepStories";
 import { focusCoachRouter } from "./routers/focusCoach";
 import { aiMeditationRouter } from "./routers/aiMeditation";
+import { clientRecognitionRouter } from "./routers/clientRecognition";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -148,6 +149,7 @@ export const appRouter = router({
   sleepStories: sleepStoriesRouter,
   focusCoach: focusCoachRouter,
   aiMeditation: aiMeditationRouter,
+  clientRecognition: clientRecognitionRouter,
 });
 
 export type AppRouter = typeof appRouter;
