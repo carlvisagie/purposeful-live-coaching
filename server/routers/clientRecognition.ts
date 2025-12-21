@@ -57,14 +57,14 @@ function getGreetingForTier(
   switch (tier) {
     case "certain":
       return lastTopic
-        ? \`Welcome back, \${userName}! 💜 Last time we talked about \${lastTopic}. How has that been going?\`
-        : \`Welcome back, \${userName}! 💜 It's so good to hear from you again.\`;
+        ? `Welcome back, ${userName}! 💜 Last time we talked about ${lastTopic}. How has that been going?`
+        : `Welcome back, ${userName}! 💜 It's so good to hear from you again.`;
     case "likely":
-      return \`\${userName}, is that you? I think I recognize your voice!\`;
+      return `${userName}, is that you? I think I recognize your voice!`;
     case "possible":
-      return \`Hey there! I feel like we've talked before. What's your name?\`;
+      return `Hey there! I feel like we've talked before. What's your name?`;
     case "unknown":
-      return \`Hey there 💜 I'm Sage. I'm genuinely glad you're here. What's your name?\`;
+      return `Hey there 💜 I'm Sage. I'm genuinely glad you're here. What's your name?`;
   }
 }
 
@@ -143,7 +143,7 @@ class MultiModalRecognitionService {
   private async recognizeByDevice(deviceId: string): Promise<{ userId: number | null; confidence: number }> {
     // Look up device in users table (anonymousId field)
     const user = await db.query.users.findFirst({
-      where: sql\`\${users.metadata}->>'anonymousId' = \${deviceId}\`,
+      where: sql`${users.metadata}->>'anonymousId' = ${deviceId}`,
     });
     
     if (user) {
@@ -348,10 +348,10 @@ class MultiModalRecognitionService {
       if (existingVoicePrint) {
         // TODO: Merge new samples with existing voice print
         // This requires actual voice embedding API
-        console.log(\`[Recognition] Would update voice print for user \${userId} with \${voiceSamples.length} new samples\`);
+        console.log(`[Recognition] Would update voice print for user ${userId} with ${voiceSamples.length} new samples`);
       } else {
         // First enrollment
-        console.log(\`[Recognition] Would create voice print for user \${userId}\`);
+        console.log(`[Recognition] Would create voice print for user ${userId}`);
       }
     }
     
@@ -366,10 +366,10 @@ class MultiModalRecognitionService {
       
       if (existingFaceEmbedding) {
         // TODO: Merge new frames with existing face embedding
-        console.log(\`[Recognition] Would update face embedding for user \${userId} with \${faceFrames.length} new frames\`);
+        console.log(`[Recognition] Would update face embedding for user ${userId} with ${faceFrames.length} new frames`);
       } else {
         // First enrollment
-        console.log(\`[Recognition] Would create face embedding for user \${userId}\`);
+        console.log(`[Recognition] Would create face embedding for user ${userId}`);
       }
     }
   }
@@ -381,12 +381,12 @@ class MultiModalRecognitionService {
     // Update user's metadata with device ID
     await db.update(users)
       .set({
-        metadata: sql\`COALESCE(\${users.metadata}, '{}'::jsonb) || jsonb_build_object('anonymousId', \${deviceId})\`,
+        metadata: sql`COALESCE(${users.metadata}, '{}'::jsonb) || jsonb_build_object('anonymousId', ${deviceId})`,
         updatedAt: new Date(),
       })
       .where(eq(users.id, userId));
     
-    console.log(\`[Recognition] Linked device \${deviceId} to user \${userId}\`);
+    console.log(`[Recognition] Linked device ${deviceId} to user ${userId}`);
   }
 }
 
@@ -487,7 +487,7 @@ export const clientRecognitionRouter = router({
       return { 
         success: true,
         message: input.correctName 
-          ? \`Got it! Nice to meet you, \${input.correctName}!\`
+          ? `Got it! Nice to meet you, ${input.correctName}!`
           : "No problem! What's your name?"
       };
     }),

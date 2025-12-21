@@ -24,7 +24,7 @@ import { invokeLLM } from "./_core/llm";
 // EXTENDED MODULE TYPES (Beyond original 12)
 // ============================================================================
 
-export type ExtendedModuleType = ModuleType | 
+export type ExtendedModuleType = ModuleType 
   | "ai_chat"
   | "sleep_stories"
   | "focus_coach"
