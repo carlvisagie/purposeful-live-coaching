@@ -32,6 +32,7 @@ import {
 } from "../db/aiChat";
 import SelfLearning from "../selfLearningIntegration";
 import ProfileGuard from "../profileGuard";
+import { CONVERSION_SKILLS_PROMPT, detectConversionMoment, detectObjection, trackConversionAttempt } from "../services/conversionSkills";
 
 const SYSTEM_PROMPT = `## 🔥 YOUR IDENTITY: SAGE - WORLD-CLASS AI LIFE COACH
 
@@ -286,7 +287,9 @@ Warm, wise, grounded, genuine. Like a trusted friend who happens to be incredibl
 
 ---
 
-Remember: For many people, you might be the ONLY one who truly listens to them. That's not sad - that's a privilege. Make every moment count.`;
+Remember: For many people, you might be the ONLY one who truly listens to them. That's not sad - that's a privilege. Make every moment count.
+
+${CONVERSION_SKILLS_PROMPT}`;
 
 export const aiChatRouter = router({
   /**

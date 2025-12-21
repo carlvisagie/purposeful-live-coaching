@@ -21,6 +21,7 @@ import { users, clients, phoneCallerRegistry } from "../../drizzle/schema";
 import { eq, or, sql } from "drizzle-orm";
 import { ProfileGuard } from "../profileGuard";
 import { SelfLearning } from "../selfLearningIntegration";
+import { CONVERSION_SKILLS_PROMPT, detectConversionMoment, trackConversionAttempt } from "../services/conversionSkills";
 
 // ============================================================================
 // SAGE'S COMPLETE PHONE IDENTITY (Same skills as app version)
@@ -322,7 +323,7 @@ async function findCallerByPhone(phoneNumber: string): Promise<{
   const db = getDb();
   const normalizedPhone = normalizePhone(phoneNumber);
   
-  console.log(\`[VapiWebhook] Looking up phone: \${normalizedPhone}\`);
+  console.log(`[VapiWebhook] Looking up phone: \${normalizedPhone}`);
   
   // 1. First check phone caller registry (catches ALL previous callers)
   try {
@@ -331,12 +332,12 @@ async function findCallerByPhone(phoneNumber: string): Promise<{
     });
     
     if (registryEntry) {
-      console.log(\`[VapiWebhook] Found in registry: \${registryEntry.callerName || 'Unknown'}, calls: \${registryEntry.totalCalls}\`);
+      console.log(`[VapiWebhook] Found in registry: \${registryEntry.callerName || 'Unknown'}, calls: \${registryEntry.totalCalls}`);
       
       // Update call count
       await db.update(phoneCallerRegistry)
         .set({ 
-          totalCalls: sql\`\${phoneCallerRegistry.totalCalls} + 1\`,
+          totalCalls: sql`\${phoneCallerRegistry.totalCalls} + 1`,
           lastCallAt: new Date(),
         })
         .where(eq(phoneCallerRegistry.phoneNumber, normalizedPhone));
@@ -355,7 +356,7 @@ async function findCallerByPhone(phoneNumber: string): Promise<{
       };
     }
   } catch (e) {
-    console.log(\`[VapiWebhook] Registry check failed (table may not exist yet)\`);
+    console.log(`[VapiWebhook] Registry check failed (table may not exist yet)`);
   }
   
   // 2. Try to find in users table
@@ -368,7 +369,7 @@ async function findCallerByPhone(phoneNumber: string): Promise<{
     });
     
     if (user) {
-      console.log(\`[VapiWebhook] Found in users: \${user.name}\`);
+      console.log(`[VapiWebhook] Found in users: \${user.name}`);
       await registerPhoneCaller(normalizedPhone, phoneNumber, user.id, user.name || 'Friend');
       return {
         userId: user.id,
@@ -379,7 +380,7 @@ async function findCallerByPhone(phoneNumber: string): Promise<{
       };
     }
   } catch (e) {
-    console.log(\`[VapiWebhook] Users lookup failed\`);
+    console.log(`[VapiWebhook] Users lookup failed`);
   }
   
   // 3. Try to find in clients table
@@ -392,7 +393,7 @@ async function findCallerByPhone(phoneNumber: string): Promise<{
     });
     
     if (client) {
-      console.log(\`[VapiWebhook] Found in clients: \${client.name}\`);
+      console.log(`[VapiWebhook] Found in clients: \${client.name}`);
       await registerPhoneCaller(normalizedPhone, phoneNumber, client.userId || null, client.name || 'Friend');
       return {
         userId: client.userId || null,
@@ -403,11 +404,11 @@ async function findCallerByPhone(phoneNumber: string): Promise<{
       };
     }
   } catch (e) {
-    console.log(\`[VapiWebhook] Clients lookup failed\`);
+    console.log(`[VapiWebhook] Clients lookup failed`);
   }
   
   // 4. New caller - register them for future recognition
-  console.log(\`[VapiWebhook] New caller - registering phone number\`);
+  console.log(`[VapiWebhook] New caller - registering phone number`);
   await registerPhoneCaller(normalizedPhone, phoneNumber, null, null);
   
   return null;
@@ -435,13 +436,13 @@ async function registerPhoneCaller(
     }).onConflictDoUpdate({
       target: phoneCallerRegistry.phoneNumber,
       set: {
-        totalCalls: sql\`\${phoneCallerRegistry.totalCalls} + 1\`,
+        totalCalls: sql`\${phoneCallerRegistry.totalCalls} + 1`,
         lastCallAt: new Date(),
       },
     });
-    console.log(\`[VapiWebhook] Phone registered: \${normalizedPhone}\`);
+    console.log(`[VapiWebhook] Phone registered: \${normalizedPhone}`);
   } catch (e) {
-    console.log(\`[VapiWebhook] Failed to register phone (table may not exist)\`);
+    console.log(`[VapiWebhook] Failed to register phone (table may not exist)`);
   }
 }
 
@@ -459,8 +460,8 @@ async function buildPersonalizedPrompt(phoneNumber: string): Promise<{
   if (!callerInfo) {
     // Brand new caller - never called before
     const prompt = SAGE_PHONE_IDENTITY
-      .replace('{{PERSONALIZED_GREETING}}', \`"Hey there... *warm smile* I'm Sage. I'm really glad you called."\`)
-      .replace('{{CLIENT_CONTEXT}}', \`[FIRST TIME CALLER - No previous history]
+      .replace('{{PERSONALIZED_GREETING}}', `"Hey there... *warm smile* I'm Sage. I'm really glad you called."`)
+      .replace('{{CLIENT_CONTEXT}}', `[FIRST TIME CALLER - No previous history]
 
 This is their FIRST call ever. Make it unforgettable.
 
@@ -476,7 +477,7 @@ This is their FIRST call ever. Make it unforgettable.
 - "What's been on your mind lately?"
 - "What would make today a win for you?"
 
-Everything they share gets saved to their profile automatically.\`);
+Everything they share gets saved to their profile automatically.`);
     
     return {
       systemPrompt: prompt,
@@ -498,44 +499,44 @@ Everything they share gets saved to their profile automatically.\`);
       });
       
       const contextParts: string[] = [];
-      contextParts.push(\`**Name:** \${context.name || callerInfo.name}\`);
-      contextParts.push(\`**Call #:** \${callerInfo.callCount} (they've called \${callerInfo.callCount} times!)\`);
+      contextParts.push(`**Name:** \${context.name || callerInfo.name}`);
+      contextParts.push(`**Call #:** \${callerInfo.callCount} (they've called \${callerInfo.callCount} times!)`);
       
       if (context.goals && context.goals.length > 0) {
-        contextParts.push(\`**Their Goals:** \${context.goals.join(', ')}\`);
+        contextParts.push(`**Their Goals:** \${context.goals.join(', ')}`);
       }
       if (context.challenges && context.challenges.length > 0) {
-        contextParts.push(\`**Their Challenges:** \${context.challenges.join(', ')}\`);
+        contextParts.push(`**Their Challenges:** \${context.challenges.join(', ')}`);
       }
       if (context.preferences) {
-        contextParts.push(\`**Preferences:** \${JSON.stringify(context.preferences)}\`);
+        contextParts.push(`**Preferences:** \${JSON.stringify(context.preferences)}`);
       }
       if (context.recentTopics && context.recentTopics.length > 0) {
-        contextParts.push(\`**Recent Topics:** \${context.recentTopics.join(', ')}\`);
+        contextParts.push(`**Recent Topics:** \${context.recentTopics.join(', ')}`);
       }
       if (context.lastInteraction) {
-        contextParts.push(\`**Last Interaction:** \${context.lastInteraction}\`);
+        contextParts.push(`**Last Interaction:** \${context.lastInteraction}`);
       }
       
       contextString = contextParts.join('\\n');
     } catch (e) {
-      contextString = \`**Name:** \${callerInfo.name}\\n**Call #:** \${callerInfo.callCount}\`;
+      contextString = `**Name:** \${callerInfo.name}\\n**Call #:** \${callerInfo.callCount}`;
     }
   } else {
     // No user account yet, but we have call history
     const contextParts: string[] = [];
-    contextParts.push(\`**Name:** \${callerInfo.name}\`);
-    contextParts.push(\`**Call #:** \${callerInfo.callCount}\`);
+    contextParts.push(`**Name:** \${callerInfo.name}`);
+    contextParts.push(`**Call #:** \${callerInfo.callCount}`);
     
     if (callerInfo.knownContext) {
       if (callerInfo.knownContext.goals && callerInfo.knownContext.goals.length > 0) {
-        contextParts.push(\`**Goals from previous calls:** \${callerInfo.knownContext.goals.join(', ')}\`);
+        contextParts.push(`**Goals from previous calls:** \${callerInfo.knownContext.goals.join(', ')}`);
       }
       if (callerInfo.knownContext.challenges && callerInfo.knownContext.challenges.length > 0) {
-        contextParts.push(\`**Challenges mentioned:** \${callerInfo.knownContext.challenges.join(', ')}\`);
+        contextParts.push(`**Challenges mentioned:** \${callerInfo.knownContext.challenges.join(', ')}`);
       }
       if (callerInfo.knownContext.summaries && callerInfo.knownContext.summaries.length > 0) {
-        contextParts.push(\`**Previous call summaries:** \${callerInfo.knownContext.summaries.slice(-3).join(' | ')}\`);
+        contextParts.push(`**Previous call summaries:** \${callerInfo.knownContext.summaries.slice(-3).join(' | ')}`);
       }
     }
     
@@ -543,21 +544,21 @@ Everything they share gets saved to their profile automatically.\`);
   }
   
   const greeting = callerInfo.callCount > 1
-    ? \`"Hey \${callerInfo.name}! *genuine warmth* It's so good to hear your voice again."\`
-    : \`"Hey \${callerInfo.name}! I'm Sage. I'm really glad you called."\`;
+    ? `"Hey \${callerInfo.name}! *genuine warmth* It's so good to hear your voice again."`
+    : `"Hey \${callerInfo.name}! I'm Sage. I'm really glad you called."`;
   
   const prompt = SAGE_PHONE_IDENTITY
     .replace('{{PERSONALIZED_GREETING}}', greeting)
-    .replace('{{CLIENT_CONTEXT}}', \`[RETURNING CALLER - They trust you!]
+    .replace('{{CLIENT_CONTEXT}}', `[RETURNING CALLER - They trust you!]
 
 \${contextString}
 
 **Remember:** They called back! That means you made an impact. Build on that relationship.
-Reference previous conversations naturally. Show them you remember.\`);
+Reference previous conversations naturally. Show them you remember.`);
   
   const firstMessage = callerInfo.callCount > 1
-    ? \`Hey \${callerInfo.name}! It's Sage. So good to hear your voice again. How have you been since we last talked?\`
-    : \`Hey \${callerInfo.name}! I'm Sage. I'm really glad you called. What's on your mind today?\`;
+    ? `Hey \${callerInfo.name}! It's Sage. So good to hear your voice again. How have you been since we last talked?`
+    : `Hey \${callerInfo.name}! I'm Sage. I'm really glad you called. What's on your mind today?`;
   
   return {
     systemPrompt: prompt,
@@ -582,7 +583,7 @@ async function extractAndSaveInsights(
   // This would call your LLM to extract: name, goals, challenges, preferences, summary
   
   // For now, just log that we would do this
-  console.log(\`[VapiWebhook] Would extract insights from transcript for \${normalizedPhone}\`);
+  console.log(`[VapiWebhook] Would extract insights from transcript for \${normalizedPhone}`);
   
   // TODO: Call LLM to extract:
   // - Name (if mentioned)
@@ -619,12 +620,12 @@ export const vapiWebhookRouter = router({
     .mutation(async ({ input }) => {
       const phoneNumber = input.message.call?.customer?.number || '';
       
-      console.log(\`[VapiWebhook] Incoming call from: \${phoneNumber}\`);
+      console.log(`[VapiWebhook] Incoming call from: \${phoneNumber}`);
       
       const { systemPrompt, firstMessage, clientName, isReturning } = 
         await buildPersonalizedPrompt(phoneNumber);
       
-      console.log(\`[VapiWebhook] Client: \${clientName}, Returning: \${isReturning}\`);
+      console.log(`[VapiWebhook] Client: \${clientName}, Returning: \${isReturning}`);
       
       // Return the assistant configuration
       return {
@@ -680,7 +681,7 @@ export const vapiWebhookRouter = router({
       const transcript = input.message.transcript || '';
       const callId = input.message.call?.id || '';
       
-      console.log(\`[VapiWebhook] Call ended from: \${phoneNumber}\`);
+      console.log(`[VapiWebhook] Call ended from: \${phoneNumber}`);
       
       if (!transcript) {
         return { success: true, message: 'No transcript to process' };
@@ -716,7 +717,7 @@ export const vapiWebhookRouter = router({
             },
           });
           
-          console.log(\`[VapiWebhook] Updated profile for \${callerInfo.name}\`);
+          console.log(`[VapiWebhook] Updated profile for \${callerInfo.name}`);
         } catch (error) {
           console.error('[VapiWebhook] Error updating profile:', error);
         }
@@ -737,7 +738,7 @@ export const vapiWebhookRouter = router({
     .mutation(async ({ input }) => {
       const messageType = input.message.type;
       
-      console.log(\`[VapiWebhook] Received event: \${messageType}\`);
+      console.log(`[VapiWebhook] Received event: \${messageType}`);
       
       // Route to appropriate handler based on message type
       if (messageType === 'assistant-request') {
@@ -751,7 +752,7 @@ export const vapiWebhookRouter = router({
       }
       
       // Log other events for debugging
-      console.log(\`[VapiWebhook] Unhandled event type: \${messageType}\`);
+      console.log(`[VapiWebhook] Unhandled event type: \${messageType}`);
       
       return { success: true };
     }),
