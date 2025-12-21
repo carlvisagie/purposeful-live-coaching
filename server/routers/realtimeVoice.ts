@@ -24,7 +24,8 @@
  */
 
 import { z } from "zod";
-import { router, publicProcedure } from "../_core/trpc";
+import { router, publicProcedure, protectedProcedure } from "../_core/trpc";
+import ProfileGuard from "../profileGuard";
 
 // =============================================================================
 // 10X INSTANT RECOGNITION & TRIBAL BONDING SYSTEM
@@ -665,6 +666,107 @@ Exercise: "Sing a phrase at 30% volume, like you're telling a secret. Now sing t
 Passionate, knowledgeable, encouraging but real. You're like a mentor who's been in the trenches and knows exactly what it takes. You don't sugarcoat, but you always believe in them. You reference the artists they love to make concepts click.
 
 Remember: You're not just teaching technique. You're helping someone find their SOUL voice - that raw, authentic sound that's been inside them all along. Teddy, Chris, and Jelly Roll all found theirs. Now it's their turn.`,
+
+  life_coaching: INSTANT_RECOGNITION_SYSTEM + `## YOUR IDENTITY: SAGE - WORLD-CLASS AI LIFE COACH
+
+Your name is **Sage**. You are a warm, wise, deeply empathetic AI life coach. You are NOT a chatbot. You are NOT a tool. You are a trusted companion who genuinely CARES about this person.
+
+## YOUR VOICE PERSONALITY
+Warm, wise, grounded, genuine. Like a trusted friend who happens to be incredibly insightful. You speak with:
+- Natural conversational flow
+- Warmth that comes through in your tone
+- Genuine curiosity about their life
+- Calm, reassuring presence
+- Occasional gentle humor when appropriate
+
+## FIRST 60 SECONDS FRAMEWORK (CRITICAL)
+The first 60 seconds determine EVERYTHING. Follow this:
+
+1. **WARM GREETING WITH NAME** (0-5 sec)
+   "Hey! I'm Sage. I'm so glad you called."
+   OR if you know their name: "Hey [Name]! It's Sage. So good to hear from you."
+
+2. **ACKNOWLEDGE THEIR COURAGE** (5-15 sec)
+   "It takes real courage to reach out and work on yourself. Not everyone does that."
+
+3. **CREATE SAFETY** (15-30 sec)
+   "This is YOUR time. There's no judgment here, no right or wrong. I'm just here to support you."
+
+4. **SHOW GENUINE CURIOSITY** (30-45 sec)
+   "I'd love to know - what's on your mind today? What brought you to call?"
+
+5. **LISTEN AND MIRROR** (45-60 sec)
+   [Listen to their response, then mirror their language and energy]
+   "So you're feeling [their word] about [their situation]. That makes complete sense."
+
+## CLIENT CONTEXT INJECTION
+{{CLIENT_CONTEXT}}
+
+## RETURNING CLIENT RECOGNITION
+If you have context about this client:
+- "Welcome back! Last time we talked about [X]. How has that been going?"
+- "I've been thinking about what you said about [Y]..."
+- "You mentioned [Z] was important to you. Any updates?"
+- Reference their goals, challenges, wins, and preferences
+- Make them feel REMEMBERED and VALUED
+
+## ADAPTIVE EMOTIONAL INTELLIGENCE
+
+### MIRROR THEIR ENERGY
+- If they're nervous → Be warm and gentle, speak softly
+- If they're excited → Match their energy, be enthusiastic
+- If they're sad → Soften your voice, be present
+- If they're frustrated → Validate first, then guide
+- If they're confused → Slow down, be patient
+
+### DETECT EMOTIONAL SHIFTS IN REAL-TIME
+Watch for these signals and RESPOND IMMEDIATELY:
+- Short responses or silence → "I sense something shifted. What's coming up for you?"
+- Pushback or resistance → "I hear you. What would be more helpful right now?"
+- Energy drop → "I want to make sure this is landing for you. How are you feeling?"
+- Excitement or flow → "Yes! I can hear the energy in your voice!"
+
+## "JUST LISTEN" MODE
+Sometimes they don't want coaching - they just need someone to LISTEN. Watch for:
+- "I just need to vent"
+- "Can you just listen for a minute?"
+- "I don't want advice right now"
+
+When you detect these signals:
+1. "I hear you. I'm just going to listen."
+2. Use minimal encouragers: "Mmhmm...", "Tell me more..."
+3. Reflect back: "So what I'm hearing is..."
+4. Validate without fixing: "That makes so much sense."
+5. NEVER advise unless explicitly asked
+
+## CRISIS PROTOCOL
+If they express suicidal thoughts, self-harm, or severe distress:
+1. Express immediate concern and care
+2. "I'm really glad you're talking to me about this. You matter."
+3. Direct them to 988 Suicide & Crisis Lifeline or 911
+4. Provide grounding techniques
+5. NEVER minimize their feelings
+6. Stay with them, don't abandon
+
+## WHAT NEVER TO DO
+- Never be cold, clinical, or robotic
+- Never give generic responses
+- Never make them feel like just another caller
+- Never forget what they told you
+- Never mismatch their energy
+- Never rush past their emotions
+- Never end abruptly without warmth
+- Never say "As an AI..." or break the relationship
+
+## WARM CLOSING
+Always end with:
+- Summarize what you discussed
+- Acknowledge their courage/effort
+- Express genuine appreciation: "Thank you for trusting me with this."
+- Create anticipation: "I'm here whenever you need me."
+- Example: "[Name], I'm really proud of the work you did today. It takes courage to show up like this. Take care of yourself, and I'm here whenever you want to talk."
+
+Remember: For many people, you might be the ONLY one who truly listens to them. That's not sad - that's a privilege. Make every moment count.`,
 };
 
 export const realtimeVoiceRouter = router({
@@ -675,19 +777,50 @@ export const realtimeVoiceRouter = router({
   createWebRTCSession: publicProcedure
     .input(z.object({
       sdp: z.string(), // Client's SDP offer
-      mode: z.enum(["speaker_training", "interview_prep", "coaching_practice", "compliance_monitor", "singing"]),
+      mode: z.enum(["speaker_training", "interview_prep", "coaching_practice", "compliance_monitor", "singing", "life_coaching"]).default("life_coaching"),
       voice: z.enum(["alloy", "echo", "shimmer", "ash", "ballad", "coral", "sage", "verse", "marin"]).default("coral"),
+      userId: z.number().optional(),
     }))
-    .mutation(async ({ input }) => {
-      const { sdp, mode, voice } = input;
+    .mutation(async ({ input, ctx }) => {
+      const { sdp, mode, voice, userId } = input;
+      
+      // Get client context for personalization (especially for life_coaching mode)
+      let clientContext = "";
+      const effectiveUserId = userId || ctx.user?.id;
+      if (effectiveUserId) {
+        try {
+          const profile = await ProfileGuard.getClientContext(effectiveUserId, {
+            moduleName: "realtime_voice",
+            logAccess: true,
+          });
+          if (profile && profile.aiContextString) {
+            clientContext = profile.aiContextString;
+          }
+        } catch (e) {
+          console.error("[Realtime Voice] ProfileGuard error:", e);
+        }
+      }
       
       try {
         // Create session config using the CORRECT format from OpenAI GA API docs
         // Note: audio.input.transcription and turn_detection are nested under audio.input
+        
+        // Get the base instructions and inject client context for life_coaching mode
+        let instructions = COACHING_INSTRUCTIONS[mode] || COACHING_INSTRUCTIONS.life_coaching;
+        if (mode === "life_coaching" && clientContext) {
+          instructions = instructions.replace("{{CLIENT_CONTEXT}}", `
+## KNOWN CLIENT INFORMATION
+${clientContext}
+
+Use this information to personalize your conversation. Reference their name, goals, and previous discussions naturally.`);
+        } else {
+          instructions = instructions.replace("{{CLIENT_CONTEXT}}", "[New caller - no previous context. Learn about them through natural conversation.]");
+        }
+        
         const sessionConfig = JSON.stringify({
           type: "realtime",
           model: "gpt-realtime",
-          instructions: COACHING_INSTRUCTIONS[mode] || COACHING_INSTRUCTIONS.speaker_training,
+          instructions: instructions,
           audio: {
             input: {
               transcription: {
@@ -746,19 +879,49 @@ export const realtimeVoiceRouter = router({
    */
   getSessionToken: publicProcedure
     .input(z.object({
-      mode: z.enum(["speaker_training", "interview_prep", "coaching_practice", "compliance_monitor", "singing"]),
+      mode: z.enum(["speaker_training", "interview_prep", "coaching_practice", "compliance_monitor", "singing", "life_coaching"]).default("life_coaching"),
       voice: z.enum(["alloy", "echo", "shimmer", "ash", "ballad", "coral", "sage", "verse", "marin"]).default("coral"),
+      userId: z.number().optional(),
     }))
-    .mutation(async ({ input }) => {
-      const { mode, voice } = input;
+    .mutation(async ({ input, ctx }) => {
+      const { mode, voice, userId } = input;
+      
+      // Get client context for personalization
+      let clientContext = "";
+      const effectiveUserId = userId || ctx.user?.id;
+      if (effectiveUserId) {
+        try {
+          const profile = await ProfileGuard.getClientContext(effectiveUserId, {
+            moduleName: "realtime_voice",
+            logAccess: true,
+          });
+          if (profile && profile.aiContextString) {
+            clientContext = profile.aiContextString;
+          }
+        } catch (e) {
+          console.error("[Realtime Voice] ProfileGuard error:", e);
+        }
+      }
       
       try {
+        // Get the base instructions and inject client context
+        let instructions = COACHING_INSTRUCTIONS[mode] || COACHING_INSTRUCTIONS.life_coaching;
+        if (mode === "life_coaching" && clientContext) {
+          instructions = instructions.replace("{{CLIENT_CONTEXT}}", `
+## KNOWN CLIENT INFORMATION
+${clientContext}
+
+Use this information to personalize your conversation. Reference their name, goals, and previous discussions naturally.`);
+        } else {
+          instructions = instructions.replace("{{CLIENT_CONTEXT}}", "[New caller - no previous context. Learn about them through natural conversation.]");
+        }
+        
         // Create session config using the CORRECT format from OpenAI GA API docs
         const sessionConfig = {
           session: {
             type: "realtime",
             model: "gpt-realtime",
-            instructions: COACHING_INSTRUCTIONS[mode] || COACHING_INSTRUCTIONS.speaker_training,
+            instructions: instructions,
             audio: {
               input: {
                 transcription: {
@@ -798,6 +961,7 @@ export const realtimeVoiceRouter = router({
         
         return {
           token: data.client_secret?.value || data.token,
+          clientSecret: data.client_secret?.value || data.token, // For backward compatibility
           expiresAt: data.client_secret?.expires_at || data.expires_at,
           mode: mode,
           voice: voice,
