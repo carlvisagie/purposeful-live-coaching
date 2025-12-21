@@ -11,8 +11,8 @@
  */
 
 import { z } from "zod";
-import { router, publicProcedure } from "../trpc";
-import { db } from "../../drizzle/db";
+import { router, publicProcedure } from "../_core/trpc";
+import { getDb } from "../db";
 import { users, clients } from "../../drizzle/schema";
 import { eq, or } from "drizzle-orm";
 import { ProfileGuard } from "../profileGuard";
@@ -135,6 +135,7 @@ Every person who calls deserves to feel heard, valued, and supported.
  * Look up a client by phone number
  */
 async function findClientByPhone(phoneNumber: string): Promise<{ userId: number; name: string } | null> {
+  const db = getDb();
   // Normalize phone number (remove spaces, dashes, etc.)
   const normalizedPhone = phoneNumber.replace(/[^0-9+]/g, '');
   
