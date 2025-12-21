@@ -68,6 +68,7 @@ import { focusCoachRouter } from "./routers/focusCoach";
 import { aiMeditationRouter } from "./routers/aiMeditation";
 import { clientRecognitionRouter } from "./routers/clientRecognition";
 import { profileGuardMonitorRouter } from "./routers/profileGuardMonitor";
+import { perpetualUpgradeRouter } from "./routers/perpetualUpgrade";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -154,6 +155,9 @@ export const appRouter = router({
   
   // Profile Guard - Ensures perfect continuity (never forget a client)
   profileGuard: profileGuardMonitorRouter,
+  
+  // Perpetual Upgrade - Self-improving code system
+  perpetualUpgrade: perpetualUpgradeRouter,
 });
 
 export type AppRouter = typeof appRouter;

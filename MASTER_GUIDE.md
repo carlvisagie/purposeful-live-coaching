@@ -39,6 +39,7 @@
 13. [Client Recognition System](#client-recognition)
 14. [Conversion Optimization](#conversion)
 15. [ProfileGuard - Never Forget a Client](#profile-guard)
+16. [Perpetual Upgrade System](#perpetual-upgrade)
 
 ---
 
@@ -1863,8 +1864,151 @@ The system calculates a **Continuity Score** (0-100) based on:
 
 ---
 
+# PART 16: PERPETUAL UPGRADE SYSTEM {#perpetual-upgrade}
+
+> **"The platform should be a living organism that learns, evolves, fixes itself, and bends entirely toward what clients want."**
+
+## What It Does
+
+The Perpetual Upgrade System makes the platform **self-improving at the CODE level**. While Platform Intelligence improves coaching strategies, Perpetual Upgrade improves the actual codebase.
+
+### Two Layers of Self-Improvement
+
+| Layer | System | What It Improves |
+|-------|--------|------------------|
+| **Content/Strategy** | Platform Intelligence | Coaching rules, recommendations, approaches |
+| **Code/Infrastructure** | Perpetual Upgrade | Performance, features, code quality |
+
+## Capabilities
+
+### 1. Feature Usage Tracking
+
+Tracks which features are being used, by whom, and how often:
+- Total calls per feature
+- Unique users per feature
+- Average response time
+- Error rates
+- Usage trends (growing/stable/declining/unused)
+
+**Why It Matters:** Identifies features to promote, optimize, or deprecate.
+
+### 2. Performance Monitoring
+
+Tracks endpoint performance:
+- Average response time
+- P95/P99 response times
+- Error counts
+- Auto-generates recommendations for slow endpoints
+
+**Why It Matters:** Keeps the platform fast and responsive.
+
+### 3. Code Quality Scanning
+
+Scans codebase for:
+- TODO/FIXME comments (incomplete work)
+- Console.log statements (should use proper logging)
+- Potential security issues (hardcoded secrets)
+- Complexity issues
+
+**Why It Matters:** Reduces technical debt automatically.
+
+### 4. Error Learning
+
+Learns from recurring errors:
+- Tracks error frequency by endpoint
+- After 3+ occurrences, generates AI fix suggestions
+- Creates recommendations for high-priority fixes
+
+**Why It Matters:** Errors get fixed before they impact users.
+
+### 5. AI Code Improvement Suggestions
+
+Analyzes code and suggests:
+- Performance optimizations
+- Better error handling
+- Code clarity improvements
+- Security enhancements
+- TypeScript best practices
+
+**Why It Matters:** Continuous code quality improvement.
+
+### 6. System Health Assessment
+
+Calculates overall health score (0-100) based on:
+- Feature adoption (20%)
+- Performance score (30%)
+- Code quality score (20%)
+- Dependency health (10%)
+- Error rate (20%)
+
+## API Endpoints
+
+| Endpoint | Purpose |
+|----------|--------|
+| `perpetualUpgrade.getSystemHealth` | Overall health score |
+| `perpetualUpgrade.getFeatureUsage` | Feature usage report |
+| `perpetualUpgrade.getPerformanceReport` | Performance metrics |
+| `perpetualUpgrade.getRecommendations` | Upgrade recommendations |
+| `perpetualUpgrade.scanCodeQuality` | Run code quality scan |
+| `perpetualUpgrade.runHealthCheck` | Run daily health check |
+| `perpetualUpgrade.suggestImprovements` | AI code suggestions |
+| `perpetualUpgrade.reportError` | Report error for learning |
+| `perpetualUpgrade.trackUsage` | Track feature usage |
+| `perpetualUpgrade.getDashboard` | Owner dashboard summary |
+
+## Files Involved
+
+| File | Purpose |
+|------|--------|
+| `server/perpetualUpgrade.ts` | Core system |
+| `server/routers/perpetualUpgrade.ts` | API router |
+
+## The Complete Self-Improving Stack
+
+```
+USER INTERACTION
+        ↓
+┌─────────────────────────────────────────────────┐
+│  PLATFORM INTELLIGENCE (Content Layer)          │
+│  - Learns what coaching approaches work         │
+│  - Evolves rules based on effectiveness         │
+│  - Validates against research                   │
+│  - Bends toward client needs                    │
+└─────────────────────────────────────────────────┘
+        ↓
+┌─────────────────────────────────────────────────┐
+│  PERPETUAL UPGRADE (Code Layer)                 │
+│  - Tracks feature usage                         │
+│  - Monitors performance                         │
+│  - Scans code quality                           │
+│  - Learns from errors                           │
+│  - Suggests improvements                        │
+└─────────────────────────────────────────────────┘
+        ↓
+CONTINUOUSLY IMPROVING PLATFORM
+```
+
+## The Result
+
+**Before Perpetual Upgrade:**
+- Manual code reviews
+- Reactive bug fixing
+- Unknown feature adoption
+- Performance issues discovered by users
+
+**After Perpetual Upgrade:**
+- Automated quality scanning
+- Proactive error prevention
+- Data-driven feature decisions
+- Performance issues caught early
+- AI-assisted code improvement
+
+**The platform now improves itself at EVERY level - from coaching strategies to the actual code.**
+
+---
+
 **This is the SINGLE SOURCE OF TRUTH for the Purposeful Live Coaching platform. All other documentation has been archived.**
 
 **Last Updated:** December 21, 2025
-**Total Routers:** 59
+**Total Routers:** 60
 **Platform Completion:** 100%
