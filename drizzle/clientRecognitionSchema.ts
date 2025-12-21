@@ -138,3 +138,46 @@ export const recognitionEvents = pgTable("recognition_events", {
 
 export type RecognitionEvent = typeof recognitionEvents.$inferSelect;
 export type InsertRecognitionEvent = typeof recognitionEvents.$inferInsert;
+
+/**
+ * Phone Caller Registry Table
+ * Stores every phone number that has ever called
+ * Enables instant recognition on subsequent calls
+ */
+export const phoneCallerRegistry = pgTable("phone_caller_registry", {
+  id: serial("id").primaryKey(),
+  
+  // Phone number (normalized format)
+  phoneNumber: varchar("phone_number", { length: 20 }).notNull().unique(),
+  phoneNumberRaw: varchar("phone_number_raw", { length: 30 }), // Original format
+  
+  // Link to user (null if not yet linked)
+  userId: integer("user_id").references(() => users.id, { onDelete: "set null" }),
+  
+  // Caller info (learned from conversations)
+  callerName: varchar("caller_name", { length: 100 }), // Name they gave us
+  callerNickname: varchar("caller_nickname", { length: 50 }), // Preferred name
+  
+  // Call history
+  totalCalls: integer("total_calls").default(1),
+  firstCallAt: timestamp("first_call_at").defaultNow().notNull(),
+  lastCallAt: timestamp("last_call_at").defaultNow().notNull(),
+  
+  // Context from calls (accumulated)
+  knownGoals: jsonb("known_goals"), // Goals mentioned across calls
+  knownChallenges: jsonb("known_challenges"), // Challenges mentioned
+  knownPreferences: jsonb("known_preferences"), // Communication preferences
+  callSummaries: jsonb("call_summaries"), // Brief summaries of past calls
+  
+  // Recognition confidence
+  confidenceScore: integer("confidence_score").default(50), // How well we know them
+  
+  // Status
+  isActive: varchar("is_active", { length: 10 }).default("active"),
+  
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export type PhoneCallerRegistry = typeof phoneCallerRegistry.$inferSelect;
+export type InsertPhoneCallerRegistry = typeof phoneCallerRegistry.$inferInsert;
