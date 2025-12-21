@@ -69,6 +69,7 @@ import { aiMeditationRouter } from "./routers/aiMeditation";
 import { clientRecognitionRouter } from "./routers/clientRecognition";
 import { profileGuardMonitorRouter } from "./routers/profileGuardMonitor";
 import { perpetualUpgradeRouter } from "./routers/perpetualUpgrade";
+import { contentStudioRouter } from "./routers/contentStudio";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -158,6 +159,9 @@ export const appRouter = router({
   
   // Perpetual Upgrade - Self-improving code system
   perpetualUpgrade: perpetualUpgradeRouter,
+  
+  // Content Studio - AI-powered content generation for YouTube/Podcast/Shorts
+  contentStudio: contentStudioRouter,
 });
 
 export type AppRouter = typeof appRouter;

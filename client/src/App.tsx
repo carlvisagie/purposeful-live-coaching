@@ -58,6 +58,7 @@ import JustTalk from "./pages/JustTalk";
 import SleepStories from "./pages/SleepStories";
 import FocusCoach from "./pages/FocusCoach";
 import AIMeditation from "./pages/AIMeditation";
+import ContentStudio from "./pages/ContentStudio";
 
 
 function Router() {
@@ -139,6 +140,12 @@ function Router() {
       <Route path="/meditation" component={AIMeditation} />
       <Route path="/meditate" component={AIMeditation} />
       <Route path="/ai-meditation" component={AIMeditation} />
+      
+      {/* Content Studio - AI-powered content generation */}
+      <Route path="/content-studio" component={ContentStudio} />
+      <Route path="/content" component={ContentStudio} />
+      <Route path="/youtube" component={ContentStudio} />
+      <Route path="/podcast" component={ContentStudio} />
 
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}

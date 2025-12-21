@@ -10,7 +10,7 @@ import {
   DollarSign, Users, TrendingUp, TrendingDown, Target, BarChart3,
   ArrowUpRight, ArrowDownRight, Activity, Eye, MousePointer,
   Mail, Share2, Zap, Calendar, Clock, Award, Flame, Globe,
-  Instagram, Youtube, Twitter, Linkedin, Facebook, Rocket
+  Instagram, Youtube, Twitter, Linkedin, Facebook, Rocket, Sparkles, Video, Radio
 } from "lucide-react";
 import {
   LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
@@ -185,6 +185,10 @@ export default function FreedomDashboard() {
           </TabsTrigger>
           <TabsTrigger value="goals" className="data-[state=active]:bg-purple-600">
             Goals
+          </TabsTrigger>
+          <TabsTrigger value="content" className="data-[state=active]:bg-purple-600">
+            <Sparkles className="h-4 w-4 mr-1" />
+            Content Studio
           </TabsTrigger>
         </TabsList>
 
@@ -508,6 +512,126 @@ export default function FreedomDashboard() {
                   priority="Medium"
                 />
               </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Content Studio Tab */}
+        <TabsContent value="content" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Quick Actions */}
+            <Card className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/50">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-purple-400" />
+                  Quick Generate
+                </CardTitle>
+                <CardDescription className="text-purple-200">
+                  Create content with one click
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Link href="/content-studio">
+                  <Button className="w-full bg-red-600 hover:bg-red-700">
+                    <Youtube className="h-4 w-4 mr-2" />
+                    YouTube Script
+                  </Button>
+                </Link>
+                <Link href="/content-studio">
+                  <Button className="w-full bg-purple-600 hover:bg-purple-700">
+                    <Radio className="h-4 w-4 mr-2" />
+                    Podcast Episode
+                  </Button>
+                </Link>
+                <Link href="/content-studio">
+                  <Button className="w-full bg-pink-600 hover:bg-pink-700">
+                    <Video className="h-4 w-4 mr-2" />
+                    TikTok/Reels
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            {/* Content Calendar */}
+            <Card className="bg-slate-800 border-slate-700">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Calendar className="h-5 w-5 text-purple-400" />
+                  This Week's Content
+                </CardTitle>
+                <CardDescription className="text-slate-400">
+                  Your content schedule
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="p-2 bg-slate-700/50 rounded flex items-center justify-between">
+                  <span className="text-white text-sm">Mon</span>
+                  <Badge className="bg-red-600">YouTube</Badge>
+                </div>
+                <div className="p-2 bg-slate-700/50 rounded flex items-center justify-between">
+                  <span className="text-white text-sm">Tue</span>
+                  <Badge className="bg-purple-600">Podcast</Badge>
+                </div>
+                <div className="p-2 bg-slate-700/50 rounded flex items-center justify-between">
+                  <span className="text-white text-sm">Wed</span>
+                  <Badge className="bg-red-600">YouTube</Badge>
+                </div>
+                <div className="p-2 bg-slate-700/50 rounded flex items-center justify-between">
+                  <span className="text-white text-sm">Thu</span>
+                  <Badge className="bg-purple-600">Podcast</Badge>
+                </div>
+                <div className="p-2 bg-slate-700/50 rounded flex items-center justify-between">
+                  <span className="text-white text-sm">Fri</span>
+                  <Badge className="bg-red-600">YouTube</Badge>
+                </div>
+                <Link href="/content-studio">
+                  <Button variant="outline" className="w-full mt-2 border-purple-500 text-purple-400 hover:bg-purple-500/20">
+                    Open Content Studio
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            {/* Content Stats */}
+            <Card className="bg-slate-800 border-slate-700">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <BarChart3 className="h-5 w-5 text-purple-400" />
+                  Content Stats
+                </CardTitle>
+                <CardDescription className="text-slate-400">
+                  Your content performance
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="text-center p-4 bg-slate-700/50 rounded-lg">
+                  <div className="text-4xl font-bold text-white">0</div>
+                  <div className="text-sm text-slate-400">Videos Published</div>
+                </div>
+                <div className="text-center p-4 bg-slate-700/50 rounded-lg">
+                  <div className="text-4xl font-bold text-white">0</div>
+                  <div className="text-sm text-slate-400">Podcast Episodes</div>
+                </div>
+                <div className="text-center p-4 bg-purple-600/20 rounded-lg border border-purple-500/50">
+                  <div className="text-sm text-purple-300">Start creating content to grow your audience!</div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Full Content Studio Link */}
+          <Card className="bg-gradient-to-r from-purple-600 to-pink-600 border-0">
+            <CardContent className="p-6 flex items-center justify-between">
+              <div>
+                <h3 className="text-2xl font-bold text-white">Ready to Create?</h3>
+                <p className="text-purple-100">Open the full Content Studio to generate scripts, plan your calendar, and more.</p>
+              </div>
+              <Link href="/content-studio">
+                <Button size="lg" className="bg-white text-purple-600 hover:bg-purple-100">
+                  <Sparkles className="h-5 w-5 mr-2" />
+                  Open Content Studio
+                </Button>
+              </Link>
             </CardContent>
           </Card>
         </TabsContent>
