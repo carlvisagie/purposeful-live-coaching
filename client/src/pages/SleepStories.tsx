@@ -42,6 +42,8 @@ export default function SleepStories() {
   const [generatedStory, setGeneratedStory] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [currentStoryTitle, setCurrentStoryTitle] = useState<string | null>(null);
+  const [isLoadingStory, setIsLoadingStory] = useState(false);
 
   // Fetch options
   const { data: options } = trpc.sleepStories.getOptions.useQuery();
@@ -65,7 +67,32 @@ export default function SleepStories() {
     space: <Star className="h-5 w-5" />
   };
 
+  // Play a story from the library
+  const playLibraryStory = async (story: { id: string; title: string; description: string; theme: string; duration: string }) => {
+    setIsLoadingStory(true);
+    setCurrentStoryTitle(story.title);
+    setActiveTab("player");
+    
+    // Generate the story content based on the library story
+    generateStory.mutate({
+      theme: story.theme as any,
+      duration: story.duration as any,
+      includeBreathing: true,
+      includeRelaxation: true,
+      currentMood: `listening to ${story.title}`,
+    }, {
+      onSuccess: () => {
+        setIsLoadingStory(false);
+        setIsPlaying(true);
+      },
+      onError: () => {
+        setIsLoadingStory(false);
+      }
+    });
+  };
+
   const handleGenerateStory = () => {
+    setCurrentStoryTitle("Your Personalized Story");
     generateStory.mutate({
       theme: selectedTheme as any,
       duration: selectedDuration,
@@ -122,7 +149,11 @@ export default function SleepStories() {
               <h2 className="text-xl font-semibold text-white mb-4">Featured Stories</h2>
               <div className="grid gap-4">
                 {library?.featured.map((story) => (
-                  <Card key={story.id} className="bg-slate-800/50 border-slate-700 hover:bg-slate-800/70 transition-colors cursor-pointer">
+                  <Card 
+                    key={story.id} 
+                    className="bg-slate-800/50 border-slate-700 hover:bg-slate-800/70 transition-colors cursor-pointer"
+                    onClick={() => playLibraryStory(story)}
+                  >
                     <CardContent className="flex items-center gap-4 p-4">
                       <div className="h-16 w-16 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
                         {themeIcons[story.theme]}
@@ -137,7 +168,15 @@ export default function SleepStories() {
                           </Badge>
                         </div>
                       </div>
-                      <Button size="icon" variant="ghost" className="text-indigo-400 hover:text-indigo-300">
+                      <Button 
+                        size="icon" 
+                        variant="ghost" 
+                        className="text-indigo-400 hover:text-indigo-300"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          playLibraryStory(story);
+                        }}
+                      >
                         <Play className="h-5 w-5" />
                       </Button>
                     </CardContent>
@@ -312,9 +351,27 @@ export default function SleepStories() {
 
           {/* Player Tab */}
           <TabsContent value="player" className="space-y-6">
-            {generatedStory ? (
+            {isLoadingStory ? (
+              <Card className="bg-slate-800/50 border-slate-700">
+                <CardContent className="p-12 text-center">
+                  <Loader2 className="h-16 w-16 text-indigo-400 mx-auto mb-4 animate-spin" />
+                  <h3 className="text-xl font-medium text-white mb-2">Preparing Your Story...</h3>
+                  <p className="text-slate-400">
+                    {currentStoryTitle ? `Loading "${currentStoryTitle}"` : "Creating a magical experience just for you"}
+                  </p>
+                </CardContent>
+              </Card>
+            ) : generatedStory ? (
               <Card className="bg-slate-800/50 border-slate-700">
                 <CardContent className="p-6">
+                  {/* Story Title */}
+                  {currentStoryTitle && (
+                    <div className="text-center mb-6">
+                      <h2 className="text-2xl font-bold text-white mb-2">{currentStoryTitle}</h2>
+                      <p className="text-indigo-300 text-sm">Now Playing</p>
+                    </div>
+                  )}
+                  
                   {/* Player Controls */}
                   <div className="flex items-center justify-center gap-4 mb-8">
                     <Button 
