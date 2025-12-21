@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { router, publicProcedure, protectedProcedure } from "../trpc";
+import { router, publicProcedure, protectedProcedure } from "../_core/trpc";
 import { db } from "../db";
 import { eq, desc, and } from "drizzle-orm";
 import { invokeLLM } from "../_core/llm";
