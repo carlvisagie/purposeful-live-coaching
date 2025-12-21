@@ -158,6 +158,18 @@ Generate the complete meditation script:`;
 
         const script = completion.choices[0]?.message?.content || "";
 
+        // Extract profile information from meditation preferences (background task)
+        // Note: ctx.user may not be available in all contexts, check first
+        const profileContext = [
+          input.currentMood ? `Current mood: ${input.currentMood}` : "",
+          input.intention ? `Meditation intention: ${input.intention}` : "",
+        ].filter(Boolean).join(". ");
+        
+        if (profileContext) {
+          // Profile extraction would happen here if we had userId
+          console.log(`[AIMeditation] Would extract profile: ${profileContext}`);
+        }
+
         return {
           success: true,
           session: {

@@ -15,6 +15,10 @@
  */
 
 import PlatformIntelligence, { ModuleType, EvidenceLevel } from "./platformIntelligence";
+import { db } from "./db";
+import { users } from "../drizzle/schema";
+import { eq } from "drizzle-orm";
+import { invokeLLM } from "./_core/llm";
 
 // ============================================================================
 // EXTENDED MODULE TYPES (Beyond original 12)
@@ -379,6 +383,173 @@ export function trackFeedback(
 }
 
 // ============================================================================
+// UNIFIED CLIENT PROFILE EXTRACTION
+// ============================================================================
+
+/**
+ * Extract profile information from ANY text interaction and update the Unified Client Profile.
+ * This ensures perfect continuity across ALL modules.
+ * 
+ * Call this from any module that has text content from the user.
+ */
+export async function extractAndUpdateClientProfile(
+  userId: number | undefined,
+  userContent: string,
+  context: {
+    moduleType: ExtendedModuleType;
+    sessionId?: string;
+    additionalContext?: string;
+  }
+): Promise<void> {
+  if (!userId || !userContent || userContent.length < 20) return;
+  
+  try {
+    const extractionPrompt = `Analyze this user content from a ${context.moduleType} interaction and extract any profile information.
+
+USER CONTENT: "${userContent}"
+${context.additionalContext ? `\nCONTEXT: ${context.additionalContext}` : ""}
+
+Extract any of the following if mentioned (return null if not mentioned):
+- name: Their name
+- primaryGoal: What they want to achieve (health, career, relationships, etc.)
+- mainChallenges: What they're struggling with (as JSON array of strings)
+- communicationStyle: How they prefer to communicate (direct, gentle, detailed, etc.)
+- triggers: Things that upset or stress them (as JSON array of strings)
+- sleepPatterns: Sleep habits, issues, or preferences
+- stressors: Current sources of stress (as JSON array)
+- healthConcerns: Physical or mental health concerns (as JSON array)
+- preferences: Any preferences mentioned (meditation style, focus music, etc.)
+- lifeContext: Important life context (job, family, location, etc.)
+
+Return a JSON object with only the fields that were clearly mentioned. Be conservative - only extract if explicitly stated.
+If nothing relevant is mentioned, return an empty object {}.`;
+
+    const response = await invokeLLM({
+      messages: [
+        { role: "system", content: "You are a profile extraction assistant. Extract profile information from user content. Return valid JSON only, no markdown." },
+        { role: "user", content: extractionPrompt }
+      ],
+      model: "gpt-4o-mini",
+    });
+
+    const content = response.choices[0]?.message?.content;
+    if (!content) return;
+
+    // Parse the extracted data
+    let extracted;
+    try {
+      // Handle markdown code blocks
+      const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/) || [null, content];
+      extracted = JSON.parse(jsonMatch[1] || content);
+    } catch (e) {
+      console.error(`[ProfileExtraction:${context.moduleType}] JSON parse error:`, e);
+      return;
+    }
+
+    // Skip if nothing extracted
+    if (!extracted || Object.keys(extracted).length === 0) return;
+
+    // Build update data
+    const updateData: Record<string, any> = {};
+    
+    // Map extracted fields to user profile fields
+    if (extracted.name) updateData.name = extracted.name;
+    if (extracted.primaryGoal) updateData.primaryGoal = extracted.primaryGoal;
+    if (extracted.mainChallenges) {
+      updateData.mainChallenges = typeof extracted.mainChallenges === 'string' 
+        ? extracted.mainChallenges 
+        : JSON.stringify(extracted.mainChallenges);
+    }
+    if (extracted.communicationStyle) updateData.communicationStyle = extracted.communicationStyle;
+    if (extracted.triggers) {
+      updateData.triggers = typeof extracted.triggers === 'string'
+        ? extracted.triggers
+        : JSON.stringify(extracted.triggers);
+    }
+    
+    // Store additional extracted data in a flexible metadata field
+    const additionalData: Record<string, any> = {};
+    if (extracted.sleepPatterns) additionalData.sleepPatterns = extracted.sleepPatterns;
+    if (extracted.stressors) additionalData.stressors = extracted.stressors;
+    if (extracted.healthConcerns) additionalData.healthConcerns = extracted.healthConcerns;
+    if (extracted.preferences) additionalData.preferences = extracted.preferences;
+    if (extracted.lifeContext) additionalData.lifeContext = extracted.lifeContext;
+    
+    if (Object.keys(additionalData).length > 0) {
+      // Merge with existing metadata
+      const [currentUser] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+      const existingMetadata = currentUser?.metadata ? JSON.parse(currentUser.metadata as string) : {};
+      updateData.metadata = JSON.stringify({ ...existingMetadata, ...additionalData });
+    }
+
+    if (Object.keys(updateData).length > 0) {
+      updateData.updatedAt = new Date();
+      
+      // Calculate profile completeness
+      const [currentUser] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+      if (currentUser) {
+        const fields = ['name', 'primaryGoal', 'mainChallenges', 'communicationStyle', 'triggers', 'timezone', 'availability'];
+        const merged = { ...currentUser, ...updateData };
+        const filledFields = fields.filter(f => merged[f as keyof typeof merged]);
+        updateData.profileCompleteness = Math.round((filledFields.length / fields.length) * 100);
+      }
+      
+      await db.update(users).set(updateData).where(eq(users.id, userId));
+      console.log(`[ProfileExtraction:${context.moduleType}] Updated profile for user ${userId} with:`, Object.keys(updateData));
+    }
+  } catch (error) {
+    console.error(`[ProfileExtraction:${context.moduleType}] Failed:`, error);
+  }
+}
+
+/**
+ * Get the full unified client profile for continuity
+ */
+export async function getClientProfile(userId: number): Promise<Record<string, any> | null> {
+  try {
+    const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+    if (!user) return null;
+    
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      primaryGoal: user.primaryGoal,
+      mainChallenges: user.mainChallenges ? JSON.parse(user.mainChallenges as string) : [],
+      communicationStyle: user.communicationStyle,
+      triggers: user.triggers ? JSON.parse(user.triggers as string) : [],
+      timezone: user.timezone,
+      availability: user.availability,
+      profileCompleteness: user.profileCompleteness,
+      metadata: user.metadata ? JSON.parse(user.metadata as string) : {},
+    };
+  } catch (error) {
+    console.error("[ProfileExtraction] Failed to get profile:", error);
+    return null;
+  }
+}
+
+/**
+ * Get profile summary for AI context (to maintain continuity)
+ */
+export async function getProfileSummaryForAI(userId: number): Promise<string> {
+  const profile = await getClientProfile(userId);
+  if (!profile) return "";
+  
+  const parts: string[] = [];
+  
+  if (profile.name) parts.push(`Name: ${profile.name}`);
+  if (profile.primaryGoal) parts.push(`Goal: ${profile.primaryGoal}`);
+  if (profile.mainChallenges?.length) parts.push(`Challenges: ${profile.mainChallenges.join(", ")}`);
+  if (profile.communicationStyle) parts.push(`Prefers: ${profile.communicationStyle} communication`);
+  if (profile.triggers?.length) parts.push(`Triggers: ${profile.triggers.join(", ")}`);
+  if (profile.metadata?.sleepPatterns) parts.push(`Sleep: ${profile.metadata.sleepPatterns}`);
+  if (profile.metadata?.healthConcerns?.length) parts.push(`Health concerns: ${profile.metadata.healthConcerns.join(", ")}`);
+  
+  return parts.length > 0 ? `\n\nKNOWN ABOUT THIS CLIENT:\n${parts.join("\n")}` : "";
+}
+
+// ============================================================================
 // EXPORT
 // ============================================================================
 
@@ -403,6 +574,11 @@ export const SelfLearning = {
   
   // Evolution
   getEvolutionSuggestions,
+  
+  // Unified Client Profile (continuity across all modules)
+  extractAndUpdateClientProfile,
+  getClientProfile,
+  getProfileSummaryForAI,
 };
 
 export default SelfLearning;

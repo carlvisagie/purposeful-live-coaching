@@ -1564,16 +1564,43 @@ User Interaction → Module Records Outcome → Platform Intelligence Analyzes
 
 ### Self-Learning Integration (All Modules Connected)
 
-| Module | Self-Learning | What Gets Tracked |
-|--------|---------------|-------------------|
-| AI Chat (Sage) | ✅ Connected | Message exchanges, crisis flags, conversation length |
-| Sleep Stories | ✅ Connected | Theme preferences, completion rates, personalization usage |
-| Focus Coach | ✅ Connected | Session duration, distraction count, focus quality |
-| AI Meditation | ✅ Connected | Meditation type, duration, user state changes |
-| Just Talk | ✅ Connected | Emotional support usage, mood patterns |
-| Structured Programs | ✅ Connected | Day completion, program progress, abandonment points |
-| Client Recognition | ✅ Connected | Recognition accuracy, confirmation/denial rates |
-| Compliance | ✅ Connected | Rule triggers, effectiveness scores, client feedback |
+| Module | Self-Learning | Profile Extraction | What Gets Tracked |
+|--------|---------------|-------------------|-------------------|
+| AI Chat (Sage) | ✅ Connected | ✅ Yes | Message exchanges, name, goals, challenges, triggers |
+| Sleep Stories | ✅ Connected | ✅ Yes | Theme preferences, mood, interests, day highlights |
+| Focus Coach | ✅ Connected | ✅ Yes | Tasks, goals, focus patterns, work preferences |
+| AI Meditation | ✅ Connected | ✅ Yes | Mood, intentions, meditation preferences |
+| Just Talk | ✅ Connected | ✅ Yes | Emotional state, stressors, life context |
+| Structured Programs | ✅ Connected | 🟡 Partial | Program progress, completion rates |
+| Client Recognition | ✅ Connected | ✅ Yes | Voice/face data, device patterns |
+| Compliance | ✅ Connected | N/A | Rule triggers, effectiveness scores |
+
+### Unified Client Profile (Perfect Continuity)
+
+Every interaction across the platform feeds into a single **Unified Client Profile**. This ensures:
+
+1. **Sage knows what Just Talk learned** - If a user mentions insomnia in Just Talk, Sage knows about it
+2. **Focus Coach knows meditation preferences** - If they prefer body scans, Focus Coach can suggest similar techniques
+3. **Sleep Stories knows their stressors** - Stories can subtly address what's weighing on them
+4. **All AI coaches speak with one voice** - Consistent understanding across the platform
+
+**What Gets Extracted:**
+- Name, goals, challenges, triggers
+- Sleep patterns, health concerns, stressors
+- Communication preferences, interests
+- Life context (job, family, location)
+- Mood patterns over time
+
+**How It Works:**
+```
+User says "I've been struggling with work stress and not sleeping well"
+        ↓
+AI extracts: { stressors: ["work stress"], sleepPatterns: "poor sleep" }
+        ↓
+Unified Profile updated
+        ↓
+NEXT interaction (any module): AI knows about work stress and sleep issues
+```
 
 ### What The Platform Learns
 

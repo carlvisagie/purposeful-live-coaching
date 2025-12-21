@@ -191,6 +191,19 @@ End with a simple "Let's begin."`;
         }
       }
 
+      // Extract profile information from task/goal (background task)
+      if (ctx.user?.id && (input.task || input.goal)) {
+        const profileContext = [
+          input.task ? `Working on: ${input.task}` : "",
+          input.goal ? `Goal: ${input.goal}` : "",
+        ].filter(Boolean).join(". ");
+        
+        SelfLearning.extractAndUpdateClientProfile(ctx.user.id, profileContext, {
+          moduleType: "focus_coach",
+          additionalContext: `User started a ${mode.name} focus session.`
+        }).catch(e => console.error("[FocusCoach] Profile extraction failed:", e));
+      }
+
       return {
         success: true,
         session: {

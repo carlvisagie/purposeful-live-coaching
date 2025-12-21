@@ -214,6 +214,12 @@ Respond with deep empathy and presence. Keep your response warm, concise (2-4 se
         // Log conversation for safety monitoring (in production)
         // await logConversation(userId, input.message, response, detectedMood);
         
+        // Extract profile information from conversation (background task)
+        SelfLearning.extractAndUpdateClientProfile(userId, input.message, {
+          moduleType: "just_talk",
+          additionalContext: `User mood: ${detectedMood}. This is an emotional support conversation.`
+        }).catch(e => console.error("[JustTalk] Profile extraction failed:", e));
+        
         return {
           message: response,
           mood: detectedMood,

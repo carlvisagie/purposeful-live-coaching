@@ -185,6 +185,22 @@ Generate the complete sleep story now:`;
         const wordCount = story.split(/\s+/).length;
         const estimatedMinutes = Math.ceil(wordCount / 150);
 
+        // Extract profile information from user preferences (background task)
+        if (ctx.user?.id) {
+          const profileContext = [
+            input.currentMood ? `Current mood: ${input.currentMood}` : "",
+            input.dayHighlight ? `Day highlight: ${input.dayHighlight}` : "",
+            input.personalInterests?.length ? `Interests: ${input.personalInterests.join(", ")}` : "",
+          ].filter(Boolean).join(". ");
+          
+          if (profileContext) {
+            SelfLearning.extractAndUpdateClientProfile(ctx.user.id, profileContext, {
+              moduleType: "sleep_stories",
+              additionalContext: `User generated a ${theme.name} sleep story.`
+            }).catch(e => console.error("[SleepStories] Profile extraction failed:", e));
+          }
+        }
+
         // Track successful story generation for self-learning
         SelfLearning.trackInteraction({
           moduleType: "sleep_stories",
