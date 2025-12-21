@@ -2,9 +2,7 @@ import { z } from "zod";
 import { router, publicProcedure, protectedProcedure } from "../trpc";
 import OpenAI from "openai";
 import SelfLearning from "../selfLearningIntegration";
-import { db } from "../db";
-import { users } from "../../drizzle/schema";
-import { eq } from "drizzle-orm";
+import ProfileGuard from "../profileGuard";
 
 const openai = new OpenAI();
 
@@ -170,15 +168,19 @@ export const focusCoachRouter = router({
       const duration = input.customDuration || mode.defaultDuration;
       const soundscape = input.soundscape || mode.soundscape;
 
-      // Load user profile for personalized coaching
+      // ============================================================
+      // PROFILE GUARD - MANDATORY PROFILE LOADING
+      // ============================================================
+      const clientContext = await ProfileGuard.getClientContext(ctx.user?.id, {
+        moduleName: "focus_coach",
+        logAccess: true,
+      });
+      
       let profileContext = "";
-      if (ctx.user?.id) {
-        const [userProfile] = await db.select().from(users).where(eq(users.id, ctx.user.id)).limit(1);
-        if (userProfile) {
-          if (userProfile.name) profileContext += `Their name is ${userProfile.name}. `;
-          if (userProfile.primaryGoal) profileContext += `Their main goal is: ${userProfile.primaryGoal}. `;
-          if (userProfile.mainChallenges) profileContext += `They struggle with: ${userProfile.mainChallenges}. `;
-        }
+      if (clientContext) {
+        if (clientContext.name) profileContext += `Their name is ${clientContext.name}. `;
+        if (clientContext.primaryGoal) profileContext += `Their main goal is: ${clientContext.primaryGoal}. `;
+        if (clientContext.mainChallenges.length > 0) profileContext += `They struggle with: ${clientContext.mainChallenges.join(", ")}. `;
       }
 
       // Generate opening message from AI coach

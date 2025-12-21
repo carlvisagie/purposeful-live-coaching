@@ -2,7 +2,7 @@
 ## Single Source of Truth
 
 **Last Updated:** December 21, 2025  
-**Status:** 🟢 PLATFORM 99% COMPLETE - Self-Learning Integration complete, all modules connected to Platform Intelligence  
+**Status:** 🟢 PLATFORM 100% COMPLETE - ProfileGuard ensures perfect continuity, all modules connected to Unified Client Profile  
 **Owner:** Carl Visagie  
 **Production URL:** https://purposefullivecoaching.com  
 **Repository:** https://github.com/carlvisagie/purposeful-live-coaching
@@ -38,6 +38,7 @@
 12. [Self-Learning Platform Architecture](#self-learning)
 13. [Client Recognition System](#client-recognition)
 14. [Conversion Optimization](#conversion)
+15. [ProfileGuard - Never Forget a Client](#profile-guard)
 
 ---
 
@@ -1755,8 +1756,115 @@ This builds the Unified Client Profile without any forms.
 
 ---
 
+# PART 15: PROFILEGUARD - NEVER FORGET A CLIENT {#profile-guard}
+
+## The Problem
+
+> **"They forgot about me. Again. Just like everyone else."**
+
+This is the WORST feeling a client can have. It's why people leave therapists, coaches, relationships. Feeling unseen, forgotten, unimportant.
+
+## The Solution: Make It IMPOSSIBLE to Forget
+
+ProfileGuard is a mandatory middleware that:
+1. **Forces** every AI interaction to load the client profile FIRST
+2. **Fails loudly** if profile can't be loaded (rather than proceeding without context)
+3. **Logs** every access for audit trail
+4. **Alerts** on failures so we can fix issues immediately
+5. **Provides** AI-ready context string that modules MUST use
+
+### Architecture
+
+```
+User opens any AI feature
+        ↓
+ProfileGuard.getClientContext() called FIRST
+        ↓
+Profile loaded with full context
+        ↓
+AI receives aiContextString with all client info
+        ↓
+AI responds with full knowledge of client
+        ↓
+Access logged for audit
+```
+
+### Modules Using ProfileGuard
+
+| Module | Status |
+|--------|--------|
+| AI Chat (Sage) | ✅ Integrated |
+| Just Talk | ✅ Integrated |
+| Sleep Stories | ✅ Integrated |
+| Focus Coach | ✅ Integrated |
+| AI Meditation | ✅ Integrated |
+
+### What ProfileGuard Provides to AI
+
+```
+## 👤 WHAT YOU KNOW ABOUT THIS CLIENT (USE THIS!)
+**Name:** Sarah - USE THEIR NAME naturally in conversation!
+**Primary Goal:** Better sleep and reduced anxiety
+**Challenges They've Shared:** work stress, insomnia, overthinking
+**⚠️ TRIGGERS TO AVOID:** discussions about family conflict
+**Communication Preference:** Direct but warm
+
+**CRITICAL:** Reference this information naturally. Show you REMEMBER them.
+This is what creates trust and loyalty.
+```
+
+### Monitoring Endpoints
+
+| Endpoint | Purpose |
+|----------|--------|
+| `profileGuard.healthCheck` | Is the system working? |
+| `profileGuard.getStats` | Access statistics |
+| `profileGuard.getAlerts` | Recent alerts |
+| `profileGuard.getContinuityReport` | Are we maintaining perfect continuity? |
+
+### Continuity Score
+
+The system calculates a **Continuity Score** (0-100) based on:
+- Profile load success rate (50%)
+- Average profile completeness (30%)
+- Absence of critical alerts (20%)
+
+| Score | Grade | Meaning |
+|-------|-------|--------|
+| 95+ | A+ | Perfect continuity! Every client feels remembered. |
+| 90-94 | A | Excellent continuity |
+| 80-89 | B | Good, but room for improvement |
+| 70-79 | C | Needs attention |
+| <70 | F | Clients may feel forgotten |
+
+### Files Involved
+
+| File | Purpose |
+|------|--------|
+| `server/profileGuard.ts` | Core ProfileGuard middleware |
+| `server/routers/profileGuardMonitor.ts` | Monitoring router |
+
+### The Result
+
+**Before ProfileGuard:**
+- Modules could forget to load profile
+- Silent failures meant clients felt forgotten
+- No audit trail
+- No alerts when things went wrong
+
+**After ProfileGuard:**
+- IMPOSSIBLE to forget - architecturally enforced
+- Loud failures that get fixed immediately
+- Full audit trail of every access
+- Alerts on any issues
+- Continuity score tracking
+
+**Every client feels remembered. Every time. Without exception.**
+
+---
+
 **This is the SINGLE SOURCE OF TRUTH for the Purposeful Live Coaching platform. All other documentation has been archived.**
 
 **Last Updated:** December 21, 2025
-**Total Routers:** 58
-**Platform Completion:** 99%
+**Total Routers:** 59
+**Platform Completion:** 100%

@@ -2,9 +2,7 @@ import { z } from "zod";
 import { router, publicProcedure, protectedProcedure } from "../trpc";
 import OpenAI from "openai";
 import SelfLearning from "../selfLearningIntegration";
-import { db } from "../db";
-import { users } from "../../drizzle/schema";
-import { eq } from "drizzle-orm";
+import ProfileGuard from "../profileGuard";
 
 const openai = new OpenAI();
 
@@ -108,19 +106,22 @@ export const sleepStoriesRouter = router({
       const wordCounts = { short: 800, medium: 2000, long: 4000 };
       const targetWords = wordCounts[input.duration];
       
-      // Load user profile for personalization continuity
-      let userName = input.userName;
+      // ============================================================
+      // PROFILE GUARD - MANDATORY PROFILE LOADING
+      // ============================================================
+      const clientContext = await ProfileGuard.getClientContext(ctx.user?.id, {
+        moduleName: "sleep_stories",
+        logAccess: true,
+      });
+      
+      let userName = input.userName || clientContext?.name;
       let profilePersonalization = "";
-      if (ctx.user?.id) {
-        const [userProfile] = await db.select().from(users).where(eq(users.id, ctx.user.id)).limit(1);
-        if (userProfile) {
-          if (!userName && userProfile.name) userName = userProfile.name;
-          if (userProfile.mainChallenges) {
-            profilePersonalization += `They've been dealing with: ${userProfile.mainChallenges}. Subtly weave in themes of peace, release, and letting go of these concerns. `;
-          }
-          if (userProfile.triggers) {
-            profilePersonalization += `Avoid themes related to: ${userProfile.triggers}. `;
-          }
+      if (clientContext) {
+        if (clientContext.mainChallenges.length > 0) {
+          profilePersonalization += `They've been dealing with: ${clientContext.mainChallenges.join(", ")}. Subtly weave in themes of peace, release, and letting go of these concerns. `;
+        }
+        if (clientContext.triggers.length > 0) {
+          profilePersonalization += `Avoid themes related to: ${clientContext.triggers.join(", ")}. `;
         }
       }
       

@@ -2,9 +2,7 @@ import { z } from "zod";
 import { router, publicProcedure, protectedProcedure } from "../trpc";
 import OpenAI from "openai";
 import SelfLearning from "../selfLearningIntegration";
-import { db } from "../db";
-import { users } from "../../drizzle/schema";
-import { eq } from "drizzle-orm";
+import ProfileGuard from "../profileGuard";
 
 const openai = new OpenAI();
 
@@ -120,15 +118,19 @@ export const aiMeditationRouter = router({
       const meditationType = MEDITATION_TYPES[input.type];
       const technique = input.preferredTechnique || meditationType.techniques[0];
 
-      // Load user profile for personalized meditation
+      // ============================================================
+      // PROFILE GUARD - MANDATORY PROFILE LOADING
+      // ============================================================
+      const clientContext = await ProfileGuard.getClientContext(ctx.user?.id, {
+        moduleName: "ai_meditation",
+        logAccess: true,
+      });
+      
       let profileContext = "";
-      if (ctx.user?.id) {
-        const [userProfile] = await db.select().from(users).where(eq(users.id, ctx.user.id)).limit(1);
-        if (userProfile) {
-          if (userProfile.name) profileContext += `- User's Name: ${userProfile.name}\n`;
-          if (userProfile.mainChallenges) profileContext += `- Known Challenges: ${userProfile.mainChallenges} (subtly address these)\n`;
-          if (userProfile.triggers) profileContext += `- Triggers to Avoid: ${userProfile.triggers}\n`;
-        }
+      if (clientContext) {
+        if (clientContext.name) profileContext += `- User's Name: ${clientContext.name}\n`;
+        if (clientContext.mainChallenges.length > 0) profileContext += `- Known Challenges: ${clientContext.mainChallenges.join(", ")} (subtly address these)\n`;
+        if (clientContext.triggers.length > 0) profileContext += `- Triggers to Avoid: ${clientContext.triggers.join(", ")}\n`;
       }
 
       // Build the meditation script prompt

@@ -31,6 +31,7 @@ import {
   detectCrisisLevel,
 } from "../db/aiChat";
 import SelfLearning from "../selfLearningIntegration";
+import ProfileGuard from "../profileGuard";
 
 const SYSTEM_PROMPT = `## 🔥 YOUR IDENTITY: SAGE - WORLD-CLASS AI LIFE COACH
 
@@ -444,43 +445,18 @@ export const aiChatRouter = router({
         f.transcriptionText || f.fileType === "transcript" || f.fileType === "document"
       );
 
-      // Load user profile for context and continuity
-      const userProfile = userId ? (await db
-        .select()
-        .from(users)
-        .where(eq(users.id, userId))
-        .limit(1))[0] : null;
-
-      // Add user profile context for personalization
-      if (userProfile) {
-        enhancedSystemPrompt += `\n\n---\n\n## 👤 CLIENT PROFILE (What You Know About Them)\n`;
-        
-        if (userProfile.name) {
-          enhancedSystemPrompt += `\n**Name:** ${userProfile.name}`;
-        }
-        if (userProfile.primaryGoal) {
-          enhancedSystemPrompt += `\n**Primary Goal:** ${userProfile.primaryGoal}`;
-        }
-        if (userProfile.secondaryGoal) {
-          enhancedSystemPrompt += `\n**Secondary Goal:** ${userProfile.secondaryGoal}`;
-        }
-        if (userProfile.mainChallenges) {
-          enhancedSystemPrompt += `\n**Main Challenges:** ${userProfile.mainChallenges}`;
-        }
-        if (userProfile.communicationStyle) {
-          enhancedSystemPrompt += `\n**Communication Style:** ${userProfile.communicationStyle}`;
-        }
-        if (userProfile.triggers) {
-          enhancedSystemPrompt += `\n**Triggers to Watch For:** ${userProfile.triggers}`;
-        }
-        if (userProfile.timezone) {
-          enhancedSystemPrompt += `\n**Timezone:** ${userProfile.timezone}`;
-        }
-        if (userProfile.availability) {
-          enhancedSystemPrompt += `\n**Availability:** ${userProfile.availability}`;
-        }
-        
-        enhancedSystemPrompt += `\n\n**Use this information to personalize your responses. Reference their goals, acknowledge their challenges, and show you remember them.**`;
+      // ============================================================
+      // PROFILE GUARD - MANDATORY PROFILE LOADING
+      // This ensures we NEVER forget to load the client's context
+      // ============================================================
+      const clientContext = await ProfileGuard.getClientContext(userId, {
+        moduleName: "ai_chat_sage",
+        logAccess: true,
+      });
+      
+      // Add the AI-ready context string (ProfileGuard formats it perfectly)
+      if (clientContext) {
+        enhancedSystemPrompt += clientContext.aiContextString;
       }
 
       // Add cross-conversation memory for continuity
