@@ -12,67 +12,40 @@
 
 ---
 
-## Why This Is Critical
+## Quick Links
 
-This platform is a **revenue-generating production system** with:
-- Real paying customers
-- Live Stripe payments
-- Complex AI integrations
-- Sensitive wellness data
-- Holistic coaching framework
-
-**Making changes without understanding the complete system will:**
-- ❌ Break revenue-generating features
-- ❌ Cause database schema mismatches
-- ❌ Create confusion and technical debt
-- ❌ Waste time fixing preventable issues
+| Resource | Link |
+|----------|------|
+| **Production** | https://purposefullivecoaching.com |
+| **Repository** | https://github.com/carlvisagie/purposeful-live-coaching |
+| **Owner** | Carl Visagie |
 
 ---
 
-## What MASTER_GUIDE.md Contains
+## What's in MASTER_GUIDE.md
 
-**Everything you need to know:**
-- ✅ What's working (don't break it)
-- ✅ What's in progress (don't interfere)
+**Everything you need:**
+- ✅ Platform vision and principles
+- ✅ What's built and working
+- ✅ Complete feature inventory
 - ✅ Architecture and tech stack
-- ✅ Database schema
-- ✅ Revenue model and pricing tiers
-- ✅ Deployment process
-- ✅ Known issues and fixes
-- ✅ Roadmap and priorities
+- ✅ Revenue model and pricing
+- ✅ Deployment guide
+- ✅ Development roadmap
+- ✅ Discovery call script
+- ✅ Marketing strategy
+- ✅ Competitive analysis
+- ✅ Full changelog
 
 ---
 
-## Rules for Working on This Platform
+## Rules
 
 1. **READ MASTER_GUIDE.md completely** before making any changes
 2. **UPDATE MASTER_GUIDE.md** with any changes you make
 3. **ONE SOURCE OF TRUTH** - All documentation goes in MASTER_GUIDE.md
 4. **NO DUPLICATE DOCUMENTS** - Don't create separate docs
-5. **ASK BEFORE BREAKING** - If unsure, ask the owner (Carl)
-
----
-
-## Quick Links
-
-- **Production:** https://purposeful-live-coaching-production.onrender.com
-- **Repository:** https://github.com/carlvisagie/purposeful-live-coaching
-- **Owner:** Carl Visagie
-
----
-
-## 🚀 After Reading MASTER_GUIDE.md
-
-Once you've read and understood the complete guide:
-1. Check the "What's Working" section - don't break these
-2. Check the "What's In Progress" section - understand current work
-3. Check the "Next Steps" section - see priorities
-4. Make your changes
-5. Update MASTER_GUIDE.md with what you did
-6. Test thoroughly before deploying
 
 ---
 
 **Remember: This is a real business serving real customers. Treat it with respect.**
-# Trigger deployment Sat Dec 13 10:56:22 EST 2025
-# Trigger restart after database column cleanup

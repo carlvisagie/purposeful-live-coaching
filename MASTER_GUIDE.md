@@ -22,6 +22,22 @@
 
 ---
 
+## 📋 TABLE OF CONTENTS (Expanded)
+
+1. [Foundational Vision](#foundational-vision)
+2. [Guiding Principles](#guiding-principles)
+3. [What's Built & Working](#whats-built)
+4. [Complete Feature Inventory](#feature-inventory)
+5. [Architecture](#architecture)
+6. [Revenue Model](#revenue-model)
+7. [Deployment](#deployment)
+8. [Development Roadmap](#roadmap)
+9. [Discovery Call Script](#discovery-call-script)
+10. [Marketing Strategy](#marketing-strategy)
+11. [Competitive Analysis](#competitive-analysis)
+
+---
+
 # PART 1: FOUNDATIONAL VISION {#foundational-vision}
 
 > **"I bow to truth and reality, whatever the research proves is what we do, any other way is just wasting time, money, and will surely lead to disappointment."**
@@ -1346,6 +1362,168 @@ When ready to implement:
 3. Design curriculum structure
 4. Build or integrate practice tracking
 5. Create family account management system
+
+---
+
+# PART 9: DISCOVERY CALL SCRIPT {#discovery-call-script}
+
+## High-Converting 15-Minute Discovery Call Script
+
+### OPENING (2 minutes) - Pattern Interrupt + Authority + Warmth
+
+**[SMILE - They can hear it in your voice]**
+
+> "Hi [NAME], this is Carl from Purposeful Live Coaching. Before we dive in, I want you to know - this isn't a sales call. This is YOUR time. I'm here to understand where you are, where you want to be, and whether I can genuinely help you get there. If I can't, I'll tell you. Fair enough?"
+
+**[PAUSE - Let them respond]**
+
+> "Perfect. So [NAME], what made you book this call today? What's going on in your life right now?"
+
+**[LISTEN DEEPLY - Take notes on their exact words]**
+
+### DISCOVERY (5 minutes) - Emotional Excavation + Pain Amplification
+
+**After they share, reflect back using their exact words:**
+
+> "So if I'm hearing you right, you're dealing with [THEIR WORDS]. How long has this been going on?"
+
+**[Let them answer]**
+
+> "And how is that affecting other areas of your life? Your relationships? Your energy? Your confidence?"
+
+**[Let them expand - this is where the real pain surfaces]**
+
+**The Critical Question:**
+
+> "[NAME], on a scale of 1-10, how urgent is it for you to change this? And what made you pick that number instead of something lower?"
+
+**[This makes them sell themselves on why change is urgent]**
+
+### FUTURE SELF VISUALIZATION (4 minutes) - Future Pacing + Identity Shift
+
+> "[NAME], I want you to imagine something with me. Close your eyes if you're comfortable..."
+
+> "Imagine it's 90 days from now. You wake up and something is different. The weight you've been carrying? It's gone. You look in the mirror and you see someone who [INSERT THEIR GOAL - confident/in control/at peace/energized]."
+
+> "What does your morning look like? How do you feel when you get out of bed?"
+
+**[Let them describe it - they're building their own vision]**
+
+> "That person you just described? That's not a fantasy. That's who you actually are underneath all the noise. My job is to help you remove what's blocking you from being that person every single day."
+
+### THE BRIDGE (2 minutes) - Tribe + Social Proof + Scarcity
+
+> "[NAME], what you're describing is exactly what my clients come to me with. Just last month, I worked with someone in a very similar situation - [BRIEF RELEVANT STORY - 2 sentences max]. Within 6 weeks, they [SPECIFIC RESULT]."
+
+> "Here's what I know after coaching hundreds of people: The gap between where you are and where you want to be isn't as big as it feels. It's usually 2-3 key shifts that change everything."
+
+> "I have a few spots open this month for new clients. Based on what you've shared, I genuinely believe I can help you. The question is - are you ready to do the work?"
+
+### THE CLOSE (2 minutes) - Assumptive Close + Urgency
+
+**If they seem ready:**
+
+> "Here's what I'd suggest. Let's get you started with [PACKAGE NAME]. We'll have our first full session this week while everything we talked about is fresh. I'll send you a link right after this call. Sound good?"
+
+**If they hesitate:**
+
+> "[NAME], I get it. This is a decision. But let me ask you something - what happens if you don't do anything? Where will you be in 90 days if nothing changes?"
+
+### EMERGENCY CLOSES
+
+| Objection | Response |
+|-----------|----------|
+| "I need to think about it" | "Totally understand. What specifically do you need to think about? Is it the investment, the time commitment, or something else?" |
+| "I can't afford it" | "I hear you. Let me ask - what is it costing you NOT to solve this? Your energy, your relationships, your potential? Sometimes the most expensive thing is staying stuck." |
+| "I need to talk to my spouse" | "Of course. What do you think they'll say? And more importantly - what do YOU want? This is about your growth." |
+
+### Chase Hughes F.A.T.E. Model Integration
+
+- **F (Focus)**: Pattern interrupt opening - "This isn't a sales call"
+- **A (Authority)**: Brief social proof, confident delivery
+- **T (Tribe)**: "My clients come to me with exactly this..."
+- **E (Emotion)**: Future self visualization, pain excavation
+
+---
+
+# PART 10: MARKETING STRATEGY {#marketing-strategy}
+
+## Target Audience: The Modern Seeker
+
+Digitally-savvy individuals actively seeking to improve their well-being but skeptical of pseudoscience. Listeners of Huberman Lab and Peter Attia Drive. Value data, evidence, and tangible results.
+
+### Key Demographics
+
+| Characteristic | Description |
+|----------------|-------------|
+| **Age** | 28-45 |
+| **Gender** | 55% Male, 45% Female |
+| **Income** | $75,000+ |
+| **Education** | College-educated |
+| **Location** | Urban/Suburban, tech-savvy hubs |
+
+### Core Messaging
+
+**Tagline:** *Your Evidence-Based Path to a Purposeful Life.*
+
+**Value Proposition:** *The only wellness platform with real-time AI voice coaching, backed by evidence from Huberman, Attia, and Walker, with optional human coaching sessions.*
+
+### Marketing Phases
+
+| Phase | Timeline | Goal | Budget |
+|-------|----------|------|--------|
+| **Beta Launch** | First 30 Days | 100 paying customers | $3,000 |
+| **Growth** | Days 31-90 | 1,000 paying customers | $9,000 |
+| **Expansion** | Days 91+ | Industry recognition | $3,000/mo |
+
+### Key Channels
+
+1. **Social Media** - Video ads showcasing AI voice coach
+2. **Influencer Marketing** - Micro-influencers in biohacking/longevity
+3. **Content Marketing** - Long-form blog posts on core topics
+4. **Podcast Sponsorships** - Health & wellness podcasts
+5. **SEO** - Dominate relevant keywords
+6. **Affiliate Marketing** - Commission-based partnerships
+
+---
+
+# PART 11: COMPETITIVE ANALYSIS {#competitive-analysis}
+
+## Our Competitive Advantages (What We Have That Others Don't)
+
+| Feature | Our Platform | Competitors |
+|---------|-------------|-------------|
+| **Real-Time Voice AI Coach** | ✅ WebRTC + OpenAI Realtime API | ❌ None have this |
+| **Phone Call Access** | ✅ Call anytime, no app needed | ❌ App-only |
+| **Live Video Coaching** | ✅ With AI co-pilot assistance | ❌ BetterHelp has video, but no AI assist |
+| **Behavioral Analysis (Chase Hughes)** | ✅ HABIT Framework, micro-expressions | ❌ None |
+| **33 Wellness Modules** | ✅ Most comprehensive library | Calm: ~11 areas, Headspace: ~6 areas |
+| **Compliance Monitoring** | ✅ Real-time, 6 categories | ❌ None |
+| **Platform Intelligence** | ✅ Self-learning, evidence-based | ❌ None |
+| **AI Sleep Stories** | ✅ Personalized, AI-generated | Calm: Pre-recorded only |
+| **AI Focus Coach** | ✅ Adaptive + voice coaching | Headspace: Static content |
+| **AI Meditation** | ✅ Real-time adaptive guidance | Both: Pre-recorded only |
+
+## Competitive Gaps Addressed (December 20-21, 2025)
+
+| Gap | Status | Implementation |
+|-----|--------|----------------|
+| Push Notifications | ✅ DONE | Service worker, daily reminders, streak warnings |
+| Structured Programs | ✅ DONE | 3 flagship programs (6-Week Anxiety Reset, 21 Days Mindfulness, 7-Day Stress Detox) |
+| 24/7 AI Support | ✅ DONE | Just Talk mode with crisis detection |
+| Sleep Stories | ✅ DONE | AI-generated, personalized |
+| Focus Sessions | ✅ DONE | Pomodoro + adaptive soundscapes |
+| Meditation | ✅ DONE | Real-time adaptive guidance |
+
+## Remaining Gaps (Future Phases)
+
+| Gap | Priority | Notes |
+|-----|----------|-------|
+| Community Features | MEDIUM | Discussion board, group sessions |
+| Kids Content | MEDIUM | Calm Kids equivalent |
+| Native Mobile App | MEDIUM | Currently PWA only |
+| Wearable Integration | LOW | Apple Health, Fitbit, Oura |
+| Clinical Validation | LOW | Formal research studies |
 
 ---
 
