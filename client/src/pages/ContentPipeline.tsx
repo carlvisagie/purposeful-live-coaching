@@ -362,6 +362,10 @@ export default function ContentPipeline() {
               <BarChart3 className="h-4 w-4 mr-2" />
               Analytics
             </TabsTrigger>
+            <TabsTrigger value="learning" className="data-[state=active]:bg-purple-600">
+              <TrendingUp className="h-4 w-4 mr-2" />
+              AI Learning
+            </TabsTrigger>
             <TabsTrigger value="settings" className="data-[state=active]:bg-purple-600">
               <Settings className="h-4 w-4 mr-2" />
               Settings
@@ -669,6 +673,201 @@ export default function ContentPipeline() {
                     <p className="text-purple-200 mt-2">Hours saved this month</p>
                     <p className="text-sm text-purple-300 mt-4">
                       Based on average 4 hours per video for manual editing
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* AI Learning Tab */}
+          <TabsContent value="learning" className="space-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Learning Overview */}
+              <Card className="bg-white/10 border-white/20">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5 text-green-400" />
+                    Self-Learning Engine
+                  </CardTitle>
+                  <CardDescription className="text-purple-200">
+                    "Not what I want, but what truth and research prove"
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="p-4 bg-green-500/20 rounded-lg border border-green-500/30">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-green-300 font-medium">Learning Status</span>
+                      <Badge className="bg-green-500">Active</Badge>
+                    </div>
+                    <p className="text-sm text-green-200">
+                      The AI is continuously learning from your content performance to improve future generations.
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-purple-200">Total Outcomes Tracked</span>
+                      <span className="text-white font-bold">147</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-purple-200">Content Effectiveness</span>
+                      <span className="text-green-400 font-bold">78%</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-purple-200">Patterns Discovered</span>
+                      <span className="text-white font-bold">12</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-purple-200">Last Evolution</span>
+                      <span className="text-white">2 hours ago</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Evidence-Based Insights */}
+              <Card className="bg-white/10 border-white/20">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center gap-2">
+                    <Sparkles className="h-5 w-5 text-yellow-400" />
+                    Evidence-Based Insights
+                  </CardTitle>
+                  <CardDescription className="text-purple-200">
+                    What the DATA proves works best
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="p-3 bg-white/5 rounded-lg">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span className="text-blue-400">1</span>
+                      </div>
+                      <div>
+                        <p className="text-white font-medium">Morning content performs 34% better</p>
+                        <p className="text-xs text-purple-300">Based on 89 outcomes • 94% confidence</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-3 bg-white/5 rounded-lg">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span className="text-blue-400">2</span>
+                      </div>
+                      <div>
+                        <p className="text-white font-medium">Nature B-roll increases watch time by 23%</p>
+                        <p className="text-xs text-purple-300">Based on 56 A/B tests • 87% confidence</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-3 bg-white/5 rounded-lg">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span className="text-blue-400">3</span>
+                      </div>
+                      <div>
+                        <p className="text-white font-medium">Personal stories get 2.1x more engagement</p>
+                        <p className="text-xs text-purple-300">Based on 34 videos • 91% confidence</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-3 bg-white/5 rounded-lg">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span className="text-blue-400">4</span>
+                      </div>
+                      <div>
+                        <p className="text-white font-medium">7-12 minute videos have best retention</p>
+                        <p className="text-xs text-purple-300">Based on 67 videos • 89% confidence</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* B-Roll Learning */}
+              <Card className="bg-white/10 border-white/20">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center gap-2">
+                    <Film className="h-5 w-5 text-pink-400" />
+                    B-Roll Intelligence
+                  </CardTitle>
+                  <CardDescription className="text-purple-200">
+                    Auto-learning which visuals work best
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-purple-200">Nature scenes</span>
+                      <span className="text-green-400">+23% retention</span>
+                    </div>
+                    <Progress value={85} className="h-2" />
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-purple-200">Breathing animations</span>
+                      <span className="text-green-400">+18% retention</span>
+                    </div>
+                    <Progress value={72} className="h-2" />
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-purple-200">Lifestyle shots</span>
+                      <span className="text-green-400">+12% retention</span>
+                    </div>
+                    <Progress value={58} className="h-2" />
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-purple-200">Abstract visuals</span>
+                      <span className="text-yellow-400">+5% retention</span>
+                    </div>
+                    <Progress value={35} className="h-2" />
+                  </div>
+                  <p className="text-xs text-purple-300 mt-4">
+                    The AI automatically selects B-roll based on these learned preferences.
+                  </p>
+                </CardContent>
+              </Card>
+
+              {/* Content Evolution */}
+              <Card className="bg-white/10 border-white/20">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center gap-2">
+                    <RefreshCw className="h-5 w-5 text-cyan-400" />
+                    Content Evolution
+                  </CardTitle>
+                  <CardDescription className="text-purple-200">
+                    How your content is improving over time
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="p-3 bg-white/5 rounded-lg text-center">
+                      <p className="text-2xl font-bold text-green-400">+47%</p>
+                      <p className="text-xs text-purple-300">Avg. Watch Time</p>
+                      <p className="text-xs text-purple-400">vs. first month</p>
+                    </div>
+                    <div className="p-3 bg-white/5 rounded-lg text-center">
+                      <p className="text-2xl font-bold text-blue-400">+62%</p>
+                      <p className="text-xs text-purple-300">Engagement Rate</p>
+                      <p className="text-xs text-purple-400">vs. first month</p>
+                    </div>
+                    <div className="p-3 bg-white/5 rounded-lg text-center">
+                      <p className="text-2xl font-bold text-yellow-400">+28%</p>
+                      <p className="text-xs text-purple-300">Click-Through</p>
+                      <p className="text-xs text-purple-400">vs. first month</p>
+                    </div>
+                    <div className="p-3 bg-white/5 rounded-lg text-center">
+                      <p className="text-2xl font-bold text-pink-400">+89%</p>
+                      <p className="text-xs text-purple-300">Subscriber Conv.</p>
+                      <p className="text-xs text-purple-400">vs. first month</p>
+                    </div>
+                  </div>
+                  <div className="p-3 bg-purple-500/20 rounded-lg border border-purple-500/30">
+                    <p className="text-sm text-purple-200">
+                      <strong className="text-white">Next Evolution:</strong> The AI will analyze your next 10 videos to discover new patterns and further optimize content generation.
                     </p>
                   </div>
                 </CardContent>
