@@ -1,51 +1,40 @@
-# Purposeful Live Coaching
+# 🛑 STOP. DO NOT WRITE CODE YET.
 
-**AI-powered holistic wellness coaching platform**
+## This is a LIVE production platform generating revenue.
 
----
+**Before you do ANYTHING, you must:**
 
-## ⚠️ MANDATORY: READ BEFORE DOING ANYTHING
+1. **Read `MASTER_GUIDE.md`** - The entire thing. Not skimming. Reading.
 
-**🚨 DO NOT touch any code, make any changes, or work on this platform until you have READ and UNDERSTOOD the complete MASTER_GUIDE.md 🚨**
+2. **Answer these 3 questions** (paste your answers before proceeding):
+   - What is **ProfileGuard** and why must every user-facing module use it?
+   - Name 3 features that are ALREADY BUILT (so you don't rebuild them)
+   - What is the #1 priority for all development work?
 
-👉 **[READ MASTER_GUIDE.md NOW](./MASTER_GUIDE.md)** 👈
-
----
-
-## Quick Links
-
-| Resource | Link |
-|----------|------|
-| **Production** | https://purposefullivecoaching.com |
-| **Repository** | https://github.com/carlvisagie/purposeful-live-coaching |
-| **Owner** | Carl Visagie |
+3. **State this confirmation:**
+   > "I have read MASTER_GUIDE.md. I understand this is a live platform. I will not rebuild existing features. I will integrate ProfileGuard in any user-facing code."
 
 ---
 
-## What's in MASTER_GUIDE.md
+## If you skip this and break something:
 
-**Everything you need:**
-- ✅ Platform vision and principles
-- ✅ What's built and working
-- ✅ Complete feature inventory
-- ✅ Architecture and tech stack
-- ✅ Revenue model and pricing
-- ✅ Deployment guide
-- ✅ Development roadmap
-- ✅ Discovery call script
-- ✅ Marketing strategy
-- ✅ Competitive analysis
-- ✅ Full changelog
+- Real users lose access to their coaching
+- Real revenue is lost
+- Real trust is destroyed
+
+**There is no "undo" on a live platform.**
 
 ---
 
-## Rules
+## Quick Facts
 
-1. **READ MASTER_GUIDE.md completely** before making any changes
-2. **UPDATE MASTER_GUIDE.md** with any changes you make
-3. **ONE SOURCE OF TRUTH** - All documentation goes in MASTER_GUIDE.md
-4. **NO DUPLICATE DOCUMENTS** - Don't create separate docs
+| Item | Value |
+|------|-------|
+| Production URL | https://purposefullivecoaching.com |
+| Status | 🟢 LIVE - 100% Complete |
+| Critical System | ProfileGuard (unified client context) |
+| Tech Stack | React + TypeScript + tRPC + Drizzle + TiDB |
 
 ---
 
-**Remember: This is a real business serving real customers. Treat it with respect.**
+**Now go read `MASTER_GUIDE.md` and come back with your answers.**
