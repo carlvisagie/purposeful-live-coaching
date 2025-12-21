@@ -7,7 +7,7 @@
 
 import { Router } from "express";
 import { getDb } from "../db";
-import { clients } from "../../drizzle/schema";
+import { clients, coaches } from "../../drizzle/schema";
 import { eq, or, sql } from "drizzle-orm";
 // ProfileGuard and SelfLearning will be integrated with Unified Client Profile later
 import { CONVERSION_SKILLS_PROMPT, detectConversionMoment, trackConversionAttempt } from "../services/conversionSkills";
@@ -666,20 +666,123 @@ async function buildPersonalizedPrompt(phoneNumber: string) {
 }
 
 async function extractAndSaveInsights(phoneNumber: string, transcript: string, callId: string) {
-  const callerInfo = await findCallerByPhone(phoneNumber);
+  const db = getDb();
+  let callerInfo = await findCallerByPhone(phoneNumber);
+  
+  // =========================================================================
+  // FRICTIONLESS ONBOARDING: Create Unified Client Profile on FIRST CALL
+  // The AI conversation IS the onboarding - no sign-up required
+  // =========================================================================
   
   if (!callerInfo) {
-    console.log('[VapiWebhook] No caller found for phone:', phoneNumber);
-    // For new callers, we could create a new client profile here in the future
-    return;
+    console.log('[VapiWebhook] New caller! Creating Unified Client Profile for:', phoneNumber);
+    
+    try {
+      // Extract name from transcript if possible
+      const nameMatch = transcript.match(/(?:my name is|i'm|i am|call me)\s+([A-Z][a-z]+)/i);
+      const extractedName = nameMatch ? nameMatch[1] : 'New Friend';
+      
+      // Get default coach (first coach in system)
+      const defaultCoach = await db.query.coaches.findFirst();
+      if (!defaultCoach) {
+        console.error('[VapiWebhook] No default coach found - cannot create client');
+        return;
+      }
+      
+      // Create the Unified Client Profile
+      const [newClient] = await db.insert(clients).values({
+        coachId: defaultCoach.id,
+        name: extractedName,
+        phone: phoneNumber,
+        status: 'active',
+        startDate: new Date(),
+        notes: `First call: ${new Date().toISOString()}\n\nFirst conversation transcript:\n${transcript.substring(0, 2000)}...`,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }).returning();
+      
+      console.log(`[VapiWebhook] Created Unified Client Profile: ${newClient.name} (ID: ${newClient.id})`);
+      
+      // Now we have a caller info
+      callerInfo = { type: 'client' as const, client: newClient };
+    } catch (e) {
+      console.error('[VapiWebhook] Error creating client profile:', e);
+      return;
+    }
   }
   
-  // Log the call for the client's Unified Profile
-  console.log(`[VapiWebhook] Saving call insights for client: ${callerInfo.client.name}`);
+  // =========================================================================
+  // EXTRACT INSIGHTS FROM CONVERSATION & UPDATE PROFILE
+  // =========================================================================
   
-  // TODO: In the future, update the client's notes with call summary
-  // For now, just log that we received the transcript
+  console.log(`[VapiWebhook] Saving call insights for client: ${callerInfo.client.name}`);
   console.log(`[VapiWebhook] Transcript length: ${transcript.length} chars`);
+  
+  try {
+    // Extract key information from transcript using simple patterns
+    // (In the future, use AI to extract more sophisticated insights)
+    
+    const updates: Record<string, any> = {
+      updatedAt: new Date(),
+    };
+    
+    // Extract name if we don't have one or it's generic
+    if (callerInfo.client.name === 'New Friend' || !callerInfo.client.name) {
+      const nameMatch = transcript.match(/(?:my name is|i'm|i am|call me)\s+([A-Z][a-z]+)/i);
+      if (nameMatch) {
+        updates.name = nameMatch[1];
+        console.log(`[VapiWebhook] Extracted name: ${updates.name}`);
+      }
+    }
+    
+    // Extract goals mentioned
+    const goalPatterns = [
+      /(?:i want to|i'd like to|my goal is|i'm trying to|i need to)\s+([^.!?]+)/gi,
+      /(?:i'm working on|i'm focused on|i'm hoping to)\s+([^.!?]+)/gi,
+    ];
+    const goals: string[] = [];
+    for (const pattern of goalPatterns) {
+      const matches = transcript.matchAll(pattern);
+      for (const match of matches) {
+        goals.push(match[1].trim());
+      }
+    }
+    if (goals.length > 0) {
+      const existingGoals = callerInfo.client.goals || '';
+      updates.goals = existingGoals + (existingGoals ? '\n' : '') + goals.join('\n');
+      console.log(`[VapiWebhook] Extracted goals: ${goals.join(', ')}`);
+    }
+    
+    // Extract challenges/struggles
+    const challengePatterns = [
+      /(?:i struggle with|i'm struggling with|my challenge is|i have trouble with)\s+([^.!?]+)/gi,
+      /(?:it's hard for me to|i find it difficult to)\s+([^.!?]+)/gi,
+    ];
+    const challenges: string[] = [];
+    for (const pattern of challengePatterns) {
+      const matches = transcript.matchAll(pattern);
+      for (const match of matches) {
+        challenges.push(match[1].trim());
+      }
+    }
+    
+    // Append to notes with call summary
+    const existingNotes = callerInfo.client.notes || '';
+    const callSummary = `\n\n--- Call ${new Date().toLocaleDateString()} ---\n`;
+    const challengeNote = challenges.length > 0 ? `Challenges mentioned: ${challenges.join(', ')}\n` : '';
+    const goalNote = goals.length > 0 ? `Goals mentioned: ${goals.join(', ')}\n` : '';
+    updates.notes = existingNotes + callSummary + challengeNote + goalNote;
+    
+    // Update the client profile
+    if (Object.keys(updates).length > 1) { // More than just updatedAt
+      await db.update(clients)
+        .set(updates)
+        .where(eq(clients.id, callerInfo.client.id));
+      console.log(`[VapiWebhook] Updated client profile with extracted insights`);
+    }
+  } catch (e) {
+    console.error('[VapiWebhook] Error extracting/saving insights:', e);
+  }
 }
 
 // ============================================================================

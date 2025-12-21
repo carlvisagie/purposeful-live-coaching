@@ -142,9 +142,10 @@ export const authRouter = router({
         }
         
         // Create the Unified Client Profile linked to this user
+        // TODO: Add userId: user.id after running migration to add the column
         await drizzleDb.insert(clients).values({
           coachId: defaultCoach.id,
-          userId: user.id, // Link to user account
+          // userId: user.id, // Link to user account - uncomment after migration
           name: input.name || "New Client",
           email: input.email,
           status: "active",
