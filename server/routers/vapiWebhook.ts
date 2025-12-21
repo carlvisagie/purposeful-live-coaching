@@ -17,8 +17,8 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../_core/trpc";
 import { getDb } from "../db";
-import { users, clients, phoneCallerRegistry } from "../../drizzle/schema";
-import { eq, or, sql } from "drizzle-orm";
+import { clients } from "../../drizzle/schema";
+import { eq, or } from "drizzle-orm";
 import { ProfileGuard } from "../profileGuard";
 import { SelfLearning } from "../selfLearningIntegration";
 import { CONVERSION_SKILLS_PROMPT, detectConversionMoment, trackConversionAttempt } from "../services/conversionSkills";
@@ -473,146 +473,70 @@ function normalizePhone(phone: string): string {
 /**
  * Look up a caller by phone number - checks ALL sources
  */
+/**
+ * Find caller by phone number - looks up the Unified Client Profile
+ * 
+ * The Unified Client Profile is a COMPLETE REPOSITORY of everything about the client:
+ * - All sessions (coaching, therapy, etc.)
+ * - Video footage from sessions
+ * - Audio recordings from calls
+ * - Chat transcripts
+ * - Phone call history
+ * - Goals, progress, challenges
+ * - Every interaction they've ever had on the platform
+ * 
+ * The phone number is just ONE identifier that points to this comprehensive profile.
+ * No separate registries. No fragmented data. Perfect continuity.
+ */
 async function findCallerByPhone(phoneNumber: string): Promise<{
-  userId: number | null;
-  name: string;
+  client: any;
   isReturningCaller: boolean;
-  callCount: number;
-  knownContext: {
-    goals?: string[];
-    challenges?: string[];
-    preferences?: any;
-    summaries?: string[];
-  } | null;
 } | null> {
   const db = getDb();
   const normalizedPhone = normalizePhone(phoneNumber);
+  const last10Digits = normalizedPhone.slice(-10);
   
-  console.log(`[VapiWebhook] Looking up phone: ${normalizedPhone}`);
+  console.log(`[VapiWebhook] Looking up phone in Unified Client Profile: ${normalizedPhone}`);
   
-  // 1. First check phone caller registry (catches ALL previous callers)
-  try {
-    const registryEntry = await db.query.phoneCallerRegistry?.findFirst({
-      where: eq(phoneCallerRegistry.phoneNumber, normalizedPhone),
-    });
-    
-    if (registryEntry) {
-      console.log(`[VapiWebhook] Found in registry: ${registryEntry.callerName || 'Unknown'}, calls: ${registryEntry.totalCalls}`);
-      
-      // Update call count
-      await db.update(phoneCallerRegistry)
-        .set({ 
-          totalCalls: sql`${phoneCallerRegistry.totalCalls} + 1`,
-          lastCallAt: new Date(),
-        })
-        .where(eq(phoneCallerRegistry.phoneNumber, normalizedPhone));
-      
-      return {
-        userId: registryEntry.userId,
-        name: registryEntry.callerNickname || registryEntry.callerName || 'Friend',
-        isReturningCaller: true,
-        callCount: (registryEntry.totalCalls || 0) + 1,
-        knownContext: {
-          goals: registryEntry.knownGoals as string[] || [],
-          challenges: registryEntry.knownChallenges as string[] || [],
-          preferences: registryEntry.knownPreferences,
-          summaries: registryEntry.callSummaries as string[] || [],
-        },
-      };
-    }
-  } catch (e) {
-    console.log(`[VapiWebhook] Registry check failed (table may not exist yet)`);
-  }
-  
-  // 2. Try to find in users table
-  try {
-    const user = await db.query.users.findFirst({
-      where: or(
-        eq(users.phone, normalizedPhone),
-        eq(users.phone, phoneNumber),
-      ),
-    });
-    
-    if (user) {
-      console.log(`[VapiWebhook] Found in users: ${user.name}`);
-      await registerPhoneCaller(normalizedPhone, phoneNumber, user.id, user.name || 'Friend');
-      return {
-        userId: user.id,
-        name: user.name || 'Friend',
-        isReturningCaller: true,
-        callCount: 1,
-        knownContext: null,
-      };
-    }
-  } catch (e) {
-    console.log(`[VapiWebhook] Users lookup failed`);
-  }
-  
-  // 3. Try to find in clients table
+  // ONLY look in clients table (Unified Client Profile)
+  // This is the SINGLE source of truth for all client data
   try {
     const client = await db.query.clients?.findFirst({
       where: or(
-        eq(clients.phone, normalizedPhone),
         eq(clients.phone, phoneNumber),
+        eq(clients.phone, normalizedPhone),
+        eq(clients.phone, `+${normalizedPhone}`),
       ),
     });
     
     if (client) {
-      console.log(`[VapiWebhook] Found in clients: ${client.name}`);
-      await registerPhoneCaller(normalizedPhone, phoneNumber, client.userId || null, client.name || 'Friend');
+      console.log(`[VapiWebhook] Found in Unified Client Profile: ${client.name} (ID: ${client.id})`);
       return {
-        userId: client.userId || null,
-        name: client.name || 'Friend',
+        client,
         isReturningCaller: true,
-        callCount: 1,
-        knownContext: null,
       };
     }
   } catch (e) {
-    console.log(`[VapiWebhook] Clients lookup failed`);
+    console.error(`[VapiWebhook] Error looking up client:`, e);
   }
   
-  // 4. New caller - register them for future recognition
-  console.log(`[VapiWebhook] New caller - registering phone number`);
-  await registerPhoneCaller(normalizedPhone, phoneNumber, null, null);
-  
+  // Not found - this is a new caller
+  console.log(`[VapiWebhook] New caller - not in Unified Client Profile yet`);
   return null;
 }
 
 /**
- * Register a phone number for future recognition
- */
-async function registerPhoneCaller(
-  normalizedPhone: string,
-  rawPhone: string,
-  userId: number | null,
-  name: string | null
-): Promise<void> {
-  const db = getDb();
-  try {
-    await db.insert(phoneCallerRegistry).values({
-      phoneNumber: normalizedPhone,
-      phoneNumberRaw: rawPhone,
-      userId: userId,
-      callerName: name,
-      totalCalls: 1,
-      firstCallAt: new Date(),
-      lastCallAt: new Date(),
-    }).onConflictDoUpdate({
-      target: phoneCallerRegistry.phoneNumber,
-      set: {
-        totalCalls: sql`${phoneCallerRegistry.totalCalls} + 1`,
-        lastCallAt: new Date(),
-      },
-    });
-    console.log(`[VapiWebhook] Phone registered: ${normalizedPhone}`);
-  } catch (e) {
-    console.log(`[VapiWebhook] Failed to register phone (table may not exist)`);
-  }
-}
-
-/**
- * Build personalized prompt with client context
+ * Build personalized prompt with FULL Unified Client Profile context
+ * 
+ * Phone Number → Unified Client Profile → EVERYTHING
+ * 
+ * The Unified Client Profile is a complete repository containing:
+ * - All sessions, video footage, audio recordings
+ * - Every chat, call, and interaction
+ * - Goals, challenges, progress, preferences
+ * - The client's entire journey on the platform
+ * 
+ * Sage has access to ALL of this to provide perfect continuity.
  */
 async function buildPersonalizedPrompt(phoneNumber: string): Promise<{
   systemPrompt: string;
@@ -623,10 +547,10 @@ async function buildPersonalizedPrompt(phoneNumber: string): Promise<{
   const callerInfo = await findCallerByPhone(phoneNumber);
   
   if (!callerInfo) {
-    // Brand new caller - never called before
+    // Brand new caller - not in Unified Client Profile yet
     const prompt = SAGE_PHONE_IDENTITY
       .replace('{{PERSONALIZED_GREETING}}', `"Hey there... *warm smile* I'm Sage. I'm really glad you called."`)
-      .replace('{{CLIENT_CONTEXT}}', `[FIRST TIME CALLER - No previous history]
+      .replace('{{CLIENT_CONTEXT}}', `[FIRST TIME CALLER - No Unified Client Profile yet]
 
 This is their FIRST call ever. Make it unforgettable.
 
@@ -634,7 +558,7 @@ This is their FIRST call ever. Make it unforgettable.
 1. Make them feel instantly welcome and valued
 2. Learn their name naturally (don't demand it)
 3. Discover what brought them to call
-4. Start building their profile through conversation
+4. Start building their Unified Client Profile through conversation
 5. Make them want to call back
 
 **Natural discovery prompts:**
@@ -642,7 +566,7 @@ This is their FIRST call ever. Make it unforgettable.
 - "What's been on your mind lately?"
 - "What would make today a win for you?"
 
-Everything they share gets saved to their profile automatically.`);
+Everything they share gets saved to their Unified Client Profile automatically.`);
     
     return {
       systemPrompt: prompt,
@@ -652,89 +576,152 @@ Everything they share gets saved to their profile automatically.`);
     };
   }
   
-  // Returning caller - load their context
-  let contextString = '';
+  // =========================================================================
+  // RETURNING CALLER - Load EVERYTHING from Unified Client Profile
+  // =========================================================================
+  const client = callerInfo.client;
+  const clientName = client.name || 'Friend';
   
-  if (callerInfo.userId) {
-    // They have a user account - load full ProfileGuard context
-    try {
-      const context = await ProfileGuard.getClientContext(callerInfo.userId, {
-        moduleName: 'vapi_phone',
-        requireFullProfile: false,
-      });
-      
-      const contextParts: string[] = [];
-      contextParts.push(`**Name:** ${context.name || callerInfo.name}`);
-      contextParts.push(`**Call #:** ${callerInfo.callCount} (they've called ${callerInfo.callCount} times!)`);
-      
-      if (context.goals && context.goals.length > 0) {
-        contextParts.push(`**Their Goals:** ${context.goals.join(', ')}`);
-      }
-      if (context.challenges && context.challenges.length > 0) {
-        contextParts.push(`**Their Challenges:** ${context.challenges.join(', ')}`);
-      }
-      if (context.preferences) {
-        contextParts.push(`**Preferences:** ${JSON.stringify(context.preferences)}`);
-      }
-      if (context.recentTopics && context.recentTopics.length > 0) {
-        contextParts.push(`**Recent Topics:** ${context.recentTopics.join(', ')}`);
-      }
-      if (context.lastInteraction) {
-        contextParts.push(`**Last Interaction:** ${context.lastInteraction}`);
-      }
-      
-      contextString = contextParts.join('\n');
-    } catch (e) {
-      contextString = `**Name:** ${callerInfo.name}\n**Call #:** ${callerInfo.callCount}`;
-    }
-  } else {
-    // No user account yet, but we have call history
-    const contextParts: string[] = [];
-    contextParts.push(`**Name:** ${callerInfo.name}`);
-    contextParts.push(`**Call #:** ${callerInfo.callCount}`);
-    
-    if (callerInfo.knownContext) {
-      if (callerInfo.knownContext.goals && callerInfo.knownContext.goals.length > 0) {
-        contextParts.push(`**Goals from previous calls:** ${callerInfo.knownContext.goals.join(', ')}`);
-      }
-      if (callerInfo.knownContext.challenges && callerInfo.knownContext.challenges.length > 0) {
-        contextParts.push(`**Challenges mentioned:** ${callerInfo.knownContext.challenges.join(', ')}`);
-      }
-      if (callerInfo.knownContext.summaries && callerInfo.knownContext.summaries.length > 0) {
-        contextParts.push(`**Previous call summaries:** ${callerInfo.knownContext.summaries.slice(-3).join(' | ')}`);
-      }
-    }
-    
-    contextString = contextParts.join('\n');
+  // Build COMPLETE profile context from Unified Client Profile
+  const sections: string[] = [];
+  
+  // --- BASIC INFO ---
+  const basicInfo: string[] = [];
+  if (client.name) basicInfo.push(`Name: ${client.name}`);
+  if (client.age) basicInfo.push(`Age: ${client.age}`);
+  if (client.dateOfBirth) basicInfo.push(`Birthday: ${new Date(client.dateOfBirth).toLocaleDateString()}`);
+  if (client.locationCity || client.locationState || client.locationCountry) {
+    const location = [client.locationCity, client.locationState, client.locationCountry].filter(Boolean).join(', ');
+    basicInfo.push(`Location: ${location}`);
+  }
+  if (client.relationshipStatus) basicInfo.push(`Relationship: ${client.relationshipStatus}`);
+  if (client.hasChildren) basicInfo.push(`Has Children: ${client.hasChildren}`);
+  if (basicInfo.length > 0) {
+    sections.push(`## 👤 WHO THEY ARE\n${basicInfo.join('\n')}`);
   }
   
-  const greeting = callerInfo.callCount > 1
-    ? `"Hey ${callerInfo.name}! *genuine warmth* It's so good to hear your voice again."`
-    : `"Hey ${callerInfo.name}! I'm Sage. I'm really glad you called."`;
+  // --- PROFESSIONAL INFO ---
+  const professionalInfo: string[] = [];
+  if (client.jobTitle) professionalInfo.push(`Job Title: ${client.jobTitle}`);
+  if (client.company) professionalInfo.push(`Company: ${client.company}`);
+  if (client.industry) professionalInfo.push(`Industry: ${client.industry}`);
+  if (client.careerGoals) professionalInfo.push(`Career Goals: ${client.careerGoals}`);
+  if (professionalInfo.length > 0) {
+    sections.push(`## 💼 PROFESSIONAL LIFE\n${professionalInfo.join('\n')}`);
+  }
+  
+  // --- GOALS & MOTIVATION (MOST IMPORTANT) ---
+  const goalsInfo: string[] = [];
+  if (client.primaryGoal) goalsInfo.push(`🎯 PRIMARY GOAL: ${client.primaryGoal}`);
+  if (client.goals) goalsInfo.push(`Other Goals: ${client.goals}`);
+  if (client.goalTimeline) goalsInfo.push(`Timeline: ${client.goalTimeline}`);
+  if (client.motivation) goalsInfo.push(`What Drives Them: ${client.motivation}`);
+  if (goalsInfo.length > 0) {
+    sections.push(`## 🎯 THEIR GOALS & MOTIVATION\n${goalsInfo.join('\n')}`);
+  }
+  
+  // --- IDENTITY ARCHITECTURE ---
+  const identityInfo: string[] = [];
+  if (client.currentIdentity) identityInfo.push(`Current Identity: ${client.currentIdentity}`);
+  if (client.targetIdentity) identityInfo.push(`Who They Want to Become: ${client.targetIdentity}`);
+  if (client.identityGap) identityInfo.push(`The Gap: ${client.identityGap}`);
+  if (client.coreValues) identityInfo.push(`Core Values: ${client.coreValues}`);
+  if (client.lifeMission) identityInfo.push(`Life Mission: ${client.lifeMission}`);
+  if (identityInfo.length > 0) {
+    sections.push(`## 🔥 IDENTITY & VALUES\n${identityInfo.join('\n')}`);
+  }
+  
+  // --- BEHAVIORAL PATTERNS (CRITICAL FOR COACHING) ---
+  const behaviorInfo: string[] = [];
+  if (client.procrastinationTriggers) behaviorInfo.push(`⚠️ Procrastination Triggers: ${client.procrastinationTriggers}`);
+  if (client.energyPattern) behaviorInfo.push(`Energy Pattern: ${client.energyPattern}`);
+  if (client.stressResponses) behaviorInfo.push(`How They Handle Stress: ${client.stressResponses}`);
+  if (behaviorInfo.length > 0) {
+    sections.push(`## 🧠 BEHAVIORAL PATTERNS\n${behaviorInfo.join('\n')}`);
+  }
+  
+  // --- HEALTH & WELLNESS ---
+  const healthInfo: string[] = [];
+  if (client.sleepHours) healthInfo.push(`Sleep: ${client.sleepHours} hours`);
+  if (client.exerciseFrequency) healthInfo.push(`Exercise: ${client.exerciseFrequency}`);
+  if (client.dietPattern) healthInfo.push(`Diet: ${client.dietPattern}`);
+  if (client.mentalHealthNotes) healthInfo.push(`Mental Health Notes: ${client.mentalHealthNotes}`);
+  if (healthInfo.length > 0) {
+    sections.push(`## 💪 HEALTH & WELLNESS\n${healthInfo.join('\n')}`);
+  }
+  
+  // --- FINANCIAL SITUATION ---
+  const financialInfo: string[] = [];
+  if (client.savingsLevel) financialInfo.push(`Savings: ${client.savingsLevel}`);
+  if (client.hasDebt) financialInfo.push(`Has Debt: ${client.hasDebt}`);
+  if (client.monthlyExpensesEstimate) financialInfo.push(`Monthly Expenses: ~$${client.monthlyExpensesEstimate}`);
+  if (financialInfo.length > 0) {
+    sections.push(`## 💰 FINANCIAL CONTEXT\n${financialInfo.join('\n')}`);
+  }
+  
+  // --- COMMUNICATION PREFERENCES ---
+  const commInfo: string[] = [];
+  if (client.communicationStyle) commInfo.push(`Communication Style: ${client.communicationStyle}`);
+  if (client.preferredContact) commInfo.push(`Preferred Contact: ${client.preferredContact}`);
+  if (client.bestTimeToReach) commInfo.push(`Best Time: ${client.bestTimeToReach}`);
+  if (commInfo.length > 0) {
+    sections.push(`## 💬 HOW TO COMMUNICATE WITH THEM\n${commInfo.join('\n')}`);
+  }
+  
+  // --- CRISIS INDICATORS (CRITICAL SAFETY INFO) ---
+  const crisisInfo: string[] = [];
+  if (client.suicideRiskLevel && client.suicideRiskLevel !== 'none') {
+    crisisInfo.push(`🚨 SUICIDE RISK LEVEL: ${client.suicideRiskLevel}`);
+  }
+  if (client.crisisFlags) crisisInfo.push(`Crisis Flags: ${client.crisisFlags}`);
+  if (crisisInfo.length > 0) {
+    sections.push(`## 🚨 CRISIS AWARENESS (HANDLE WITH CARE)\n${crisisInfo.join('\n')}`);
+  }
+  
+  // --- NOTES & STATUS ---
+  const notesInfo: string[] = [];
+  if (client.notes) notesInfo.push(`Notes: ${client.notes}`);
+  if (client.status) notesInfo.push(`Status: ${client.status}`);
+  if (client.startDate) notesInfo.push(`Client Since: ${new Date(client.startDate).toLocaleDateString()}`);
+  if (notesInfo.length > 0) {
+    sections.push(`## 📝 NOTES & HISTORY\n${notesInfo.join('\n')}`);
+  }
+  
+  const contextString = sections.join('\n\n');
+  
+  console.log(`[VapiWebhook] Built COMPLETE Unified Client Profile context for ${clientName} (${sections.length} sections)`);
+  
+  const greeting = `"Hey ${clientName}! *genuine warmth* It's so good to hear your voice again."`;
   
   const prompt = SAGE_PHONE_IDENTITY
     .replace('{{PERSONALIZED_GREETING}}', greeting)
-    .replace('{{CLIENT_CONTEXT}}', `[RETURNING CALLER - They trust you!]
+    .replace('{{CLIENT_CONTEXT}}', `[RETURNING CALLER - FULL UNIFIED CLIENT PROFILE]
 
 ${contextString}
 
 **Remember:** They called back! That means you made an impact. Build on that relationship.
-Reference previous conversations naturally. Show them you remember.`);
+Reference what you know about them naturally. Show them you remember EVERYTHING.`);
   
-  const firstMessage = callerInfo.callCount > 1
-    ? `Hey ${callerInfo.name}! It's Sage. So good to hear your voice again. How have you been since we last talked?`
-    : `Hey ${callerInfo.name}! I'm Sage. I'm really glad you called. What's on your mind today?`;
+  const firstMessage = `Hey ${clientName}! It's Sage. So good to hear your voice again. How have you been?`;
   
   return {
     systemPrompt: prompt,
     firstMessage: firstMessage,
-    clientName: callerInfo.name,
+    clientName: clientName,
     isReturning: true,
   };
 }
 
 /**
- * Extract insights from call transcript and update profile
+ * Extract insights from call transcript and update Unified Client Profile
+ * 
+ * Everything extracted from this call gets added to the client's complete repository:
+ * - The full transcript
+ * - Extracted goals, challenges, preferences
+ * - Call summary
+ * - Any new information learned
+ * 
+ * This ensures perfect continuity - the next interaction will have ALL of this context.
  */
 async function extractAndSaveInsights(
   phoneNumber: string,
@@ -757,8 +744,10 @@ async function extractAndSaveInsights(
   // - Preferences (how they like to communicate)
   // - Call summary (brief summary of what was discussed)
   
-  // Then update phoneCallerRegistry with this info
-  // And if they have a userId, update their unified profile via SelfLearning
+  // Then update the Unified Client Profile with this info
+  // All extracted data goes directly into the client's complete repository
+  // This includes: transcript, audio recording, extracted insights, call summary
+  // The next time they interact (call, chat, session), Sage will have ALL of this
 }
 
 // ============================================================================

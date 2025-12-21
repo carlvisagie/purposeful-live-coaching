@@ -9,6 +9,10 @@ import { users } from "./schema";
  * - Face recognition (facial embeddings)
  * - Feature recognition (behavioral patterns, preferences)
  * 
+ * IMPORTANT: Phone numbers are NOT stored here.
+ * Phone numbers belong ONLY in the Unified Client Profile (clients table).
+ * This ensures perfect continuity - all client data in ONE place.
+ * 
  * Privacy: All biometric data is encrypted at rest
  * Accuracy target: >95% recognition rate
  */
@@ -16,6 +20,7 @@ import { users } from "./schema";
 /**
  * Voice Prints Table
  * Stores voice biometric data for client identification
+ * Links to clients table (Unified Client Profile) via clientId
  */
 export const voicePrints = pgTable("voice_prints", {
   id: serial("id").primaryKey(),
@@ -80,6 +85,9 @@ export type InsertFaceEmbedding = typeof faceEmbeddings.$inferInsert;
  * Client Features Table
  * Stores behavioral patterns, preferences, and characteristics
  * for enhanced client recognition and personalization
+ * 
+ * NOTE: This extends the Unified Client Profile with recognition-specific data.
+ * Core client info (name, phone, goals, etc.) stays in the clients table.
  */
 export const clientFeatures = pgTable("client_features", {
   id: serial("id").primaryKey(),
@@ -140,44 +148,30 @@ export type RecognitionEvent = typeof recognitionEvents.$inferSelect;
 export type InsertRecognitionEvent = typeof recognitionEvents.$inferInsert;
 
 /**
- * Phone Caller Registry Table
- * Stores every phone number that has ever called
- * Enables instant recognition on subsequent calls
+ * ============================================================================
+ * PHONE CALLER REGISTRY - REMOVED
+ * ============================================================================
+ * 
+ * Phone numbers do NOT get their own table or registry.
+ * 
+ * The Unified Client Profile is a COMPLETE REPOSITORY of everything:
+ * - All sessions (coaching, therapy, etc.)
+ * - Video footage from sessions
+ * - Audio recordings from calls
+ * - Chat transcripts
+ * - Phone call history
+ * - Goals, progress, challenges
+ * - Every interaction they've ever had on the platform
+ * 
+ * The phone number is just ONE identifier that points to this repository.
+ * 
+ * Why? PERFECT CONTINUITY.
+ * 
+ * When someone calls:
+ * 1. Look up phone number → Find their Unified Client Profile
+ * 2. Access their COMPLETE repository (sessions, videos, audio, chats, everything)
+ * 3. Sage knows EVERYTHING about them instantly
+ * 
+ * No separate lists. No data fragmentation. One complete repository.
+ * ============================================================================
  */
-export const phoneCallerRegistry = pgTable("phone_caller_registry", {
-  id: serial("id").primaryKey(),
-  
-  // Phone number (normalized format)
-  phoneNumber: varchar("phone_number", { length: 20 }).notNull().unique(),
-  phoneNumberRaw: varchar("phone_number_raw", { length: 30 }), // Original format
-  
-  // Link to user (null if not yet linked)
-  userId: integer("user_id").references(() => users.id, { onDelete: "set null" }),
-  
-  // Caller info (learned from conversations)
-  callerName: varchar("caller_name", { length: 100 }), // Name they gave us
-  callerNickname: varchar("caller_nickname", { length: 50 }), // Preferred name
-  
-  // Call history
-  totalCalls: integer("total_calls").default(1),
-  firstCallAt: timestamp("first_call_at").defaultNow().notNull(),
-  lastCallAt: timestamp("last_call_at").defaultNow().notNull(),
-  
-  // Context from calls (accumulated)
-  knownGoals: jsonb("known_goals"), // Goals mentioned across calls
-  knownChallenges: jsonb("known_challenges"), // Challenges mentioned
-  knownPreferences: jsonb("known_preferences"), // Communication preferences
-  callSummaries: jsonb("call_summaries"), // Brief summaries of past calls
-  
-  // Recognition confidence
-  confidenceScore: integer("confidence_score").default(50), // How well we know them
-  
-  // Status
-  isActive: varchar("is_active", { length: 10 }).default("active"),
-  
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
-
-export type PhoneCallerRegistry = typeof phoneCallerRegistry.$inferSelect;
-export type InsertPhoneCallerRegistry = typeof phoneCallerRegistry.$inferInsert;
