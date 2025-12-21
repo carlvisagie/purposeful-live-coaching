@@ -28,6 +28,18 @@ import { ProfileGuard } from "../profileGuard";
 import { SelfLearning } from "../selfLearningIntegration";
 import { moderateContent, ModerationResult } from "./aiModerator";
 import { v4 as uuidv4 } from "uuid";
+import { quickVoiceProcess } from "../services/mediaProcessing";
+
+// Helper function for success messages
+function getSuccessMessage(postType: string): string {
+  const messages: Record<string, string> = {
+    win: "🎉 Amazing! Your win has been shared!",
+    support: "💙 Your community is here for you.",
+    question: "❓ Question posted! Help is on the way.",
+    progress: "📈 Progress shared! Keep going!",
+  };
+  return messages[postType] || "Posted successfully!";
+}
 
 export const communityRouter = router({
   /**
@@ -501,6 +513,127 @@ export const communityRouter = router({
   /**
    * Get community stats for dashboard widget
    */
+  /**
+   * Transcribe voice note - Returns text for user to confirm before posting
+   * STUPID SIMPLE: Hold to record, release, we transcribe, they confirm
+   */
+  transcribeVoice: protectedProcedure
+    .input(z.object({
+      audioBase64: z.string(),
+      mimeType: z.string().default("audio/webm"),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      // ProfileGuard
+      await ProfileGuard.getClientContext(ctx.user.id, { moduleName: "community" });
+
+      try {
+        const result = await quickVoiceProcess(input.audioBase64, input.mimeType);
+        
+        if (!result.success) {
+          return {
+            success: false,
+            transcription: "",
+            error: result.error || "Could not transcribe audio",
+          };
+        }
+
+        return {
+          success: true,
+          transcription: result.transcription,
+        };
+      } catch (error) {
+        console.error("[Community] Voice transcription error:", error);
+        return {
+          success: false,
+          transcription: "",
+          error: "Failed to process voice note",
+        };
+      }
+    }),
+
+  /**
+   * Quick post - One-tap posting from the floating widget
+   * Handles text, voice transcription, or photo with minimal input
+   */
+  quickPost: protectedProcedure
+    .input(z.object({
+      postType: z.enum(["win", "support", "question", "progress"]),
+      content: z.string().min(1).max(2000),
+      isAnonymous: z.boolean().default(false),
+      source: z.enum(["widget", "page", "voice"]).default("widget"),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      // ProfileGuard
+      await ProfileGuard.getClientContext(ctx.user.id, { moduleName: "community" });
+
+      // AI Moderation
+      const moderation = await moderateContent(input.content, ctx.user.id.toString());
+      const moderationStatus = moderation.shouldHide ? "hidden" : "approved";
+
+      // Create post
+      const postId = uuidv4();
+      await db.insert(communityPosts).values({
+        id: postId,
+        communityId: "main",
+        authorId: ctx.user.id.toString(),
+        postType: input.postType,
+        title: null,
+        content: input.content,
+        images: null,
+        isAnonymous: input.isAnonymous,
+        moderationStatus,
+        moderationScore: moderation.confidence,
+        toxicityScore: moderation.toxicity,
+        sentimentScore: moderation.sentiment,
+        platformCriticism: moderation.platformCriticism,
+        moderationNotes: moderation.reason,
+        moderatedAt: new Date(),
+        visible: !moderation.shouldHide,
+      });
+
+      // Log moderation
+      await db.insert(communityModerationLog).values({
+        id: uuidv4(),
+        postId,
+        userId: ctx.user.id.toString(),
+        action: moderation.shouldHide ? "auto_hide" : "auto_approve",
+        reason: moderation.reason,
+        moderatorType: "ai",
+        aiConfidence: moderation.confidence,
+        aiAnalysis: JSON.stringify(moderation),
+      });
+
+      // Update profile stats
+      await db
+        .update(communityProfiles)
+        .set({
+          totalPosts: sql`${communityProfiles.totalPosts} + 1`,
+          updatedAt: new Date(),
+        })
+        .where(eq(communityProfiles.userId, ctx.user.id.toString()));
+
+      // Self-learning
+      await SelfLearning.trackInteraction({
+        moduleType: "ai_chat",
+        userId: ctx.user.id,
+        action: "quick_community_post",
+        wasSuccessful: !moderation.shouldHide,
+        metadata: { postType: input.postType, source: input.source, isAnonymous: input.isAnonymous },
+      });
+
+      return {
+        success: true,
+        postId,
+        moderated: moderation.shouldHide,
+        message: moderation.shouldHide
+          ? "Your post is being reviewed."
+          : getSuccessMessage(input.postType),
+      };
+    }),
+
   getStats: protectedProcedure
     .query(async ({ ctx }) => {
       const db = await getDb();

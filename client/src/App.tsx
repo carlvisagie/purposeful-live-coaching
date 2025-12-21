@@ -71,6 +71,7 @@ import AIMeditation from "./pages/AIMeditation";
 import ContentStudio from "./pages/ContentStudio";
 import ContentPipeline from "./pages/ContentPipeline";
 import Community from "./pages/Community";
+import CommunityWidget from "./components/CommunityWidget";
 
 
 function Router() {
@@ -193,6 +194,7 @@ function App() {
           <Toaster />
           <TrialWrapper>
             <Router />
+            <CommunityWidget />
           </TrialWrapper>
         </TooltipProvider>
         </ThemeProvider>
