@@ -55,6 +55,9 @@ import OurScience from "./pages/OurScience";
 import TrialWrapper from "./components/TrialWrapper";
 import Programs from "./pages/Programs";
 import JustTalk from "./pages/JustTalk";
+import SleepStories from "./pages/SleepStories";
+import FocusCoach from "./pages/FocusCoach";
+import AIMeditation from "./pages/AIMeditation";
 
 
 function Router() {
@@ -125,6 +128,17 @@ function Router() {
       <Route path="/just-talk" component={JustTalk} />
       <Route path="/talk" component={JustTalk} />
       <Route path="/support" component={JustTalk} />
+      
+      {/* 10X Enhanced Modules (Better than Calm/Headspace) */}
+      <Route path="/sleep-stories" component={SleepStories} />
+      <Route path="/sleep" component={SleepStories} />
+      <Route path="/bedtime" component={SleepStories} />
+      <Route path="/focus" component={FocusCoach} />
+      <Route path="/focus-coach" component={FocusCoach} />
+      <Route path="/pomodoro" component={FocusCoach} />
+      <Route path="/meditation" component={AIMeditation} />
+      <Route path="/meditate" component={AIMeditation} />
+      <Route path="/ai-meditation" component={AIMeditation} />
 
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
