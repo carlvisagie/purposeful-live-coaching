@@ -6,6 +6,9 @@ export * from "./identitySchema";
 // Export client recognition schema tables
 export * from "./clientRecognitionSchema";
 
+// Export client event tracking schema tables (part of Unified Client Profile)
+export * from "./clientEventTrackingSchema";
+
 // Export adaptive learning schema tables
 export * from "./adaptiveLearningSchema";
 

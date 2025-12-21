@@ -12,6 +12,7 @@ import { eq, or, sql } from "drizzle-orm";
 // ProfileGuard and SelfLearning will be integrated with Unified Client Profile later
 import { CONVERSION_SKILLS_PROMPT, detectConversionMoment, trackConversionAttempt } from "../services/conversionSkills";
 import { analyzeVoiceCharacteristics, generateRapportStrategy, getQuickRapportGuidance, saveVoiceProfile } from "../services/voiceAnalysis";
+import { getClientInsightsString } from "../services/eventTracking";
 
 export const vapiWebhookRestRouter = Router();
 
@@ -337,6 +338,17 @@ async function buildPersonalizedPrompt(phoneNumber: string) {
     if (client.startDate) notesInfo.push(`Client Since: ${new Date(client.startDate).toLocaleDateString()}`);
     if (notesInfo.length > 0) {
       sections.push(`## 📝 NOTES & HISTORY\n${notesInfo.join('\n')}`);
+    }
+    
+    // --- BEHAVIORAL INSIGHTS FROM EVENT TRACKING ---
+    // Every click, view, scroll, and interaction tells us about this person
+    try {
+      const behavioralInsights = await getClientInsightsString(client.id);
+      if (behavioralInsights && behavioralInsights !== 'No behavioral data available yet - this may be a new client.') {
+        sections.push(`## 📊 BEHAVIORAL INSIGHTS (From Platform Activity)\n${behavioralInsights}`);
+      }
+    } catch (e) {
+      console.log('[VapiWebhook] Could not load behavioral insights:', e);
     }
     
     profileContext = sections.join('\n\n');

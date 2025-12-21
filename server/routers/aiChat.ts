@@ -34,6 +34,7 @@ import SelfLearning from "../selfLearningIntegration";
 import ProfileGuard from "../profileGuard";
 import { CONVERSION_SKILLS_PROMPT, detectConversionMoment, detectObjection, trackConversionAttempt } from "../services/conversionSkills";
 import { analyzeVoiceCharacteristics, generateRapportStrategy, getQuickRapportGuidance } from "../services/voiceAnalysis";
+import { getClientInsightsString, trackEvent } from "../services/eventTracking";
 
 const SYSTEM_PROMPT = `## 🔥 YOUR IDENTITY: SAGE - WORLD-CLASS AI LIFE COACH
 
@@ -582,6 +583,33 @@ export const aiChatRouter = router({
           enhancedSystemPrompt += `\n\n**Recent Files:** They've uploaded ${filesWithContent.length} file(s) recently. Reference them if relevant.`;
         }
         enhancedSystemPrompt += `\n\n**Context:** This is a follow-up message in an ongoing conversation. Reference previous messages and show continuity.`;
+      }
+
+      // Add behavioral insights from event tracking
+      // Every click, view, scroll, and interaction tells us about this person
+      if (userId) {
+        try {
+          // Get client ID from user
+          const userRecord = await db.query.users.findFirst({
+            where: eq(users.id, userId),
+          });
+          
+          if (userRecord) {
+            // Find their client profile
+            const clientRecord = await db.query.clients.findFirst({
+              where: eq(clients.userId, userId),
+            });
+            
+            if (clientRecord) {
+              const behavioralInsights = await getClientInsightsString(clientRecord.id);
+              if (behavioralInsights && behavioralInsights !== 'No behavioral data available yet - this may be a new client.') {
+                enhancedSystemPrompt += `\n\n---\n\n## 📊 BEHAVIORAL INSIGHTS (From Platform Activity)\n\n${behavioralInsights}\n\n**Use these insights to:**\n- Notice patterns they might not see themselves\n- Ask about features they've been exploring\n- Acknowledge their engagement and progress\n- Address any hesitation or struggles you detect`;
+              }
+            }
+          }
+        } catch (e) {
+          console.log('[AIChat] Could not load behavioral insights:', e);
+        }
       }
 
       // Analyze user's communication style for rapport guidance

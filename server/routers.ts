@@ -74,6 +74,7 @@ import { contentPipelineRouter } from "./routers/contentPipeline";
 import { brollLearningRouter } from "./routers/brollLearning";
 import { communityRouter } from "./routers/community";
 import { vapiWebhookRouter } from "./routers/vapiWebhook";
+import { eventTrackingRouter } from "./routers/eventTracking";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -178,6 +179,9 @@ export const appRouter = router({
   
   // Vapi Phone Integration - Sage on the phone with ProfileGuard
   vapiWebhook: vapiWebhookRouter,
+  
+  // Event Tracking - Part of Unified Client Profile (every click, view, scroll, etc.)
+  eventTracking: eventTrackingRouter,
 });
 
 export type AppRouter = typeof appRouter;
