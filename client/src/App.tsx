@@ -89,6 +89,7 @@ function Router() {
       <Route path="/coach/setup" component={CoachSetup} />
       <Route path="/my-sessions" component={MySessions} />
       <Route path="/sessions/book" component={BookSession} />
+      <Route path="/book-session" component={BookSession} />
       <Route path="/coach/availability" component={CoachAvailability} />
       <Route path="/coach/session-types" component={ManageSessionTypes} />
       <Route path="/ai-coach" component={AICoach} />

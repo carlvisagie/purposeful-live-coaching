@@ -666,7 +666,11 @@ async function buildPersonalizedPrompt(phoneNumber: string) {
 }
 
 async function extractAndSaveInsights(phoneNumber: string, transcript: string, callId: string) {
-  const db = getDb();
+  const db = await getDb();
+  if (!db) {
+    console.error('[VapiWebhook] Database not available for extractAndSaveInsights');
+    return;
+  }
   let callerInfo = await findCallerByPhone(phoneNumber);
   
   // =========================================================================
