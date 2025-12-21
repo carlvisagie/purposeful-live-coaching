@@ -86,7 +86,8 @@ export const sleepStoriesRouter = router({
   }),
 
   // Generate a personalized sleep story
-  generateStory: protectedProcedure
+  // Using publicProcedure for frictionless onboarding - users can try before signing up
+  generateStory: publicProcedure
     .input(z.object({
       theme: z.enum(["nature", "travel", "cozy", "fantasy", "space"]).default("nature"),
       duration: z.enum(["short", "medium", "long"]).default("medium"), // 5, 15, 30 mins
