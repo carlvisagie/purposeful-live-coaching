@@ -1,4 +1,14 @@
 import { Toaster } from "@/components/ui/sonner";
+/**
+ * ╔══════════════════════════════════════════════════════════════════╗
+ * ║  🛑 STOP - READ /MASTER_GUIDE.md BEFORE MODIFYING THIS FILE 🛑   ║
+ * ║                                                                  ║
+ * ║  This is a LIVE PRODUCTION platform with REAL PAYING USERS.      ║
+ * ║  ProfileGuard MUST be used in all user-facing code.              ║
+ * ║  DO NOT rebuild existing features - check the guide first.       ║
+ * ╚══════════════════════════════════════════════════════════════════╝
+ */
+
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";

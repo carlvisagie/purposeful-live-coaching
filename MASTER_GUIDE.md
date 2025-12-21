@@ -1,28 +1,67 @@
-# 🔴🔴🔴 **CRITICAL WARNING - LIVE PRODUCTION PLATFORM** 🔴🔴🔴
+# 🛑 STOP - MANDATORY READING BEFORE ANY ACTION
 
-## **ATTENTION AGENT: YOU ARE WORKING ON A LIVE, REVENUE-GENERATING PLATFORM.**
+```
+╔══════════════════════════════════════════════════════════════════╗
+║  🚨 THIS IS A LIVE PRODUCTION PLATFORM WITH REAL PAYING USERS 🚨  ║
+║                                                                  ║
+║  YOU MUST ANSWER THESE QUESTIONS BEFORE WRITING ANY CODE:        ║
+║                                                                  ║
+║  1. What is ProfileGuard and why is it mandatory?                ║
+║  2. Name 5 features that are ALREADY BUILT                       ║
+║  3. What happens if you rebuild something that exists?           ║
+║                                                                  ║
+║  PASTE YOUR ANSWERS IN YOUR FIRST RESPONSE TO THE USER.          ║
+║  IF YOU CANNOT ANSWER, YOU HAVE NOT READ THIS GUIDE.             ║
+╚══════════════════════════════════════════════════════════════════╝
+```
 
-**DO NOT MAKE *ANY* CHANGES WITHOUT READING THIS GUIDE FIRST. FAILURE TO COMPLY RISKS BREAKING THE LIVE DEPLOYMENT AND CAUSING IMMEDIATE FINANCIAL HARM.**
-
-**Last Updated:** December 21, 2025  
-**Status:** 🟢 PLATFORM 100% COMPLETE - ProfileGuard ensures perfect continuity, all modules connected to Unified Client Profile  
-**Owner:** Carl Visagie  
-**Production URL:** https://purposefullivecoaching.com  
-**Repository:** https://github.com/carlvisagie/purposeful-live-coaching
+**Answers are at the bottom of this section. Read the guide to find them.**
 
 ---
 
-## **MANDATORY PRE-FLIGHT CHECKLIST FOR ALL AGENTS**
+## CRITICAL FACTS (Memorize These)
 
-**Before writing a single line of code, you MUST confirm the following:**
+| Fact | Value |
+|------|-------|
+| **Status** | 🟢 LIVE PRODUCTION - 100% Complete |
+| **Users** | Real paying customers |
+| **Sacred System** | ProfileGuard - MUST be used in ALL user-facing code |
+| **Priority** | Revenue-blocking bugs FIRST, everything else SECOND |
+| **Rule #1** | DO NOT rebuild existing features |
+| **Production URL** | https://purposefullivecoaching.com |
+| **Owner** | Carl Visagie |
 
-1.  **I have read this Master Guide in its entirety.** I understand the platform's vision, architecture, and what is already built.
-2.  **I understand this is a live production environment.** My actions have real-world consequences for the business and its clients.
-3.  **I will not rebuild what is already working.** My focus is on adding new, requested features or fixing verified bugs.
-4.  **I will prioritize revenue-blocking issues.** My work directly supports the platform's commercial success.
-5.  **I will validate all changes against this guide.** I will not introduce changes that conflict with the established architecture or principles.
+---
 
-**Confirm understanding by stating: "I have read and understood the Master Guide and will proceed with caution."**
+## THE 4 GOLDEN RULES
+
+1. **READ THIS ENTIRE GUIDE** before touching any code
+2. **USE PROFILEGUARD** in any code that touches user data
+3. **DO NOT REBUILD** - check the feature list first
+4. **FIX REVENUE BLOCKERS** before anything else
+
+---
+
+## ANSWERS TO GATE QUESTIONS
+
+> **1. What is ProfileGuard?**  
+> ProfileGuard is the central system that loads unified client context (name, preferences, history, goals) for EVERY user interaction. It ensures we NEVER forget a client. All user-facing modules MUST call `ProfileGuard.getClientContext()` to maintain continuity.
+
+> **2. Features already built (there are 50+, here are key ones):**  
+> AI Coach (Sage), Real-Time Voice Coach, Sleep Stories, Focus Coach, AI Meditation, Structured Programs, Goals System, Habit Tracking, Health Optimization, Daily Check-ins, Coaching Dashboard, Live Session Assistant, Speaker Training, Compliance System, Crisis Detection
+
+> **3. What happens if you rebuild something?**  
+> You waste time, introduce bugs, break integrations with ProfileGuard, potentially take down the live platform, and lose the owner's trust and revenue.
+
+**Now state your answers and this confirmation:**
+> "I have read MASTER_GUIDE.md. ProfileGuard is mandatory. I will not rebuild existing features. I understand this is a live platform with real users."
+
+---
+
+# 🔴 MASTER GUIDE - PURPOSEFUL LIVE COACHING 🔴
+
+**Last Updated:** December 21, 2025  
+**Repository:** https://github.com/carlvisagie/purposeful-live-coaching
 
 ---
 

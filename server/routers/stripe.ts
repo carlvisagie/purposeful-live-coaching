@@ -85,19 +85,19 @@ export const stripeRouter = router({
 
       return {
         url: session.url,
-        session_id: session.id,
+        sessionId: session.id,
       };
     }),
 
   /**
    * Verify payment and create booking (fallback for webhook failures)
    * Called from success page to ensure booking is created even if webhook fails
-   * PUBLIC: No auth required - session_id from Stripe is the authentication proof
+   * PUBLIC: No auth required - sessionId from Stripe is the authentication proof
    */
   verifyAndCreateBooking: publicProcedure
     .input(
       z.object({
-        session_id: z.string(),
+        sessionId: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -136,7 +136,7 @@ export const stripeRouter = router({
       }
 
       // Create or get client record
-      let client_id: number;
+      let clientId: number;
       const clientEmail = session.customer_email || metadata.customer_email;
       
       if (clientEmail) {
@@ -153,7 +153,7 @@ export const stripeRouter = router({
           const [newClient] = await db
             .insert(clientsTable)
             .values({
-              coach_id: 1, // Default coach ID (you)
+              coachId: 1, // Default coach ID (you)
               name: session.customer_details?.name || metadata.customer_name || 'Unknown',
               email: clientEmail,
               phone: null,
@@ -176,8 +176,8 @@ export const stripeRouter = router({
       const [newSession] = await db
         .insert(sessionsTable)
         .values({
-          clientId,
-          coach_id: 1, // Default coach ID (you)
+          clientId: clientId,
+          coachId: 1, // Default coach ID (you)
           sessionTypeId: parseInt(metadata.session_type_id),
           scheduledDate: new Date(metadata.scheduled_date),
           duration: sessionType?.duration || 60, // Default to 60 minutes
