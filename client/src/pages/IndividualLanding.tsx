@@ -237,7 +237,7 @@ export default function IndividualLanding() {
           </h2>
           
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Get instant support from an AI coach trained on cutting-edge research from Huberman, Attia, Walker, and leading scientists. Start your transformation journey in seconds—no signup required.
+            Meet Sage—your warm, wise AI life coach trained on cutting-edge research from Huberman, Attia, Walker, and leading scientists. Start your transformation journey in seconds—no signup required.
           </p>
 
           {/* Big Purple Button */}
@@ -247,7 +247,7 @@ export default function IndividualLanding() {
             onClick={() => window.location.href = "/ai-coach"}
           >
             <Sparkles className="h-6 w-6 mr-3" />
-            Start Talking to Your AI Coach Now
+            Start Talking to Sage Now
           </Button>
           
           <p className="text-sm text-gray-500 mb-8">
@@ -273,8 +273,71 @@ export default function IndividualLanding() {
           </Button>
           
           <p className="text-sm text-gray-500 mt-2">
-            Talk to your AI coach anytime, day or night.
+            Talk to Sage anytime, day or night.
           </p>
+
+          {/* Social Proof - Quick Stats */}
+          <div className="flex flex-wrap justify-center gap-8 mt-12 pt-8 border-t border-gray-200">
+            <div className="text-center">
+              <div className="text-3xl font-bold text-purple-600">24/7</div>
+              <div className="text-sm text-gray-600">Always Available</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-purple-600">33</div>
+              <div className="text-sm text-gray-600">Wellness Modules</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-purple-600">100%</div>
+              <div className="text-sm text-gray-600">Evidence-Based</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-purple-600">0</div>
+              <div className="text-sm text-gray-600">Signup Required</div>
+            </div>
+          </div>
+
+          {/* What Makes Sage Different */}
+          <div className="mt-12 p-6 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg max-w-2xl mx-auto">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">What makes Sage different?</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Heart className="h-4 w-4 text-purple-600" />
+                </div>
+                <div>
+                  <div className="font-medium text-gray-900">Genuinely Empathetic</div>
+                  <div className="text-sm text-gray-600">Not a chatbot. A companion who truly cares.</div>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Brain className="h-4 w-4 text-purple-600" />
+                </div>
+                <div>
+                  <div className="font-medium text-gray-900">Science-Backed</div>
+                  <div className="text-sm text-gray-600">Trained on Huberman, Attia, Walker research.</div>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Sparkles className="h-4 w-4 text-purple-600" />
+                </div>
+                <div>
+                  <div className="font-medium text-gray-900">Remembers You</div>
+                  <div className="text-sm text-gray-600">Your story matters. Sage remembers every detail.</div>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Zap className="h-4 w-4 text-purple-600" />
+                </div>
+                <div>
+                  <div className="font-medium text-gray-900">Instant Value</div>
+                  <div className="text-sm text-gray-600">No forms, no waiting. Help starts immediately.</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

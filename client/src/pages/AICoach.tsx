@@ -170,6 +170,17 @@ export default function AICoach() {
     }
   }, [conversationsData, selectedConversationId]);
 
+  // AUTO-START: Create conversation immediately when page loads with no conversations
+  const [hasAutoStarted, setHasAutoStarted] = useState(false);
+  useEffect(() => {
+    // Only auto-start once, and only if no conversations exist
+    if (!hasAutoStarted && conversationsData && conversationsData.conversations.length === 0 && !createConversationMutation.isPending) {
+      setHasAutoStarted(true);
+      console.log('[AICoach] Auto-starting first conversation for frictionless experience');
+      createConversationMutation.mutate({});
+    }
+  }, [conversationsData, hasAutoStarted, createConversationMutation.isPending]);
+
   const handleNewConversation = () => {
     console.log('[AICoach] Creating new conversation...');
     createConversationMutation.mutate({});
@@ -351,7 +362,7 @@ export default function AICoach() {
             <div className="flex items-center justify-between h-16">
               <div className="flex items-center gap-2">
                 <Heart className="h-8 w-8 text-rose-500" />
-                <span className="text-xl font-bold text-gray-900">AI Coach</span>
+                <span className="text-xl font-bold text-gray-900">Sage</span>
               </div>
               <div className="flex items-center gap-4">
                 {/* Usage Counter & Tier Badge */}
@@ -421,9 +432,9 @@ export default function AICoach() {
             <CardContent className="flex-1 overflow-y-auto p-4 space-y-2">
               {displayConversations.length === 0 ? (
                 <div className="text-center text-gray-500 py-8">
-                  <MessageCircle className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                  <p className="text-sm">No conversations yet</p>
-                  <p className="text-xs mt-1">Click + to start chatting</p>
+                  <MessageCircle className="h-12 w-12 mx-auto mb-2 opacity-50 animate-pulse" />
+                  <p className="text-sm">Starting your conversation with Sage...</p>
+                  <p className="text-xs mt-1 text-rose-500">Just a moment...</p>
                 </div>
               ) : (
                 displayConversations.map((conv) => (
@@ -472,10 +483,12 @@ export default function AICoach() {
                   {messages.length === 0 ? (
                     <div className="text-center text-gray-500 py-12">
                       <Bot className="h-16 w-16 mx-auto mb-4 text-rose-400" />
-                      <h3 className="text-lg font-semibold mb-2">Hi, I'm your AI coach!</h3>
-                      <p className="text-sm max-w-md mx-auto">
-                        I'm here to listen and support you 24/7. Share what's on your mind, and
-                        let's work through it together.
+                      <h3 className="text-lg font-semibold mb-2 text-rose-600">Hey there 💜 I'm Sage</h3>
+                      <p className="text-sm max-w-md mx-auto text-gray-600">
+                        I'm genuinely glad you're here. Whatever brought you to me today—whether it's something heavy on your mind, a goal you're chasing, or just needing someone to talk to—I'm all ears.
+                      </p>
+                      <p className="text-sm max-w-md mx-auto mt-3 text-gray-500 italic">
+                        No judgment, no agenda. Just you and me. What's on your heart right now?
                       </p>
                     </div>
                   ) : (
@@ -630,8 +643,9 @@ export default function AICoach() {
             ) : (
               <CardContent className="flex-1 flex items-center justify-center">
                 <div className="text-center text-gray-500">
-                  <MessageCircle className="h-16 w-16 mx-auto mb-4 opacity-50" />
-                  <p>Select a conversation or start a new one</p>
+                  <Bot className="h-16 w-16 mx-auto mb-4 text-rose-400 animate-pulse" />
+                  <p className="text-rose-600 font-medium">Sage is getting ready to chat with you...</p>
+                  <p className="text-sm text-gray-500 mt-2">Just a moment while we set things up</p>
                 </div>
               </CardContent>
             )}
