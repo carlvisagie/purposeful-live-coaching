@@ -25,7 +25,7 @@
  * - Predicts when users need extra support
  */
 
-import { boolean, decimal, int, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, decimal, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 // User Community Profiles
 export const communityProfiles = pgTable("community_profiles", {
@@ -144,7 +144,15 @@ export const communityPosts = pgTable("community_posts", {
   commentsCount: integer("comments_count").default(0),
   supportsCount: integer("supports_count").default(0), // "You got this!" reactions
   
-  // Moderation
+  // AI Moderation
+  moderationStatus: varchar("moderation_status", { length: 50 }).default("approved"),
+  moderationScore: integer("moderation_score").default(100),
+  toxicityScore: integer("toxicity_score").default(0),
+  sentimentScore: integer("sentiment_score").default(50),
+  platformCriticism: boolean("platform_criticism").default(false),
+  moderationNotes: text("moderation_notes"),
+  moderatedAt: timestamp("moderated_at"),
+  isAnonymous: boolean("is_anonymous").default(false),
   flagged: boolean("flagged").default(false),
   flagReason: text("flag_reason"),
   
@@ -167,7 +175,13 @@ export const communityComments = pgTable("community_comments", {
   // Engagement
   likesCount: integer("likes_count").default(0),
   
-  // Moderation
+  // AI Moderation
+  moderationStatus: varchar("moderation_status", { length: 50 }).default("approved"),
+  moderationScore: integer("moderation_score").default(100),
+  toxicityScore: integer("toxicity_score").default(0),
+  sentimentScore: integer("sentiment_score").default(50),
+  platformCriticism: boolean("platform_criticism").default(false),
+  moderationNotes: text("moderation_notes"),
   flagged: boolean("flagged").default(false),
   
   // Visibility
@@ -175,6 +189,23 @@ export const communityComments = pgTable("community_comments", {
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// AI Moderation Log - Track all moderation decisions
+export const communityModerationLog = pgTable("community_moderation_log", {
+  id: varchar("id", { length: 255 }).primaryKey(),
+  postId: varchar("post_id", { length: 255 }),
+  commentId: varchar("comment_id", { length: 255 }),
+  userId: varchar("user_id", { length: 255 }),
+  
+  action: varchar("action", { length: 50 }).notNull(),
+  reason: text("reason"),
+  moderatorType: varchar("moderator_type", { length: 20 }).notNull(),
+  aiConfidence: integer("ai_confidence"),
+  aiAnalysis: text("ai_analysis"),
+  previousStatus: varchar("previous_status", { length: 50 }),
+  
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Accountability Partners

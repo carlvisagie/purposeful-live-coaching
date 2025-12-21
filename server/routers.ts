@@ -72,6 +72,7 @@ import { perpetualUpgradeRouter } from "./routers/perpetualUpgrade";
 import { contentStudioRouter } from "./routers/contentStudio";
 import { contentPipelineRouter } from "./routers/contentPipeline";
 import { brollLearningRouter } from "./routers/brollLearning";
+import { communityRouter } from "./routers/community";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -170,6 +171,9 @@ export const appRouter = router({
   
   // B-Roll Learning Engine - Evidence-based auto B-roll with self-learning
   brollLearning: brollLearningRouter,
+  
+  // Community - AI-moderated peer support with comprehensive compliance
+  community: communityRouter,
 });
 
 export type AppRouter = typeof appRouter;

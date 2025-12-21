@@ -70,6 +70,7 @@ import FocusCoach from "./pages/FocusCoach";
 import AIMeditation from "./pages/AIMeditation";
 import ContentStudio from "./pages/ContentStudio";
 import ContentPipeline from "./pages/ContentPipeline";
+import Community from "./pages/Community";
 
 
 function Router() {
@@ -162,6 +163,11 @@ function Router() {
       <Route path="/content-pipeline" component={ContentPipeline} />
       <Route path="/pipeline" component={ContentPipeline} />
       <Route path="/auto-content" component={ContentPipeline} />
+      
+      {/* Community - AI-moderated peer support */}
+      <Route path="/community" component={Community} />
+      <Route path="/connect" component={Community} />
+      <Route path="/tribe" component={Community} />
 
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
