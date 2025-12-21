@@ -230,22 +230,118 @@ async function buildPersonalizedPrompt(phoneNumber: string) {
     const client = callerInfo.client;
     clientName = client.name || '';
     
-    // Build profile context from Unified Client Profile
-    const profileParts: string[] = [];
+    // =========================================================================
+    // BUILD COMPLETE PROFILE CONTEXT FROM UNIFIED CLIENT PROFILE
+    // This is EVERYTHING we know about this person - use it to make them feel SEEN
+    // =========================================================================
     
-    if (client.goals) {
-      profileParts.push(`**Goals:** ${client.goals}`);
+    const sections: string[] = [];
+    
+    // --- BASIC INFO ---
+    const basicInfo: string[] = [];
+    if (client.name) basicInfo.push(`Name: ${client.name}`);
+    if (client.age) basicInfo.push(`Age: ${client.age}`);
+    if (client.dateOfBirth) basicInfo.push(`Birthday: ${new Date(client.dateOfBirth).toLocaleDateString()}`);
+    if (client.locationCity || client.locationState || client.locationCountry) {
+      const location = [client.locationCity, client.locationState, client.locationCountry].filter(Boolean).join(', ');
+      basicInfo.push(`Location: ${location}`);
     }
-    if (client.notes) {
-      profileParts.push(`**Notes:** ${client.notes}`);
-    }
-    if (client.status) {
-      profileParts.push(`**Status:** ${client.status}`);
+    if (client.relationshipStatus) basicInfo.push(`Relationship: ${client.relationshipStatus}`);
+    if (client.hasChildren) basicInfo.push(`Has Children: ${client.hasChildren}`);
+    if (basicInfo.length > 0) {
+      sections.push(`## 👤 WHO THEY ARE\n${basicInfo.join('\n')}`);
     }
     
-    profileContext = profileParts.join('\n');
+    // --- PROFESSIONAL INFO ---
+    const professionalInfo: string[] = [];
+    if (client.jobTitle) professionalInfo.push(`Job Title: ${client.jobTitle}`);
+    if (client.company) professionalInfo.push(`Company: ${client.company}`);
+    if (client.industry) professionalInfo.push(`Industry: ${client.industry}`);
+    if (client.careerGoals) professionalInfo.push(`Career Goals: ${client.careerGoals}`);
+    if (professionalInfo.length > 0) {
+      sections.push(`## 💼 PROFESSIONAL LIFE\n${professionalInfo.join('\n')}`);
+    }
     
-    console.log(`[VapiWebhook] Built profile context for ${clientName}`);
+    // --- GOALS & MOTIVATION (MOST IMPORTANT) ---
+    const goalsInfo: string[] = [];
+    if (client.primaryGoal) goalsInfo.push(`🎯 PRIMARY GOAL: ${client.primaryGoal}`);
+    if (client.goals) goalsInfo.push(`Other Goals: ${client.goals}`);
+    if (client.goalTimeline) goalsInfo.push(`Timeline: ${client.goalTimeline}`);
+    if (client.motivation) goalsInfo.push(`What Drives Them: ${client.motivation}`);
+    if (goalsInfo.length > 0) {
+      sections.push(`## 🎯 THEIR GOALS & MOTIVATION\n${goalsInfo.join('\n')}`);
+    }
+    
+    // --- IDENTITY ARCHITECTURE ---
+    const identityInfo: string[] = [];
+    if (client.currentIdentity) identityInfo.push(`Current Identity: ${client.currentIdentity}`);
+    if (client.targetIdentity) identityInfo.push(`Who They Want to Become: ${client.targetIdentity}`);
+    if (client.identityGap) identityInfo.push(`The Gap: ${client.identityGap}`);
+    if (client.coreValues) identityInfo.push(`Core Values: ${client.coreValues}`);
+    if (client.lifeMission) identityInfo.push(`Life Mission: ${client.lifeMission}`);
+    if (identityInfo.length > 0) {
+      sections.push(`## 🔥 IDENTITY & VALUES\n${identityInfo.join('\n')}`);
+    }
+    
+    // --- BEHAVIORAL PATTERNS (CRITICAL FOR COACHING) ---
+    const behaviorInfo: string[] = [];
+    if (client.procrastinationTriggers) behaviorInfo.push(`⚠️ Procrastination Triggers: ${client.procrastinationTriggers}`);
+    if (client.energyPattern) behaviorInfo.push(`Energy Pattern: ${client.energyPattern}`);
+    if (client.stressResponses) behaviorInfo.push(`How They Handle Stress: ${client.stressResponses}`);
+    if (behaviorInfo.length > 0) {
+      sections.push(`## 🧠 BEHAVIORAL PATTERNS\n${behaviorInfo.join('\n')}`);
+    }
+    
+    // --- HEALTH & WELLNESS ---
+    const healthInfo: string[] = [];
+    if (client.sleepHours) healthInfo.push(`Sleep: ${client.sleepHours} hours`);
+    if (client.exerciseFrequency) healthInfo.push(`Exercise: ${client.exerciseFrequency}`);
+    if (client.dietPattern) healthInfo.push(`Diet: ${client.dietPattern}`);
+    if (client.mentalHealthNotes) healthInfo.push(`Mental Health Notes: ${client.mentalHealthNotes}`);
+    if (healthInfo.length > 0) {
+      sections.push(`## 💪 HEALTH & WELLNESS\n${healthInfo.join('\n')}`);
+    }
+    
+    // --- FINANCIAL SITUATION ---
+    const financialInfo: string[] = [];
+    if (client.savingsLevel) financialInfo.push(`Savings: ${client.savingsLevel}`);
+    if (client.hasDebt) financialInfo.push(`Has Debt: ${client.hasDebt}`);
+    if (client.monthlyExpensesEstimate) financialInfo.push(`Monthly Expenses: ~$${client.monthlyExpensesEstimate}`);
+    if (financialInfo.length > 0) {
+      sections.push(`## 💰 FINANCIAL CONTEXT\n${financialInfo.join('\n')}`);
+    }
+    
+    // --- COMMUNICATION PREFERENCES ---
+    const commInfo: string[] = [];
+    if (client.communicationStyle) commInfo.push(`Communication Style: ${client.communicationStyle}`);
+    if (client.preferredContact) commInfo.push(`Preferred Contact: ${client.preferredContact}`);
+    if (client.bestTimeToReach) commInfo.push(`Best Time: ${client.bestTimeToReach}`);
+    if (commInfo.length > 0) {
+      sections.push(`## 💬 HOW TO COMMUNICATE WITH THEM\n${commInfo.join('\n')}`);
+    }
+    
+    // --- CRISIS INDICATORS (CRITICAL SAFETY INFO) ---
+    const crisisInfo: string[] = [];
+    if (client.suicideRiskLevel && client.suicideRiskLevel !== 'none') {
+      crisisInfo.push(`🚨 SUICIDE RISK LEVEL: ${client.suicideRiskLevel}`);
+    }
+    if (client.crisisFlags) crisisInfo.push(`Crisis Flags: ${client.crisisFlags}`);
+    if (crisisInfo.length > 0) {
+      sections.push(`## 🚨 CRISIS AWARENESS (HANDLE WITH CARE)\n${crisisInfo.join('\n')}`);
+    }
+    
+    // --- NOTES & STATUS ---
+    const notesInfo: string[] = [];
+    if (client.notes) notesInfo.push(`Notes: ${client.notes}`);
+    if (client.status) notesInfo.push(`Status: ${client.status}`);
+    if (client.startDate) notesInfo.push(`Client Since: ${new Date(client.startDate).toLocaleDateString()}`);
+    if (notesInfo.length > 0) {
+      sections.push(`## 📝 NOTES & HISTORY\n${notesInfo.join('\n')}`);
+    }
+    
+    profileContext = sections.join('\n\n');
+    
+    console.log(`[VapiWebhook] Built COMPLETE profile context for ${clientName} (${sections.length} sections)`);
   }
   
   // Build personalized system prompt
