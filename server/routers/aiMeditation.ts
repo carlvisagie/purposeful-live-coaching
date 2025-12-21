@@ -2,6 +2,9 @@ import { z } from "zod";
 import { router, publicProcedure, protectedProcedure } from "../trpc";
 import OpenAI from "openai";
 import SelfLearning from "../selfLearningIntegration";
+import { db } from "../db";
+import { users } from "../../drizzle/schema";
+import { eq } from "drizzle-orm";
 
 const openai = new OpenAI();
 
@@ -113,9 +116,20 @@ export const aiMeditationRouter = router({
       experienceLevel: z.enum(["beginner", "intermediate", "advanced"]).default("beginner"),
       preferredTechnique: z.string().optional()
     }))
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       const meditationType = MEDITATION_TYPES[input.type];
       const technique = input.preferredTechnique || meditationType.techniques[0];
+
+      // Load user profile for personalized meditation
+      let profileContext = "";
+      if (ctx.user?.id) {
+        const [userProfile] = await db.select().from(users).where(eq(users.id, ctx.user.id)).limit(1);
+        if (userProfile) {
+          if (userProfile.name) profileContext += `- User's Name: ${userProfile.name}\n`;
+          if (userProfile.mainChallenges) profileContext += `- Known Challenges: ${userProfile.mainChallenges} (subtly address these)\n`;
+          if (userProfile.triggers) profileContext += `- Triggers to Avoid: ${userProfile.triggers}\n`;
+        }
+      }
 
       // Build the meditation script prompt
       const prompt = `You are an expert meditation guide creating a ${input.duration}-minute ${meditationType.name} meditation.
@@ -127,6 +141,7 @@ MEDITATION DETAILS:
 - Experience Level: ${input.experienceLevel}
 ${input.currentMood ? `- Current Mood: ${input.currentMood}` : ""}
 ${input.intention ? `- Intention: ${input.intention}` : ""}
+${profileContext}
 
 STRUCTURE:
 1. Opening (1-2 min): Settle in, set intention, begin relaxation

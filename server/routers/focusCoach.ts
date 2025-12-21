@@ -2,6 +2,9 @@ import { z } from "zod";
 import { router, publicProcedure, protectedProcedure } from "../trpc";
 import OpenAI from "openai";
 import SelfLearning from "../selfLearningIntegration";
+import { db } from "../db";
+import { users } from "../../drizzle/schema";
+import { eq } from "drizzle-orm";
 
 const openai = new OpenAI();
 
@@ -167,10 +170,22 @@ export const focusCoachRouter = router({
       const duration = input.customDuration || mode.defaultDuration;
       const soundscape = input.soundscape || mode.soundscape;
 
+      // Load user profile for personalized coaching
+      let profileContext = "";
+      if (ctx.user?.id) {
+        const [userProfile] = await db.select().from(users).where(eq(users.id, ctx.user.id)).limit(1);
+        if (userProfile) {
+          if (userProfile.name) profileContext += `Their name is ${userProfile.name}. `;
+          if (userProfile.primaryGoal) profileContext += `Their main goal is: ${userProfile.primaryGoal}. `;
+          if (userProfile.mainChallenges) profileContext += `They struggle with: ${userProfile.mainChallenges}. `;
+        }
+      }
+
       // Generate opening message from AI coach
       let openingMessage = "";
       if (input.enableVoiceCoach) {
         const prompt = `You are a supportive focus coach helping someone start a ${duration}-minute ${mode.name} session.
+${profileContext}
 ${input.task ? `They're working on: ${input.task}` : ""}
 ${input.goal ? `Their goal: ${input.goal}` : ""}
 

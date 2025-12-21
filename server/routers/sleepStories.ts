@@ -2,6 +2,9 @@ import { z } from "zod";
 import { router, publicProcedure, protectedProcedure } from "../trpc";
 import OpenAI from "openai";
 import SelfLearning from "../selfLearningIntegration";
+import { db } from "../db";
+import { users } from "../../drizzle/schema";
+import { eq } from "drizzle-orm";
 
 const openai = new OpenAI();
 
@@ -96,7 +99,7 @@ export const sleepStoriesRouter = router({
       dayHighlight: z.string().optional(), // From evening review
       personalInterests: z.array(z.string()).optional()
     }))
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       const theme = STORY_THEMES[input.theme];
       const setting = theme.settings[Math.floor(Math.random() * theme.settings.length)];
       const elements = theme.elements.slice(0, 3).join(", ");
@@ -105,10 +108,26 @@ export const sleepStoriesRouter = router({
       const wordCounts = { short: 800, medium: 2000, long: 4000 };
       const targetWords = wordCounts[input.duration];
       
+      // Load user profile for personalization continuity
+      let userName = input.userName;
+      let profilePersonalization = "";
+      if (ctx.user?.id) {
+        const [userProfile] = await db.select().from(users).where(eq(users.id, ctx.user.id)).limit(1);
+        if (userProfile) {
+          if (!userName && userProfile.name) userName = userProfile.name;
+          if (userProfile.mainChallenges) {
+            profilePersonalization += `They've been dealing with: ${userProfile.mainChallenges}. Subtly weave in themes of peace, release, and letting go of these concerns. `;
+          }
+          if (userProfile.triggers) {
+            profilePersonalization += `Avoid themes related to: ${userProfile.triggers}. `;
+          }
+        }
+      }
+      
       // Build personalization context
-      let personalization = "";
-      if (input.userName) {
-        personalization += `The listener's name is ${input.userName}. Occasionally address them by name in a warm, caring way. `;
+      let personalization = profilePersonalization;
+      if (userName) {
+        personalization += `The listener's name is ${userName}. Occasionally address them by name in a warm, caring way. `;
       }
       if (input.currentMood) {
         personalization += `They are currently feeling ${input.currentMood}. Acknowledge this gently and guide them toward peace. `;

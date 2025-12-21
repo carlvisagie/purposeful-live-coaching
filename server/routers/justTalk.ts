@@ -14,6 +14,9 @@ import { router, publicProcedure, protectedProcedure } from "../trpc";
 import { z } from "zod";
 import OpenAI from "openai";
 import SelfLearning from "../selfLearningIntegration";
+import { db } from "../db";
+import { users } from "../../drizzle/schema";
+import { eq } from "drizzle-orm";
 
 const openai = new OpenAI();
 
@@ -186,13 +189,26 @@ export const justTalkRouter = router({
       const detectedMood = input.mood || detectMood(input.message);
       
       try {
+        // Load user profile for continuity
+        let profileContext = "";
+        const [userProfile] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+        if (userProfile) {
+          const profileParts = [];
+          if (userProfile.name) profileParts.push(`Their name is ${userProfile.name}`);
+          if (userProfile.mainChallenges) profileParts.push(`They've mentioned struggling with: ${userProfile.mainChallenges}`);
+          if (userProfile.triggers) profileParts.push(`Known triggers: ${userProfile.triggers}`);
+          if (profileParts.length > 0) {
+            profileContext = `\n\nWHAT YOU KNOW ABOUT THIS PERSON:\n${profileParts.join("\n")}\n\nUse this context to show you remember them and care about their ongoing journey. Reference past conversations naturally.`;
+          }
+        }
+
         // Use OpenAI for empathetic response
         const completion = await openai.chat.completions.create({
           model: "gpt-4.1-mini",
           messages: [
             {
               role: "system",
-              content: EMOTIONAL_SUPPORT_PROMPT
+              content: EMOTIONAL_SUPPORT_PROMPT + profileContext
             },
             {
               role: "user",
