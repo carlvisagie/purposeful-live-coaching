@@ -190,6 +190,10 @@ export default function FreedomDashboard() {
             <Sparkles className="h-4 w-4 mr-1" />
             Content Studio
           </TabsTrigger>
+          <TabsTrigger value="pipeline" className="data-[state=active]:bg-purple-600">
+            <Zap className="h-4 w-4 mr-1" />
+            Content Pipeline
+          </TabsTrigger>
         </TabsList>
 
         {/* Overview Tab */}
@@ -630,6 +634,102 @@ export default function FreedomDashboard() {
                 <Button size="lg" className="bg-white text-purple-600 hover:bg-purple-100">
                   <Sparkles className="h-5 w-5 mr-2" />
                   Open Content Studio
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Content Pipeline Tab */}
+        <TabsContent value="pipeline" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Pipeline Status */}
+            <Card className="bg-gradient-to-br from-yellow-900/50 to-orange-900/50 border-yellow-500/50">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Zap className="h-5 w-5 text-yellow-400" />
+                  Pipeline Status
+                </CardTitle>
+                <CardDescription className="text-yellow-200">
+                  Autonomous content generation
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex items-center justify-between p-2 bg-white/10 rounded">
+                  <span className="text-white">Auto-Process</span>
+                  <Badge className="bg-green-600">Active</Badge>
+                </div>
+                <div className="flex items-center justify-between p-2 bg-white/10 rounded">
+                  <span className="text-white">Processing</span>
+                  <Badge className="bg-yellow-600">0</Badge>
+                </div>
+                <div className="flex items-center justify-between p-2 bg-white/10 rounded">
+                  <span className="text-white">Ready</span>
+                  <Badge className="bg-green-600">0</Badge>
+                </div>
+                <Link href="/content-pipeline">
+                  <Button className="w-full bg-yellow-600 hover:bg-yellow-700 mt-2">
+                    <Zap className="h-4 w-4 mr-2" />
+                    Open Pipeline
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            {/* Recent Sessions */}
+            <Card className="bg-slate-800 border-slate-700">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Video className="h-5 w-5 text-purple-400" />
+                  Recent Sessions
+                </CardTitle>
+                <CardDescription className="text-slate-400">
+                  Sessions ready for processing
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="text-center p-8 text-slate-400">
+                  <Video className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                  <p>No sessions yet</p>
+                  <p className="text-sm">Record a coaching session to start generating content</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Time Saved */}
+            <Card className="bg-slate-800 border-slate-700">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Clock className="h-5 w-5 text-green-400" />
+                  Time Saved
+                </CardTitle>
+                <CardDescription className="text-slate-400">
+                  By autonomous processing
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center p-4">
+                  <div className="text-5xl font-bold text-green-400">0</div>
+                  <div className="text-slate-400 mt-2">Hours saved this month</div>
+                  <div className="text-xs text-slate-500 mt-4">
+                    Based on 4 hours per video for manual editing
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Full Pipeline Link */}
+          <Card className="bg-gradient-to-r from-yellow-600 to-orange-600 border-0">
+            <CardContent className="p-6 flex items-center justify-between">
+              <div>
+                <h3 className="text-2xl font-bold text-white">Autonomous Content Pipeline</h3>
+                <p className="text-yellow-100">Session → Transcription → AI Analysis → YouTube/Podcast/Shorts. Fully automatic.</p>
+              </div>
+              <Link href="/content-pipeline">
+                <Button size="lg" className="bg-white text-orange-600 hover:bg-orange-100">
+                  <Zap className="h-5 w-5 mr-2" />
+                  Open Content Pipeline
                 </Button>
               </Link>
             </CardContent>

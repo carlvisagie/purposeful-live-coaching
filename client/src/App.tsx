@@ -59,6 +59,7 @@ import SleepStories from "./pages/SleepStories";
 import FocusCoach from "./pages/FocusCoach";
 import AIMeditation from "./pages/AIMeditation";
 import ContentStudio from "./pages/ContentStudio";
+import ContentPipeline from "./pages/ContentPipeline";
 
 
 function Router() {
@@ -146,6 +147,11 @@ function Router() {
       <Route path="/content" component={ContentStudio} />
       <Route path="/youtube" component={ContentStudio} />
       <Route path="/podcast" component={ContentStudio} />
+      
+      {/* Autonomous Content Pipeline - Session-to-Content automation */}
+      <Route path="/content-pipeline" component={ContentPipeline} />
+      <Route path="/pipeline" component={ContentPipeline} />
+      <Route path="/auto-content" component={ContentPipeline} />
 
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
