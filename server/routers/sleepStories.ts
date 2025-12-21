@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { router, publicProcedure, protectedProcedure } from "../trpc";
 import OpenAI from "openai";
+import SelfLearning from "../selfLearningIntegration";
 
 const openai = new OpenAI();
 
@@ -183,6 +184,22 @@ Generate the complete sleep story now:`;
         // Calculate estimated reading time (avg 150 words per minute for slow narration)
         const wordCount = story.split(/\s+/).length;
         const estimatedMinutes = Math.ceil(wordCount / 150);
+
+        // Track successful story generation for self-learning
+        SelfLearning.trackInteraction({
+          moduleType: "sleep_stories",
+          action: "story_generated",
+          wasSuccessful: true,
+          userChoice: input.theme,
+          alternatives: Object.keys(STORY_THEMES),
+          metadata: {
+            themeName: theme.name,
+            personalized: !!(input.userName || input.currentMood || input.dayHighlight),
+            includesBreathing: input.includeBreathing,
+            includesRelaxation: input.includeRelaxation,
+            wordCount,
+          },
+        });
 
         return {
           success: true,

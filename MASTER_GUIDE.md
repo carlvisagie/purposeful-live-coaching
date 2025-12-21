@@ -2,7 +2,7 @@
 ## Single Source of Truth
 
 **Last Updated:** December 21, 2025  
-**Status:** 🟢 PLATFORM 98% COMPLETE - 10X Enhanced Modules added (Sleep Stories, Focus Coach, AI Meditation)  
+**Status:** 🟢 PLATFORM 99% COMPLETE - Self-Learning Integration complete, all modules connected to Platform Intelligence  
 **Owner:** Carl Visagie  
 **Production URL:** https://purposefullivecoaching.com  
 **Repository:** https://github.com/carlvisagie/purposeful-live-coaching
@@ -35,6 +35,9 @@
 9. [Discovery Call Script](#discovery-call-script)
 10. [Marketing Strategy](#marketing-strategy)
 11. [Competitive Analysis](#competitive-analysis)
+12. [Self-Learning Platform Architecture](#self-learning)
+13. [Client Recognition System](#client-recognition)
+14. [Conversion Optimization](#conversion)
 
 ---
 
@@ -1527,4 +1530,206 @@ Digitally-savvy individuals actively seeking to improve their well-being but ske
 
 ---
 
+# PART 12: SELF-LEARNING PLATFORM ARCHITECTURE {#self-learning}
+
+## The Living Platform Vision
+
+> **"For our survival we need to be what our client wants and the data will show us how to do that."**
+
+Every module, every interaction, every piece of feedback feeds into a central intelligence that continuously bends the platform toward what clients actually need.
+
+## Platform Intelligence Engine
+
+### Core Components
+
+| Component | Purpose | Status |
+|-----------|---------|--------|
+| **Platform Intelligence** | Central learning engine that aggregates all data | ✅ Built |
+| **Self-Learning Integration** | Universal connector for all modules | ✅ Built |
+| **Truth Keepers** | Validates research for empirical quality (Level A/B only) | ✅ Built |
+| **Adaptive Compliance** | Rules that evolve based on effectiveness | ✅ Built |
+| **Client Recognition** | Multi-modal identity (voice/face/device) | ✅ Built |
+
+### How It Works
+
+```
+User Interaction → Module Records Outcome → Platform Intelligence Analyzes
+        ↓                    ↓                         ↓
+   Preference Learned    Effectiveness Tracked    Patterns Detected
+        ↓                    ↓                         ↓
+   Better Defaults       Rules Evolve            Insights Generated
+        ↓                    ↓                         ↓
+              PLATFORM BENDS TOWARD CLIENT NEEDS
+```
+
+### Self-Learning Integration (All Modules Connected)
+
+| Module | Self-Learning | What Gets Tracked |
+|--------|---------------|-------------------|
+| AI Chat (Sage) | ✅ Connected | Message exchanges, crisis flags, conversation length |
+| Sleep Stories | ✅ Connected | Theme preferences, completion rates, personalization usage |
+| Focus Coach | ✅ Connected | Session duration, distraction count, focus quality |
+| AI Meditation | ✅ Connected | Meditation type, duration, user state changes |
+| Just Talk | ✅ Connected | Emotional support usage, mood patterns |
+| Structured Programs | ✅ Connected | Day completion, program progress, abandonment points |
+| Client Recognition | ✅ Connected | Recognition accuracy, confirmation/denial rates |
+| Compliance | ✅ Connected | Rule triggers, effectiveness scores, client feedback |
+
+### What The Platform Learns
+
+**User Preferences:**
+- Which sleep story themes are most popular
+- Preferred meditation lengths
+- Focus session patterns (time of day, duration)
+- Communication style preferences
+
+**Feature Effectiveness:**
+- Which features have high completion rates
+- Which features get abandoned
+- Which approaches lead to positive outcomes
+- Which compliance rules actually help
+
+**Platform-Wide Patterns:**
+- Emerging trends across all users
+- Seasonal patterns in usage
+- Common pain points and friction
+- What makes superfans vs. churners
+
+### Self-Fixing Capabilities
+
+| Capability | How It Works |
+|------------|-------------|
+| **Ineffective Feature Detection** | Features with <40% success rate flagged for review |
+| **Rule Deprecation** | Compliance rules that don't help get automatically disabled |
+| **Research Revalidation** | Underperforming approaches re-checked against latest research |
+| **Default Optimization** | Most successful options become new defaults |
+
+### Evolution Triggers
+
+| Trigger | Action |
+|---------|--------|
+| Feature effectiveness < 40% | Generate improvement suggestion |
+| User preference score > 10 | Promote to default/featured |
+| New research contradicts approach | Flag for review |
+| Pattern detected across 100+ users | Generate platform insight |
+
+### API Endpoints
+
+| Endpoint | Purpose |
+|----------|--------|
+| `platformIntelligence.recordRuleEffectiveness` | Track any rule/feature outcome |
+| `platformIntelligence.recordModuleInteraction` | Track module usage |
+| `platformIntelligence.analyzePlatformPatterns` | Generate insights |
+| `platformIntelligence.getInsights` | View detected patterns |
+| `platformIntelligence.getEvolutionHistory` | View how platform has evolved |
+| `platformIntelligence.validateResearch` | Check claim against evidence |
+| `platformIntelligence.getSummary` | Platform learning stats |
+
+### Files Involved
+
+| File | Purpose |
+|------|--------|
+| `server/platformIntelligence.ts` | Core intelligence engine |
+| `server/selfLearningIntegration.ts` | Universal module connector |
+| `server/routers/platformIntelligence.ts` | API router |
+| `server/comprehensiveCompliance.ts` | Self-learning compliance |
+
+---
+
+# PART 13: CLIENT RECOGNITION SYSTEM {#client-recognition}
+
+## Frictionless Identity (No Logins Required)
+
+> **"There are no logged in users. AI needs to identify them by voice/face recognition."**
+
+### Multi-Modal Recognition
+
+| Method | Confidence Weight | Fallback Order |
+|--------|-------------------|----------------|
+| Voice + Face (combined) | 90% | 1st (best) |
+| Voice only | 45% | 2nd |
+| Face only | 45% | 3rd |
+| Device ID | 5% | 4th |
+| Behavioral patterns | 5% | 5th |
+| Natural conversation | N/A | Last resort |
+
+### Confidence Tiers
+
+| Tier | Confidence | Greeting |
+|------|------------|----------|
+| **Certain** | 95%+ | "Welcome back, Sarah! 💜 Last time we talked about [topic]..." |
+| **Likely** | 80-94% | "Sarah, is that you? I think I recognize your voice!" |
+| **Possible** | 60-79% | "Hey there! I feel like we've talked before. What's your name?" |
+| **Unknown** | <60% | "Hey there 💜 I'm Sage. What's your name?" |
+
+### Progressive Enrollment
+
+Recognition improves automatically with each session:
+1. Extract voice samples from conversation
+2. Extract face frames from video (if enabled)
+3. Update embeddings with weighted average
+4. Confidence increases over time
+
+**No explicit enrollment required!**
+
+### Graceful Degradation
+
+Recognition NEVER fails - it always gracefully degrades:
+```
+Voice + Face → Voice only → Face only → Device ID → "What's your name?"
+```
+
+### Files Involved
+
+| File | Purpose |
+|------|--------|
+| `server/routers/clientRecognition.ts` | Multi-modal recognition router |
+| `server/routers/voiceRecognition.ts` | Voice biometrics |
+| `server/routers/faceRecognition.ts` | Face recognition |
+| `client/src/hooks/useClientRecognition.ts` | React hook for auto-recognition |
+| `drizzle/clientRecognitionSchema.ts` | Database schema |
+
+---
+
+# PART 14: CONVERSION OPTIMIZATION {#conversion}
+
+## Landing Page → Sage (Frictionless Flow)
+
+### The Promise
+
+**Landing page says:** "No signup. No credit card. Just start talking."
+
+**What actually happens:** User clicks → Sage greets them warmly → They start talking.
+
+### Conversion Fixes (December 21, 2025)
+
+| Issue | Fix | Status |
+|-------|-----|--------|
+| Generic "AI Coach" branding | Changed to "Sage" throughout | ✅ Done |
+| Empty chat page on first visit | Auto-start conversation | ✅ Done |
+| Cold greeting | Warm, personalized greeting | ✅ Done |
+| No social proof | Added stats and testimonials | ✅ Done |
+
+### Sage's Greeting (First-Time Users)
+
+> "Hey there 💜 I'm Sage. I'm genuinely glad you're here - it takes courage to reach out, and you just did. Whatever brought you here today, I'm ready to listen without judgment. This is your space. So... what's on your mind?"
+
+### Profile Building (Automatic)
+
+During every conversation, Sage automatically extracts:
+- Name
+- Primary goal
+- Main challenges
+- Communication style preferences
+- Triggers
+- Timezone and availability
+
+This builds the Unified Client Profile without any forms.
+
+---
+
 **This is the SINGLE SOURCE OF TRUTH for the Purposeful Live Coaching platform. All other documentation has been archived.**
+
+**Last Updated:** December 21, 2025
+**Total Routers:** 58
+**Platform Completion:** 99%

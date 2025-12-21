@@ -13,6 +13,7 @@
 import { router, publicProcedure, protectedProcedure } from "../trpc";
 import { z } from "zod";
 import OpenAI from "openai";
+import SelfLearning from "../selfLearningIntegration";
 
 const openai = new OpenAI();
 

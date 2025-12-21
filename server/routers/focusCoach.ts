@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { router, publicProcedure, protectedProcedure } from "../trpc";
 import OpenAI from "openai";
+import SelfLearning from "../selfLearningIntegration";
 
 const openai = new OpenAI();
 
@@ -368,6 +369,22 @@ Be genuine, not cheesy.`;
 
       // Calculate stats
       const focusScore = calculateFocusScore(input.actualDuration, input.distractionCount, input.focusQuality);
+
+      // Track session completion for self-learning
+      SelfLearning.trackInteraction({
+        moduleType: "focus_coach",
+        sessionId: input.sessionId,
+        action: "session_completed",
+        duration: input.actualDuration * 60, // Convert to seconds
+        wasSuccessful: focusScore >= 60,
+        userSatisfaction: input.focusQuality === "excellent" ? 10 : input.focusQuality === "good" ? 8 : input.focusQuality === "fair" ? 6 : 4,
+        metadata: {
+          distractionCount: input.distractionCount,
+          completedTask: input.completedTask,
+          energyLevel: input.energyLevel,
+          focusScore,
+        },
+      });
 
       return {
         success: true,

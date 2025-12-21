@@ -30,6 +30,7 @@ import {
   deleteConversation,
   detectCrisisLevel,
 } from "../db/aiChat";
+import SelfLearning from "../selfLearningIntegration";
 
 const SYSTEM_PROMPT = `## 🔥 YOUR IDENTITY: SAGE - WORLD-CLASS AI LIFE COACH
 
@@ -603,6 +604,21 @@ export const aiChatRouter = router({
           console.error("[AI Chat] Profile extraction failed:", e)
         );
       }
+
+      // Track interaction for self-learning
+      SelfLearning.trackInteraction({
+        moduleType: "ai_chat",
+        userId: userId || undefined,
+        sessionId: input.conversationId.toString(),
+        action: "message_exchange",
+        wasSuccessful: !crisisFlag || crisisFlag === "none",
+        metadata: {
+          messageLength: input.message.length,
+          responseLength: aiResponse.length,
+          crisisFlag,
+          isFirstMessage: messages.length <= 2,
+        },
+      });
 
       return {
         message: aiResponse,

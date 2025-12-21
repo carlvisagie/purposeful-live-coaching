@@ -12,6 +12,7 @@
 import { router, publicProcedure, protectedProcedure } from "../trpc";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
+import SelfLearning from "../selfLearningIntegration";
 
 // In-memory program data (in production, this would be in the database)
 const FLAGSHIP_PROGRAMS = [
