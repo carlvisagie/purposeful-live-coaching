@@ -190,53 +190,69 @@ async function findCallerByPhone(phoneNumber: string) {
   // Normalize phone number
   const normalizedPhone = phoneNumber.replace(/\D/g, '');
   
-  // Check phone caller registry first
-  const registry = await db.query.phoneCallerRegistry.findFirst({
-    where: (reg: any, { eq }: any) => eq(reg.phoneNumber, normalizedPhone),
-  });
-  
-  if (registry?.userId) {
-    const user = await db.query.users.findFirst({
-      where: (u: any, { eq }: any) => eq(u.id, registry.userId),
-    });
-    if (user) {
-      return { type: 'user' as const, user, registry };
+  // Try phone caller registry first (may not exist yet)
+  let registry = null;
+  try {
+    if (db.query.phoneCallerRegistry) {
+      registry = await db.query.phoneCallerRegistry.findFirst({
+        where: (reg: any, { eq }: any) => eq(reg.phoneNumber, normalizedPhone),
+      });
+      
+      if (registry?.userId) {
+        const user = await db.query.users.findFirst({
+          where: (u: any, { eq }: any) => eq(u.id, registry.userId),
+        });
+        if (user) {
+          return { type: 'user' as const, user, registry };
+        }
+      }
+      
+      if (registry?.clientId) {
+        const client = await db.query.clients.findFirst({
+          where: (c: any, { eq }: any) => eq(c.id, registry.clientId),
+        });
+        if (client) {
+          return { type: 'client' as const, client, registry };
+        }
+      }
     }
-  }
-  
-  if (registry?.clientId) {
-    const client = await db.query.clients.findFirst({
-      where: (c: any, { eq }: any) => eq(c.id, registry.clientId),
-    });
-    if (client) {
-      return { type: 'client' as const, client, registry };
-    }
+  } catch (e) {
+    // phone_caller_registry table may not exist yet - that's OK
+    console.log('[VapiWebhook] phoneCallerRegistry not available, using fallback lookup');
   }
   
   // Try to find by phone in users table
-  const user = await db.query.users.findFirst({
-    where: (u: any, { or, eq, like }: any) => or(
-      eq(u.phone, phoneNumber),
-      eq(u.phone, normalizedPhone),
-      like(u.phone, `%${normalizedPhone.slice(-10)}%`)
-    ),
-  });
-  
-  if (user) {
-    return { type: 'user' as const, user, registry: null };
+  try {
+    const user = await db.query.users.findFirst({
+      where: (u: any, { or, eq, like }: any) => or(
+        eq(u.phone, phoneNumber),
+        eq(u.phone, normalizedPhone),
+        like(u.phone, `%${normalizedPhone.slice(-10)}%`)
+      ),
+    });
+    
+    if (user) {
+      return { type: 'user' as const, user, registry: null };
+    }
+  } catch (e) {
+    console.log('[VapiWebhook] Error looking up user by phone:', e);
   }
   
   // Try to find by phone in clients table
-  const client = await db.query.clients.findFirst({
-    where: (c: any, { or, eq, like }: any) => or(
-      eq(c.phone, phoneNumber),
-      eq(c.phone, normalizedPhone),
-      like(c.phone, `%${normalizedPhone.slice(-10)}%`)
-    ),
-  });
-  
-  if (client) {
-    return { type: 'client' as const, client, registry: null };
+  try {
+    const client = await db.query.clients.findFirst({
+      where: (c: any, { or, eq, like }: any) => or(
+        eq(c.phone, phoneNumber),
+        eq(c.phone, normalizedPhone),
+        like(c.phone, `%${normalizedPhone.slice(-10)}%`)
+      ),
+    });
+    
+    if (client) {
+      return { type: 'client' as const, client, registry: null };
+    }
+  } catch (e) {
+    console.log('[VapiWebhook] Error looking up client by phone:', e);
   }
   
   return null;
