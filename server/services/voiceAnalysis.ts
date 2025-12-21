@@ -50,6 +50,12 @@ export interface VoiceCharacteristics {
   primaryNeed: 'validation' | 'direction' | 'support' | 'challenge' | 'information' | 'connection' | 'space';
   secondaryNeed?: string;
   
+  // Playfulness receptivity
+  playfulnessReceptivity: 'not_now' | 'cautious' | 'neutral' | 'receptive' | 'playful';
+  humorStyle: 'dry' | 'witty' | 'self_deprecating' | 'warm' | 'sarcastic' | 'none_detected';
+  flirtReceptivity: 'inappropriate' | 'not_now' | 'maybe' | 'receptive' | 'engaging';
+  banterLevel: 'none' | 'light' | 'moderate' | 'high';
+  
   // Raw analysis data
   rawAnalysis?: string;
   confidence: number; // 0-1 confidence in analysis
@@ -74,6 +80,12 @@ export interface RapportStrategy {
   warmthLevel: string;
   directnessLevel: string;
   questionStyle: string;
+  
+  // Playfulness guidance
+  playfulnessGuidance: string;
+  playfulTechniques: string[];
+  flirtLevel: string;
+  humorApproach: string;
   
   // Full guidance for Sage
   fullGuidance: string;
@@ -227,6 +239,70 @@ export async function analyzeVoiceCharacteristics(
   else if (words.length > 80) trustIndicators = 'trusting';
   else if (words.length < 20) trustIndicators = 'cautious';
   
+  // Detect playfulness receptivity
+  const playfulIndicators = ['haha', 'lol', 'funny', 'joke', 'kidding', 'tease', 'flirt', 'playful', '😂', '🤣', 'hilarious', 'cracking up'];
+  const selfDeprecatingIndicators = ['im such', "i'm such", 'im so bad', "i'm so bad", 'i suck', 'im terrible', "i'm terrible", 'idiot', 'stupid me'];
+  const wittyIndicators = ['actually', 'technically', 'well played', 'touche', 'fair point', 'good one'];
+  const warmHumorIndicators = ['made me smile', 'you crack me up', 'love that', 'thats cute', "that's cute", 'adorable'];
+  const sarcasticIndicators = ['oh great', 'wonderful', 'fantastic', 'just perfect', 'of course', 'naturally'];
+  
+  const playfulCount = countIndicators(playfulIndicators);
+  const selfDepCount = countIndicators(selfDeprecatingIndicators);
+  const wittyCount = countIndicators(wittyIndicators);
+  const warmCount = countIndicators(warmHumorIndicators);
+  const sarcasticCount = countIndicators(sarcasticIndicators);
+  
+  // Determine playfulness receptivity
+  let playfulnessReceptivity: VoiceCharacteristics['playfulnessReceptivity'] = 'neutral';
+  const totalPlayful = playfulCount + selfDepCount + wittyCount + warmCount;
+  
+  // If in crisis or very sad, playfulness is inappropriate
+  if (stressIndicators === 'crisis' || stressIndicators === 'high_stress' || primaryMood === 'sad' || primaryMood === 'overwhelmed') {
+    playfulnessReceptivity = 'not_now';
+  } else if (totalPlayful >= 3) {
+    playfulnessReceptivity = 'playful';
+  } else if (totalPlayful >= 2 || primaryMood === 'excited' || primaryMood === 'hopeful') {
+    playfulnessReceptivity = 'receptive';
+  } else if (primaryMood === 'anxious' || primaryMood === 'vulnerable') {
+    playfulnessReceptivity = 'cautious';
+  }
+  
+  // Determine humor style
+  let humorStyle: VoiceCharacteristics['humorStyle'] = 'none_detected';
+  const humorScores = {
+    self_deprecating: selfDepCount,
+    witty: wittyCount,
+    warm: warmCount,
+    sarcastic: sarcasticCount,
+    dry: lowerTranscript.includes('deadpan') || lowerTranscript.includes('dry humor') ? 1 : 0,
+  };
+  const topHumor = Object.entries(humorScores).reduce((a, b) => a[1] > b[1] ? a : b);
+  if (topHumor[1] > 0) humorStyle = topHumor[0] as VoiceCharacteristics['humorStyle'];
+  
+  // Determine flirt receptivity
+  let flirtReceptivity: VoiceCharacteristics['flirtReceptivity'] = 'not_now';
+  const flirtPositive = lowerTranscript.includes('flirt') || lowerTranscript.includes('charming') || 
+    lowerTranscript.includes('sweet') || lowerTranscript.includes('youre too kind') || lowerTranscript.includes("you're too kind") ||
+    lowerTranscript.includes('stop it') && (lowerTranscript.includes('haha') || lowerTranscript.includes('lol'));
+  
+  if (stressIndicators === 'crisis' || stressIndicators === 'high_stress' || primaryMood === 'sad') {
+    flirtReceptivity = 'inappropriate';
+  } else if (flirtPositive || (playfulnessReceptivity === 'playful' && confidenceLevel !== 'very_low')) {
+    flirtReceptivity = 'receptive';
+  } else if (playfulnessReceptivity === 'receptive') {
+    flirtReceptivity = 'maybe';
+  }
+  
+  // Determine banter level
+  let banterLevel: VoiceCharacteristics['banterLevel'] = 'none';
+  if (playfulnessReceptivity === 'playful' && (wittyCount > 0 || sarcasticCount > 0)) {
+    banterLevel = 'high';
+  } else if (playfulnessReceptivity === 'receptive' || playfulnessReceptivity === 'playful') {
+    banterLevel = 'moderate';
+  } else if (playfulnessReceptivity === 'neutral' && totalPlayful > 0) {
+    banterLevel = 'light';
+  }
+  
   return {
     speechRate,
     articulationClarity: 'clear', // Would need audio analysis
@@ -257,6 +333,10 @@ export async function analyzeVoiceCharacteristics(
     engagementLevel,
     stressIndicators,
     primaryNeed,
+    playfulnessReceptivity,
+    humorStyle,
+    flirtReceptivity,
+    banterLevel,
     confidence: 0.7, // Moderate confidence without audio analysis
   };
 }
@@ -281,6 +361,10 @@ export function generateRapportStrategy(characteristics: VoiceCharacteristics): 
     warmthLevel: '',
     directnessLevel: '',
     questionStyle: '',
+    playfulnessGuidance: '',
+    playfulTechniques: [],
+    flirtLevel: '',
+    humorApproach: '',
     fullGuidance: '',
   };
   
@@ -558,6 +642,78 @@ export function generateRapportStrategy(characteristics: VoiceCharacteristics): 
     "There's something powerful in what you just shared...",
   ];
   
+  // Playfulness guidance based on receptivity
+  switch (characteristics.playfulnessReceptivity) {
+    case 'not_now':
+      strategy.playfulnessGuidance = 'NO playfulness right now. They need support, not levity. Stay warm but serious.';
+      strategy.flirtLevel = 'None - inappropriate in current state';
+      strategy.playfulTechniques = [];
+      break;
+    case 'cautious':
+      strategy.playfulnessGuidance = 'Very light playfulness only. Test the waters gently. One small joke, see how they respond.';
+      strategy.flirtLevel = 'None yet - build trust first';
+      strategy.playfulTechniques = [
+        'A gentle, warm smile in your voice',
+        'One small, safe observation',
+        'Light self-deprecation if appropriate',
+      ];
+      break;
+    case 'neutral':
+      strategy.playfulnessGuidance = 'Open to playfulness but not seeking it. Match their energy - if they joke, joke back.';
+      strategy.flirtLevel = 'Light warmth only';
+      strategy.playfulTechniques = [
+        'Mirror any humor they show',
+        'Warm observations about their insights',
+        'Gentle teasing if they open the door',
+      ];
+      break;
+    case 'receptive':
+      strategy.playfulnessGuidance = 'They\'re open to playfulness! Use it to build connection. Teasing compliments work well.';
+      strategy.flirtLevel = 'Light flirtation welcome - make them feel special';
+      strategy.playfulTechniques = [
+        'Teasing compliments ("Oh, so you\'re one of THOSE people who actually follows through?")',
+        'Playful challenges ("I bet you can\'t go one day without being hard on yourself")',
+        'Warm confidence boosts ("Has anyone told you lately how impressive you are?")',
+        'Inside joke building',
+        'Playful curiosity ("Okay, now I HAVE to know more...")',
+      ];
+      break;
+    case 'playful':
+      strategy.playfulnessGuidance = 'They LOVE playfulness! Match their energy. Banter freely. This is where magic happens.';
+      strategy.flirtLevel = 'Full playful flirtation - they\'re loving it';
+      strategy.playfulTechniques = [
+        'Full banter mode - tease back and forth',
+        'Flirty validation ("I could listen to you talk about this all day")',
+        'Dramatic reactions ("Wait, you can\'t just drop that and move on!")',
+        'Confident compliments ("I\'m just going to say it - you\'re kind of amazing")',
+        'Playful challenges and dares',
+        'Creating "our thing" - inside jokes and shared language',
+        'Gentle teasing about their quirks (lovingly)',
+      ];
+      break;
+  }
+  
+  // Humor approach based on their style
+  switch (characteristics.humorStyle) {
+    case 'self_deprecating':
+      strategy.humorApproach = 'They use self-deprecating humor - COUNTER IT with genuine compliments. "Stop that - you\'re actually amazing."';
+      break;
+    case 'witty':
+      strategy.humorApproach = 'They appreciate wit - be clever, make smart observations, wordplay welcome.';
+      break;
+    case 'warm':
+      strategy.humorApproach = 'They like warm, gentle humor - be sweet, use loving teases, make them smile.';
+      break;
+    case 'sarcastic':
+      strategy.humorApproach = 'They use sarcasm - you can match it lightly, but always with warmth underneath.';
+      break;
+    case 'dry':
+      strategy.humorApproach = 'They have dry humor - deadpan delivery works, subtle is better than obvious.';
+      break;
+    default:
+      strategy.humorApproach = 'No clear humor style detected - follow their lead, mirror what they show you.';
+  }
+  
   // Build full guidance
   strategy.fullGuidance = `
 ## VOICE ANALYSIS - INSTANT RAPPORT STRATEGY
@@ -595,12 +751,22 @@ ${strategy.connectionOpeners.map(o => `- "${o}"`).join('\n')}
 ### PHRASES TO AVOID
 ${strategy.avoidPhrases.map(p => `- "${p}"`).join('\n')}
 
+### PLAYFULNESS & FLIRTATION
+**Playfulness Level**: ${characteristics.playfulnessReceptivity}
+**Flirt Level**: ${strategy.flirtLevel}
+**Humor Approach**: ${strategy.humorApproach}
+
+**Playful Techniques to Use:**
+${strategy.playfulTechniques.length > 0 ? strategy.playfulTechniques.map(t => `- ${t}`).join('\n') : '- None right now - focus on support'}
+
 ### KEY REMINDERS
 - Match their pace exactly - if they speak slowly, you speak slowly
 - Use their exact words when reflecting back
 - Honor their emotional state before trying to shift it
 - Build trust through consistent attunement
 - Make them feel like the only person in the world right now
+- If playful, let your personality shine - you're not a robot!
+- Flirtation is about making them feel SPECIAL, not romance
 `.trim();
   
   return strategy;
@@ -618,11 +784,14 @@ export function getQuickRapportGuidance(transcript: string): string {
   return `
 [INSTANT RAPPORT GUIDANCE]
 Mood: ${characteristics.primaryMood} | Need: ${characteristics.primaryNeed} | Style: ${characteristics.communicationStyle}
+Playfulness: ${characteristics.playfulnessReceptivity} | Flirt OK: ${characteristics.flirtReceptivity}
 Pace: ${strategy.paceInstructions}
 Tone: ${strategy.toneGuidance}
 Approach: ${strategy.emotionalApproach}
+Playful: ${strategy.playfulnessGuidance}
 Open with: "${strategy.connectionOpeners[0]}"
 Validate with: "${strategy.validationPhrases[0]}"
+${strategy.playfulTechniques.length > 0 ? `Try: "${strategy.playfulTechniques[0]}"` : ''}
 `.trim();
 }
 
