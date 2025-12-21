@@ -1,4 +1,45 @@
+/**
+ * LLM Invocation Module with Built-in Protection
+ * 
+ * This module provides rate limiting, caching, and retry logic for ALL OpenAI calls.
+ * Every module that uses invokeLLM automatically gets protection against:
+ * - Rate limiting (429 errors)
+ * - Quota exhaustion
+ * - Temporary API failures
+ */
+
 import { ENV } from "./env";
+import * as crypto from "crypto";
+
+// ============================================================
+// PROTECTION CONFIGURATION
+// ============================================================
+
+const PROTECTION_CONFIG = {
+  // Cache settings
+  CACHE_ENABLED: true,
+  CACHE_TTL_MS: 30 * 60 * 1000, // 30 minutes for conversation responses
+  CACHE_MAX_SIZE: 500,
+  
+  // Rate limiting  
+  MIN_REQUEST_INTERVAL_MS: 50, // 50ms minimum between requests
+  MAX_CONCURRENT_REQUESTS: 15,
+  
+  // Retry settings
+  MAX_RETRIES: 3,
+  INITIAL_RETRY_DELAY_MS: 1000,
+  MAX_RETRY_DELAY_MS: 30000,
+  
+  // Model fallback
+  MODEL_FALLBACK: {
+    "gpt-4o": "gpt-4o-mini",
+    "gpt-4o-mini": "gpt-4o-mini", // Stay on mini
+  } as Record<string, string>,
+};
+
+// ============================================================
+// TYPES
+// ============================================================
 
 export type Role = "system" | "user" | "assistant" | "tool" | "function";
 
@@ -57,7 +98,7 @@ export type ToolChoice =
 
 export type InvokeParams = {
   messages: Message[];
-  model?: "gpt-4o-mini" | "gpt-4o"; // Tier-based model selection
+  model?: "gpt-4o-mini" | "gpt-4o";
   tools?: Tool[];
   toolChoice?: ToolChoice;
   tool_choice?: ToolChoice;
@@ -67,6 +108,7 @@ export type InvokeParams = {
   output_schema?: OutputSchema;
   responseFormat?: ResponseFormat;
   response_format?: ResponseFormat;
+  skipCache?: boolean; // New: skip cache for this request
 };
 
 export type ToolCall = {
@@ -96,6 +138,7 @@ export type InvokeResult = {
     completion_tokens: number;
     total_tokens: number;
   };
+  _cached?: boolean; // New: indicates if response was from cache
 };
 
 export type JsonSchema = {
@@ -110,6 +153,96 @@ export type ResponseFormat =
   | { type: "text" }
   | { type: "json_object" }
   | { type: "json_schema"; json_schema: JsonSchema };
+
+// ============================================================
+// PROTECTION STATE
+// ============================================================
+
+interface CacheEntry {
+  result: InvokeResult;
+  timestamp: number;
+}
+
+// Response cache
+const responseCache = new Map<string, CacheEntry>();
+
+// Rate limiting state
+let lastRequestTime = 0;
+let activeRequests = 0;
+const requestQueue: Array<{
+  resolve: (value: InvokeResult) => void;
+  reject: (error: Error) => void;
+  params: InvokeParams;
+  retryCount: number;
+  currentModel: string;
+}> = [];
+let isProcessingQueue = false;
+
+// Statistics
+const stats = {
+  totalRequests: 0,
+  cacheHits: 0,
+  retries: 0,
+  fallbacks: 0,
+  errors: 0,
+};
+
+// ============================================================
+// UTILITY FUNCTIONS
+// ============================================================
+
+function generateCacheKey(params: InvokeParams): string {
+  // Create a deterministic key from the request
+  const keyData = {
+    messages: params.messages.map(m => ({
+      role: m.role,
+      content: typeof m.content === 'string' ? m.content : JSON.stringify(m.content),
+    })),
+    model: params.model,
+  };
+  return crypto.createHash("md5").update(JSON.stringify(keyData)).digest("hex");
+}
+
+function isCacheValid(entry: CacheEntry): boolean {
+  return Date.now() - entry.timestamp < PROTECTION_CONFIG.CACHE_TTL_MS;
+}
+
+function cleanupCache(): void {
+  const now = Date.now();
+  const keysToDelete: string[] = [];
+  
+  responseCache.forEach((entry, key) => {
+    if (now - entry.timestamp > PROTECTION_CONFIG.CACHE_TTL_MS) {
+      keysToDelete.push(key);
+    }
+  });
+  keysToDelete.forEach(key => responseCache.delete(key));
+  
+  if (responseCache.size > PROTECTION_CONFIG.CACHE_MAX_SIZE) {
+    const entries: Array<[string, CacheEntry]> = [];
+    responseCache.forEach((value, key) => entries.push([key, value]));
+    entries.sort((a, b) => a[1].timestamp - b[1].timestamp);
+    const removeCount = entries.length - PROTECTION_CONFIG.CACHE_MAX_SIZE;
+    for (let i = 0; i < removeCount; i++) {
+      responseCache.delete(entries[i][0]);
+    }
+  }
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function getRetryDelay(retryCount: number): number {
+  const delay = PROTECTION_CONFIG.INITIAL_RETRY_DELAY_MS * Math.pow(2, retryCount);
+  // Add jitter to prevent thundering herd
+  const jitter = Math.random() * 500;
+  return Math.min(delay + jitter, PROTECTION_CONFIG.MAX_RETRY_DELAY_MS);
+}
+
+// ============================================================
+// MESSAGE NORMALIZATION (unchanged from original)
+// ============================================================
 
 const ensureArray = (
   value: MessageContent | MessageContent[]
@@ -155,7 +288,6 @@ const normalizeMessage = (message: Message) => {
 
   const contentParts = ensureArray(message.content).map(normalizeContentPart);
 
-  // If there's only text content, collapse to a single string for compatibility
   if (contentParts.length === 1 && contentParts[0].type === "text") {
     return {
       role,
@@ -265,12 +397,94 @@ const normalizeResponseFormat = ({
   };
 };
 
-export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
+// ============================================================
+// QUEUE PROCESSING
+// ============================================================
+
+async function processQueue(): Promise<void> {
+  if (isProcessingQueue) return;
+  isProcessingQueue = true;
+
+  while (requestQueue.length > 0) {
+    // Rate limiting delay
+    const timeSinceLastRequest = Date.now() - lastRequestTime;
+    if (timeSinceLastRequest < PROTECTION_CONFIG.MIN_REQUEST_INTERVAL_MS) {
+      await sleep(PROTECTION_CONFIG.MIN_REQUEST_INTERVAL_MS - timeSinceLastRequest);
+    }
+
+    // Concurrency limit
+    while (activeRequests >= PROTECTION_CONFIG.MAX_CONCURRENT_REQUESTS) {
+      await sleep(50);
+    }
+
+    const request = requestQueue.shift();
+    if (!request) continue;
+
+    activeRequests++;
+    lastRequestTime = Date.now();
+
+    // Process without awaiting to allow parallelism
+    processRequest(request).finally(() => {
+      activeRequests--;
+    });
+  }
+
+  isProcessingQueue = false;
+}
+
+async function processRequest(request: {
+  resolve: (value: InvokeResult) => void;
+  reject: (error: Error) => void;
+  params: InvokeParams;
+  retryCount: number;
+  currentModel: string;
+}): Promise<void> {
+  try {
+    const result = await makeApiCall(request.params, request.currentModel);
+    request.resolve(result);
+  } catch (error: any) {
+    const isRateLimited = error?.message?.includes("429") || 
+                          error?.message?.includes("rate") ||
+                          error?.message?.includes("Too Many Requests");
+
+    if (isRateLimited) {
+      // Try retry with backoff
+      if (request.retryCount < PROTECTION_CONFIG.MAX_RETRIES) {
+        stats.retries++;
+        const delay = getRetryDelay(request.retryCount);
+        console.log(`[LLM] Rate limited, retrying in ${Math.round(delay)}ms (attempt ${request.retryCount + 1}/${PROTECTION_CONFIG.MAX_RETRIES})`);
+        
+        await sleep(delay);
+        request.retryCount++;
+        requestQueue.unshift(request);
+        processQueue();
+        return;
+      }
+
+      // Try fallback model
+      const fallbackModel = PROTECTION_CONFIG.MODEL_FALLBACK[request.currentModel];
+      if (fallbackModel && fallbackModel !== request.currentModel) {
+        stats.fallbacks++;
+        console.log(`[LLM] Falling back from ${request.currentModel} to ${fallbackModel}`);
+        
+        request.currentModel = fallbackModel;
+        request.retryCount = 0;
+        requestQueue.unshift(request);
+        processQueue();
+        return;
+      }
+    }
+
+    stats.errors++;
+    request.reject(error);
+  }
+}
+
+async function makeApiCall(params: InvokeParams, model: string): Promise<InvokeResult> {
   const apiKey = assertApiKey();
 
   const {
     messages,
-    model,
     tools,
     toolChoice,
     tool_choice,
@@ -281,7 +495,7 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
   } = params;
 
   const payload: Record<string, unknown> = {
-    model: model || "gpt-4o", // Use tier-based model or default to gpt-4o
+    model: model,
     messages: messages.map(normalizeMessage),
   };
 
@@ -297,7 +511,7 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
     payload.tool_choice = normalizedToolChoice;
   }
 
-  payload.max_tokens = 16384  // GPT-4o max completion tokens
+  payload.max_tokens = 16384;
 
   const normalizedResponseFormat = normalizeResponseFormat({
     responseFormat,
@@ -327,4 +541,74 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
   }
 
   return (await response.json()) as InvokeResult;
+}
+
+// ============================================================
+// PUBLIC API
+// ============================================================
+
+export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
+  stats.totalRequests++;
+  const model = params.model || "gpt-4o";
+
+  // Check cache first (skip for tool calls and explicit skip)
+  if (PROTECTION_CONFIG.CACHE_ENABLED && !params.skipCache && !params.tools) {
+    const cacheKey = generateCacheKey(params);
+    const cached = responseCache.get(cacheKey);
+    
+    if (cached && isCacheValid(cached)) {
+      stats.cacheHits++;
+      console.log(`[LLM] Cache hit`);
+      return { ...cached.result, _cached: true };
+    }
+  }
+
+  // Queue the request
+  return new Promise((resolve, reject) => {
+    const wrappedResolve = (result: InvokeResult) => {
+      // Cache the result
+      if (PROTECTION_CONFIG.CACHE_ENABLED && !params.tools) {
+        const cacheKey = generateCacheKey(params);
+        responseCache.set(cacheKey, {
+          result,
+          timestamp: Date.now(),
+        });
+        cleanupCache();
+      }
+      resolve(result);
+    };
+
+    requestQueue.push({
+      resolve: wrappedResolve,
+      reject,
+      params,
+      retryCount: 0,
+      currentModel: model,
+    });
+
+    processQueue();
+  });
+}
+
+/**
+ * Get LLM usage statistics
+ */
+export function getLLMStats() {
+  return {
+    ...stats,
+    cacheSize: responseCache.size,
+    cacheHitRate: stats.totalRequests > 0 
+      ? (stats.cacheHits / stats.totalRequests * 100).toFixed(1) + '%'
+      : '0%',
+    queueLength: requestQueue.length,
+    activeRequests,
+  };
+}
+
+/**
+ * Clear the LLM cache
+ */
+export function clearLLMCache() {
+  responseCache.clear();
+  console.log(`[LLM] Cache cleared`);
 }
