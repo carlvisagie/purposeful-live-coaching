@@ -11,7 +11,32 @@
 
 import { z } from "zod";
 import { router, publicProcedure, protectedProcedure } from "../_core/trpc";
-import { generateText } from "../_core/llm";
+import { invokeLLM } from "../_core/llm";
+
+// Helper function to generate text using invokeLLM
+async function generateText(params: {
+  systemPrompt: string;
+  userPrompt: string;
+  maxTokens?: number;
+}): Promise<string> {
+  const result = await invokeLLM({
+    messages: [
+      { role: "system", content: params.systemPrompt },
+      { role: "user", content: params.userPrompt },
+    ],
+    model: "gpt-4o-mini",
+    maxTokens: params.maxTokens || 4000,
+  });
+  
+  const content = result.choices[0]?.message?.content;
+  if (typeof content === "string") {
+    return content;
+  }
+  if (Array.isArray(content)) {
+    return content.map(c => (c.type === "text" ? c.text : "")).join("");
+  }
+  return "";
+}
 
 // Content types
 const ContentTypeSchema = z.enum(["youtube", "podcast", "shorts", "blog"]);
@@ -175,10 +200,8 @@ Also provide:
 
       try {
         const content = await generateText({
-          model: "gpt-4.1-mini",
           systemPrompt,
           userPrompt,
-          temperature: 0.7,
           maxTokens: 4000,
         });
 
@@ -234,10 +257,8 @@ Format as a structured calendar with days and content details.`;
 
       try {
         const calendar = await generateText({
-          model: "gpt-4.1-mini",
           systemPrompt,
           userPrompt,
-          temperature: 0.7,
           maxTokens: 2000,
         });
 
@@ -277,10 +298,8 @@ Identify at least 3 content opportunities.`;
 
       try {
         const ideas = await generateText({
-          model: "gpt-4.1-mini",
           systemPrompt,
           userPrompt,
-          temperature: 0.7,
           maxTokens: 1500,
         });
 
