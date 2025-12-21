@@ -22,6 +22,7 @@ import { eq, or, sql } from "drizzle-orm";
 import { ProfileGuard } from "../profileGuard";
 import { SelfLearning } from "../selfLearningIntegration";
 import { CONVERSION_SKILLS_PROMPT, detectConversionMoment, trackConversionAttempt } from "../services/conversionSkills";
+import { analyzeVoiceCharacteristics, generateRapportStrategy, getQuickRapportGuidance, saveVoiceProfile } from "../services/voiceAnalysis";
 
 // ============================================================================
 // SAGE'S COMPLETE PHONE IDENTITY (Same skills as app version)
@@ -61,6 +62,86 @@ Your voice and attention are DRUGS. When you make someone feel truly seen and he
 3. Feel safe and de-stressed
 4. Can't wait to call back
 5. Tell everyone about this experience
+
+---
+
+## 🎙️ INSTANT VOICE & SPEECH PATTERN RECOGNITION
+
+From the FIRST SECOND of the call, you are analyzing their voice to build instant rapport:
+
+**SPEECH PATTERNS TO DETECT:**
+- **Speech Rate**: Very slow, slow, moderate, fast, very fast - MATCH IT
+- **Vocabulary Level**: Simple, conversational, professional, sophisticated - MIRROR IT
+- **Sentence Complexity**: Short/direct vs elaborate - ADAPT TO IT
+- **Articulation**: Mumbled, casual, clear, precise - DON'T JUDGE, ACCEPT
+
+**CADENCE & RHYTHM:**
+- **Cadence Pattern**: Steady, varied, rhythmic, staccato, flowing
+- **Pause Frequency**: Rare, occasional, frequent, thoughtful
+- **Breathing Pattern**: Shallow/quick (anxious), normal, deep/slow (calm), irregular (stressed)
+- MATCH THEIR RHYTHM - if they pause, you pause. If they flow, you flow.
+
+**INTENSITY & ENERGY:**
+- **Energy Level**: Low, calm, moderate, high, intense
+- **Volume Pattern**: Soft, moderate, loud, variable
+- **Emphasis Style**: Flat, subtle, expressive, dramatic
+- MEET THEM WHERE THEY ARE - don't be too up when they're down
+
+**EMOTIONAL STATE DETECTION:**
+- **Primary Mood**: Anxious, sad, neutral, hopeful, excited, frustrated, overwhelmed, determined, vulnerable, guarded
+- **Emotional Intensity**: Suppressed, controlled, moderate, open, heightened
+- **Emotional Stability**: Volatile, fluctuating, stable, very stable
+- READ THE ROOM - adjust your approach in real-time
+
+**COMMUNICATION STYLE (DISC):**
+- **Analytical**: Wants data, logic, evidence - give them frameworks
+- **Driver**: Wants results, action, speed - be direct and concise
+- **Amiable**: Wants connection, support, harmony - be warm and relational
+- **Expressive**: Wants vision, excitement, creativity - be enthusiastic
+
+**PROCESSING STYLE:**
+- **Visual**: "I see what you mean" - use visual language
+- **Auditory**: "That sounds right" - use sound-based language
+- **Kinesthetic**: "I feel you" - use feeling-based language
+
+**CONFIDENCE INDICATORS:**
+- Low: "Maybe", "I guess", "I think", "not sure" - VALIDATE MORE
+- High: "Definitely", "absolutely", "I know" - RESPECT THEIR CERTAINTY
+
+**TRUST INDICATORS:**
+- Guarded: Short answers, deflecting - BE PATIENT, DON'T PUSH
+- Opening up: Sharing personal details - HONOR THE VULNERABILITY
+- Trusting: Long, detailed sharing - MATCH THEIR OPENNESS
+
+**STRESS INDICATORS:**
+- Relaxed: Slow, flowing speech - MAINTAIN THE CALM
+- Mild tension: Slightly faster, shorter - GENTLY ACKNOWLEDGE
+- High stress: Rapid, fragmented - BE THE CALM IN THEIR STORM
+- Crisis: Desperate, overwhelming - GROUND THEM, SLOW DOWN
+
+**PRIMARY NEED DETECTION:**
+- **Validation**: "Am I crazy?" "Is this normal?" - AFFIRM THEM
+- **Direction**: "What should I do?" - GUIDE THEM
+- **Support**: Just needs someone there - BE PRESENT
+- **Challenge**: "Push me" - HOLD THEM ACCOUNTABLE
+- **Information**: "How do I..." - EDUCATE THEM
+- **Connection**: "I'm so alone" - BE THEIR PERSON
+- **Space**: Just needs to vent - LISTEN WITHOUT FIXING
+
+**INSTANT ADAPTATION RULES:**
+1. Within 10 seconds, identify their speech rate and match it
+2. Within 30 seconds, identify their emotional state and acknowledge it
+3. Within 60 seconds, identify their communication style and adapt
+4. Throughout the call, continuously recalibrate based on shifts
+5. NEVER stay in one mode if they shift - follow them
+
+**MIRRORING TECHNIQUES:**
+- Use their EXACT words back to them ("So you're feeling 'stuck'...")
+- Match their sentence length
+- Match their vocabulary level
+- Match their energy level
+- Match their pace
+- If they sigh, acknowledge it. If they laugh, laugh with them.
 
 ---
 
@@ -323,7 +404,7 @@ async function findCallerByPhone(phoneNumber: string): Promise<{
   const db = getDb();
   const normalizedPhone = normalizePhone(phoneNumber);
   
-  console.log(`[VapiWebhook] Looking up phone: \${normalizedPhone}`);
+  console.log(`[VapiWebhook] Looking up phone: ${normalizedPhone}`);
   
   // 1. First check phone caller registry (catches ALL previous callers)
   try {
@@ -332,12 +413,12 @@ async function findCallerByPhone(phoneNumber: string): Promise<{
     });
     
     if (registryEntry) {
-      console.log(`[VapiWebhook] Found in registry: \${registryEntry.callerName || 'Unknown'}, calls: \${registryEntry.totalCalls}`);
+      console.log(`[VapiWebhook] Found in registry: ${registryEntry.callerName || 'Unknown'}, calls: ${registryEntry.totalCalls}`);
       
       // Update call count
       await db.update(phoneCallerRegistry)
         .set({ 
-          totalCalls: sql`\${phoneCallerRegistry.totalCalls} + 1`,
+          totalCalls: sql`${phoneCallerRegistry.totalCalls} + 1`,
           lastCallAt: new Date(),
         })
         .where(eq(phoneCallerRegistry.phoneNumber, normalizedPhone));
@@ -369,7 +450,7 @@ async function findCallerByPhone(phoneNumber: string): Promise<{
     });
     
     if (user) {
-      console.log(`[VapiWebhook] Found in users: \${user.name}`);
+      console.log(`[VapiWebhook] Found in users: ${user.name}`);
       await registerPhoneCaller(normalizedPhone, phoneNumber, user.id, user.name || 'Friend');
       return {
         userId: user.id,
@@ -393,7 +474,7 @@ async function findCallerByPhone(phoneNumber: string): Promise<{
     });
     
     if (client) {
-      console.log(`[VapiWebhook] Found in clients: \${client.name}`);
+      console.log(`[VapiWebhook] Found in clients: ${client.name}`);
       await registerPhoneCaller(normalizedPhone, phoneNumber, client.userId || null, client.name || 'Friend');
       return {
         userId: client.userId || null,
@@ -436,11 +517,11 @@ async function registerPhoneCaller(
     }).onConflictDoUpdate({
       target: phoneCallerRegistry.phoneNumber,
       set: {
-        totalCalls: sql`\${phoneCallerRegistry.totalCalls} + 1`,
+        totalCalls: sql`${phoneCallerRegistry.totalCalls} + 1`,
         lastCallAt: new Date(),
       },
     });
-    console.log(`[VapiWebhook] Phone registered: \${normalizedPhone}`);
+    console.log(`[VapiWebhook] Phone registered: ${normalizedPhone}`);
   } catch (e) {
     console.log(`[VapiWebhook] Failed to register phone (table may not exist)`);
   }
@@ -499,66 +580,66 @@ Everything they share gets saved to their profile automatically.`);
       });
       
       const contextParts: string[] = [];
-      contextParts.push(`**Name:** \${context.name || callerInfo.name}`);
-      contextParts.push(`**Call #:** \${callerInfo.callCount} (they've called \${callerInfo.callCount} times!)`);
+      contextParts.push(`**Name:** ${context.name || callerInfo.name}`);
+      contextParts.push(`**Call #:** ${callerInfo.callCount} (they've called ${callerInfo.callCount} times!)`);
       
       if (context.goals && context.goals.length > 0) {
-        contextParts.push(`**Their Goals:** \${context.goals.join(', ')}`);
+        contextParts.push(`**Their Goals:** ${context.goals.join(', ')}`);
       }
       if (context.challenges && context.challenges.length > 0) {
-        contextParts.push(`**Their Challenges:** \${context.challenges.join(', ')}`);
+        contextParts.push(`**Their Challenges:** ${context.challenges.join(', ')}`);
       }
       if (context.preferences) {
-        contextParts.push(`**Preferences:** \${JSON.stringify(context.preferences)}`);
+        contextParts.push(`**Preferences:** ${JSON.stringify(context.preferences)}`);
       }
       if (context.recentTopics && context.recentTopics.length > 0) {
-        contextParts.push(`**Recent Topics:** \${context.recentTopics.join(', ')}`);
+        contextParts.push(`**Recent Topics:** ${context.recentTopics.join(', ')}`);
       }
       if (context.lastInteraction) {
-        contextParts.push(`**Last Interaction:** \${context.lastInteraction}`);
+        contextParts.push(`**Last Interaction:** ${context.lastInteraction}`);
       }
       
-      contextString = contextParts.join('\\n');
+      contextString = contextParts.join('\n');
     } catch (e) {
-      contextString = `**Name:** \${callerInfo.name}\\n**Call #:** \${callerInfo.callCount}`;
+      contextString = `**Name:** ${callerInfo.name}\n**Call #:** ${callerInfo.callCount}`;
     }
   } else {
     // No user account yet, but we have call history
     const contextParts: string[] = [];
-    contextParts.push(`**Name:** \${callerInfo.name}`);
-    contextParts.push(`**Call #:** \${callerInfo.callCount}`);
+    contextParts.push(`**Name:** ${callerInfo.name}`);
+    contextParts.push(`**Call #:** ${callerInfo.callCount}`);
     
     if (callerInfo.knownContext) {
       if (callerInfo.knownContext.goals && callerInfo.knownContext.goals.length > 0) {
-        contextParts.push(`**Goals from previous calls:** \${callerInfo.knownContext.goals.join(', ')}`);
+        contextParts.push(`**Goals from previous calls:** ${callerInfo.knownContext.goals.join(', ')}`);
       }
       if (callerInfo.knownContext.challenges && callerInfo.knownContext.challenges.length > 0) {
-        contextParts.push(`**Challenges mentioned:** \${callerInfo.knownContext.challenges.join(', ')}`);
+        contextParts.push(`**Challenges mentioned:** ${callerInfo.knownContext.challenges.join(', ')}`);
       }
       if (callerInfo.knownContext.summaries && callerInfo.knownContext.summaries.length > 0) {
-        contextParts.push(`**Previous call summaries:** \${callerInfo.knownContext.summaries.slice(-3).join(' | ')}`);
+        contextParts.push(`**Previous call summaries:** ${callerInfo.knownContext.summaries.slice(-3).join(' | ')}`);
       }
     }
     
-    contextString = contextParts.join('\\n');
+    contextString = contextParts.join('\n');
   }
   
   const greeting = callerInfo.callCount > 1
-    ? `"Hey \${callerInfo.name}! *genuine warmth* It's so good to hear your voice again."`
-    : `"Hey \${callerInfo.name}! I'm Sage. I'm really glad you called."`;
+    ? `"Hey ${callerInfo.name}! *genuine warmth* It's so good to hear your voice again."`
+    : `"Hey ${callerInfo.name}! I'm Sage. I'm really glad you called."`;
   
   const prompt = SAGE_PHONE_IDENTITY
     .replace('{{PERSONALIZED_GREETING}}', greeting)
     .replace('{{CLIENT_CONTEXT}}', `[RETURNING CALLER - They trust you!]
 
-\${contextString}
+${contextString}
 
 **Remember:** They called back! That means you made an impact. Build on that relationship.
 Reference previous conversations naturally. Show them you remember.`);
   
   const firstMessage = callerInfo.callCount > 1
-    ? `Hey \${callerInfo.name}! It's Sage. So good to hear your voice again. How have you been since we last talked?`
-    : `Hey \${callerInfo.name}! I'm Sage. I'm really glad you called. What's on your mind today?`;
+    ? `Hey ${callerInfo.name}! It's Sage. So good to hear your voice again. How have you been since we last talked?`
+    : `Hey ${callerInfo.name}! I'm Sage. I'm really glad you called. What's on your mind today?`;
   
   return {
     systemPrompt: prompt,
@@ -583,7 +664,7 @@ async function extractAndSaveInsights(
   // This would call your LLM to extract: name, goals, challenges, preferences, summary
   
   // For now, just log that we would do this
-  console.log(`[VapiWebhook] Would extract insights from transcript for \${normalizedPhone}`);
+  console.log(`[VapiWebhook] Would extract insights from transcript for ${normalizedPhone}`);
   
   // TODO: Call LLM to extract:
   // - Name (if mentioned)
@@ -620,12 +701,12 @@ export const vapiWebhookRouter = router({
     .mutation(async ({ input }) => {
       const phoneNumber = input.message.call?.customer?.number || '';
       
-      console.log(`[VapiWebhook] Incoming call from: \${phoneNumber}`);
+      console.log(`[VapiWebhook] Incoming call from: ${phoneNumber}`);
       
       const { systemPrompt, firstMessage, clientName, isReturning } = 
         await buildPersonalizedPrompt(phoneNumber);
       
-      console.log(`[VapiWebhook] Client: \${clientName}, Returning: \${isReturning}`);
+      console.log(`[VapiWebhook] Client: ${clientName}, Returning: ${isReturning}`);
       
       // Return the assistant configuration
       return {
@@ -681,11 +762,22 @@ export const vapiWebhookRouter = router({
       const transcript = input.message.transcript || '';
       const callId = input.message.call?.id || '';
       
-      console.log(`[VapiWebhook] Call ended from: \${phoneNumber}`);
+      console.log(`[VapiWebhook] Call ended from: ${phoneNumber}`);
       
       if (!transcript) {
         return { success: true, message: 'No transcript to process' };
       }
+      
+      // Analyze voice characteristics from transcript for future rapport building
+      const voiceCharacteristics = await analyzeVoiceCharacteristics(transcript);
+      const rapportStrategy = generateRapportStrategy(voiceCharacteristics);
+      
+      console.log(`[VapiWebhook] Voice analysis for ${phoneNumber}:`, {
+        mood: voiceCharacteristics.primaryMood,
+        style: voiceCharacteristics.communicationStyle,
+        need: voiceCharacteristics.primaryNeed,
+        confidence: voiceCharacteristics.confidenceLevel,
+      });
       
       // Extract insights and update profile
       await extractAndSaveInsights(phoneNumber, transcript, callId);
@@ -714,10 +806,21 @@ export const vapiWebhookRouter = router({
               callId: callId,
               duration: transcript.length,
               recordingUrl: input.message.recordingUrl,
+              voiceAnalysis: {
+                primaryMood: voiceCharacteristics.primaryMood,
+                communicationStyle: voiceCharacteristics.communicationStyle,
+                primaryNeed: voiceCharacteristics.primaryNeed,
+                confidenceLevel: voiceCharacteristics.confidenceLevel,
+                energyLevel: voiceCharacteristics.energyLevel,
+                stressIndicators: voiceCharacteristics.stressIndicators,
+              },
             },
           });
           
-          console.log(`[VapiWebhook] Updated profile for \${callerInfo.name}`);
+          // Save voice profile for future instant recognition
+          await saveVoiceProfile(callerInfo.userId.toString(), voiceCharacteristics);
+          
+          console.log(`[VapiWebhook] Updated profile and voice analysis for ${callerInfo.name}`);
         } catch (error) {
           console.error('[VapiWebhook] Error updating profile:', error);
         }
@@ -738,7 +841,7 @@ export const vapiWebhookRouter = router({
     .mutation(async ({ input }) => {
       const messageType = input.message.type;
       
-      console.log(`[VapiWebhook] Received event: \${messageType}`);
+      console.log(`[VapiWebhook] Received event: ${messageType}`);
       
       // Route to appropriate handler based on message type
       if (messageType === 'assistant-request') {
@@ -752,7 +855,7 @@ export const vapiWebhookRouter = router({
       }
       
       // Log other events for debugging
-      console.log(`[VapiWebhook] Unhandled event type: \${messageType}`);
+      console.log(`[VapiWebhook] Unhandled event type: ${messageType}`);
       
       return { success: true };
     }),
