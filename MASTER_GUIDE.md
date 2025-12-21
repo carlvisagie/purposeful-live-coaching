@@ -83,6 +83,7 @@
 14. [Conversion Optimization](#conversion)
 15. [ProfileGuard - Never Forget a Client](#profile-guard)
 16. [Perpetual Upgrade System](#perpetual-upgrade)
+17. [Community Feature](#community)
 
 ---
 
@@ -319,6 +320,10 @@ This section provides a detailed list of all existing features and their corresp
 | **Dashboards** | Client Dashboard | `coaching.ts` | ✅ Live |
 | | Coach Control Center | `coachDashboard.ts` | ✅ Live |
 | | Freedom (Admin) Dashboard | `admin.ts` | ✅ Live |
+| **Community** | Community Feed & Posts | `community.ts` | ✅ Live |
+| | AI Moderator (7 Layers) | `aiModerator.ts` | ✅ Live |
+| | Anonymous Posting | `community.ts` | ✅ Live |
+| | Daily Pulse Check-in | `community.ts` | ✅ Live |
 
 ---
 
@@ -348,4 +353,85 @@ This section provides a detailed list of all existing features and their corresp
 
 ---
 
-*The rest of the guide continues as before...*
+# PART 17: COMMUNITY FEATURE {#community}
+
+## 🌐 Community Overview
+
+**Status:** ✅ Built (December 21, 2025)  
+**Route:** `/community`  
+**URL:** https://purposefullivecoaching.com/community
+
+### Vision
+
+The Community is the tribal heart of Purposeful Live Coaching. It's where clients connect, support each other, celebrate wins, and find accountability partners. Built with the understanding that transformation happens faster in community than in isolation.
+
+### What's Built
+
+#### Stupid-Simple Frontend (`/community`)
+
+| Feature | Description |
+|---------|-------------|
+| **One-tap Post Types** | 🎉 Win, 💙 Support, ❓ Question, 📈 Progress |
+| **Card-based Feed** | No walls of text - easy to scan and engage |
+| **Anonymous Mode** | Toggle to share without showing name |
+| **Daily Pulse** | Quick mood check-in for the community |
+| **Support Button** | One-tap "You got this!" reactions |
+
+#### AI Moderator with 7 Protection Layers
+
+| Layer | What It Does |
+|-------|-------------|
+| **1. Crisis Detection** | Immediately escalates suicide/self-harm language, shows 988 hotline |
+| **2. Comprehensive Compliance** | Uses existing compliance engine (legal, ethical, social, wisdom, interpersonal) |
+| **3. Privacy/PII Protection** | Detects emails, phones, SSNs, credit cards, addresses |
+| **4. Platform Criticism** | Flags (doesn't hide) criticism for owner review |
+| **5. Toxicity Filter** | Auto-hides harassment, discrimination, spam |
+| **6. Sentiment Analysis** | Tracks positive patterns, identifies users needing support |
+| **7. AI Analysis** | For nuanced cases, uses GPT-4.1-nano for cost efficiency |
+
+#### Self-Learning Integration
+
+- Tracks all community interactions
+- Learns which content types get most engagement
+- Identifies users who need extra support
+- Improves moderation accuracy over time
+- Feeds insights back to ProfileGuard
+
+### Files
+
+| File | Purpose |
+|------|--------|
+| `client/src/pages/Community.tsx` | Frontend UI |
+| `server/routers/community.ts` | Backend API (14 procedures) |
+| `server/routers/aiModerator.ts` | AI moderation service |
+| `drizzle/communitySchema.ts` | Database schema with moderation fields |
+
+### Database Tables
+
+| Table | Purpose |
+|-------|--------|
+| `community_posts` | All posts with type, content, anonymous flag |
+| `community_reactions` | Support reactions and engagement |
+| `community_comments` | Threaded comments on posts |
+| `community_reports` | User-reported content for review |
+| `community_moderation_log` | AI moderation decisions and actions |
+
+### Integration with ProfileGuard
+
+The Community feature is fully integrated with ProfileGuard:
+- User's community activity is part of their Unified Client Profile
+- Sage can reference their community engagement in coaching sessions
+- Support patterns help identify who needs extra attention
+- Win celebrations inform goal tracking and progress
+
+### Future Enhancements
+
+- 📋 **Accountability Partners** - Match users with similar goals
+- 📋 **Group Challenges** - Community-wide wellness challenges
+- 📋 **Expert AMAs** - Live Q&A sessions with coaches
+- 📋 **Success Stories** - Featured transformation journeys
+- 📋 **Local Meetups** - In-person community events
+
+---
+
+*End of Master Guide*
