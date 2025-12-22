@@ -71,6 +71,7 @@ import AIMeditation from "./pages/AIMeditation";
 import ContentStudio from "./pages/ContentStudio";
 import ContentPipeline from "./pages/ContentPipeline";
 import Community from "./pages/Community";
+import MarkdownViewer from "./pages/MarkdownViewer";
 import CommunityWidget from "./components/CommunityWidget";
 
 
@@ -91,9 +92,12 @@ function Router() {
       <Route path="/sessions/book" component={BookSession} />
       <Route path="/book-session" component={BookSession} />
       <Route path="/coach/availability" component={CoachAvailability} />
+      <Route path="/coach/calendar" component={CoachAvailability} />
+      <Route path="/sessions/schedule" component={BookSession} />
       <Route path="/coach/session-types" component={ManageSessionTypes} />
       <Route path="/ai-coach" component={AICoach} />
       <Route path="/emotions" component={EmotionTracker} />
+      <Route path="/wellness" component={WellnessModules} />
       <Route path="/wellness-modules" component={WellnessModules} />
       <Route path="/wellness-modules/:slug" component={WellnessModuleDetail} />
       <Route path="/wellness-modules/:slug/resources" component={ModuleResources} />
@@ -133,6 +137,7 @@ function Router() {
       <Route path="/settings" component={Settings} />
       <Route path="/teleprompter" component={PopoutTeleprompter} />
       <Route path="/voice-coach" component={VoiceCoach} />
+      <Route path="/speaker-training" component={VoiceCoach} />
       <Route path="/our-science" component={OurScience} />
       <Route path="/research" component={OurScience} />
       <Route path="/evidence" component={OurScience} />
@@ -168,6 +173,11 @@ function Router() {
       
       {/* Community - AI-moderated peer support */}
       <Route path="/community" component={Community} />
+      
+      {/* Markdown content viewers */}
+      <Route path="/guides/:filename" component={MarkdownViewer} />
+      <Route path="/lesson-notes/:filename" component={MarkdownViewer} />
+      <Route path="/transcripts/:filename" component={MarkdownViewer} />
       <Route path="/connect" component={Community} />
       <Route path="/tribe" component={Community} />
 
