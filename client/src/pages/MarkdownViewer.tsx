@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, FileText, Download, Printer } from "lucide-react";
 
@@ -9,7 +9,7 @@ import { ArrowLeft, FileText, Download, Printer } from "lucide-react";
  * This component fetches markdown content and renders it with beautiful formatting
  */
 export default function MarkdownViewer() {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const [content, setContent] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -21,6 +21,43 @@ export default function MarkdownViewer() {
     if (location.includes("/lesson-notes/")) return "Lesson Notes";
     if (location.includes("/transcripts/")) return "Transcript";
     return "Document";
+  };
+
+  // Get the back navigation target based on document type
+  const getBackTarget = () => {
+    // Extract module name from filename if possible
+    const filename = location.split("/").pop()?.replace(".md", "") || "";
+    const parts = filename.split("-");
+    
+    // Try to determine the module from the filename
+    // Format is typically: module-name-lesson-N or module_name
+    if (parts.length >= 2) {
+      // Check if it ends with lesson-N pattern
+      const lessonIndex = parts.findIndex(p => p === "lesson");
+      if (lessonIndex > 0) {
+        const moduleName = parts.slice(0, lessonIndex).join("-");
+        return `/wellness-modules/${moduleName}`;
+      }
+    }
+    
+    // Default to wellness-modules page
+    return "/wellness-modules";
+  };
+
+  // Handle back navigation - use browser history if available, otherwise navigate to parent
+  const handleBack = () => {
+    // Check if there's browser history we can go back to
+    if (window.history.length > 1) {
+      // Try to go back, but if we're at the start of history, navigate to parent
+      const referrer = document.referrer;
+      if (referrer && referrer.includes(window.location.hostname)) {
+        window.history.back();
+      } else {
+        setLocation(getBackTarget());
+      }
+    } else {
+      setLocation(getBackTarget());
+    }
   };
 
   useEffect(() => {
@@ -92,12 +129,15 @@ export default function MarkdownViewer() {
       // Lists
       .replace(/^- (.+)$/gm, '<li class="ml-4 mb-1">$1</li>')
       .replace(/^\d+\. (.+)$/gm, '<li class="ml-4 mb-1 list-decimal">$1</li>')
+      // Checkboxes
+      .replace(/\[ \]/g, '<input type="checkbox" class="mr-2" disabled />')
+      .replace(/\[x\]/gi, '<input type="checkbox" class="mr-2" checked disabled />')
       // Blockquotes
       .replace(/^> (.+)$/gm, '<blockquote class="border-l-4 border-purple-400 pl-4 py-2 my-4 bg-purple-50 italic">$1</blockquote>')
       // Links
       .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" class="text-purple-600 hover:text-purple-800 underline">$1</a>')
       // Paragraphs (wrap remaining text)
-      .replace(/^(?!<[hluobpt]|<li|<hr|<pre|<code)(.+)$/gm, '<p class="mb-4 leading-relaxed">$1</p>')
+      .replace(/^(?!<[hluobpt]|<li|<hr|<pre|<code|<input)(.+)$/gm, '<p class="mb-4 leading-relaxed">$1</p>')
       // Wrap lists
       .replace(/(<li class="ml-4 mb-1">[\s\S]*?<\/li>)+/g, '<ul class="list-disc mb-4">$&</ul>')
       // Wrap tables
@@ -137,7 +177,7 @@ export default function MarkdownViewer() {
           <CardContent className="pt-6">
             <p className="text-red-600 text-center">{error}</p>
             <Button 
-              onClick={() => window.history.back()} 
+              onClick={handleBack} 
               className="w-full mt-4"
               variant="outline"
             >
@@ -157,7 +197,7 @@ export default function MarkdownViewer() {
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button 
-              onClick={() => window.history.back()} 
+              onClick={handleBack} 
               variant="ghost"
               size="sm"
             >
