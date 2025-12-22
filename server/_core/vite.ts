@@ -58,6 +58,17 @@ export function serveStatic(app: Express) {
     );
   }
 
+  // Intercept markdown file requests to let React handle them
+  // This allows the MarkdownViewer component to render them beautifully
+  app.use((req, res, next) => {
+    const url = req.originalUrl;
+    // If it's a markdown file in guides, lesson-notes, or transcripts, serve index.html
+    if (url.match(/^\/(guides|lesson-notes|transcripts)\/.*\.md$/)) {
+      return res.sendFile(path.resolve(distPath, "index.html"));
+    }
+    next();
+  });
+
   app.use(express.static(distPath));
 
   // fall through to index.html if the file doesn't exist

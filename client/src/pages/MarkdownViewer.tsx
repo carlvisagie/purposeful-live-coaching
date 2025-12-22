@@ -27,8 +27,13 @@ export default function MarkdownViewer() {
     const fetchMarkdown = async () => {
       try {
         setLoading(true);
-        // The URL is already the path to the markdown file
-        const response = await fetch(location);
+        // Extract type and filename from URL to fetch from content API
+        // URL format: /guides/filename.md or /lesson-notes/filename.md or /transcripts/filename.md
+        const parts = location.split('/');
+        const filename = parts.pop() || '';
+        const type = parts.pop() || '';
+        const apiUrl = `/api/content/raw/${type}/${filename}`;
+        const response = await fetch(apiUrl);
         if (!response.ok) {
           throw new Error("Failed to load document");
         }

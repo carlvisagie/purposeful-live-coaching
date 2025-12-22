@@ -30,6 +30,7 @@ import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { webhookRouter } from "../routers/webhooks";
 import { vapiWebhookRestRouter } from "../routers/vapiWebhookRest";
+import { contentRouter } from "../routers/content";
 import { seedCoachAvailability } from "../seed-availability";
 import { updateSessionPrices } from "../update-session-prices";
 import { runMigrations } from "../run-migrations-startup";
@@ -89,6 +90,9 @@ async function startServer() {
   
   // Vapi webhooks - needs JSON body parser
   app.use("/api/vapi", vapiWebhookRestRouter);
+  
+  // Content API for serving raw markdown files
+  app.use("/api/content", contentRouter);
   
   // Rate limiting for API protection
   const apiLimiter = rateLimit({
