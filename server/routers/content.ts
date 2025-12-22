@@ -9,6 +9,35 @@ import * as path from "path";
 
 export const contentRouter = Router();
 
+// Debug endpoint to check paths
+contentRouter.get("/debug", (req, res) => {
+  const basePath = getContentBasePath();
+  const dirname = import.meta.dirname;
+  const cwd = process.cwd();
+  
+  // Check if directories exist
+  const transcriptsPath = path.join(basePath, "transcripts");
+  const transcriptsExists = fs.existsSync(transcriptsPath);
+  let transcriptFiles: string[] = [];
+  if (transcriptsExists) {
+    try {
+      transcriptFiles = fs.readdirSync(transcriptsPath).slice(0, 5);
+    } catch (e) {
+      // ignore
+    }
+  }
+  
+  res.json({
+    basePath,
+    dirname,
+    cwd,
+    nodeEnv: process.env.NODE_ENV,
+    transcriptsPath,
+    transcriptsExists,
+    transcriptFiles,
+  });
+});
+
 // Base path for content files
 const getContentBasePath = () => {
   // In production, the server is bundled into dist/index.js by esbuild
