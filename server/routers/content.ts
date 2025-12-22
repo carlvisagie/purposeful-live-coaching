@@ -11,11 +11,12 @@ export const contentRouter = Router();
 
 // Base path for content files
 const getContentBasePath = () => {
-  // In production, the server runs from dist/server, and public files are in dist/public
+  // In production, the server is bundled into dist/index.js by esbuild
+  // So import.meta.dirname is dist/, and public files are in dist/public
   // In development, files are in client/public
   if (process.env.NODE_ENV === "production") {
-    // From dist/server/routers, go up to dist, then into public
-    return path.resolve(import.meta.dirname, "../public");
+    // From dist/, go into public
+    return path.resolve(import.meta.dirname, "public");
   }
   return path.resolve(import.meta.dirname, "../../client/public");
 };
@@ -38,6 +39,7 @@ contentRouter.get("/raw/:type/:filename", async (req, res) => {
     // Log for debugging
     console.log(`[Content API] Looking for file at: ${filePath}`);
     console.log(`[Content API] Base path: ${basePath}`);
+    console.log(`[Content API] import.meta.dirname: ${import.meta.dirname}`);
     
     // Security check - prevent directory traversal
     if (!filePath.startsWith(basePath)) {
@@ -47,6 +49,18 @@ contentRouter.get("/raw/:type/:filename", async (req, res) => {
     // Check if file exists
     if (!fs.existsSync(filePath)) {
       console.log(`[Content API] File not found: ${filePath}`);
+      // List what files ARE in the directory for debugging
+      try {
+        const parentDir = path.dirname(filePath);
+        if (fs.existsSync(parentDir)) {
+          const files = fs.readdirSync(parentDir).slice(0, 5);
+          console.log(`[Content API] Files in ${parentDir}: ${files.join(", ")}`);
+        } else {
+          console.log(`[Content API] Parent directory doesn't exist: ${parentDir}`);
+        }
+      } catch (e) {
+        console.log(`[Content API] Error listing directory: ${e}`);
+      }
       return res.status(404).json({ error: "Content not found" });
     }
     
