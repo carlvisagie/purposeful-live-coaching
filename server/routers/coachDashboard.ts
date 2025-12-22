@@ -255,6 +255,8 @@ export const coachDashboardRouter = router({
    * Get dashboard stats
    */
   getStats: publicProcedure.query(async () => {
+    const { sessions } = await import("../../drizzle/schema");
+    
     const totalClients = await db.select({ count: sql<number>`COUNT(*)` })
       .from(clients);
     
@@ -266,10 +268,22 @@ export const coachDashboardRouter = router({
       .from(clients)
       .where(gte(clients.createdAt, new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)));
 
+    // Count completed sessions
+    const completedSessions = await db.select({ count: sql<number>`COUNT(*)` })
+      .from(sessions)
+      .where(eq(sessions.status, "completed"));
+
+    // Calculate total revenue from completed sessions
+    const revenueResult = await db.select({ total: sql<number>`COALESCE(SUM(price), 0)` })
+      .from(sessions)
+      .where(eq(sessions.paymentStatus, "paid"));
+
     return {
       totalClients: totalClients[0].count,
       activeClients: activeClients[0].count,
       newThisWeek: recentClients[0].count,
+      completedSessions: completedSessions[0].count,
+      totalRevenue: revenueResult[0].total,
     };
   }),
 });
