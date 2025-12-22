@@ -1,13 +1,13 @@
-# Emotional Wellness - Lesson 1: Understanding Your Emotions
+# Career Development - Lesson 4: Interview Preparation
 
 ## Lesson Notes
 
 ### Overview
-This lesson covers the key concepts and practical applications of understanding your emotions as part of the Emotional Wellness module.
+This lesson covers the key concepts and practical applications of interview preparation as part of the Career Development module.
 
 ### Key Takeaways
 
-1. **Core Concept**: Understanding the fundamental principles behind understanding your emotions
+1. **Core Concept**: Understanding the fundamental principles behind interview preparation
 2. **Practical Application**: How to apply these concepts in your daily life
 3. **Evidence Base**: The research and science supporting these techniques
 4. **Personal Integration**: Making these practices your own
@@ -15,10 +15,10 @@ This lesson covers the key concepts and practical applications of understanding 
 ### Main Points
 
 #### Understanding the Basics
-Understanding Your Emotions is a crucial component of emotional wellness. This lesson provides you with the foundational knowledge and practical skills needed to make meaningful progress in this area.
+Interview Preparation is a crucial component of career development. This lesson provides you with the foundational knowledge and practical skills needed to make meaningful progress in this area.
 
 #### Why This Matters
-Research shows that mastering understanding your emotions can lead to significant improvements in overall wellbeing, performance, and life satisfaction.
+Research shows that mastering interview preparation can lead to significant improvements in overall wellbeing, performance, and life satisfaction.
 
 #### Practical Steps
 1. Start with awareness - notice your current patterns
@@ -41,4 +41,4 @@ Research shows that mastering understanding your emotions can lead to significan
 
 ---
 
-*These notes are part of the Emotional Wellness module on Purposeful Live Coaching.*
+*These notes are part of the Career Development module on Purposeful Live Coaching.*

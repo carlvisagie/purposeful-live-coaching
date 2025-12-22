@@ -1,22 +1,22 @@
-# Emotional Wellness - Lesson 1: Understanding Your Emotions
+# Emotional Wellness - Lesson 4: Daily Emotional Check-in Practice
 
 ## Full Transcript
 
 ---
 
-**Welcome to Lesson 1 of Emotional Wellness.**
+**Welcome to Lesson 4 of Emotional Wellness.**
 
-Today we're going to explore Understanding Your Emotions, which is a fundamental aspect of your wellness journey.
+Today we're going to explore Daily Emotional Check-in Practice, which is a fundamental aspect of your wellness journey.
 
 ### Introduction
 
-Hello and welcome. I'm so glad you're here. In this lesson, we're going to dive deep into understanding your emotions, and I promise you, by the end of this session, you'll have practical tools you can use immediately.
+Hello and welcome. I'm so glad you're here. In this lesson, we're going to dive deep into daily emotional check-in practice, and I promise you, by the end of this session, you'll have practical tools you can use immediately.
 
 Let me start by asking you a question: Have you ever wondered why some people seem to naturally excel at emotional wellness while others struggle? The answer lies in understanding the principles we're about to explore.
 
 ### The Core Concepts
 
-Understanding Your Emotions is built on several key principles that, once understood, can transform your approach to emotional wellness.
+Daily Emotional Check-in Practice is built on several key principles that, once understood, can transform your approach to emotional wellness.
 
 First, let's talk about awareness. Before you can change anything, you need to understand where you currently are. This isn't about judgment - it's about clarity.
 
@@ -38,7 +38,7 @@ Remember, transformation doesn't happen overnight. It's the small, consistent ac
 
 Before we wrap up, let me summarize the key points from today's lesson:
 
-1. Understanding understanding your emotions is essential for your emotional wellness journey
+1. Understanding daily emotional check-in practice is essential for your emotional wellness journey
 2. The techniques we discussed are backed by research and evidence
 3. Small, consistent actions lead to big results
 4. Your journey is unique - adapt these principles to fit your life

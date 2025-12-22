@@ -1,22 +1,22 @@
-# Emotional Wellness - Lesson 1: Understanding Your Emotions
+# Relationships - Lesson 5: Nurturing Connections
 
 ## Full Transcript
 
 ---
 
-**Welcome to Lesson 1 of Emotional Wellness.**
+**Welcome to Lesson 5 of Relationships.**
 
-Today we're going to explore Understanding Your Emotions, which is a fundamental aspect of your wellness journey.
+Today we're going to explore Nurturing Connections, which is a fundamental aspect of your wellness journey.
 
 ### Introduction
 
-Hello and welcome. I'm so glad you're here. In this lesson, we're going to dive deep into understanding your emotions, and I promise you, by the end of this session, you'll have practical tools you can use immediately.
+Hello and welcome. I'm so glad you're here. In this lesson, we're going to dive deep into nurturing connections, and I promise you, by the end of this session, you'll have practical tools you can use immediately.
 
-Let me start by asking you a question: Have you ever wondered why some people seem to naturally excel at emotional wellness while others struggle? The answer lies in understanding the principles we're about to explore.
+Let me start by asking you a question: Have you ever wondered why some people seem to naturally excel at relationships while others struggle? The answer lies in understanding the principles we're about to explore.
 
 ### The Core Concepts
 
-Understanding Your Emotions is built on several key principles that, once understood, can transform your approach to emotional wellness.
+Nurturing Connections is built on several key principles that, once understood, can transform your approach to relationships.
 
 First, let's talk about awareness. Before you can change anything, you need to understand where you currently are. This isn't about judgment - it's about clarity.
 
@@ -28,7 +28,7 @@ Third, and perhaps most importantly, we need to make this personal. Everyone's j
 
 Now let's get into the practical side of things. Here's what I want you to do:
 
-Start by taking a moment to reflect on your current relationship with emotional wellness. Where are you now? Where do you want to be?
+Start by taking a moment to reflect on your current relationship with relationships. Where are you now? Where do you want to be?
 
 Next, I want you to commit to one small action. Just one. Something you can do today that moves you in the right direction.
 
@@ -38,7 +38,7 @@ Remember, transformation doesn't happen overnight. It's the small, consistent ac
 
 Before we wrap up, let me summarize the key points from today's lesson:
 
-1. Understanding understanding your emotions is essential for your emotional wellness journey
+1. Understanding nurturing connections is essential for your relationships journey
 2. The techniques we discussed are backed by research and evidence
 3. Small, consistent actions lead to big results
 4. Your journey is unique - adapt these principles to fit your life
@@ -55,4 +55,4 @@ Until then, take care of yourself.
 
 ---
 
-*This transcript is part of the Emotional Wellness module on Purposeful Live Coaching.*
+*This transcript is part of the Relationships module on Purposeful Live Coaching.*
