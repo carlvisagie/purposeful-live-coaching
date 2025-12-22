@@ -175,9 +175,9 @@ function Router() {
       <Route path="/community" component={Community} />
       
       {/* Markdown content viewers */}
-      <Route path="/guides/:filename" component={MarkdownViewer} />
-      <Route path="/lesson-notes/:filename" component={MarkdownViewer} />
-      <Route path="/transcripts/:filename" component={MarkdownViewer} />
+      <Route path="/guides/:rest*" component={MarkdownViewer} />
+      <Route path="/lesson-notes/:rest*" component={MarkdownViewer} />
+      <Route path="/transcripts/:rest*" component={MarkdownViewer} />
       <Route path="/connect" component={Community} />
       <Route path="/tribe" component={Community} />
 
