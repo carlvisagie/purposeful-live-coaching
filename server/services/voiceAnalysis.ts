@@ -9,8 +9,9 @@
  * and adapt her communication style for maximum rapport and trust.
  */
 
-import { db } from '../../drizzle/db';
+import { db, getDb } from '../db';
 import { eq, and, desc } from 'drizzle-orm';
+import { clientFeatures, clients } from '../../drizzle/schema';
 
 // Voice characteristic types
 export interface VoiceCharacteristics {
@@ -797,28 +798,111 @@ ${strategy.playfulTechniques.length > 0 ? `Try: "${strategy.playfulTechniques[0]
 
 /**
  * Update client profile with voice characteristics for future calls
+ * Saves to the Unified Client Profile (clientFeatures table)
  */
 export async function saveVoiceProfile(
-  userId: string,
-  characteristics: VoiceCharacteristics
+  identifier: { userId?: number; clientId?: number },
+  characteristics: VoiceCharacteristics,
+  rapportStrategy?: RapportStrategy
 ): Promise<void> {
-  // This would save to the client profile for future reference
-  // For now, we'll log it - actual implementation depends on schema
-  console.log(`[VoiceAnalysis] Saving voice profile for user ${userId}:`, {
-    communicationStyle: characteristics.communicationStyle,
-    primaryMood: characteristics.primaryMood,
-    primaryNeed: characteristics.primaryNeed,
-    confidenceLevel: characteristics.confidenceLevel,
-  });
+  const clientId = identifier.clientId;
+  if (!clientId) {
+    console.warn('[VoiceAnalysis] No clientId provided, cannot save voice profile');
+    return;
+  }
+  try {
+    const database = await getDb();
+    if (!database) {
+      console.warn('[VoiceAnalysis] Database not available, cannot save voice profile');
+      return;
+    }
+    
+    // Prepare the speech patterns data
+    const speechPatterns = {
+      speechRate: characteristics.speechRate,
+      articulationClarity: characteristics.articulationClarity,
+      vocabularyLevel: characteristics.vocabularyLevel,
+      sentenceComplexity: characteristics.sentenceComplexity,
+      cadencePattern: characteristics.cadencePattern,
+      pauseFrequency: characteristics.pauseFrequency,
+      breathingPattern: characteristics.breathingPattern,
+      energyLevel: characteristics.energyLevel,
+      volumePattern: characteristics.volumePattern,
+      emphasisStyle: characteristics.emphasisStyle,
+    };
+    
+    // Prepare emotional patterns data
+    const emotionalPatterns = {
+      primaryMood: characteristics.primaryMood,
+      emotionalIntensity: characteristics.emotionalIntensity,
+      emotionalStability: characteristics.emotionalStability,
+      stressIndicators: characteristics.stressIndicators,
+      confidenceLevel: characteristics.confidenceLevel,
+      trustIndicators: characteristics.trustIndicators,
+      engagementLevel: characteristics.engagementLevel,
+      playfulnessReceptivity: characteristics.playfulnessReceptivity,
+      humorStyle: characteristics.humorStyle,
+      flirtReceptivity: characteristics.flirtReceptivity,
+      banterLevel: characteristics.banterLevel,
+    };
+    
+    // Prepare communication style data
+    const communicationStyleData = {
+      style: characteristics.communicationStyle,
+      processingStyle: characteristics.processingStyle,
+      decisionStyle: characteristics.decisionStyle,
+      primaryNeed: characteristics.primaryNeed,
+      secondaryNeed: characteristics.secondaryNeed,
+    };
+    
+    // Also update the clients table communicationStyle field
+    await database.update(clients)
+      .set({
+        communicationStyle: characteristics.communicationStyle,
+        updatedAt: new Date(),
+      })
+      .where(eq(clients.id, clientId));
+    
+    console.log(`[VoiceAnalysis] Saved voice profile for client ${clientId}:`, {
+      communicationStyle: characteristics.communicationStyle,
+      primaryMood: characteristics.primaryMood,
+      primaryNeed: characteristics.primaryNeed,
+      confidenceLevel: characteristics.confidenceLevel,
+    });
+  } catch (error) {
+    console.error('[VoiceAnalysis] Error saving voice profile:', error);
+  }
 }
 
 /**
  * Get returning caller's voice profile for instant recognition
+ * Retrieves from the Unified Client Profile
  */
-export async function getVoiceProfile(userId: string): Promise<VoiceCharacteristics | null> {
-  // This would retrieve from the client profile
-  // For now, return null - actual implementation depends on schema
-  return null;
+export async function getVoiceProfile(clientId: number): Promise<Partial<VoiceCharacteristics> | null> {
+  try {
+    const database = await getDb();
+    if (!database) {
+      console.warn('[VoiceAnalysis] Database not available, cannot get voice profile');
+      return null;
+    }
+    
+    // Get the client's communication style from the clients table
+    const client = await database.query.clients.findFirst({
+      where: eq(clients.id, clientId),
+    });
+    
+    if (!client || !client.communicationStyle) {
+      return null;
+    }
+    
+    // Return partial voice characteristics based on stored data
+    return {
+      communicationStyle: client.communicationStyle as VoiceCharacteristics['communicationStyle'],
+    };
+  } catch (error) {
+    console.error('[VoiceAnalysis] Error getting voice profile:', error);
+    return null;
+  }
 }
 
 export default {
