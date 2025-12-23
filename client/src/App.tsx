@@ -31,6 +31,8 @@ import WellnessModules from "./pages/WellnessModules";
 import WellnessModuleDetail from "./pages/WellnessModuleDetail";
 import LessonViewer from "./pages/LessonViewer";
 import ModuleResources from "./pages/ModuleResources";
+import Goals from "./pages/Goals";
+import Habits from "./pages/Habits";
 import DailyCheckIn from "./pages/DailyCheckIn";
 import MorningRoutine from "./pages/MorningRoutine";
 import EveningReview from "./pages/EveningReview";
@@ -102,6 +104,8 @@ function Router() {
       <Route path="/wellness-modules/:slug" component={WellnessModuleDetail} />
       <Route path="/wellness-modules/:slug/resources" component={ModuleResources} />
       <Route path="/wellness-modules/:moduleSlug/lesson/:lessonIndex" component={LessonViewer} />
+      <Route path="/goals" component={Goals} />
+      <Route path="/habits" component={Habits} />
       <Route path="/daily-check-in" component={DailyCheckIn} />
       <Route path="/daily-os/morning" component={MorningRoutine} />
       <Route path="/daily-os/evening" component={EveningReview} />
@@ -130,6 +134,7 @@ function Router() {
       <Route path="/refund-policy" component={RefundPolicy} />
       <Route path="/terms-of-service" component={TermsOfService} />
       <Route path="/privacy-policy-v2" component={PrivacyPolicy} />
+      <Route path="/privacy-policy" component={PrivacyPolicy} />
       <Route path="/admin/setup" component={AdminSetup} />
       <Route path="/freedom" component={FreedomDashboard} />
       <Route path="/freedom-dashboard" component={FreedomDashboard} />
