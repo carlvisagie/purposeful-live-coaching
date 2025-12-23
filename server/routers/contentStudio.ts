@@ -322,4 +322,167 @@ Identify at least 3 content opportunities.`;
       keywords: topic.keywords,
     }));
   }),
+
+  // Generate YouTube metadata from session recording
+  generateYouTubeMetadata: publicProcedure
+    .input(z.object({
+      sessionId: z.number(),
+      transcript: z.string(),
+      duration: z.number(), // in seconds
+    }))
+    .mutation(async ({ input }) => {
+      const systemPrompt = `You are a YouTube content strategist specializing in wellness and personal development content.
+Your job is to create compelling, SEO-optimized metadata that will help videos rank well and attract viewers.
+Always maintain client privacy - never mention specific names or identifying details.`;
+
+      const userPrompt = `Create YouTube metadata for this coaching session:
+
+Session Duration: ${Math.floor(input.duration / 60)} minutes
+Transcript:
+${input.transcript.substring(0, 3000)}... [truncated]
+
+Generate:
+
+1. TITLE (60 characters max, compelling and SEO-friendly)
+2. DESCRIPTION (detailed, 3-5 paragraphs with timestamps if relevant)
+3. TAGS (15-20 relevant tags, comma-separated)
+4. THUMBNAIL TEXT SUGGESTION (3-5 words, attention-grabbing)
+5. CATEGORY (choose one: Education, Howto & Style, People & Blogs)
+
+Format your response as JSON:
+{
+  "title": "...",
+  "description": "...",
+  "tags": ["tag1", "tag2", ...],
+  "thumbnailText": "...",
+  "category": "..."
+}`;
+
+      try {
+        const result = await generateText({
+          systemPrompt,
+          userPrompt,
+          maxTokens: 1500,
+        });
+
+        // Parse JSON response
+        const jsonMatch = result.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) {
+          throw new Error("Failed to parse YouTube metadata");
+        }
+
+        const metadata = JSON.parse(jsonMatch[0]);
+
+        return {
+          success: true,
+          metadata,
+          generatedAt: new Date().toISOString(),
+        };
+      } catch (error) {
+        console.error("YouTube metadata generation error:", error);
+        throw new Error("Failed to generate YouTube metadata");
+      }
+    }),
+
+  // Generate Podcast show notes from session recording
+  generatePodcastShowNotes: publicProcedure
+    .input(z.object({
+      sessionId: z.number(),
+      transcript: z.string(),
+      duration: z.number(), // in seconds
+    }))
+    .mutation(async ({ input }) => {
+      const systemPrompt = `You are a podcast producer specializing in wellness and personal development content.
+Your job is to create engaging show notes that provide value to listeners and improve discoverability.
+Always maintain client privacy - never mention specific names or identifying details.`;
+
+      const userPrompt = `Create podcast show notes for this coaching session:
+
+Episode Duration: ${Math.floor(input.duration / 60)} minutes
+Transcript:
+${input.transcript.substring(0, 3000)}... [truncated]
+
+Generate:
+
+1. EPISODE TITLE (compelling and descriptive)
+2. SHORT DESCRIPTION (1-2 sentences, for podcast directories)
+3. FULL SHOW NOTES (structured with sections, timestamps, key takeaways)
+4. KEY TOPICS (5-7 main topics covered)
+5. RESOURCES MENTIONED (any tools, techniques, or concepts to link)
+
+Format your response as JSON:
+{
+  "title": "...",
+  "shortDescription": "...",
+  "showNotes": "...",
+  "keyTopics": ["topic1", "topic2", ...],
+  "resources": ["resource1", "resource2", ...]
+}`;
+
+      try {
+        const result = await generateText({
+          systemPrompt,
+          userPrompt,
+          maxTokens: 2000,
+        });
+
+        // Parse JSON response
+        const jsonMatch = result.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) {
+          throw new Error("Failed to parse podcast show notes");
+        }
+
+        const showNotes = JSON.parse(jsonMatch[0]);
+
+        return {
+          success: true,
+          showNotes,
+          generatedAt: new Date().toISOString(),
+        };
+      } catch (error) {
+        console.error("Podcast show notes generation error:", error);
+        throw new Error("Failed to generate podcast show notes");
+      }
+    }),
+
+  // Generate content package from session (YouTube + Podcast + Blog)
+  generateContentPackage: publicProcedure
+    .input(z.object({
+      sessionId: z.number(),
+      transcript: z.string(),
+      duration: z.number(),
+    }))
+    .mutation(async ({ input }) => {
+      try {
+        // Generate all content types in parallel
+        const [youtubeResult, podcastResult] = await Promise.all([
+          // YouTube metadata
+          (async () => {
+            const systemPrompt = `You are a YouTube content strategist specializing in wellness content.`;
+            const userPrompt = `Create YouTube metadata (title, description, tags) for this ${Math.floor(input.duration / 60)}-minute coaching session:\n\n${input.transcript.substring(0, 2000)}...`;
+            const result = await generateText({ systemPrompt, userPrompt, maxTokens: 1000 });
+            const jsonMatch = result.match(/\{[\s\S]*\}/);
+            return jsonMatch ? JSON.parse(jsonMatch[0]) : null;
+          })(),
+          // Podcast show notes
+          (async () => {
+            const systemPrompt = `You are a podcast producer specializing in wellness content.`;
+            const userPrompt = `Create podcast show notes (title, description, key topics) for this ${Math.floor(input.duration / 60)}-minute coaching session:\n\n${input.transcript.substring(0, 2000)}...`;
+            const result = await generateText({ systemPrompt, userPrompt, maxTokens: 1000 });
+            const jsonMatch = result.match(/\{[\s\S]*\}/);
+            return jsonMatch ? JSON.parse(jsonMatch[0]) : null;
+          })(),
+        ]);
+
+        return {
+          success: true,
+          youtube: youtubeResult,
+          podcast: podcastResult,
+          generatedAt: new Date().toISOString(),
+        };
+      } catch (error) {
+        console.error("Content package generation error:", error);
+        throw new Error("Failed to generate content package");
+      }
+    }),
 });
