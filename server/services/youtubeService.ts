@@ -22,18 +22,25 @@ import * as fs from "fs";
 
 const youtube = google.youtube("v3");
 
-// OAuth2 client configuration
-const oauth2Client = new google.auth.OAuth2(
-  process.env.YOUTUBE_CLIENT_ID,
-  process.env.YOUTUBE_CLIENT_SECRET,
-  process.env.YOUTUBE_REDIRECT_URI || "http://localhost:3000/api/youtube/oauth/callback"
-);
+// OAuth2 client - lazy initialization to avoid build-time errors
+let oauth2Client: any = null;
 
-// Set refresh token if available (for autonomous uploads)
-if (process.env.YOUTUBE_REFRESH_TOKEN) {
-  oauth2Client.setCredentials({
-    refresh_token: process.env.YOUTUBE_REFRESH_TOKEN,
-  });
+function getOAuth2Client() {
+  if (!oauth2Client) {
+    oauth2Client = new google.auth.OAuth2(
+      process.env.YOUTUBE_CLIENT_ID,
+      process.env.YOUTUBE_CLIENT_SECRET,
+      process.env.YOUTUBE_REDIRECT_URI || "http://localhost:3000/api/youtube/oauth/callback"
+    );
+    
+    // Set refresh token if available (for autonomous uploads)
+    if (process.env.YOUTUBE_REFRESH_TOKEN) {
+      oauth2Client.setCredentials({
+        refresh_token: process.env.YOUTUBE_REFRESH_TOKEN,
+      });
+    }
+  }
+  return oauth2Client;
 }
 
 /**
@@ -46,7 +53,7 @@ export function getAuthUrl(): string {
     "https://www.googleapis.com/auth/youtube",
   ];
 
-  return oauth2Client.generateAuthUrl({
+  return getOAuth2Client().generateAuthUrl({
     access_type: "offline", // Get refresh token
     scope: scopes,
     prompt: "consent", // Force consent screen to get refresh token
@@ -58,8 +65,9 @@ export function getAuthUrl(): string {
  * Call this with the code from OAuth callback
  */
 export async function getTokensFromCode(code: string): Promise<any> {
-  const { tokens } = await oauth2Client.getToken(code);
-  oauth2Client.setCredentials(tokens);
+  const client = getOAuth2Client();
+  const { tokens } = await client.getToken(code);
+  client.setCredentials(tokens);
   
   console.log("YouTube OAuth tokens obtained:");
   console.log("Refresh Token:", tokens.refresh_token);
@@ -98,7 +106,7 @@ export async function uploadVideoToYouTube(
 
     // Upload video
     const response = await youtube.videos.insert({
-      auth: oauth2Client,
+      auth: getOAuth2Client(),
       part: ["snippet", "status"],
       requestBody: {
         snippet: {
@@ -148,7 +156,7 @@ export async function uploadVideoToYouTube(
 export async function getVideoStatus(videoId: string): Promise<any> {
   try {
     const response = await youtube.videos.list({
-      auth: oauth2Client,
+      auth: getOAuth2Client(),
       part: ["status", "processingDetails"],
       id: [videoId],
     });
@@ -173,7 +181,7 @@ export async function updateVideoMetadata(
 ): Promise<void> {
   try {
     await youtube.videos.update({
-      auth: oauth2Client,
+      auth: getOAuth2Client(),
       part: ["snippet"],
       requestBody: {
         id: videoId,
@@ -198,7 +206,7 @@ export async function updateVideoMetadata(
 export async function deleteVideo(videoId: string): Promise<void> {
   try {
     await youtube.videos.delete({
-      auth: oauth2Client,
+      auth: getOAuth2Client(),
       id: videoId,
     });
 
@@ -243,7 +251,7 @@ function getCategoryId(categoryName: string): string {
 export async function getChannelInfo(): Promise<any> {
   try {
     const response = await youtube.channels.list({
-      auth: oauth2Client,
+      auth: getOAuth2Client(),
       part: ["snippet", "statistics"],
       mine: true,
     });
@@ -261,7 +269,7 @@ export async function getChannelInfo(): Promise<any> {
 export async function listRecentUploads(maxResults: number = 10): Promise<any[]> {
   try {
     const response = await youtube.search.list({
-      auth: oauth2Client,
+      auth: getOAuth2Client(),
       part: ["snippet"],
       forMine: true,
       type: ["video"],
