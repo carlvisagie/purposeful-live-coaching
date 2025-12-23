@@ -21,7 +21,8 @@ const DAYS_OF_WEEK = [
 
 export default function CoachAvailability() {
   const { data: user } = trpc.auth.me.useQuery();
-  const coachId = user?.id || 0;
+  // Owner's coach ID is always 1 - this page is for the coach/owner to set their availability
+  const coachId = 1;
   const [selectedDay, setSelectedDay] = useState<number>(1);
   const [startTime, setStartTime] = useState("09:00");
   const [endTime, setEndTime] = useState("17:00");
