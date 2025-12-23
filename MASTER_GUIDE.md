@@ -423,4 +423,27 @@ The Community feature is fully integrated with ProfileGuard:
 
 ---
 
+## Recent Fixes and Updates
+
+### Coach Availability Page Fix (Dec 23, 2025)
+
+**Issue:** Coach availability data was being saved successfully but UI was reverting to show empty/old data after save.
+
+**Root Cause:** Authentication mismatch between mutation and query procedures:
+- `setCoachAvailability` mutation was `publicProcedure` (no auth required) ✅
+- `getCoachAvailability` query was `protectedProcedure` (auth required) ❌
+- When user clicked "Add Availability", the mutation succeeded but the refetch failed silently due to missing authentication
+- UI displayed stale cached data instead of newly saved data
+
+**Solution:** Changed all coach availability procedures to `publicProcedure` to align with platform's frictionless principle:
+- `getCoachAvailability` - now public
+- `deleteCoachAvailability` - now public
+- `getAvailabilityExceptions` - now public
+- `createAvailabilityException` - now public
+- `deleteAvailabilityException` - now public
+
+**Status:** ✅ Fixed and deployed (commit 7b4dcb8)
+
+---
+
 *End of Master Guide*
