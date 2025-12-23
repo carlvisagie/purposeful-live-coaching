@@ -17,8 +17,8 @@
  */
 
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
-import { db } from "@db";
-import { sessions } from "@db/schema";
+import { db } from "../db";
+import { sessions } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import OpenAI from "openai";
 import { Readable } from "stream";

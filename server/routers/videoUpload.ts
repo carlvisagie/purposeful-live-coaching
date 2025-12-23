@@ -5,8 +5,8 @@
 
 import { z } from "zod";
 import { publicProcedure, router } from "../_core/trpc";
-import { db } from "@db";
-import { sessions } from "@db/schema";
+import { db } from "../db";
+import { sessions } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { v4 as uuidv4 } from "uuid";
