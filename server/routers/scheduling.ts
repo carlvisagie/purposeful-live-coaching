@@ -521,7 +521,7 @@ export const schedulingRouter = router({
   /**
    * Get coach availability
    */
-  getCoachAvailability: protectedProcedure
+  getCoachAvailability: publicProcedure
     .input(
       z.object({
         coachId: z.number(),
@@ -590,7 +590,7 @@ export const schedulingRouter = router({
   /**
    * Delete coach availability slot
    */
-  deleteCoachAvailability: protectedProcedure
+  deleteCoachAvailability: publicProcedure
     .input(z.object({ id: z.number() }))
     .mutation(async ({ input }) => {
       await deleteCoachAvailability(input.id);
@@ -600,7 +600,7 @@ export const schedulingRouter = router({
   /**
    * Get availability exceptions
    */
-  getAvailabilityExceptions: protectedProcedure
+  getAvailabilityExceptions: publicProcedure
     .input(
       z.object({
         coachId: z.number(),
@@ -620,7 +620,7 @@ export const schedulingRouter = router({
   /**
    * Create availability exception (time off)
    */
-  createAvailabilityException: protectedProcedure
+  createAvailabilityException: publicProcedure
     .input(
       z.object({
         coachId: z.number(),
@@ -643,7 +643,7 @@ export const schedulingRouter = router({
   /**
    * Delete availability exception
    */
-  deleteAvailabilityException: protectedProcedure
+  deleteAvailabilityException: publicProcedure
     .input(z.object({ id: z.number() }))
     .mutation(async ({ input }) => {
       await deleteAvailabilityException(input.id);
