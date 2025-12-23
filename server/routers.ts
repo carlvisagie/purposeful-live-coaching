@@ -40,6 +40,7 @@ import { adminRouter } from "./routers/admin";
 import { goalsRouter } from "./routers/goals";
 import { habitFormationRouter } from "./routers/habitFormation";
 import { audioUploadRouter } from "./routers/audioUpload";
+import { videoUploadRouter } from "./routers/videoUpload";
 import { ttsRouter } from "./routers/tts";
 import { voiceRecognitionRouter } from "./routers/voiceRecognition";
 import { faceRecognitionRouter } from "./routers/faceRecognition";
@@ -127,6 +128,7 @@ export const appRouter = router({
   goals: goalsRouter,
   habits: habitFormationRouter,
   audioUpload: audioUploadRouter,
+  videoUpload: videoUploadRouter,
   tts: ttsRouter,
   voiceRecognition: voiceRecognitionRouter,
   faceRecognition: faceRecognitionRouter,

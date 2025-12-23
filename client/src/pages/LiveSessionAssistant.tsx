@@ -99,6 +99,7 @@ export default function LiveSessionAssistant() {
 
   // API mutations
   const uploadAudioMutation = trpc.audioUpload.uploadAudioChunk.useMutation();
+  const uploadVideoMutation = trpc.videoUpload.uploadSessionRecording.useMutation();
 
   // Session notes
   const [sessionNotes, setSessionNotes] = useState("");
@@ -470,6 +471,65 @@ export default function LiveSessionAssistant() {
           
           // Process audio chunk for transcription
           processAudioChunk(event.data);
+        }
+      };
+
+      // CRITICAL: Save recording when stopped
+      mediaRecorder.onstop = async () => {
+        try {
+          if (!sessionData) {
+            console.error('No session data available');
+            toast.error('Failed to save recording: No session data');
+            return;
+          }
+
+          if (audioChunksRef.current.length === 0) {
+            console.warn('No recording data to save');
+            return;
+          }
+
+          toast.info('Saving session recording...', { duration: Infinity });
+
+          // Combine all chunks into single video file
+          const videoBlob = new Blob(audioChunksRef.current, { type: mimeType });
+          const videoBase64 = await blobToBase64(videoBlob);
+
+          // Calculate duration
+          const duration = sessionStartTime 
+            ? Math.floor((Date.now() - sessionStartTime.getTime()) / 1000)
+            : 0;
+
+          // Upload to S3
+          const result = await uploadVideoMutation.mutateAsync({
+            sessionId: sessionData.sessionId,
+            videoData: videoBase64,
+            mimeType,
+            duration,
+            fileSize: videoBlob.size,
+          });
+
+          toast.success('Session recording saved!', {
+            description: `${Math.round(videoBlob.size / 1024 / 1024)}MB saved to cloud storage`,
+            action: {
+              label: 'Download',
+              onClick: () => {
+                const url = URL.createObjectURL(videoBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `session-${sessionData.sessionId}-${new Date().toISOString()}.webm`;
+                a.click();
+                URL.revokeObjectURL(url);
+              },
+            },
+          });
+
+          // Clear chunks
+          audioChunksRef.current = [];
+        } catch (error: any) {
+          console.error('Failed to save recording:', error);
+          toast.error('Failed to save recording', {
+            description: error.message || 'Please try again or download manually',
+          });
         }
       };
 

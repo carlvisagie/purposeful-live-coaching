@@ -319,6 +319,11 @@ export const sessions = pgTable("sessions", {
   paymentStatus: varchar("payment_status", { length: 50 }),
   stripePaymentIntentId: varchar("stripe_payment_intent_id", { length: 255 }),
   stripeSessionId: varchar("stripe_session_id", { length: 255 }), // Stripe checkout session ID
+  videoUrl: text("video_url"), // S3 URL of session recording
+  videoDuration: integer("video_duration"), // Duration in seconds
+  videoFileSize: integer("video_file_size"), // File size in bytes
+  startTime: timestamp("start_time"), // Actual session start time
+  endTime: timestamp("end_time"), // Actual session end time
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
