@@ -21,6 +21,9 @@ import {
   cancelSession,
   isTimeSlotAvailable,
 } from "../db/scheduling";
+import { getDb } from "../db";
+import { coaches, users } from "../../drizzle/schema";
+import { eq } from "drizzle-orm";
 
 export const schedulingRouter = router({
   /**
@@ -543,6 +546,36 @@ export const schedulingRouter = router({
       })
     )
     .mutation(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      // Frictionless principle: Auto-create coach if doesn't exist
+      const existingCoach = await db.select().from(coaches).where(eq(coaches.id, input.coachId)).limit(1);
+      
+      if (existingCoach.length === 0) {
+        // Create default user for coach if needed
+        const existingUser = await db.select().from(users).where(eq(users.id, input.coachId)).limit(1);
+        
+        if (existingUser.length === 0) {
+          await db.insert(users).values({
+            id: input.coachId,
+            email: `coach${input.coachId}@purposefullivecoaching.com`,
+            name: "Platform Coach",
+            role: "coach",
+            tier: "premium"
+          });
+        }
+        
+        // Create coach record
+        await db.insert(coaches).values({
+          id: input.coachId,
+          userId: input.coachId,
+          specialization: "Wellness Coaching",
+          bio: "Platform wellness coach",
+          isActive: "active"
+        });
+      }
+
       await upsertCoachAvailability({
         coachId: input.coachId,
         dayOfWeek: input.dayOfWeek,
