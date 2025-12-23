@@ -49,9 +49,6 @@ export * from "./stressSchema";
 // Export voice coaching schema (10X Adaptive Emotional Intelligence)
 export * from "./voiceCoachingSchema";
 
-// Export Keepers of the Truth evidence validation schema
-export * from "./evidenceSchema";
-
 // Export AI Coach Performance tracking schema
 export * from "./aiCoachPerformanceSchema";
 
