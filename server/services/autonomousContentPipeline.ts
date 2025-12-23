@@ -367,24 +367,51 @@ Format your response as JSON:
 
 /**
  * Upload video to YouTube
- * TODO: Implement YouTube Data API v3 integration
  */
 async function uploadToYouTube(videoPath: string, metadata: any): Promise<string> {
-  // Placeholder for YouTube upload
-  // Will implement in next phase with OAuth and YouTube Data API
-  console.log("YouTube upload not yet implemented");
-  return "https://youtube.com/placeholder";
+  try {
+    // Import YouTube service
+    const { uploadVideoToYouTube } = await import("./youtubeService");
+    
+    // Upload video
+    const youtubeUrl = await uploadVideoToYouTube(videoPath, {
+      title: metadata.title,
+      description: metadata.description,
+      tags: metadata.tags,
+      category: metadata.category,
+      privacyStatus: "public", // or "unlisted" for testing
+    });
+    
+    return youtubeUrl;
+  } catch (error: any) {
+    console.error("YouTube upload error:", error);
+    throw error;
+  }
 }
 
 /**
  * Upload audio to Podcast hosting platform
- * TODO: Implement Buzzsprout/Anchor/Libsyn API integration
  */
 async function uploadToPodcast(audioPath: string, showNotes: any): Promise<string> {
-  // Placeholder for Podcast upload
-  // Will implement in next phase with podcast hosting API
-  console.log("Podcast upload not yet implemented");
-  return "https://podcast.com/placeholder";
+  try {
+    // Import podcast service
+    const { uploadPodcastEpisode } = await import("./podcastService");
+    
+    // Upload episode
+    const result = await uploadPodcastEpisode({
+      title: showNotes.title,
+      description: showNotes.showNotes,
+      audioPath,
+      summary: showNotes.shortDescription,
+      tags: showNotes.keyTopics,
+      explicit: false,
+    });
+    
+    return result.episodeUrl;
+  } catch (error: any) {
+    console.error("Podcast upload error:", error);
+    throw error;
+  }
 }
 
 /**
