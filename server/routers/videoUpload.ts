@@ -10,6 +10,7 @@ import { sessions } from "@db/schema";
 import { eq } from "drizzle-orm";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { v4 as uuidv4 } from "uuid";
+import { processSessionRecording } from "../services/autonomousContentPipeline";
 
 // Initialize S3 client
 const s3Client = new S3Client({
@@ -74,11 +75,27 @@ export const videoUploadRouter = router({
           })
           .where(eq(sessions.id, input.sessionId));
 
+        // 🚀 AUTONOMOUS PIPELINE: Trigger automatic content processing
+        // This runs in the background - transcription, content generation, publishing
+        processSessionRecording(input.sessionId)
+          .then((result) => {
+            if (result.success) {
+              console.log(`✅ Autonomous pipeline completed for session ${input.sessionId}`);
+              console.log(`   - YouTube: ${result.youtubeUrl || 'pending'}`);
+              console.log(`   - Podcast: ${result.podcastUrl || 'pending'}`);
+            } else {
+              console.error(`❌ Autonomous pipeline failed for session ${input.sessionId}:`, result.error);
+            }
+          })
+          .catch((error) => {
+            console.error(`❌ Autonomous pipeline error for session ${input.sessionId}:`, error);
+          });
+
         return {
           success: true,
           videoUrl,
           fileName,
-          message: "Session recording uploaded successfully",
+          message: "Session recording uploaded successfully. Autonomous content pipeline started.",
         };
       } catch (error: any) {
         console.error("Video upload error:", error);
