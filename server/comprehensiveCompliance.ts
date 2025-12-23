@@ -530,7 +530,9 @@ export async function comprehensiveComplianceCheck(
 
 // ============================================================================
 // REAL-TIME ALERT GENERATION
-// ==============================================================export function generateRealTimeAlert(violation: ComplianceViolation): RealTimeAlert {
+// ============================================================================
+
+export function generateRealTimeAlert(violation: ComplianceViolation): RealTimeAlert {
   const urgencyMap: Record<ViolationSeverity, "low" | "medium" | "high" | "critical"> = {
     info: "low",
     warning: "medium",
@@ -577,7 +579,9 @@ export async function comprehensiveComplianceCheck(
     message,
     alternativePhrase
   };
-}===================================================================
+}
+
+// ============================================================================
 // PRE-SPEECH COMPLIANCE CHECK (For AI suggestions before coach speaks)
 // ============================================================================
 
