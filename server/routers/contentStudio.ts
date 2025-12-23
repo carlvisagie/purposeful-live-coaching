@@ -322,4 +322,55 @@ Identify at least 3 content opportunities.`;
       keywords: topic.keywords,
     }));
   }),
+  // Generate content from coaching session
+  generateFromSession: protectedProcedure
+    .input(z.object({
+      sessionId: z.number(),
+      contentType: ContentTypeSchema,
+      transcript: z.string(),
+      insights: z.string(),
+      clientName: z.string(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const anonymizedTranscript = input.transcript
+        .replace(new RegExp(input.clientName, "gi"), "[Client]")
+        .replace(/\b[A-Z][a-z]+\s[A-Z][a-z]+\b/g, "[Name]")
+        .replace(/\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g, "[Phone]")
+        .replace(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, "[Email]");
+
+      const systemPrompt = `You are an expert content creator for a wellness coaching platform.
+You create engaging, evidence-based content from real coaching session insights.
+IMPORTANT: All client information has been anonymized. Use general examples and avoid any identifying details.
+Reference research from Dr. Andrew Huberman, Peter Attia, and Matthew Walker when relevant.`;
+
+      let userPrompt = "";
+
+      if (input.contentType === "youtube") {
+        userPrompt = `Create a YouTube video script based on this coaching session.\n\nSession Insights:\n${input.insights}\n\nKey Themes from Session:\n${anonymizedTranscript.substring(0, 1000)}\n\nCreate a 10-minute video script that:\n1. Opens with a relatable hook about the main challenge discussed\n2. Shares the science behind the issue\n3. Provides actionable steps (based on what worked in the session)\n4. Includes a call to action for Sage AI coach\n\nFormat with timestamps. Provide title, description, and hashtags.`;
+      } else if (input.contentType === "podcast") {
+        userPrompt = `Create a podcast episode script based on this coaching session.\n\nSession Insights:\n${input.insights}\n\nKey Themes:\n${anonymizedTranscript.substring(0, 1000)}\n\nCreate a 30-minute podcast episode that:\n1. Introduces the topic naturally\n2. Shares real insights from coaching work (anonymized)\n3. Discusses the science and research\n4. Provides practical takeaways\n\nInclude intro, main content, and outro. Provide title and show notes.`;
+      } else if (input.contentType === "shorts") {
+        userPrompt = `Create 3 short-form video scripts (60 seconds each) based on this coaching session.\n\nSession Insights:\n${input.insights}\n\nCreate 3 different angles:\n1. A quick tip/hack\n2. A myth-busting short\n3. A motivational insight\n\nEach should have a strong hook, quick value, and CTA.`;
+      }
+
+      try {
+        const content = await generateText({
+          systemPrompt,
+          userPrompt,
+          maxTokens: 4000,
+        });
+
+        return {
+          success: true,
+          content,
+          sessionId: input.sessionId,
+          contentType: input.contentType,
+          generatedAt: new Date().toISOString(),
+        };
+      } catch (error) {
+        console.error("Session content generation error:", error);
+        throw new Error("Failed to generate content from session");
+      }
+    }),
+
 });

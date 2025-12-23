@@ -24,6 +24,11 @@ import {
   VideoOff,
   Settings,
   Volume2,
+  Sparkles,
+  Youtube,
+  Radio,
+  Film,
+  Loader2,
 } from "lucide-react";
 import { Streamdown } from "streamdown";
 
@@ -96,6 +101,10 @@ export default function LiveSessionAssistant() {
   const [currentEmotions, setCurrentEmotions] = useState<string[]>([]);
   const [detectedTriggers, setDetectedTriggers] = useState<string[]>([]);
   const [coachingPrompts, setCoachingPrompts] = useState<CoachingPrompt[]>([]);
+  
+  // Content conversion
+  const [showContentDialog, setShowContentDialog] = useState(false);
+  const [isGeneratingContent, setIsGeneratingContent] = useState(false);
 
   // API mutations
   const uploadAudioMutation = trpc.audioUpload.uploadAudioChunk.useMutation();
@@ -797,9 +806,50 @@ export default function LiveSessionAssistant() {
         sessionId: sessionData.sessionId,
       });
       toast.success("Session summary generated!");
+      
+      // Show content conversion dialog
+      setShowContentDialog(true);
     } catch (error) {
       console.error("Failed to generate summary:", error);
       toast.error("Failed to generate session summary");
+    }
+  };
+
+  // Convert session to content
+  const convertToContent = async (contentType: 'youtube' | 'podcast' | 'shorts' | 'all') => {
+    if (!sessionData) {
+      toast.error("No session data available");
+      return;
+    }
+
+    setIsGeneratingContent(true);
+    
+    try {
+      const sessionTranscript = transcript.map(t => `${t.speaker}: ${t.text}`).join("\n");
+      const sessionInsights = keyInsights.join("\n");
+      
+      // Generate content based on type
+      const contentTypes = contentType === 'all' 
+        ? ['youtube', 'podcast', 'shorts'] 
+        : [contentType];
+      
+      for (const type of contentTypes) {
+        await trpc.contentStudio.generateFromSession.mutate({
+          sessionId: sessionData.sessionId,
+          contentType: type as 'youtube' | 'podcast' | 'shorts',
+          transcript: sessionTranscript,
+          insights: sessionInsights,
+          clientName: sessionData.clientName,
+        });
+      }
+      
+      toast.success(`Content generated! Check Content Studio to review.`);
+      setShowContentDialog(false);
+    } catch (error) {
+      console.error("Failed to generate content:", error);
+      toast.error("Failed to generate content");
+    } finally {
+      setIsGeneratingContent(false);
     }
   };
 
@@ -1209,6 +1259,99 @@ export default function LiveSessionAssistant() {
                     <p className="text-gray-700">{insight}</p>
                   </div>
                 ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Content Conversion Dialog */}
+      {showContentDialog && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-2xl bg-white">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Sparkles className="h-6 w-6 text-purple-600" />
+                Convert Session to Content
+              </CardTitle>
+              <p className="text-gray-600 mt-2">
+                Transform this coaching session into engaging content for your audience.
+                Client information will be automatically anonymized.
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <Button
+                    onClick={() => convertToContent("youtube")}
+                    disabled={isGeneratingContent}
+                    className="h-24 flex-col gap-2 bg-red-600 hover:bg-red-700"
+                  >
+                    <Youtube className="h-8 w-8" />
+                    <span>YouTube Video</span>
+                    <span className="text-xs opacity-80">10-min script</span>
+                  </Button>
+                  
+                  <Button
+                    onClick={() => convertToContent("podcast")}
+                    disabled={isGeneratingContent}
+                    className="h-24 flex-col gap-2 bg-purple-600 hover:bg-purple-700"
+                  >
+                    <Radio className="h-8 w-8" />
+                    <span>Podcast Episode</span>
+                    <span className="text-xs opacity-80">30-min script</span>
+                  </Button>
+                  
+                  <Button
+                    onClick={() => convertToContent("shorts")}
+                    disabled={isGeneratingContent}
+                    className="h-24 flex-col gap-2 bg-pink-600 hover:bg-pink-700"
+                  >
+                    <Film className="h-8 w-8" />
+                    <span>Short Videos</span>
+                    <span className="text-xs opacity-80">3x 60-sec clips</span>
+                  </Button>
+                </div>
+                
+                <Button
+                  onClick={() => convertToContent("all")}
+                  disabled={isGeneratingContent}
+                  className="w-full h-16 text-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                >
+                  {isGeneratingContent ? (
+                    <>
+                      <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                      Generating Content...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="h-5 w-5 mr-2" />
+                      Generate All Content Types
+                    </>
+                  )}
+                </Button>
+                
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => setShowContentDialog(false)}
+                    variant="outline"
+                    className="flex-1"
+                    disabled={isGeneratingContent}
+                  >
+                    Maybe Later
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setShowContentDialog(false);
+                      window.open("/content-studio", "_blank");
+                    }}
+                    variant="outline"
+                    className="flex-1"
+                    disabled={isGeneratingContent}
+                  >
+                    Go to Content Studio
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
