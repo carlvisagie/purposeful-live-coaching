@@ -283,7 +283,7 @@ export default function IndividualLanding() {
               <div className="text-sm text-gray-600">Always Available</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-purple-600">33</div>
+              <div className="text-3xl font-bold text-purple-600">34</div>
               <div className="text-sm text-gray-600">Wellness Modules</div>
             </div>
             <div className="text-center">
@@ -346,7 +346,7 @@ export default function IndividualLanding() {
         <div className="container">
           <div className="text-center mb-12">
             <Badge className="mb-4 bg-purple-100 text-purple-900 text-base px-4 py-2">
-              33 Evidence-Based Modules
+              34 Evidence-Based Modules
             </Badge>
             <h3 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
               Complete Wellness Transformation
@@ -357,7 +357,7 @@ export default function IndividualLanding() {
             <Link to="/wellness-modules">
               <Button size="lg" className="gap-2">
                 <Sparkles className="h-5 w-5" />
-                Explore All 33 Modules
+                Explore All 34 Modules
               </Button>
             </Link>
           </div>

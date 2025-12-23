@@ -106,9 +106,9 @@ export default function WellnessModules() {
   // Fetch user's subscription tier for access control
   const { data: usageData } = trpc.subscriptions.getCurrentUsage.useQuery();
 
-  // Determine tier access (Basic: 5 modules, Premium/Elite: all 33)
-  const tierModuleLimit = usageData?.tierName?.includes('Basic') ? 5 : 33;
-  const hasFullAccess = tierModuleLimit === 33;
+  // Determine tier access (Basic: 5 modules, Premium/Elite: all 34)
+  const tierModuleLimit = usageData?.tierName?.includes('Basic') ? 5 : 34;
+  const hasFullAccess = tierModuleLimit === 34;
 
   const filteredModules = wellnessModules.filter(m => {
     const matchesCategory = selectedCategory === "All" || m.category === selectedCategory;
@@ -125,7 +125,7 @@ export default function WellnessModules() {
         <div className="container">
           <div className="max-w-4xl mx-auto text-center">
             <Badge className="mb-4 bg-white/20 text-white border-white/30 text-lg px-4 py-2">
-              33 Evidence-Based Modules
+              34 Evidence-Based Modules
             </Badge>
             <h1 className="text-5xl md:text-6xl font-bold mb-6">
               Complete Wellness Transformation
@@ -283,13 +283,13 @@ export default function WellnessModules() {
               Ready to Transform Your Life?
             </h2>
             <p className="text-xl md:text-2xl text-purple-100 mb-10 leading-relaxed">
-              Access all 33 wellness modules with AI-powered coaching available 24/7, plus optional live human support for deeper transformation.
+              Access all 34 wellness modules with AI-powered coaching available 24/7, plus optional live human support for deeper transformation.
             </p>
             
             {/* Feature Highlights */}
             <div className="grid md:grid-cols-3 gap-6 mb-10">
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-                <div className="text-3xl font-bold mb-2">33</div>
+                <div className="text-3xl font-bold mb-2">34</div>
                 <div className="text-sm">Wellness Modules</div>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">

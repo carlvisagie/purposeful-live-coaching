@@ -112,7 +112,7 @@ export function UpgradePrompt({
               </li>
               <li className="flex items-center gap-2 text-gray-700">
                 <Sparkles className="h-4 w-4 text-pink-500" />
-                All 33 wellness modules
+                All 34 wellness modules
               </li>
             </ul>
           </div>

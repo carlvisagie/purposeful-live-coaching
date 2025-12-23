@@ -171,7 +171,7 @@ export default function MissionControl() {
                   <CardHeader className="pb-3">
                     <Sparkles className="h-8 w-8 text-indigo-500 mb-2" />
                     <CardTitle className="text-lg">Wellness</CardTitle>
-                    <CardDescription>33 Modules</CardDescription>
+                    <CardDescription>34 Modules</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <Button className="w-full" variant="outline">
@@ -525,7 +525,7 @@ export default function MissionControl() {
               <CardHeader>
                 <CardTitle>Wellness Modules</CardTitle>
                 <CardDescription>
-                  33 comprehensive modules for holistic wellbeing
+                  34 comprehensive modules for holistic wellbeing
                 </CardDescription>
               </CardHeader>
               <CardContent>
