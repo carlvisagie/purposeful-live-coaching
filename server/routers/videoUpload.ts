@@ -10,7 +10,7 @@ import { sessions } from "@db/schema";
 import { eq } from "drizzle-orm";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { v4 as uuidv4 } from "uuid";
-import { processSessionRecording } from "../services/autonomousContentPipeline";
+// import { processSessionRecording } from "../services/autonomousContentPipeline"; // Temporarily disabled
 
 // Initialize S3 client
 const s3Client = new S3Client({
@@ -75,21 +75,22 @@ export const videoUploadRouter = router({
           })
           .where(eq(sessions.id, input.sessionId));
 
-        // 🚀 AUTONOMOUS PIPELINE: Trigger automatic content processing
-        // This runs in the background - transcription, content generation, publishing
-        processSessionRecording(input.sessionId)
-          .then((result) => {
-            if (result.success) {
-              console.log(`✅ Autonomous pipeline completed for session ${input.sessionId}`);
-              console.log(`   - YouTube: ${result.youtubeUrl || 'pending'}`);
-              console.log(`   - Podcast: ${result.podcastUrl || 'pending'}`);
-            } else {
-              console.error(`❌ Autonomous pipeline failed for session ${input.sessionId}:`, result.error);
-            }
-          })
-          .catch((error) => {
-            console.error(`❌ Autonomous pipeline error for session ${input.sessionId}:`, error);
-          });
+        // 🚀 AUTONOMOUS PIPELINE: Temporarily disabled for debugging
+        // TODO: Re-enable after fixing build issues
+        // processSessionRecording(input.sessionId)
+        //   .then((result) => {
+        //     if (result.success) {
+        //       console.log(`✅ Autonomous pipeline completed for session ${input.sessionId}`);
+        //       console.log(`   - YouTube: ${result.youtubeUrl || 'pending'}`);
+        //       console.log(`   - Podcast: ${result.podcastUrl || 'pending'}`);
+        //     } else {
+        //       console.error(`❌ Autonomous pipeline failed for session ${input.sessionId}:`, result.error);
+        //     }
+        //   })
+        //   .catch((error) => {
+        //     console.error(`❌ Autonomous pipeline error for session ${input.sessionId}:`, error);
+        //   });
+        console.log(`📹 Session ${input.sessionId} recording saved. Autonomous pipeline temporarily disabled.`);
 
         return {
           success: true,
