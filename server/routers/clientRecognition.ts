@@ -154,7 +154,7 @@ class MultiModalRecognitionService {
   }
   
   /**
-   * Recognize by voice sample
+   * Recognize by voice sample using real voice biometrics
    */
   private async recognizeByVoice(voiceSample: string): Promise<{ userId: number | null; confidence: number }> {
     // Get all active voice prints
@@ -166,48 +166,55 @@ class MultiModalRecognitionService {
       return { userId: null, confidence: 0 };
     }
     
-    // TODO: Replace with actual voice biometrics API call
-    // For now, simulate recognition based on existing enrollments
+    // Import biometric recognition service
+    const { searchVoiceInDatabase, isValidAudioBase64 } = await import("../services/biometricRecognition");
     
-    // In production:
-    // 1. Extract voice embedding from sample
-    // 2. Compare against all stored voice prints
-    // 3. Return best match above threshold
+    // Validate audio format
+    if (!isValidAudioBase64(voiceSample)) {
+      console.error("Invalid audio format for voice recognition");
+      return { userId: null, confidence: 0 };
+    }
     
-    // Simulate: If user has voice print, return high confidence
-    // This will be replaced with real API integration
-    const bestMatch = allVoicePrints[0];
-    const simulatedConfidence = 85 + Math.floor(Math.random() * 10); // 85-95%
+    // Prepare voice prints for comparison
+    const voicePrintsForSearch = allVoicePrints
+      .filter(vp => vp.embedding && Array.isArray(vp.embedding))
+      .map(vp => ({
+        userId: vp.userId,
+        embedding: vp.embedding as number[]
+      }));
+    
+    if (voicePrintsForSearch.length === 0) {
+      return { userId: null, confidence: 0 };
+    }
+    
+    // Search for matching voice
+    const result = await searchVoiceInDatabase(voiceSample, voicePrintsForSearch);
     
     return { 
-      userId: bestMatch.userId, 
-      confidence: simulatedConfidence 
+      userId: result.userId, 
+      confidence: result.confidence 
     };
   }
   
   /**
-   * Recognize by face frame
+   * Recognize by face frame using AWS Rekognition
    */
   private async recognizeByFace(faceFrame: string): Promise<{ userId: number | null; confidence: number }> {
-    // Get all active face embeddings
-    const allFaceEmbeddings = await db.query.faceEmbeddings.findMany({
-      where: eq(faceEmbeddings.isActive, "active"),
-    });
+    // Import biometric recognition service
+    const { searchFaceInCollection, isValidImageBase64 } = await import("../services/biometricRecognition");
     
-    if (allFaceEmbeddings.length === 0) {
+    // Validate image format
+    if (!isValidImageBase64(faceFrame)) {
+      console.error("Invalid image format for face recognition");
       return { userId: null, confidence: 0 };
     }
     
-    // TODO: Replace with actual face recognition API call
-    // Options: Azure Face API, AWS Rekognition, or self-hosted DeepFace
-    
-    // Simulate: If user has face embedding, return high confidence
-    const bestMatch = allFaceEmbeddings[0];
-    const simulatedConfidence = 85 + Math.floor(Math.random() * 10); // 85-95%
+    // Search for face in AWS Rekognition collection
+    const result = await searchFaceInCollection(faceFrame);
     
     return { 
-      userId: bestMatch.userId, 
-      confidence: simulatedConfidence 
+      userId: result.userId, 
+      confidence: result.confidence 
     };
   }
   

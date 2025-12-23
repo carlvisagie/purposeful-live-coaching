@@ -530,43 +530,54 @@ export async function comprehensiveComplianceCheck(
 
 // ============================================================================
 // REAL-TIME ALERT GENERATION
-// ============================================================================
-
-export function generateRealTimeAlert(
-  violation: ComplianceViolation
-): RealTimeAlert {
-  const urgencyMap: Record<ViolationSeverity, RealTimeAlert["urgency"]> = {
+// ==============================================================export function generateRealTimeAlert(violation: ComplianceViolation): RealTimeAlert {
+  const urgencyMap: Record<ViolationSeverity, "low" | "medium" | "high" | "critical"> = {
     info: "low",
     warning: "medium",
-    moderate: "medium",
+    moderate: "high",
     severe: "high",
     critical: "critical"
   };
   
-  // Generate alternative phrase if applicable
   let alternativePhrase: string | undefined;
+  let doNotSayWarning: string | undefined;
   
+  // Provide explicit DO NOT SAY warnings and alternative phrases
   if (violation.subcategory === "interrogative_starters") {
-    alternativePhrase = "Try: 'Help me understand...' or 'Can you tell me more about...'";
+    doNotSayWarning = `🚫 DO NOT SAY: "${violation.flaggedContent}"`;
+    alternativePhrase = "✅ INSTEAD SAY: 'Help me understand what led to...' or 'I'm curious about...'";
   } else if (violation.subcategory === "absolute_statements") {
-    alternativePhrase = "Try: 'I've noticed sometimes...' or 'It seems like...'";
+    doNotSayWarning = `🚫 DO NOT SAY: "${violation.flaggedContent}"`;
+    alternativePhrase = "✅ INSTEAD SAY: 'I've noticed sometimes...' or 'It seems like...'";
   } else if (violation.subcategory === "dismissive_phrases") {
-    alternativePhrase = "Try: 'I can see this is really affecting you. What would help right now?'";
+    doNotSayWarning = `🚫 DO NOT SAY: "${violation.flaggedContent}"`;
+    alternativePhrase = "✅ INSTEAD SAY: 'I can see this is really affecting you. What would help right now?'";
   } else if (violation.subcategory === "unsolicited_advice") {
-    alternativePhrase = "Try: 'Would you like to explore some options together?'";
+    doNotSayWarning = `🚫 DO NOT SAY: Unsolicited advice`;
+    alternativePhrase = "✅ INSTEAD SAY: 'Would you like to explore some options together?'";
   } else if (violation.subcategory === "but_negation") {
-    alternativePhrase = "Replace 'but' with 'and' to honor both perspectives";
+    doNotSayWarning = `🚫 DO NOT SAY: "but" (it negates what came before)`;
+    alternativePhrase = "✅ INSTEAD SAY: Replace 'but' with 'and' to honor both perspectives";
+  } else if (violation.category === "legal") {
+    doNotSayWarning = `🚫 DO NOT SAY: "${violation.flaggedContent}" - LEGAL VIOLATION`;
+    alternativePhrase = "✅ INSTEAD SAY: " + violation.suggestion;
+  } else if (violation.category === "crisis") {
+    doNotSayWarning = `🚨 CRISIS DETECTED: "${violation.flaggedContent}" - IMMEDIATE ACTION REQUIRED`;
+    alternativePhrase = "✅ REQUIRED ACTION: " + violation.suggestion;
+  } else {
+    doNotSayWarning = `⚠️ AVOID: "${violation.flaggedContent}"`;
+    alternativePhrase = "✅ BETTER: " + violation.suggestion;
   }
+  
+  const message = doNotSayWarning + "\n\n" + alternativePhrase + "\n\nReason: " + violation.reason;
   
   return {
     type: "during_speech",
     urgency: urgencyMap[violation.severity],
-    message: violation.suggestion,
+    message,
     alternativePhrase
   };
-}
-
-// ============================================================================
+}===================================================================
 // PRE-SPEECH COMPLIANCE CHECK (For AI suggestions before coach speaks)
 // ============================================================================
 
