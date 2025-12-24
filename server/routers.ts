@@ -69,6 +69,7 @@ import { focusCoachRouter } from "./routers/focusCoach";
 import { aiMeditationRouter } from "./routers/aiMeditation";
 import { clientRecognitionRouter } from "./routers/clientRecognition";
 import { profileGuardMonitorRouter } from "./routers/profileGuardMonitor";
+import { selfFixingRouter } from "./routers/selfFixing";
 import { perpetualUpgradeRouter } from "./routers/perpetualUpgrade";
 import { contentStudioRouter } from "./routers/contentStudio";
 import { contentPipelineRouter } from "./routers/contentPipeline";
@@ -167,6 +168,9 @@ export const appRouter = router({
   
   // Profile Guard - Ensures perfect continuity (never forget a client)
   profileGuard: profileGuardMonitorRouter,
+  
+  // Self-Fixing - Automatic error detection and recovery
+  selfFixing: selfFixingRouter,
   
   // Perpetual Upgrade - Self-improving code system
   perpetualUpgrade: perpetualUpgradeRouter,
