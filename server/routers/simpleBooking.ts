@@ -36,13 +36,13 @@ export const simpleBookingRouter = router({
       console.log('[SimpleBooking] getAvailableSlots:', { coachId, date, dayOfWeek, duration });
 
       // Get coach availability for this day of week
-      const availability = await db.query.coachAvailabilitySlots.findMany({
-        where: and(
-          eq(sql`coach_id`, coachId),
-          eq(sql`day_of_week`, dayOfWeek),
-          eq(sql`is_active`, true)
-        ),
-      });
+      const availabilityResult = await db.execute(sql`
+        SELECT * FROM coach_availability_slots
+        WHERE coach_id = ${coachId}
+        AND day_of_week = ${dayOfWeek}
+        AND is_active = true
+      `);
+      const availability = availabilityResult.rows as any[];
 
       console.log('[SimpleBooking] Found availability records:', availability.length);
 
@@ -54,14 +54,14 @@ export const simpleBookingRouter = router({
       const dayStart = new Date(date + 'T00:00:00Z');
       const dayEnd = new Date(date + 'T23:59:59Z');
 
-      const existingBookings = await db.query.simpleBookings.findMany({
-        where: and(
-          eq(sql`coach_id`, coachId),
-          gte(sql`booking_date_time`, dayStart),
-          lte(sql`booking_date_time`, dayEnd),
-          eq(sql`status`, 'confirmed')
-        ),
-      });
+      const bookingsResult = await db.execute(sql`
+        SELECT * FROM simple_bookings
+        WHERE coach_id = ${coachId}
+        AND booking_date_time >= ${dayStart}
+        AND booking_date_time <= ${dayEnd}
+        AND status = 'confirmed'
+      `);
+      const existingBookings = bookingsResult.rows as any[];
 
       console.log('[SimpleBooking] Found existing bookings:', existingBookings.length);
 
@@ -70,9 +70,9 @@ export const simpleBookingRouter = router({
       const now = new Date();
       const minimumBookingTime = new Date(now.getTime() + 3 * 60000); // 3 minutes from now
 
-      for (const avail of availability) {
-        const [startHour, startMin] = avail.startTime.split(":").map(Number);
-        const [endHour, endMin] = avail.endTime.split(":").map(Number);
+        for (const avail of availability) {
+        const [startHour, startMin] = avail.start_time.split(":").map(Number);
+        const [endHour, endMin] = avail.end_time.split(":").map(Number);
 
         // Generate slots every 30 minutes
         let currentHour = startHour;
@@ -87,7 +87,7 @@ export const simpleBookingRouter = router({
           if (slotTime >= minimumBookingTime) {
             // Check if slot conflicts with existing booking
             const hasConflict = existingBookings.some(booking => {
-              const bookingStart = new Date(booking.bookingDateTime);
+              const bookingStart = new Date(booking.booking_date_time);
               const bookingEnd = new Date(bookingStart.getTime() + booking.duration * 60000);
 
               return (
