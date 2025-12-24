@@ -118,12 +118,13 @@ export const schedulingRouter = router({
     .input(
       z.object({
         coachId: z.number(),
-        date: z.date(),
+        date: z.string().or(z.date()),
         duration: z.number().default(60), // session duration in minutes
       })
     )
     .query(async ({ input }) => {
-      const { coachId, date, duration } = input;
+      const { coachId, duration } = input;
+      const date = typeof input.date === 'string' ? new Date(input.date) : input.date;
 
       console.log('=== getAvailableSlots DEBUG ===');
       console.log('Input date:', date);
