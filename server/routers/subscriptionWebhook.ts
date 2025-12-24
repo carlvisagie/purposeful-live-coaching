@@ -1,7 +1,7 @@
 import { router, publicProcedure } from "../_core/trpc";
 import { TRPCError } from "@trpc/server";
 import { db } from "../db";
-import { subscriptions, usageTracking, humanSessionBookings } from "../../drizzle/schema";
+import { subscriptions, usageTracking, humanSessionBookings, users } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import Stripe from "stripe";
 import { ENV } from "../_core/env";
@@ -59,14 +59,42 @@ export const subscriptionWebhookRouter = router({
         
         // Only handle subscription checkouts (not one-time payments)
         if (session.mode === "subscription" && session.subscription) {
-          const userId = parseInt(session.metadata?.userId || "0");
-          const tier = session.metadata?.tier as "ai_only" | "hybrid" | "premium";
+          const tier = session.metadata?.tier as "ai_basic" | "ai_premium" | "ai_elite" | "human_starter" | "human_professional" | "human_elite";
           const billingFrequency = (session.metadata?.billingFrequency || "monthly") as "monthly" | "yearly";
+          const customerEmail = session.customer_email || session.customer_details?.email;
           
-          if (!userId || !tier) {
-            console.error("Missing userId or tier in checkout session metadata");
+          if (!tier || !customerEmail) {
+            console.error("[Webhook] Missing tier or customer email in checkout session");
+            console.error("[Webhook] Session ID:", session.id);
+            console.error("[Webhook] Tier:", tier);
+            console.error("[Webhook] Email:", customerEmail);
             break;
           }
+
+          console.log(`[Webhook] Processing subscription for ${customerEmail}, tier: ${tier}`);
+
+          // Find or create user by email (frictionless onboarding)
+          let user = await db.query.users.findFirst({
+            where: eq(users.email, customerEmail),
+          });
+
+          if (!user) {
+            // Create new user with email (voice/face recognition will identify them later)
+            console.log(`[Webhook] Creating new user for ${customerEmail}`);
+            const [newUser] = await db.insert(users).values({
+              openId: `stripe_${session.customer}`, // Use Stripe customer ID as openId
+              email: customerEmail,
+              name: session.customer_details?.name || null,
+              loginMethod: "stripe_checkout",
+              role: "client",
+            }).returning();
+            user = newUser;
+            console.log(`[Webhook] ✅ Created new user ${user.id} for ${customerEmail}`);
+          } else {
+            console.log(`[Webhook] Found existing user ${user.id} for ${customerEmail}`);
+          }
+
+          const userId = user.id;
 
           // Get subscription details from Stripe
           const stripeSubscription: any = await stripe.subscriptions.retrieve(
