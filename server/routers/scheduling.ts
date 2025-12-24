@@ -174,8 +174,10 @@ export const schedulingRouter = router({
         let currentSlot = new Date(slotStart);
 
         while (currentSlot.getTime() + duration * 60000 <= slotEnd.getTime()) {
-          // Check if slot is in the past
-          if (currentSlot > new Date()) {
+          // Check if slot is at least 15 minutes in the future (buffer for booking)
+          const now = new Date();
+          const minimumBookingTime = new Date(now.getTime() + 15 * 60000); // 15 min buffer
+          if (currentSlot >= minimumBookingTime) {
             // Check if slot conflicts with existing session
             const hasConflict = sessions.some(s => {
               const sessionStart = new Date(s.session!.scheduledDate);
