@@ -3,6 +3,7 @@ import { router, publicProcedure, protectedProcedure } from "../_core/trpc";
 import OpenAI from "openai";
 import SelfLearning from "../selfLearningIntegration";
 import ProfileGuard from "../profileGuard";
+import SelfFixing from "../selfFixing";
 
 const openai = new OpenAI();
 
@@ -192,13 +193,23 @@ IMPORTANT:
 
 Generate the complete sleep story now:`;
 
+      const startTime = Date.now();
       try {
-        const completion = await openai.chat.completions.create({
-          model: "gpt-4o",
-          messages: [{ role: "user", content: prompt }],
-          temperature: 0.8,
-          max_tokens: 6000
-        });
+        const completion = await SelfFixing.withRetry(
+          async () => await openai.chat.completions.create({
+            model: "gpt-4o",
+            messages: [{ role: "user", content: prompt }],
+            temperature: 0.8,
+            max_tokens: 6000
+          }),
+          {
+            module: "sleep_stories",
+            operation: "generateStory",
+            userId: ctx.user?.id,
+            errorType: "api",
+            severity: "medium",
+          }
+        );
 
         const story = completion.choices[0]?.message?.content || "";
         

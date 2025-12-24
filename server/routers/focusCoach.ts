@@ -3,6 +3,7 @@ import { router, publicProcedure, protectedProcedure } from "../_core/trpc";
 import OpenAI from "openai";
 import SelfLearning from "../selfLearningIntegration";
 import ProfileGuard from "../profileGuard";
+import SelfFixing from "../selfFixing";
 
 const openai = new OpenAI();
 
@@ -196,12 +197,21 @@ Be supportive but not cheesy. Acknowledge their intention and set them up for su
 End with a simple "Let's begin."`;
 
         try {
-          const completion = await openai.chat.completions.create({
-            model: "gpt-4o-mini",
-            messages: [{ role: "user", content: prompt }],
-            temperature: 0.7,
-            max_tokens: 150
-          });
+          const completion = await SelfFixing.withRetry(
+            async () => await openai.chat.completions.create({
+              model: "gpt-4o-mini",
+              messages: [{ role: "user", content: prompt }],
+              temperature: 0.7,
+              max_tokens: 150
+            }),
+            {
+              module: "focus_coach",
+              operation: "generateOpeningMessage",
+              userId: ctx.user?.id,
+              errorType: "api",
+              severity: "low",
+            }
+          );
           openingMessage = completion.choices[0]?.message?.content || "";
         } catch (error) {
           openingMessage = `Let's begin your ${duration}-minute ${mode.name} session. You've got this. Let's begin.`;
@@ -276,12 +286,21 @@ Generate a brief (1-2 sentences) encouraging message appropriate for their state
 Keep it natural and supportive.`;
 
       try {
-        const completion = await openai.chat.completions.create({
-          model: "gpt-4o-mini",
-          messages: [{ role: "user", content: prompt }],
-          temperature: 0.7,
-          max_tokens: 100
-        });
+        const completion = await SelfFixing.withRetry(
+          async () => await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: [{ role: "user", content: prompt }],
+            temperature: 0.7,
+            max_tokens: 100
+          }),
+          {
+            module: "focus_coach",
+            operation: "generateCheckInMessage",
+            userId,
+            errorType: "api",
+            severity: "low",
+          }
+        );
         return {
           success: true,
           message: completion.choices[0]?.message?.content || ""
@@ -344,17 +363,25 @@ Encourage drinking water mindfully.`
       };
 
       try {
-        const completion = await openai.chat.completions.create({
-          model: "gpt-4o-mini",
-          messages: [{ 
-            role: "user", 
-            content: `You are a wellness coach guiding a focus break. ${guidancePrompts[input.breakType]}
-            
+        const completion = await SelfFixing.withRetry(
+          async () => await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: [{ 
+              role: "user", 
+              content: `You are a wellness coach guiding a focus break. ${guidancePrompts[input.breakType]}
+              
 Keep the tone warm and supportive. This is a break from focused work.` 
-          }],
-          temperature: 0.7,
-          max_tokens: 500
-        });
+            }],
+            temperature: 0.7,
+            max_tokens: 500
+          }),
+          {
+            module: "focus_coach",
+            operation: "generateBreakGuidance",
+            errorType: "api",
+            severity: "low",
+          }
+        );
         
         return {
           success: true,
@@ -410,12 +437,21 @@ Be genuine, not cheesy.`;
 
       let completionMessage = "";
       try {
-        const completion = await openai.chat.completions.create({
-          model: "gpt-4o-mini",
-          messages: [{ role: "user", content: prompt }],
-          temperature: 0.7,
-          max_tokens: 150
-        });
+        const completion = await SelfFixing.withRetry(
+          async () => await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: [{ role: "user", content: prompt }],
+            temperature: 0.7,
+            max_tokens: 150
+          }),
+          {
+            module: "focus_coach",
+            operation: "completeSession",
+            userId,
+            errorType: "api",
+            severity: "low",
+          }
+        );
         completionMessage = completion.choices[0]?.message?.content || "";
       } catch (error) {
         completionMessage = `Great work completing your ${input.actualDuration}-minute session. Every focused minute counts.`;

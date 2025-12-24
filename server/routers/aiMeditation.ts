@@ -3,6 +3,7 @@ import { router, publicProcedure, protectedProcedure } from "../_core/trpc";
 import OpenAI from "openai";
 import SelfLearning from "../selfLearningIntegration";
 import ProfileGuard from "../profileGuard";
+import SelfFixing from "../selfFixing";
 
 const openai = new OpenAI();
 
@@ -166,12 +167,20 @@ TONE: Warm, calm, unhurried, supportive
 Generate the complete meditation script:`;
 
       try {
-        const completion = await openai.chat.completions.create({
-          model: "gpt-4o",
-          messages: [{ role: "user", content: prompt }],
-          temperature: 0.7,
-          max_tokens: 4000
-        });
+        const completion = await SelfFixing.withRetry(
+          async () => await openai.chat.completions.create({
+            model: "gpt-4o",
+            messages: [{ role: "user", content: prompt }],
+            temperature: 0.7,
+            max_tokens: 4000
+          }),
+          {
+            module: "meditation",
+            operation: "generateMeditation",
+            errorType: "api",
+            severity: "medium",
+          }
+        );
 
         const script = completion.choices[0]?.message?.content || "";
 
@@ -249,12 +258,20 @@ Generate a brief (1-2 sentences) adaptive guidance message that:
 Keep it gentle and supportive.`;
 
       try {
-        const completion = await openai.chat.completions.create({
-          model: "gpt-4o-mini",
-          messages: [{ role: "user", content: prompt }],
-          temperature: 0.7,
-          max_tokens: 100
-        });
+        const completion = await SelfFixing.withRetry(
+          async () => await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: [{ role: "user", content: prompt }],
+            temperature: 0.7,
+            max_tokens: 100
+          }),
+          {
+            module: "meditation",
+            operation: "getAdaptiveGuidance",
+            errorType: "api",
+            severity: "low",
+          }
+        );
 
         return {
           success: true,
@@ -319,12 +336,21 @@ Generate brief, personalized insights (2-3 sentences) about their practice:
 Be warm and encouraging.`;
 
         try {
-          const completion = await openai.chat.completions.create({
-            model: "gpt-4o-mini",
-            messages: [{ role: "user", content: prompt }],
-            temperature: 0.7,
-            max_tokens: 150
-          });
+          const completion = await SelfFixing.withRetry(
+            async () => await openai.chat.completions.create({
+              model: "gpt-4o-mini",
+              messages: [{ role: "user", content: prompt }],
+              temperature: 0.7,
+              max_tokens: 150
+            }),
+            {
+              module: "meditation",
+              operation: "completeMeditation",
+              userId,
+              errorType: "api",
+              severity: "low",
+            }
+          );
           insights = completion.choices[0]?.message?.content || "";
         } catch (error) {
           insights = "Great practice! Consistency is key - even a few minutes of meditation can make a difference.";
@@ -394,12 +420,21 @@ Keep it practical and immediately helpful. Include:
 Total length should be appropriate for ${config.duration} minutes when read slowly.`;
 
       try {
-        const completion = await openai.chat.completions.create({
-          model: "gpt-4o-mini",
-          messages: [{ role: "user", content: prompt }],
-          temperature: 0.7,
-          max_tokens: 800
-        });
+        const completion = await SelfFixing.withRetry(
+          async () => await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: [{ role: "user", content: prompt }],
+            temperature: 0.7,
+            max_tokens: 800
+          }),
+          {
+            module: "meditation",
+            operation: "getQuickRelief",
+            userId,
+            errorType: "api",
+            severity: "medium",
+          }
+        );
 
         return {
           success: true,

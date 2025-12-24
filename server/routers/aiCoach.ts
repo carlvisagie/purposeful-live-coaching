@@ -3,6 +3,7 @@ import { publicProcedure, router } from "../_core/trpc";
 import OpenAI from "openai";
 import ProfileGuard from "../profileGuard";
 import SelfLearning from "../selfLearningIntegration";
+import SelfFixing from "../selfFixing";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -36,6 +37,10 @@ export const aiCoachRouter = router({
       
       const { clientInput, clientName, sessionType, clientContext } = input;
 
+      const startTime = Date.now();
+      let wasSuccessful = false;
+      let usedFallback = false;
+
       try {
         const systemPrompt = `You are an expert wellness and life coach assistant helping a coach during a live session. 
 Your role is to provide suggested responses that the coach can read or adapt.
@@ -62,16 +67,26 @@ For each suggestion, provide:
 
 Respond in JSON format with a "suggestions" array.`;
 
-        const response = await openai.chat.completions.create({
-          model: "gpt-4o",
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: `The client just said: "${clientInput}"\n\nGenerate coaching response suggestions.` },
-          ],
-          response_format: { type: "json_object" },
-          temperature: 0.7,
-          max_tokens: 1000,
-        });
+        // Wrap OpenAI call with retry logic
+        const response = await SelfFixing.withRetry(
+          async () => await openai.chat.completions.create({
+            model: "gpt-4o",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: `The client just said: "${clientInput}"\n\nGenerate coaching response suggestions.` },
+            ],
+            response_format: { type: "json_object" },
+            temperature: 0.7,
+            max_tokens: 1000,
+          }),
+          {
+            module: "ai_coach",
+            operation: "generateCoachingSuggestion",
+            userId: input.userId,
+            errorType: "api",
+            severity: "medium",
+          }
+        );
 
         const content = response.choices[0]?.message?.content;
         if (!content) {
@@ -79,12 +94,41 @@ Respond in JSON format with a "suggestions" array.`;
         }
 
         const parsed = JSON.parse(content);
+        wasSuccessful = true;
+
+        // Track successful interaction
+        await SelfLearning.trackInteraction({
+          moduleType: "ai_chat",
+          userId: input.userId,
+          action: "generate_coaching_suggestion",
+          duration: Math.round((Date.now() - startTime) / 1000),
+          wasSuccessful: true,
+          metadata: {
+            sessionType,
+            suggestionsCount: parsed.suggestions?.length || 0,
+          },
+        });
+
         return {
           suggestions: parsed.suggestions || [],
           success: true,
         };
       } catch (error: any) {
         console.error("AI Coach suggestion error:", error);
+        usedFallback = true;
+        
+        // Track failed interaction
+        await SelfLearning.trackInteraction({
+          moduleType: "ai_chat",
+          userId: input.userId,
+          action: "generate_coaching_suggestion",
+          duration: Math.round((Date.now() - startTime) / 1000),
+          wasSuccessful: false,
+          metadata: {
+            error: error.message,
+            usedFallback: true,
+          },
+        });
         
         // Return fallback suggestions if AI fails
         return {
@@ -134,33 +178,71 @@ Respond in JSON format with a "suggestions" array.`;
         logAccess: true,
       });
       
+      const startTime = Date.now();
       try {
-        const response = await openai.chat.completions.create({
-          model: "gpt-4o",
-          messages: [
-            {
-              role: "system",
-              content: `Analyze the emotional content of the following text. Return JSON with:
+        const response = await SelfFixing.withRetry(
+          async () => await openai.chat.completions.create({
+            model: "gpt-4o",
+            messages: [
+              {
+                role: "system",
+                content: `Analyze the emotional content of the following text. Return JSON with:
 - primaryEmotion: The main emotion detected
 - intensity: "low" | "medium" | "high"
 - triggers: Array of potential emotional triggers mentioned
 - suggestedApproach: Brief coaching approach recommendation`,
-            },
-            { role: "user", content: input.text },
-          ],
-          response_format: { type: "json_object" },
-          temperature: 0.3,
-          max_tokens: 300,
-        });
+              },
+              { role: "user", content: input.text },
+            ],
+            response_format: { type: "json_object" },
+            temperature: 0.3,
+            max_tokens: 300,
+          }),
+          {
+            module: "ai_coach",
+            operation: "analyzeEmotion",
+            userId: input.userId,
+            errorType: "api",
+            severity: "medium",
+          }
+        );
 
         const content = response.choices[0]?.message?.content;
         if (!content) {
           throw new Error("No response from AI");
         }
 
-        return JSON.parse(content);
+        const result = JSON.parse(content);
+
+        // Track successful emotion analysis
+        await SelfLearning.trackInteraction({
+          moduleType: "ai_chat",
+          userId: input.userId,
+          action: "analyze_emotion",
+          duration: Math.round((Date.now() - startTime) / 1000),
+          wasSuccessful: true,
+          metadata: {
+            primaryEmotion: result.primaryEmotion,
+            intensity: result.intensity,
+          },
+        });
+
+        return result;
       } catch (error) {
         console.error("Emotion analysis error:", error);
+
+        // Track failed emotion analysis
+        await SelfLearning.trackInteraction({
+          moduleType: "ai_chat",
+          userId: input.userId,
+          action: "analyze_emotion",
+          duration: Math.round((Date.now() - startTime) / 1000),
+          wasSuccessful: false,
+          metadata: {
+            error: (error as Error).message,
+          },
+        });
+
         return {
           primaryEmotion: "unknown",
           intensity: "medium",
