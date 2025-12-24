@@ -173,21 +173,63 @@ export default function CoachAvailability() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Start Time</Label>
+                  <Label>Start Time (24-hour format)</Label>
                   <Input
-                    type="time"
+                    type="text"
+                    placeholder="09:00"
                     value={startTime}
-                    onChange={(e) => setStartTime(e.target.value)}
-                    step="900"
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // Allow only numbers and colon
+                      if (/^[0-9:]*$/.test(value)) {
+                        setStartTime(value);
+                      }
+                    }}
+                    onBlur={(e) => {
+                      // Validate and format on blur
+                      const value = e.target.value;
+                      const match = value.match(/^(\d{1,2}):?(\d{0,2})$/);
+                      if (match) {
+                        const hours = parseInt(match[1]) || 0;
+                        const minutes = parseInt(match[2]) || 0;
+                        if (hours >= 0 && hours < 24 && minutes >= 0 && minutes < 60) {
+                          setStartTime(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`);
+                        } else {
+                          toast.error('Invalid time. Hours must be 0-23, minutes 0-59');
+                        }
+                      }
+                    }}
+                    maxLength={5}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>End Time</Label>
+                  <Label>End Time (24-hour format)</Label>
                   <Input
-                    type="time"
+                    type="text"
+                    placeholder="17:00"
                     value={endTime}
-                    onChange={(e) => setEndTime(e.target.value)}
-                    step="900"
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // Allow only numbers and colon
+                      if (/^[0-9:]*$/.test(value)) {
+                        setEndTime(value);
+                      }
+                    }}
+                    onBlur={(e) => {
+                      // Validate and format on blur
+                      const value = e.target.value;
+                      const match = value.match(/^(\d{1,2}):?(\d{0,2})$/);
+                      if (match) {
+                        const hours = parseInt(match[1]) || 0;
+                        const minutes = parseInt(match[2]) || 0;
+                        if (hours >= 0 && hours < 24 && minutes >= 0 && minutes < 60) {
+                          setEndTime(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`);
+                        } else {
+                          toast.error('Invalid time. Hours must be 0-23, minutes 0-59');
+                        }
+                      }
+                    }}
+                    maxLength={5}
                   />
                 </div>
               </div>
