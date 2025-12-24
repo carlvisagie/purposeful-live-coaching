@@ -216,9 +216,6 @@ export const subscriptionsRouter = router({
             tier: input.tier,
           },
         },
-        phone_number_collection: {
-          enabled: false, // Disable phone collection for frictionless onboarding
-        },
         metadata: {
           tier: input.tier,
         },
