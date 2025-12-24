@@ -97,7 +97,7 @@ async function startServer() {
   // Rate limiting for API protection
   const apiLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 500, // Limit each IP to 500 requests per windowMs (increased for better UX)
+    max: 5000, // Limit each IP to 5000 requests per windowMs (10x increase for booking system)
     message: { error: "Too many requests, please try again later." },
     standardHeaders: true,
     legacyHeaders: false,
