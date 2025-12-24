@@ -192,8 +192,9 @@ export const schedulingRouter = router({
           if (currentSlot >= minimumBookingTime) {
             // Check if slot conflicts with existing session
             const hasConflict = sessions.some(s => {
-              const sessionStart = new Date(s.session!.scheduledDate);
-              const sessionEnd = new Date(sessionStart.getTime() + (s.session!.duration || 60) * 60000);
+              if (!s.session) return false; // Skip null sessions
+              const sessionStart = new Date(s.session.scheduledDate);
+              const sessionEnd = new Date(sessionStart.getTime() + (s.session.duration || 60) * 60000);
               const slotEndTime = new Date(currentSlot.getTime() + duration * 60000);
 
               return (
