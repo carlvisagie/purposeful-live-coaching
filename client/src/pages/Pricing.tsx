@@ -118,6 +118,7 @@ export default function Pricing() {
         "Everything in Premium",
         "All 34 wellness modules unlocked",
         "UNLIMITED AI messages (vs 500 limit in Premium)",
+        "Fully customizable AI coaching experience & preferences",
         "AI-powered comprehensive LIFE planning (beyond wellness)",
         "ADVANCED progress analytics & predictive insights",
         "Custom AI coaching plans tailored to your unique goals",
