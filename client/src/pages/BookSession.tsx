@@ -197,7 +197,9 @@ export default function BookSession() {
 
     // Add days of month
     for (let day = 1; day <= daysInMonth; day++) {
-      days.push(new Date(year, month, day));
+      const date = new Date(year, month, day);
+      date.setHours(12, 0, 0, 0); // Set to noon to avoid timezone issues
+      days.push(date);
     }
 
     return days;
