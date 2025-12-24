@@ -3,6 +3,9 @@ import { boolean, date, decimal, int, integer, pgTable, serial, text, timestamp,
 // Export identity schema tables
 export * from "./identitySchema";
 
+// Export simple booking schema tables
+export * from "./schema_simple_booking";
+
 // Export client recognition schema tables
 export * from "./clientRecognitionSchema";
 

@@ -79,6 +79,7 @@ import { vapiWebhookRouter } from "./routers/vapiWebhook";
 import { eventTrackingRouter } from "./routers/eventTracking";
 import { youtubeRouter } from "./routers/youtube";
 import { evidenceRouter } from "./routers/evidence";
+import { simpleBookingRouter } from "./routers/simpleBooking";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -104,6 +105,7 @@ export const appRouter = router({
   sessions: sessionsRouter,
   stripe: stripeRouter,
   scheduling: schedulingRouter,
+  simpleBooking: simpleBookingRouter,
   sessionTypes: sessionTypesRouter,
   sessionPayments: sessionPaymentsRouter,
   aiChat: aiChatRouter,
