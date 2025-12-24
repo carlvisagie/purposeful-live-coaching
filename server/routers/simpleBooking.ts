@@ -25,6 +25,7 @@ export const simpleBookingRouter = router({
       })
     )
     .query(async ({ input }) => {
+      try {
       const { coachId, date, duration } = input;
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable" });
@@ -113,6 +114,11 @@ export const simpleBookingRouter = router({
 
       console.log('[SimpleBooking] Generated slots:', slots.length);
       return { slots };
+      } catch (error) {
+        console.error('[SimpleBooking] ERROR in getAvailableSlots:', error);
+        console.error('[SimpleBooking] Error stack:', error instanceof Error ? error.stack : 'No stack');
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: error instanceof Error ? error.message : 'Unknown error' });
+      }
     }),
 
   /**
