@@ -94,14 +94,6 @@ export const users = pgTable("users", {
   triggers: text("triggers"), // JSON array of triggers to watch for
   profileCompleteness: integer("profile_completeness").default(0), // 0-100%
   
-  // AI Coaching Customization (Elite tier feature)
-  aiCoachingStyle: varchar("ai_coaching_style", { length: 50 }).default("gentle"), // gentle, direct, analytical, motivational
-  aiTone: varchar("ai_tone", { length: 50 }).default("warm"), // warm, professional, casual, inspiring
-  aiFormality: varchar("ai_formality", { length: 50 }).default("balanced"), // formal, balanced, casual
-  aiResponseLength: varchar("ai_response_length", { length: 50 }).default("medium"), // brief, medium, detailed
-  aiFocusAreas: text("ai_focus_areas"), // JSON array of focus areas (emotional, mental, physical, etc.)
-  aiCustomInstructions: text("ai_custom_instructions"), // Free-form custom instructions for AI
-  
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
   lastSignedIn: timestamp("last_signed_in").defaultNow().notNull(),
