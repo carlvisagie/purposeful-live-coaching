@@ -52,29 +52,33 @@ const TIER_CONFIG = {
     name: "AI Coaching - Premium",
     price: 14900, // $149.00/month
     messagesPerMonth: 500, // 500 AI messages per month
-    humanSessionsIncluded: 1,
+    humanSessionsIncluded: 0,
     stripePriceId: STRIPE_PRICE_IDS.ai_premium,
     features: [
-      "Everything in AI Basic",
-      "1 live session per month (30 min)",
-      "Priority email support",
-      "Personalized action plans",
-      "Session recordings",
+      "Everything in Basic",
+      "All 34 wellness modules unlocked",
+      "500 AI messages per month (5x more)",
+      "Advanced AI insights & analytics",
+      "AI-generated personalized action plans",
+      "Priority AI response times",
+      "Email support",
     ],
   },
   ai_elite: {
     name: "AI Coaching - Elite",
     price: 29900, // $299.00/month
     messagesPerMonth: -1, // Unlimited AI messages
-    humanSessionsIncluded: 4,
+    humanSessionsIncluded: 0,
     stripePriceId: STRIPE_PRICE_IDS.ai_elite,
     features: [
-      "Everything in AI Premium",
-      "4 live sessions per month (30 min each)",
-      "Priority scheduling",
+      "Everything in Premium",
+      "Unlimited AI messages",
+      "AI-powered comprehensive life planning",
+      "Advanced progress analytics & insights",
+      "Custom AI coaching plans",
+      "Family wellness resources",
       "Text & email support",
-      "Custom coaching plans",
-      "Family support resources",
+      "Priority support (same-day response)",
     ],
   },
   human_basic: {
