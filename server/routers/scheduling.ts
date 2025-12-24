@@ -125,13 +125,23 @@ export const schedulingRouter = router({
     .query(async ({ input }) => {
       const { coachId, date, duration } = input;
 
+      console.log('=== getAvailableSlots DEBUG ===');
+      console.log('Input date:', date);
+      console.log('Input date ISO:', date.toISOString());
+      console.log('Current time:', new Date());
+      console.log('Current time ISO:', new Date().toISOString());
+
       // Get day of week (0 = Sunday, 6 = Saturday)
       const dayOfWeek = date.getDay();
+      console.log('Day of week:', dayOfWeek);
 
       // Get coach availability for this day
       const availability = await getCoachAvailability(coachId, dayOfWeek);
+      console.log('Availability records:', availability.length);
+      console.log('Availability times:', availability.map(a => `${a.startTime}-${a.endTime}`));
 
       if (availability.length === 0) {
+        console.log('No availability found for day', dayOfWeek);
         return { slots: [] };
       }
 
@@ -159,6 +169,7 @@ export const schedulingRouter = router({
 
       // Generate time slots
       const slots: string[] = [];
+      console.log('Generating slots for date:', date.toISOString());
 
       for (const avail of availability) {
         const [startHour, startMin] = avail.startTime.split(":").map(Number);
@@ -177,6 +188,7 @@ export const schedulingRouter = router({
           // Check if slot is at least 15 minutes in the future (buffer for booking)
           const now = new Date();
           const minimumBookingTime = new Date(now.getTime() + 15 * 60000); // 15 min buffer
+          console.log('Checking slot:', currentSlot.toISOString(), 'vs minimum:', minimumBookingTime.toISOString(), 'passes:', currentSlot >= minimumBookingTime);
           if (currentSlot >= minimumBookingTime) {
             // Check if slot conflicts with existing session
             const hasConflict = sessions.some(s => {
