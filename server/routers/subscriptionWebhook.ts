@@ -63,12 +63,17 @@ export const subscriptionWebhookRouter = router({
           const billingFrequency = (session.metadata?.billingFrequency || "monthly") as "monthly" | "yearly";
           const customerEmail = session.customer_email || session.customer_details?.email;
           
-          if (!tier || !customerEmail) {
-            console.error("[Webhook] Missing tier or customer email in checkout session");
+          if (!customerEmail) {
+            console.error("[Webhook] Missing customer email in checkout session");
             console.error("[Webhook] Session ID:", session.id);
-            console.error("[Webhook] Tier:", tier);
-            console.error("[Webhook] Email:", customerEmail);
-            break;
+            throw new TRPCError({
+              code: "BAD_REQUEST",
+              message: "Missing customer email",
+            });
+          }
+          
+          if (!tier) {
+            console.warn("[Webhook] Missing tier metadata, will infer from price");
           }
 
           console.log(`[Webhook] Processing subscription for ${customerEmail}, tier: ${tier}`);
@@ -100,6 +105,20 @@ export const subscriptionWebhookRouter = router({
           const stripeSubscription: any = await stripe.subscriptions.retrieve(
             session.subscription as string
           );
+          
+          // Infer tier from price if not in metadata
+          let finalTier = tier;
+          if (!finalTier) {
+            const priceId = stripeSubscription.items.data[0].price.id;
+            // Map price IDs to tiers (you'll need to add your actual price IDs)
+            if (priceId.includes('29')) finalTier = 'ai_basic';
+            else if (priceId.includes('149')) finalTier = 'ai_premium';
+            else if (priceId.includes('299')) finalTier = 'ai_elite';
+            else if (priceId.includes('800')) finalTier = 'human_starter';
+            else if (priceId.includes('1200')) finalTier = 'human_professional';
+            else finalTier = 'ai_basic'; // default fallback
+            console.log(`[Webhook] Inferred tier: ${finalTier} from price ${priceId}`);
+          }
 
           // Create subscription record in database
           await db.insert(subscriptions).values({
@@ -107,8 +126,8 @@ export const subscriptionWebhookRouter = router({
             stripeSubscriptionId: stripeSubscription.id,
             stripeCustomerId: stripeSubscription.customer as string,
             stripePriceId: stripeSubscription.items.data[0].price.id,
-            productId: tier,
-            tier,
+            productId: finalTier,
+            tier: finalTier,
             billingFrequency,
             status: stripeSubscription.status === "trialing" ? "trialing" : "active",
             currentPeriodStart: new Date(stripeSubscription.current_period_start * 1000),
@@ -122,7 +141,7 @@ export const subscriptionWebhookRouter = router({
             cancelAtPeriodEnd: "false",
           });
 
-          console.log(`✅ Created subscription for user ${userId} (${tier} - ${billingFrequency})`);
+          console.log(`✅ Created subscription for user ${userId} (${finalTier} - ${billingFrequency})`);
         }
         
         // Handle one-time session purchases
