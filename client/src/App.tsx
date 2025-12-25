@@ -24,6 +24,7 @@ import ClientDetail from "./pages/ClientDetail";
 import MySessions from "./pages/MySessions";
 import BookSession from "./pages/BookSession";
 import SimpleBookSession from "./pages/SimpleBookSession";
+import CalendlyBooking from "./pages/CalendlyBooking";
 import CoachAvailability from "./pages/CoachAvailability";
 import ManageSessionTypes from "./pages/ManageSessionTypes";
 import AICoach from "./pages/AICoach";
@@ -93,7 +94,7 @@ function Router() {
       <Route path="/coach/setup" component={CoachSetup} />
       <Route path="/my-sessions" component={MySessions} />
       <Route path="/sessions/book" component={BookSession} />
-      <Route path="/book-session" component={SimpleBookSession} />
+      <Route path="/book-session" component={CalendlyBooking} />
       <Route path="/book-session-old" component={BookSession} />
       <Route path="/coach/availability" component={CoachAvailability} />
       <Route path="/coach/calendar" component={CoachAvailability} />
