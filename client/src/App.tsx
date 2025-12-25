@@ -93,7 +93,7 @@ function Router() {
       <Route path="/clients/:id" component={ClientDetail} />
       <Route path="/coach/setup" component={CoachSetup} />
       <Route path="/my-sessions" component={MySessions} />
-      <Route path="/sessions/book" component={BookSession} />
+      <Route path="/sessions/book" component={CalendlyBooking} />
       <Route path="/book-session" component={CalendlyBooking} />
       <Route path="/book-session-old" component={BookSession} />
       <Route path="/coach/availability" component={CoachAvailability} />
