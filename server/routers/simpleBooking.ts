@@ -43,7 +43,7 @@ export const simpleBookingRouter = router({
         AND day_of_week = ${dayOfWeek}
         AND is_active = true
       `);
-      const availability = availabilityResult.rows as any[];
+      const availability = (availabilityResult.rows || []) as any[];
 
       console.log('[SimpleBooking] Found availability records:', availability.length);
 
@@ -62,7 +62,7 @@ export const simpleBookingRouter = router({
         AND booking_date_time <= ${dayEnd}
         AND status = 'confirmed'
       `);
-      const existingBookings = bookingsResult.rows as any[];
+      const existingBookings = (bookingsResult.rows || []) as any[];
 
       console.log('[SimpleBooking] Found existing bookings:', existingBookings.length);
 
