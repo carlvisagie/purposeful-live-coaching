@@ -84,6 +84,8 @@ export const simpleBookingRouter = router({
           // Start from next available slot after minimum booking time
           const minHour = minimumBookingTime.getUTCHours();
           const minMin = minimumBookingTime.getUTCMinutes();
+          console.log('[SimpleBooking] Same-day booking - now:', now.toISOString(), 'minTime:', minimumBookingTime.toISOString());
+          console.log('[SimpleBooking] Original start:', startHour + ':' + startMin, 'minHour:', minHour, 'minMin:', minMin);
           
           // Round up to next 30-minute slot
           if (minHour > currentHour || (minHour === currentHour && minMin > currentMin)) {
@@ -94,6 +96,7 @@ export const simpleBookingRouter = router({
               currentMin = 0;
             }
           }
+          console.log('[SimpleBooking] Adjusted start:', currentHour + ':' + currentMin);
         }
 
         while (currentHour < endHour || (currentHour === endHour && currentMin < endMin)) {
