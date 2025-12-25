@@ -176,11 +176,12 @@ export const schedulingRouter = router({
         const [startHour, startMin] = avail.startTime.split(":").map(Number);
         const [endHour, endMin] = avail.endTime.split(":").map(Number);
 
+        // Create slots in UTC to match database times
         const slotStart = new Date(date);
-        slotStart.setHours(startHour, startMin, 0, 0);
+        slotStart.setUTCHours(startHour, startMin, 0, 0);
 
         const slotEnd = new Date(date);
-        slotEnd.setHours(endHour, endMin, 0, 0);
+        slotEnd.setUTCHours(endHour, endMin, 0, 0);
 
         // Generate slots every 30 minutes
         let currentSlot = new Date(slotStart);
