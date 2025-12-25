@@ -75,9 +75,26 @@ export const simpleBookingRouter = router({
         const [startHour, startMin] = avail.start_time.split(":").map(Number);
         const [endHour, endMin] = avail.end_time.split(":").map(Number);
 
-        // Generate slots every 30 minutes
+        // For same-day bookings, start from current time + 3 minutes
+        const isToday = targetDate.toISOString().split('T')[0] === now.toISOString().split('T')[0];
         let currentHour = startHour;
         let currentMin = startMin;
+        
+        if (isToday) {
+          // Start from next available slot after minimum booking time
+          const minHour = minimumBookingTime.getUTCHours();
+          const minMin = minimumBookingTime.getUTCMinutes();
+          
+          // Round up to next 30-minute slot
+          if (minHour > currentHour || (minHour === currentHour && minMin > currentMin)) {
+            currentHour = minHour;
+            currentMin = Math.ceil(minMin / 30) * 30;
+            if (currentMin >= 60) {
+              currentHour += 1;
+              currentMin = 0;
+            }
+          }
+        }
 
         while (currentHour < endHour || (currentHour === endHour && currentMin < endMin)) {
           // Create slot time
