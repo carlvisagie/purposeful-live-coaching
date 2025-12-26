@@ -1,17 +1,14 @@
 /**
  * Email Automation Router
  * Handles automated emails for trial conversion, payment recovery, and engagement
- */
-
-import { z } from "zod";
+ */import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "../_core/trpc";
 import { TRPCError } from "@trpc/server";
 import { getDb } from "../db";
 import { subscriptions, usageTracking, emailLogs, users } from "../../drizzle/schema";
 import { eq, and, gte, lte, desc } from "drizzle-orm";
 import nodemailer from "nodemailer";
-
-// Create reusable transporter
+import MarketingIntelligence from "../marketingIntelligence.js";// Create reusable transporter
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || "smtp.gmail.com",
   port: parseInt(process.env.SMTP_PORT || "587"),

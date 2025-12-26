@@ -6,6 +6,7 @@ import { subscriptions, usageTracking, humanSessionBookings, aiChatConversations
 import { eq, and, gte, lte, desc } from "drizzle-orm";
 import Stripe from "stripe";
 import { ENV } from "../_core/env";
+import { SelfLearning } from "../selfLearningIntegration.js";
 
 const stripe = new Stripe(ENV.stripeSecretKey || process.env.STRIPE_SECRET_KEY || "sk_test_placeholder", {
   apiVersion: "2025-10-29.clover",
@@ -228,6 +229,17 @@ export const subscriptionsRouter = router({
       });
 
         console.log('[createCheckoutSession] Session created successfully:', session.id);
+        
+        // Track checkout initiation for self-learning
+        await SelfLearning.trackInteraction({
+          moduleType: "ai_chat",
+          action: "checkout_initiated",
+          wasSuccessful: true,
+          userChoice: input.tier,
+          alternatives: Object.keys(TIER_CONFIG),
+          metadata: { tier: input.tier, priceId, sessionId: session.id },
+        });
+        
         return {
           sessionId: session.id,
           url: session.url,
@@ -433,6 +445,18 @@ export const subscriptionsRouter = router({
         canceledAt: new Date(),
       })
       .where(eq(subscriptions.id, sub[0].id));
+
+    // Track cancellation for self-learning (understand why users cancel)
+    await SelfLearning.trackInteraction({
+      moduleType: "ai_chat",
+      userId: ctx.user.id,
+      action: "subscription_canceled",
+      wasSuccessful: false, // Cancellation is a negative outcome
+      metadata: { 
+        tier: sub[0].tier, 
+        daysActive: Math.floor((Date.now() - sub[0].createdAt.getTime()) / (1000 * 60 * 60 * 24)),
+      },
+    });
 
     return { success: true };
   }),

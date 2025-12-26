@@ -83,6 +83,7 @@ import { eventTrackingRouter } from "./routers/eventTracking";
 import { youtubeRouter } from "./routers/youtube";
 import { evidenceRouter } from "./routers/evidence";
 import { simpleBookingRouter } from "./routers/simpleBooking";
+import { intelligentSystemsAdminRouter } from "./routers/intelligentSystemsAdmin.js";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -200,6 +201,9 @@ export const appRouter = router({
   
   // Event Tracking - Part of Unified Client Profile (every click, view, scroll, etc.)
   eventTracking: eventTrackingRouter,
+  
+  // Intelligent Systems Admin - Dashboard for self-learning, self-fixing, self-evolving
+  intelligentSystemsAdmin: intelligentSystemsAdminRouter,
 });
 
 export type AppRouter = typeof appRouter;
