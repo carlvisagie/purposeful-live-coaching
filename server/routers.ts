@@ -37,6 +37,7 @@ import { subscriptionWebhookRouter } from "./routers/subscriptionWebhook";
 import { emailAutomationRouter } from "./routers/emailAutomation";
 import { coachDashboardRouter } from "./routers/coachDashboard";
 import { adminRouter } from "./routers/admin";
+import { platformUsageRouter } from "./routers/platformUsage";
 import { goalsRouter } from "./routers/goals";
 import { habitFormationRouter } from "./routers/habitFormation";
 import { audioUploadRouter } from "./routers/audioUpload";
@@ -130,6 +131,7 @@ export const appRouter = router({
   emailAutomation: emailAutomationRouter,
   coachDashboard: coachDashboardRouter,
   admin: adminRouter,
+  platformUsage: platformUsageRouter,
   goals: goalsRouter,
   habits: habitFormationRouter,
   audioUpload: audioUploadRouter,

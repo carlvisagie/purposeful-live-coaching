@@ -51,6 +51,11 @@ export default function OwnerControlCenterV3() {
   const { data: adminStats } = trpc.admin.getStats.useQuery({ timeRange }, { enabled: !!user });
   const { data: recentUsers } = trpc.admin.getRecentUsers.useQuery({ limit: 10 }, { enabled: !!user });
   const { data: crisisAlerts } = trpc.admin.getCrisisAlerts.useQuery({ status: "pending", limit: 5 }, { enabled: !!user });
+  
+  // Platform usage monitoring
+  const { data: allUsersWithUsage } = trpc.platformUsage.getAllUsersWithUsage.useQuery(undefined, { enabled: !!user, refetchInterval: 30000 }); // Refresh every 30 seconds
+  const { data: platformStats } = trpc.platformUsage.getPlatformStats.useQuery(undefined, { enabled: !!user, refetchInterval: 30000 });
+  const { data: usersExceedingLimits } = trpc.platformUsage.getUsersExceedingLimits.useQuery(undefined, { enabled: !!user, refetchInterval: 30000 });
 
   // Update current time every minute for countdown
   useEffect(() => {
@@ -98,8 +103,8 @@ export default function OwnerControlCenterV3() {
     return `${minutes}m`;
   };
 
-  // Filter clients by search
-  const filteredClients = allClients?.filter((client: any) =>
+  // Filter clients by search - use allUsersWithUsage for comprehensive view
+  const filteredClients = (allUsersWithUsage || allClients)?.filter((client: any) =>
     client.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     client.email?.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
@@ -498,22 +503,52 @@ export default function OwnerControlCenterV3() {
                     </div>
                   ) : (
                     filteredClients.map((client: any) => (
-                      <Link key={client.id} href={`/clients/${client.id}`}>
-                        <div className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent cursor-pointer transition-colors">
-                          <div className="flex items-center gap-4">
-                            <div className="h-12 w-12 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold">
-                              {client.name?.charAt(0) || 'C'}
+                      <div key={client.userId || client.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent transition-colors">
+                        <div className="flex items-center gap-4 flex-1">
+                          <div className="h-12 w-12 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold">
+                            {client.name?.charAt(0) || 'G'}
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <p className="font-semibold">{client.name || 'Guest User'}</p>
+                              {client.loginMethod === 'anonymous' && (
+                                <Badge variant="outline" className="text-xs">Anonymous</Badge>
+                              )}
+                              {client.userStatus === 'expired_trial' && client.messages24h > 0 && (
+                                <Badge variant="destructive" className="text-xs">⚠️ Using After Trial</Badge>
+                              )}
                             </div>
-                            <div>
-                              <p className="font-semibold">{client.name}</p>
-                              <p className="text-sm text-muted-foreground">{client.email}</p>
+                            <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
+                              <span>{client.email || 'No email'}</span>
+                              {client.messages24h > 0 && (
+                                <span className="text-green-600 font-medium">• {client.messages24h} msgs today</span>
+                              )}
+                              {client.lastActivity && (
+                                <span>• Last: {new Date(client.lastActivity).toLocaleDateString()}</span>
+                              )}
                             </div>
                           </div>
-                          <Badge variant={client.subscriptionTier === 'elite' ? 'default' : 'secondary'}>
-                            {client.subscriptionTier || 'Free'}
+                        </div>
+                        <div className="flex items-center gap-3">
+                          {client.estimatedCost > 0 && (
+                            <div className="text-right">
+                              <p className="text-xs text-muted-foreground">Cost</p>
+                              <p className="font-semibold">${client.estimatedCost}</p>
+                            </div>
+                          )}
+                          <Badge variant={
+                            client.userStatus === 'paying' ? 'default' :
+                            client.userStatus === 'active_trial' ? 'secondary' :
+                            client.userStatus === 'expired_trial' ? 'outline' :
+                            'secondary'
+                          }>
+                            {client.userStatus === 'paying' ? `Paying (${client.tier})` :
+                             client.userStatus === 'active_trial' ? `Trial (${client.daysRemaining}d left)` :
+                             client.userStatus === 'expired_trial' ? 'Expired Trial' :
+                             client.tier || 'Free'}
                           </Badge>
                         </div>
-                      </Link>
+                      </div>
                     ))
                   )}
                 </div>
