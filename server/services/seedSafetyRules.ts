@@ -382,15 +382,16 @@ export async function seedSafetyRules() {
   console.log("🎉 Safety rules seeding complete!");
 }
 
-// Run if called directly
-if (require.main === module) {
-  seedSafetyRules()
-    .then(() => {
-      console.log("✅ Seeding complete");
-      process.exit(0);
-    })
-    .catch((error) => {
-      console.error("❌ Seeding failed:", error);
-      process.exit(1);
-    });
-}
+// Run if called directly (ES module pattern)
+// Uncomment to run: node --loader ts-node/esm server/services/seedSafetyRules.ts
+// if (import.meta.url === `file://${process.argv[1]}`) {
+//   seedSafetyRules()
+//     .then(() => {
+//       console.log("✅ Seeding complete");
+//       process.exit(0);
+//     })
+//     .catch((error) => {
+//       console.error("❌ Seeding failed:", error);
+//       process.exit(1);
+//     });
+// }

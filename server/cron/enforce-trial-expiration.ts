@@ -65,15 +65,16 @@ export async function enforceTrialExpiration() {
   }
 }
 
-// If run directly (not imported)
-if (require.main === module) {
-  enforceTrialExpiration()
-    .then(() => {
-      console.log("[Cron] Trial expiration enforcement complete");
-      process.exit(0);
-    })
-    .catch((error) => {
-      console.error("[Cron] Fatal error:", error);
-      process.exit(1);
-    });
-}
+// If run directly (not imported) - ES module pattern
+// Uncomment to run: node --loader ts-node/esm server/cron/enforce-trial-expiration.ts
+// if (import.meta.url === `file://${process.argv[1]}`) {
+//   enforceTrialExpiration()
+//     .then(() => {
+//       console.log("[Cron] Trial expiration enforcement complete");
+//       process.exit(0);
+//     })
+//     .catch((error) => {
+//       console.error("[Cron] Error:", error);
+//       process.exit(1);
+//     });
+// }
