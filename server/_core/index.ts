@@ -34,7 +34,7 @@ import { contentRouter } from "../routers/content";
 import { seedCoachAvailability } from "../seed-availability";
 import { updateSessionPrices } from "../update-session-prices";
 import { runMigrations } from "../run-migrations-startup";
-import { startCronJobs } from "../cron/scheduler";
+// import { startCronJobs } from "../cron/scheduler";
 
 console.log("[App] All imports complete");
 
@@ -211,7 +211,7 @@ async function startServer() {
     console.log(`📝 To seed availability, visit: /api/seed-availability`);
     
     // Start cron jobs after server is running
-    startCronJobs();
+    // startCronJobs(); // Temporarily disabled - causing ES module error
   });
 }
 
