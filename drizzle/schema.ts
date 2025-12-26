@@ -129,7 +129,7 @@ export type InsertCoach = typeof coaches.$inferInsert;
 export const clients = pgTable("clients", {
   id: serial("id").primaryKey(),
   coachId: integer("coach_id").notNull().references(() => coaches.id),
-  // userId: integer("user_id").references(() => users.id), // TODO: Uncomment after running migration to add this column
+  userId: integer("user_id").references(() => users.id),
   name: varchar("name", { length: 255 }).notNull(),
   email: varchar("email", { length: 320 }),
   phone: varchar("phone", { length: 50 }),

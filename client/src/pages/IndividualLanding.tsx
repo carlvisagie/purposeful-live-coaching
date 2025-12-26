@@ -242,19 +242,56 @@ export default function IndividualLanding() {
             Meet Sage—your warm, wise AI life coach trained on cutting-edge research from Huberman, Attia, Walker, and leading scientists. Start your transformation journey in seconds—no signup required.
           </p>
 
-          {/* Big Purple Button */}
-          <Button
-            size="lg"
-            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-12 py-8 text-xl font-semibold shadow-2xl hover:shadow-purple-500/50 transition-all mb-4"
-            onClick={() => window.location.href = "/ai-coach"}
-          >
-            <Sparkles className="h-6 w-6 mr-3" />
-            Start Talking to Sage Now
-          </Button>
-          
-          <p className="text-sm text-gray-500 mb-8">
-            No signup. No credit card. Just start talking.
-          </p>
+          {/* Email Capture - Required for Trial */}
+          <div className="max-w-md mx-auto mb-8">
+            <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-purple-200">
+              <h3 className="text-lg font-semibold mb-4 text-center">Start Your 7-Day Free Trial</h3>
+              <form onSubmit={async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.currentTarget);
+                const name = formData.get('name') as string;
+                const email = formData.get('email') as string;
+                
+                // Generate anonymous ID
+                const anonymousId = localStorage.getItem('plc_anonymous_id') || `anon_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                localStorage.setItem('plc_anonymous_id', anonymousId);
+                
+                // Store for immediate use
+                localStorage.setItem('trial_name', name);
+                localStorage.setItem('trial_email', email);
+                localStorage.setItem('trial_signup_pending', 'true');
+                
+                // Redirect immediately for better UX
+                window.location.href = "/ai-coach";
+              }} className="space-y-4">
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Your name"
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                />
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Your email"
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                />
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-6 text-lg font-semibold shadow-lg"
+                >
+                  <Sparkles className="h-5 w-5 mr-2" />
+                  Start Free Trial
+                </Button>
+                <p className="text-xs text-center text-gray-500">
+                  No credit card required. 7 days free, then $29/month.
+                </p>
+              </form>
+            </div>
+          </div>
 
           {/* OR Divider */}
           <div className="flex items-center gap-4 max-w-md mx-auto mb-8">

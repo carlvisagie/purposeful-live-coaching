@@ -139,14 +139,15 @@ export async function getOrCreateAnonymousUser(anonymousId: string): Promise<{
     };
   }
 
-  // Create new anonymous user
+  // Create new user with email (no longer anonymous)
+  // Email should be passed from frontend via localStorage
   const [newUser] = await db
     .insert(users)
     .values({
       openId: anonymousId,
-      name: "Guest User",
+      name: "Guest User", // Will be updated when email is provided
       role: "user",
-      loginMethod: "anonymous",
+      loginMethod: "email", // Changed from anonymous
     })
     .returning();
 

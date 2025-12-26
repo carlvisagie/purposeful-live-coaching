@@ -100,6 +100,9 @@ export default function AICoach() {
   // Track usage mutation (disabled - endpoint may not exist)
   // const trackUsageMutation = trpc.subscriptions.trackAiSession.useMutation();
 
+  // Trial signup mutation
+  const trialSignupMutation = trpc.trialSignup.updateTrialUser.useMutation();
+  
   // Mutations
   const createConversationMutation = trpc.aiChat.createConversation.useMutation({
     onSuccess: async (data) => {
@@ -168,6 +171,32 @@ export default function AICoach() {
       setSelectedConversationId(conversationsData.conversations[0].id);
     }
   }, [conversationsData, selectedConversationId]);
+
+  // Process trial signup if pending
+  useEffect(() => {
+    const signupPending = localStorage.getItem('trial_signup_pending');
+    if (signupPending === 'true') {
+      const name = localStorage.getItem('trial_name');
+      const email = localStorage.getItem('trial_email');
+      const anonymousId = localStorage.getItem('plc_anonymous_id');
+      
+      if (name && email && anonymousId) {
+        console.log('[AICoach] Processing trial signup...');
+        trialSignupMutation.mutate(
+          { anonymousId, name, email },
+          {
+            onSuccess: () => {
+              console.log('[AICoach] Trial signup processed successfully');
+              localStorage.removeItem('trial_signup_pending');
+            },
+            onError: (error) => {
+              console.error('[AICoach] Trial signup failed:', error);
+            }
+          }
+        );
+      }
+    }
+  }, []);
 
   // AUTO-START: Create conversation immediately when page loads with no conversations
   const [hasAutoStarted, setHasAutoStarted] = useState(false);

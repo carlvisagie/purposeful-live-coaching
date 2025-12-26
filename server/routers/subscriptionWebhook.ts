@@ -1,7 +1,7 @@
 import { router, publicProcedure } from "../_core/trpc";
 import { TRPCError } from "@trpc/server";
 import { db } from "../db";
-import { subscriptions, usageTracking, humanSessionBookings, users } from "../../drizzle/schema";
+import { subscriptions, usageTracking, humanSessionBookings, users, clients, coaches } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import Stripe from "stripe";
 import { ENV } from "../_core/env";
@@ -100,6 +100,34 @@ export const subscriptionWebhookRouter = router({
           }
 
           const userId = user.id;
+
+          // Create unified client profile if it doesn't exist
+          const existingClient = await db.query.clients.findFirst({
+            where: eq(clients.email, customerEmail),
+          });
+
+          if (!existingClient) {
+            // Get default coach
+            const defaultCoach = await db.query.coaches.findFirst();
+            if (defaultCoach) {
+              await db.insert(clients).values({
+                userId: user.id,
+                coachId: defaultCoach.id,
+                name: session.customer_details?.name || user.name || "New Client",
+                email: customerEmail,
+                status: "active",
+                goals: "Paid Subscription",
+                startDate: new Date(),
+              });
+              console.log(`[Webhook] ✅ Created unified client profile for user ${user.id}`);
+            }
+          } else if (!existingClient.userId) {
+            // Link existing client to user
+            await db.update(clients)
+              .set({ userId: user.id })
+              .where(eq(clients.id, existingClient.id));
+            console.log(`[Webhook] ✅ Linked existing client ${existingClient.id} to user ${user.id}`);
+          }
 
           // Get subscription details from Stripe
           const stripeSubscription: any = await stripe.subscriptions.retrieve(

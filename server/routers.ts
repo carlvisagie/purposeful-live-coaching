@@ -34,10 +34,12 @@ import { autismRouter } from "./routers/autism";
 import { liveSessionRouter } from "./routers/liveSession";
 import { subscriptionsRouter } from "./routers/subscriptions";
 import { subscriptionWebhookRouter } from "./routers/subscriptionWebhook";
+import { calendlyWebhookRouter } from "./routers/calendlyWebhook";
 import { emailAutomationRouter } from "./routers/emailAutomation";
 import { coachDashboardRouter } from "./routers/coachDashboard";
 import { adminRouter } from "./routers/admin";
 import { platformUsageRouter } from "./routers/platformUsage";
+import { trialSignupRouter } from "./routers/trialSignup";
 import { goalsRouter } from "./routers/goals";
 import { habitFormationRouter } from "./routers/habitFormation";
 import { audioUploadRouter } from "./routers/audioUpload";
@@ -128,10 +130,12 @@ export const appRouter = router({
   autism: autismRouter,
   subscriptions: subscriptionsRouter,
   subscriptionWebhook: subscriptionWebhookRouter,
+  calendlyWebhook: calendlyWebhookRouter,
   emailAutomation: emailAutomationRouter,
   coachDashboard: coachDashboardRouter,
   admin: adminRouter,
   platformUsage: platformUsageRouter,
+  trialSignup: trialSignupRouter,
   goals: goalsRouter,
   habits: habitFormationRouter,
   audioUpload: audioUploadRouter,

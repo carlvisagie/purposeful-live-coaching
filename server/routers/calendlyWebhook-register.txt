@@ -1,0 +1,6 @@
+Add to routers.ts:
+
+import { calendlyWebhookRouter } from "./routers/calendlyWebhook";
+
+And in the router object:
+calendlyWebhook: calendlyWebhookRouter,

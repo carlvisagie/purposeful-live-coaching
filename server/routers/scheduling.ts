@@ -271,9 +271,26 @@ export const schedulingRouter = router({
       if (existingClient.length > 0) {
         clientId = existingClient[0].id;
       } else {
-        // Create new guest client
+        // Find or create user for this email
+        let user = await db.query.users.findFirst({
+          where: eq(users.email, input.clientEmail),
+        });
+        
+        if (!user) {
+          const [newUser] = await db.insert(users).values({
+            openId: `booking_${Date.now()}`,
+            email: input.clientEmail,
+            name: input.clientName,
+            loginMethod: "booking",
+            role: "client",
+          }).returning();
+          user = newUser;
+        }
+        
+        // Create new guest client linked to user
         const newClient = await db.insert(clients).values({
           coachId,
+          userId: user.id,
           name: input.clientName,
           email: input.clientEmail,
           status: "guest",
