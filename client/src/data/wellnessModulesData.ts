@@ -213,7 +213,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Fitness Fundamentals", 
         duration: "16 min", 
         type: "video",
-        videoUrl: "https://files.manuscdn.com/user_upload_by_module/session_file/310419663029732906/GhKfYYZNhJtGZHRn.mp4",
+        videoUrl: "/api/videos/GhKfYYZNhJtGZHRn",
         description: "Build a strong foundation in fitness principles that will serve you for life, regardless of your current fitness level.",
         keyPoints: [
           "The four pillars of fitness: strength, cardio, flexibility, and recovery",
@@ -240,7 +240,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Strength Training Basics", 
         duration: "25 min", 
         type: "video",
-        videoUrl: "https://files.manuscdn.com/user_upload_by_module/session_file/310419663029732906/CUDyxMNjUyIgnnbh.mp4",
+        videoUrl: "/api/videos/CUDyxMNjUyIgnnbh",
         description: "Master the fundamental movement patterns and principles of strength training for lifelong strength and health.",
         keyPoints: [
           "The six fundamental movement patterns",
@@ -254,7 +254,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Cardio for Health", 
         duration: "18 min", 
         type: "video",
-        videoUrl: "https://files.manuscdn.com/user_upload_by_module/session_file/310419663029732906/cYOFufoYSmWGAHYC.mp4",
+        videoUrl: "/api/videos/cYOFufoYSmWGAHYC",
         description: "Discover how to use cardiovascular exercise to build heart health, endurance, and metabolic fitness.",
         keyPoints: [
           "The difference between LISS, MISS, and HIIT cardio",
@@ -268,7 +268,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Recovery and Rest", 
         duration: "12 min", 
         type: "video",
-        videoUrl: "https://files.manuscdn.com/user_upload_by_module/session_file/310419663029732906/rDDtcomrMpDfjGBc.mp4",
+        videoUrl: "/api/videos/rDDtcomrMpDfjGBc",
         description: "Understand why recovery is when your body actually gets stronger, and learn to optimize rest for maximum results.",
         keyPoints: [
           "Muscle growth happens during rest, not during workouts",
@@ -307,7 +307,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Nutrition Fundamentals", 
         duration: "20 min", 
         type: "video",
-        videoUrl: "https://files.manuscdn.com/user_upload_by_module/session_file/310419663029732906/vOGBdkrhUjrWnErP.mp4",
+        videoUrl: "/api/videos/vOGBdkrhUjrWnErP",
         description: "Master the foundational principles of nutrition science to make informed food choices that support your health and goals.",
         keyPoints: [
           "Macronutrients: protein, carbohydrates, and fats - what they do and how much you need",
@@ -334,7 +334,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Meal Planning Mastery", 
         duration: "18 min", 
         type: "video",
-        videoUrl: "https://files.manuscdn.com/user_upload_by_module/session_file/310419663029732906/dFGsnwldMtxtxmCf.mp4",
+        videoUrl: "/api/videos/dFGsnwldMtxtxmCf",
         description: "Develop a sustainable meal planning system that saves time, reduces stress, and ensures you eat well consistently.",
         keyPoints: [
           "Weekly planning: the key to consistent nutrition",
@@ -348,7 +348,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Intuitive Eating Principles", 
         duration: "16 min", 
         type: "video",
-        videoUrl: "https://files.manuscdn.com/user_upload_by_module/session_file/310419663029732906/GXSHAjxVLdSEcinc.mp4",
+        videoUrl: "/api/videos/GXSHAjxVLdSEcinc",
         description: "Heal your relationship with food by learning to trust your body's hunger and fullness signals.",
         keyPoints: [
           "Rejecting diet mentality and food rules",
@@ -362,7 +362,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Nutrition for Performance", 
         duration: "22 min", 
         type: "video",
-        videoUrl: "https://files.manuscdn.com/user_upload_by_module/session_file/310419663029732906/fCkclycvccaswGOr.mp4",
+        videoUrl: "/api/videos/fCkclycvccaswGOr",
         description: "Optimize your nutrition to support athletic performance, recovery, and body composition goals.",
         keyPoints: [
           "Fueling before, during, and after exercise",
@@ -376,7 +376,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Supplements and Superfoods", 
         duration: "19 min", 
         type: "video",
-        videoUrl: "https://files.manuscdn.com/user_upload_by_module/session_file/310419663029732906/jvTDgdyyjkrKDxIk.mp4",
+        videoUrl: "/api/videos/jvTDgdyyjkrKDxIk",
         description: "Navigate the world of supplements and superfoods with evidence-based guidance on what works and what's worth your money.",
         keyPoints: [
           "Essential supplements: who needs them and why",

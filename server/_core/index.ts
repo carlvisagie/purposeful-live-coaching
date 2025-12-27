@@ -31,6 +31,7 @@ import { serveStatic, setupVite } from "./vite";
 import { webhookRouter } from "../routers/webhooks";
 import { vapiWebhookRestRouter } from "../routers/vapiWebhookRest";
 import { contentRouter } from "../routers/content";
+import { videoProxyRouter } from "../routers/videoProxy";
 import { seedCoachAvailability } from "../seed-availability";
 import { updateSessionPrices } from "../update-session-prices";
 import { runMigrations } from "../run-migrations-startup";
@@ -73,7 +74,7 @@ async function startServer() {
         imgSrc: ["'self'", "data:", "blob:", "https:"],
         connectSrc: ["'self'", "https://api.stripe.com", "wss:", "https:"],
         frameSrc: ["'self'", "https://js.stripe.com"],
-        mediaSrc: ["'self'", "blob:"],
+        mediaSrc: ["'self'", "blob:", "https://files.manuscdn.com"],
       },
     },
     crossOriginEmbedderPolicy: false, // Required for some third-party integrations
@@ -94,6 +95,9 @@ async function startServer() {
   
   // Content API for serving raw markdown files
   app.use("/api/content", contentRouter);
+  
+  // Video proxy for serving lesson videos with CORS
+  app.use("/api/videos", videoProxyRouter);
   
   // Rate limiting for API protection
   const apiLimiter = rateLimit({
