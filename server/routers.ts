@@ -35,6 +35,7 @@ import { liveSessionRouter } from "./routers/liveSession";
 import { subscriptionsRouter } from "./routers/subscriptions";
 import { subscriptionWebhookRouter } from "./routers/subscriptionWebhook";
 import { calendlyWebhookRouter } from "./routers/calendlyWebhook";
+import { zapierBookingRouter } from "./routers/zapierBooking";
 import { emailAutomationRouter } from "./routers/emailAutomation";
 import { coachDashboardRouter } from "./routers/coachDashboard";
 import { adminRouter } from "./routers/admin";
@@ -132,6 +133,7 @@ export const appRouter = router({
   subscriptions: subscriptionsRouter,
   subscriptionWebhook: subscriptionWebhookRouter,
   calendlyWebhook: calendlyWebhookRouter,
+  zapierBooking: zapierBookingRouter,
   emailAutomation: emailAutomationRouter,
   coachDashboard: coachDashboardRouter,
   admin: adminRouter,
