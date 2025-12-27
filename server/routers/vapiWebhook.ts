@@ -577,13 +577,32 @@ Everything they share gets saved to their Unified Client Profile automatically.`
   }
   
   // =========================================================================
-  // RETURNING CALLER - Load EVERYTHING from Unified Client Profile
+  // RETURNING CALLER - Load EVERYTHING from Unified Client Profile via ProfileGuard
   // =========================================================================
   const client = callerInfo.client;
   const clientName = client.name || 'Friend';
   
+  // 🔥 USE PROFILEGUARD to get COMPLETE client context
+  // This includes: sessions, chat history, goals, progress, behavioral patterns, etc.
+  let profileGuardContext = null;
+  try {
+    profileGuardContext = await ProfileGuard.getClientContext(client.id, {
+      moduleName: "vapi_phone_call",
+      logAccess: true,
+    });
+    console.log(`[VapiWebhook] ProfileGuard loaded complete context for ${clientName}`);
+  } catch (error) {
+    console.error(`[VapiWebhook] ProfileGuard error:`, error);
+  }
+  
   // Build COMPLETE profile context from Unified Client Profile
   const sections: string[] = [];
+  
+  // Add ProfileGuard context if available
+  if (profileGuardContext) {
+    sections.push(`## 🔥 PROFILEGUARD CONTEXT
+${JSON.stringify(profileGuardContext, null, 2)}`);
+  }
   
   // --- BASIC INFO ---
   const basicInfo: string[] = [];
