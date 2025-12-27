@@ -34,6 +34,7 @@ import SelfLearning from "../selfLearningIntegration";
 import { detectCrisis, quickCrisisCheck } from "../lib/ai/crisisDetection.js";
 import ProfileGuard from "../profileGuard";
 import { CONVERSION_SKILLS_PROMPT, detectConversionMoment, detectObjection, trackConversionAttempt } from "../services/conversionSkills";
+import { coachingScripts, getScriptByTrigger, getAllTriggers } from "../../shared/coachingScripts";
 import { analyzeVoiceCharacteristics, generateRapportStrategy, getQuickRapportGuidance } from "../services/voiceAnalysis";
 import { getClientInsightsString, trackEvent } from "../services/eventTracking";
 
@@ -641,6 +642,48 @@ export const aiChatRouter = router({
           role: "system",
           content: enhancedSystemPrompt,
         });
+      }
+
+      // COACHING SCRIPTS: Detect objections and inject proven responses
+      let coachingScriptGuidance = "";
+      const userMessageLower = input.message.toLowerCase();
+      
+      // Detect specific objection triggers
+      const detectedTriggers: string[] = [];
+      if (userMessageLower.includes("afford") || userMessageLower.includes("expensive") || userMessageLower.includes("cost") || userMessageLower.includes("money") || userMessageLower.includes("price")) {
+        if (userMessageLower.includes("afford")) detectedTriggers.push("BUDGET");
+        else if (userMessageLower.includes("expensive")) detectedTriggers.push("EXPENSIVE");
+        else detectedTriggers.push("COST");
+      }
+      if (userMessageLower.includes("time") || userMessageLower.includes("busy")) {
+        detectedTriggers.push(userMessageLower.includes("busy") ? "BUSY" : "TIME");
+      }
+      if (userMessageLower.includes("doubt") || userMessageLower.includes("skeptical") || userMessageLower.includes("not sure")) {
+        detectedTriggers.push("DOUBT");
+      }
+      if (userMessageLower.includes("tried") || userMessageLower.includes("therapy") || userMessageLower.includes("before")) {
+        detectedTriggers.push("TRIED");
+      }
+      if (userMessageLower.includes("think about") || userMessageLower.includes("need to think")) {
+        detectedTriggers.push("THINK");
+      }
+      if (userMessageLower.includes("later") || userMessageLower.includes("another time")) {
+        detectedTriggers.push("LATER");
+      }
+      
+      // If objection detected, inject coaching script
+      if (detectedTriggers.length > 0) {
+        const script = getScriptByTrigger(detectedTriggers[0]);
+        if (script) {
+          coachingScriptGuidance = `\n\n---\n\n## 🎯 OBJECTION DETECTED: ${script.category}\n\n**Research-Backed Response Framework (${script.trigger}):**\n\n${script.response}\n\n**Follow-up Options:**\n${script.followUp.map((f, i) => `${i + 1}. ${f}`).join("\n")}\n\n**Tone Cues:** ${script.toneCues.join(", ")}\n\n${script.successStory ? `**Success Story to Share:**\n${script.successStory}\n\n` : ""}**Close Transition:**\n${script.closeTransition}\n\n**IMPORTANT:** Adapt this script naturally to the conversation. Don't sound robotic. Use their exact words and pain points.`;
+          
+          enhancedSystemPrompt += coachingScriptGuidance;
+          
+          // Update system message with coaching script
+          if (conversationHistory[0]?.role === "system") {
+            conversationHistory[0].content = enhancedSystemPrompt;
+          }
+        }
       }
 
       // Add current user message

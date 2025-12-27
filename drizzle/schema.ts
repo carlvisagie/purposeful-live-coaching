@@ -36,6 +36,7 @@ export * from "./securitySchema";
 export * from "./settingsSchema";
 
 // Export wellness & lifestyle schemas
+export * from "./actionPlansSchema";
 export * from "./dailyCheckInsSchema";
 export * from "./careerSchema";
 export * from "./communitySchema";
