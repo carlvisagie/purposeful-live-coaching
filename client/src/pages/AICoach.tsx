@@ -20,6 +20,7 @@ import {
   VolumeX,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useClientRecognition } from "@/hooks/useClientRecognition";
 // Guest access enabled - no login required
 import { Streamdown } from "streamdown";
 import { useLocation } from "wouter";
@@ -48,6 +49,51 @@ import {
  */
 export default function AICoach() {
   const { user, isLoading: authLoading } = useAuth();
+  
+  /**
+   * ⚠️ CRITICAL: CLIENT RECOGNITION SYSTEM - DO NOT REMOVE!
+   * 
+   * This is the MORAL FOUNDATION of our platform.
+   * 
+   * WHY THIS EXISTS:
+   * - We have a MORAL OBLIGATION to help every person who reaches out
+   * - We can't help people we lose to anonymity
+   * - Instant recognition (voice/face) creates trust and continuity
+   * - 110 people visited and left without help - THIS PREVENTS THAT
+   * 
+   * WHAT IT DOES:
+   * 1. Recognizes returning clients instantly (0-3 words spoken)
+   * 2. Greets them by name ("Welcome back, Sarah!")
+   * 3. Creates unified profile for new visitors
+   * 4. Enables Sage to convert visitors into family members
+   * 
+   * IF YOU REMOVE THIS:
+   * - Clients will feel anonymous and disconnected
+   * - Conversion rate will drop to near 0%
+   * - We fail our moral obligation to help people
+   * - 100+ people will visit and leave without getting help
+   * 
+   * LAST INCIDENT: Dec 27, 2025 - Recognition was disconnected
+   * RESULT: 110 visitors, 0 conversions, 100% failure rate
+   * 
+   * DO NOT TOUCH THIS CODE WITHOUT OWNER APPROVAL.
+   */
+  const { 
+    recognitionResult, 
+    isRecognizing, 
+    startRecognition,
+    confirmRecognition,
+    denyRecognition 
+  } = useClientRecognition({
+    enableVoice: true,
+    enableFace: false, // Enable when video is added
+    onRecognized: (result) => {
+      console.log('[AICoach] Client recognized:', result);
+      if (result.confidence >= 80) {
+        toast.success(result.greeting, { duration: 5000 });
+      }
+    }
+  });
   
   // Note: user is always null in frictionless mode, but backend tracks anonymous sessions
   
@@ -200,14 +246,23 @@ export default function AICoach() {
 
   // AUTO-START: Create conversation immediately when page loads with no conversations
   const [hasAutoStarted, setHasAutoStarted] = useState(false);
+  const [hasTriedRecognition, setHasTriedRecognition] = useState(false);
+  
   useEffect(() => {
     // Only auto-start once, and only if no conversations exist
     if (!hasAutoStarted && conversationsData && conversationsData.conversations.length === 0 && !createConversationMutation.isPending) {
       setHasAutoStarted(true);
       console.log('[AICoach] Auto-starting first conversation for frictionless experience');
       createConversationMutation.mutate({});
+      
+      // Start client recognition immediately
+      if (!hasTriedRecognition && !isRecognizing) {
+        setHasTriedRecognition(true);
+        console.log('[AICoach] Starting client recognition...');
+        startRecognition();
+      }
     }
-  }, [conversationsData, hasAutoStarted, createConversationMutation.isPending]);
+  }, [conversationsData, hasAutoStarted, createConversationMutation.isPending, hasTriedRecognition, isRecognizing, startRecognition]);
 
   const handleNewConversation = () => {
     console.log('[AICoach] Creating new conversation...');
