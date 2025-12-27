@@ -1,7 +1,7 @@
 import { router, publicProcedure } from "../_core/trpc";
 import { TRPCError } from "@trpc/server";
 import { db } from "../db";
-import { users, clients, coaches } from "../../drizzle/schema";
+import { users, clients, coaches, sessions } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
 
 /**
@@ -30,8 +30,10 @@ export const calendlyWebhookRouter = router({
         return { success: true, message: "Event type ignored" };
       }
       
-      // Extract invitee data
+      // Extract invitee and event data
       const invitee = payload.payload?.invitee;
+      const event = payload.payload?.event;
+      
       if (!invitee) {
         throw new TRPCError({
           code: "BAD_REQUEST",
@@ -41,6 +43,8 @@ export const calendlyWebhookRouter = router({
       
       const email = invitee.email;
       const name = invitee.name;
+      const scheduledDate = event?.start_time ? new Date(event.start_time) : null;
+      const duration = event?.duration ? parseInt(event.duration) : 60; // Default 60 minutes
       
       if (!email || !name) {
         throw new TRPCError({
@@ -87,11 +91,29 @@ export const calendlyWebhookRouter = router({
           console.log(`[Calendly Webhook] ✅ Linked existing client ${existingClient.id} to user ${user.id}`);
         }
         
+        // Create session record if we have booking time and don't have a duplicate
+        let sessionId = null;
+        if (scheduledDate) {
+          const [newSession] = await db.insert(sessions).values({
+            coachId: existingClient.coachId,
+            clientId: existingClient.id,
+            scheduledDate: scheduledDate,
+            duration: duration,
+            sessionType: "Free Discovery Call",
+            status: "scheduled",
+            paymentStatus: "free",
+            notes: `Booked via Calendly - ${email}`,
+          }).returning();
+          sessionId = newSession.id;
+          console.log(`[Calendly Webhook] ✅ Created session ${sessionId} for existing client`);
+        }
+        
         return { 
           success: true, 
           userId: user.id, 
           clientId: existingClient.id,
-          message: "User and client profile already exist"
+          sessionId: sessionId,
+          message: "Session created for existing user and client"
         };
       }
       
@@ -117,11 +139,31 @@ export const calendlyWebhookRouter = router({
       
       console.log(`[Calendly Webhook] ✅ Created unified client profile ${newClient.id} for user ${user.id}`);
       
+      // Create session record if we have booking time
+      let sessionId = null;
+      if (scheduledDate) {
+        const [newSession] = await db.insert(sessions).values({
+          coachId: defaultCoach.id,
+          clientId: newClient.id,
+          scheduledDate: scheduledDate,
+          duration: duration,
+          sessionType: "Free Discovery Call",
+          status: "scheduled",
+          paymentStatus: "free",
+          notes: `Booked via Calendly - ${email}`,
+        }).returning();
+        sessionId = newSession.id;
+        console.log(`[Calendly Webhook] ✅ Created session ${sessionId} for ${scheduledDate.toISOString()}`);
+      } else {
+        console.log(`[Calendly Webhook] ⚠️ No start_time in event data, session not created`);
+      }
+      
       return { 
         success: true, 
         userId: user.id, 
         clientId: newClient.id,
-        message: "User and client profile created successfully"
+        sessionId: sessionId,
+        message: "User, client profile, and session created successfully"
       };
       
     } catch (error: any) {
