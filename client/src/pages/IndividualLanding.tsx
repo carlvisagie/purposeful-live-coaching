@@ -242,55 +242,20 @@ export default function IndividualLanding() {
             Meet Sage—your warm, wise AI life coach trained on cutting-edge research from Huberman, Attia, Walker, and leading scientists. Start your transformation journey in seconds—no signup required.
           </p>
 
-          {/* Email Capture - Required for Trial */}
+          {/* Direct Access - Frictionless Onboarding */}
           <div className="max-w-md mx-auto mb-8">
-            <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-purple-200">
-              <h3 className="text-lg font-semibold mb-4 text-center">Start Your 7-Day Free Trial</h3>
-              <form onSubmit={async (e) => {
-                e.preventDefault();
-                const formData = new FormData(e.currentTarget);
-                const name = formData.get('name') as string;
-                const email = formData.get('email') as string;
-                
-                // Generate anonymous ID
-                const anonymousId = localStorage.getItem('plc_anonymous_id') || `anon_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-                localStorage.setItem('plc_anonymous_id', anonymousId);
-                
-                // Store for immediate use
-                localStorage.setItem('trial_name', name);
-                localStorage.setItem('trial_email', email);
-                localStorage.setItem('trial_signup_pending', 'true');
-                
-                // Redirect immediately for better UX
-                window.location.href = "/ai-coach";
-              }} className="space-y-4">
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Your name"
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                />
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Your email"
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                />
-                <Button
-                  type="submit"
-                  size="lg"
-                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-6 text-lg font-semibold shadow-lg"
-                >
-                  <Sparkles className="h-5 w-5 mr-2" />
-                  Start Free Trial
-                </Button>
-                <p className="text-xs text-center text-gray-500">
-                  No credit card required. 7 days free, then $29/month.
-                </p>
-              </form>
-            </div>
+            <Link href="/ai-coach">
+              <Button
+                size="lg"
+                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-8 text-2xl font-bold shadow-2xl transform hover:scale-105 transition-all duration-200"
+              >
+                <Sparkles className="h-8 w-8 mr-3" />
+                Talk to Sage Now →
+              </Button>
+            </Link>
+            <p className="text-sm text-center text-gray-600 mt-4">
+              No signup required • Start instantly • 100% free to try
+            </p>
           </div>
 
           {/* OR Divider */}
