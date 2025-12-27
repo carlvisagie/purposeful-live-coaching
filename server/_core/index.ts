@@ -31,7 +31,7 @@ import { serveStatic, setupVite } from "./vite";
 import { webhookRouter } from "../routers/webhooks";
 import { vapiWebhookRestRouter } from "../routers/vapiWebhookRest";
 import { contentRouter } from "../routers/content";
-import { videoProxyRouter } from "../routers/videoProxy";
+
 import { seedCoachAvailability } from "../seed-availability";
 import { updateSessionPrices } from "../update-session-prices";
 import { runMigrations } from "../run-migrations-startup";
@@ -96,8 +96,7 @@ async function startServer() {
   // Content API for serving raw markdown files
   app.use("/api/content", contentRouter);
   
-  // Video proxy for serving lesson videos with CORS
-  app.use("/api/videos", videoProxyRouter);
+
   
   // Rate limiting for API protection
   const apiLimiter = rateLimit({
