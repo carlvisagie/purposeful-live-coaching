@@ -167,6 +167,44 @@ async function startServer() {
     res.json(result);
   });
   
+  // Workbook PDF download endpoint
+  app.get("/api/workbooks/:slug/download", async (req, res) => {
+    try {
+      const { slug } = req.params;
+      const { readFile } = await import("fs/promises");
+      const { join } = await import("path");
+      const { exec } = await import("child_process");
+      const { promisify } = await import("util");
+      const execAsync = promisify(exec);
+      
+      const mdPath = join(process.cwd(), 'client', 'public', 'workbooks', `${slug}-workbook.md`);
+      const pdfPath = join(process.cwd(), 'temp', `${slug}-workbook-${Date.now()}.pdf`);
+      
+      // Convert Markdown to PDF
+      await execAsync(`manus-md-to-pdf "${mdPath}" "${pdfPath}"`);
+      
+      // Send PDF file
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="${slug}-workbook.pdf"`);
+      
+      const pdfBuffer = await readFile(pdfPath);
+      res.send(pdfBuffer);
+      
+      // Clean up temp file
+      setTimeout(async () => {
+        try {
+          const { unlink } = await import("fs/promises");
+          await unlink(pdfPath);
+        } catch (e) {
+          console.error('Error cleaning up temp PDF:', e);
+        }
+      }, 1000);
+    } catch (error) {
+      console.error('Error generating workbook PDF:', error);
+      res.status(500).json({ error: 'Failed to generate workbook PDF' });
+    }
+  });
+  
   // tRPC API
   app.use(
     "/api/trpc",

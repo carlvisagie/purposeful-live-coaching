@@ -93,7 +93,7 @@ export default function WellnessModuleDetail() {
                   <Button 
                     size="lg" 
                     variant="outline"
-                    onClick={() => window.open(`/workbooks/${slug}-workbook.md`, '_blank')}
+                    onClick={() => window.open(`/api/workbooks/${slug}/download`, '_blank')}
                   >
                     <FileText className="h-5 w-5 mr-2" />
                     Download Workbook
