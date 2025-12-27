@@ -586,7 +586,7 @@ Everything they share gets saved to their Unified Client Profile automatically.`
   // This includes: sessions, chat history, goals, progress, behavioral patterns, etc.
   let profileGuardContext = null;
   try {
-    profileGuardContext = await ProfileGuard.getClientContext(client.id, {
+    profileGuardContext = await ProfileGuard.getClientContext(client.userId, {
       moduleName: "vapi_phone_call",
       logAccess: true,
     });
