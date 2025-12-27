@@ -7,6 +7,17 @@ import { migrate } from "drizzle-orm/postgres-js/migrator";
 import postgres from "postgres";
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { seedCoaches } from './migrations/seed-coaches';
+
+async function seedCoachData() {
+  try {
+    console.log('[Migrations] Running data seeds...');
+    await seedCoaches();
+    console.log('[Migrations] ✅ Data seeds completed');
+  } catch (error) {
+    console.error('[Migrations] ❌ Data seeding failed:', error);
+  }
+}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -45,6 +56,9 @@ export async function runMigrations() {
     
     // Close migration connection
     await migrationClient.end();
+    
+    // Run data seeds
+    await seedCoachData();
     
   } catch (error) {
     console.error("[Migrations] ❌ Failed to run migrations:", error);
