@@ -8,7 +8,7 @@ import { z } from "zod";
 import { router, protectedProcedure } from "../_core/trpc";
 import { TRPCError } from "@trpc/server";
 import { db } from "../db";
-import { nutritionProfiles, mealEntries } from "../../drizzle/nutritionEngineSchema";
+import { nutritionProfiles, meals as mealEntries } from "../../drizzle/nutritionEngineSchema";
 import { eq, desc, and, gte } from "drizzle-orm";
 import ProfileGuard from "../profileGuard";
 import SelfLearning from "../selfLearningIntegration";
