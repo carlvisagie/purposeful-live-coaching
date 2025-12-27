@@ -48,12 +48,12 @@ export const simpleBookingRouter = router({
 
         console.log('[SimpleBooking] Found existing bookings:', existingBookings.length);
 
-        // Generate time slots (9 AM to 5 PM in 30-minute intervals)
+        // Generate time slots (24/7 in 30-minute intervals)
         const slots: string[] = [];
         const now = new Date();
         const minimumBookingTime = new Date(now.getTime() + 3 * 60000); // 3 minutes from now
 
-        for (let hour = 9; hour < 17; hour++) {
+        for (let hour = 0; hour < 24; hour++) {
           for (let minute = 0; minute < 60; minute += 30) {
             const slotTime = new Date(date + `T${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:00Z`);
             const slotEnd = new Date(slotTime.getTime() + duration * 60000);
