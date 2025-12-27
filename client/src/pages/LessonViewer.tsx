@@ -116,6 +116,7 @@ export default function LessonViewer() {
                 {lesson.videoUrl ? (
                   <div className="aspect-video bg-gray-900 rounded-lg overflow-hidden">
                     <video
+                      key={lesson.videoUrl}
                       controls
                       className="w-full h-full"
                       poster="/api/placeholder/1280/720"
