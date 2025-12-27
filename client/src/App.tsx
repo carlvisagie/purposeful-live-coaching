@@ -47,6 +47,7 @@ import AutismProfileDetail from "./pages/AutismProfileDetail";
 import AutismInterventions from "./pages/AutismInterventions";
 import LiveSessionAssistant from "./pages/LiveSessionAssistant";
 import CoachingScripts from "./pages/CoachingScripts";
+import AIContentCreator from "./pages/AIContentCreator";
 import Pricing from "./pages/Pricing";
 import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 import SessionPurchaseSuccess from "./pages/SessionPurchaseSuccess";
@@ -125,6 +126,8 @@ function Router() {
       <Route path="/autism/interventions/:id" component={AutismInterventions} />
       <Route path="/live-session" component={LiveSessionAssistant} />
       <Route path="/coaching-scripts" component={CoachingScripts} />
+      <Route path="/coach/content-creator" component={AIContentCreator} />
+      <Route path="/content-creator" component={AIContentCreator} />
       <Route path="/pricing" component={Pricing} />
 
       <Route path="/subscription/success" component={SubscriptionSuccess} />
