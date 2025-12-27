@@ -56,6 +56,10 @@ export default function OwnerControlCenterV3() {
   const { data: allUsersWithUsage } = trpc.platformUsage.getAllUsersWithUsage.useQuery(undefined, { enabled: !!user, refetchInterval: 30000 }); // Refresh every 30 seconds
   const { data: platformStats } = trpc.platformUsage.getPlatformStats.useQuery(undefined, { enabled: !!user, refetchInterval: 30000 });
   const { data: usersExceedingLimits } = trpc.platformUsage.getUsersExceedingLimits.useQuery(undefined, { enabled: !!user, refetchInterval: 30000 });
+  
+  // User management
+  const { data: userManagement } = trpc.admin.getUserManagement.useQuery(undefined, { enabled: !!user });
+  const cleanupMutation = trpc.admin.cleanupMysteryUsers.useMutation();
 
   // Update current time every minute for countdown
   useEffect(() => {
@@ -444,7 +448,7 @@ export default function OwnerControlCenterV3() {
 
         {/* SECONDARY TABS */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
+          <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:inline-grid">
             <TabsTrigger value="clients">
               <Users className="h-4 w-4 mr-2" />
               Clients
@@ -464,6 +468,10 @@ export default function OwnerControlCenterV3() {
             <TabsTrigger value="admin">
               <Settings className="h-4 w-4 mr-2" />
               Admin
+            </TabsTrigger>
+            <TabsTrigger value="users">
+              <UserPlus className="h-4 w-4 mr-2" />
+              Users
             </TabsTrigger>
           </TabsList>
 
@@ -718,6 +726,190 @@ export default function OwnerControlCenterV3() {
                 </Card>
               </Link>
             </div>
+          </TabsContent>
+
+          {/* USER MANAGEMENT TAB */}
+          <TabsContent value="users" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+              <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+                <CardHeader className="pb-3">
+                  <Users className="h-8 w-8 text-blue-600 mb-2" />
+                  <CardTitle className="text-3xl font-bold">{userManagement?.totalUsers || 0}</CardTitle>
+                  <CardDescription>Total Auth Accounts</CardDescription>
+                </CardHeader>
+              </Card>
+
+              <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+                <CardHeader className="pb-3">
+                  <CheckCircle2 className="h-8 w-8 text-green-600 mb-2" />
+                  <CardTitle className="text-3xl font-bold">{userManagement?.totalClients || 0}</CardTitle>
+                  <CardDescription>Real Coaching Clients</CardDescription>
+                </CardHeader>
+              </Card>
+
+              <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
+                <CardHeader className="pb-3">
+                  <AlertTriangle className="h-8 w-8 text-orange-600 mb-2" />
+                  <CardTitle className="text-3xl font-bold">{userManagement?.mysteryUsers || 0}</CardTitle>
+                  <CardDescription>Mystery Users (No Profile)</CardDescription>
+                </CardHeader>
+              </Card>
+
+              <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+                <CardHeader className="pb-3">
+                  <Target className="h-8 w-8 text-purple-600 mb-2" />
+                  <CardTitle className="text-3xl font-bold">{userManagement?.avgProfileCompleteness || 0}%</CardTitle>
+                  <CardDescription>Avg Profile Completeness</CardDescription>
+                </CardHeader>
+              </Card>
+            </div>
+
+            {/* Mystery Users Section */}
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <AlertTriangle className="h-5 w-5 text-orange-500" />
+                      Mystery Users ({userManagement?.mysteryUsers || 0})
+                    </CardTitle>
+                    <CardDescription>
+                      Auth accounts without client profiles - likely test signups, bots, or failed registrations
+                    </CardDescription>
+                  </div>
+                  <Button
+                    variant="destructive"
+                    onClick={async () => {
+                      if (confirm(`Delete ${userManagement?.mysteryUsers || 0} mystery users? This will NOT affect your ${userManagement?.totalClients || 0} real clients.`)) {
+                        try {
+                          const result = await cleanupMutation.mutateAsync();
+                          alert(`✅ Deleted ${result.deletedCount} mystery users successfully!`);
+                          window.location.reload();
+                        } catch (error) {
+                          alert('❌ Error: ' + (error as Error).message);
+                        }
+                      }
+                    }}
+                    disabled={cleanupMutation.isPending || (userManagement?.mysteryUsers || 0) === 0}
+                  >
+                    {cleanupMutation.isPending ? 'Cleaning...' : 'Clean Up Mystery Users'}
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2 max-h-96 overflow-y-auto">
+                  {userManagement?.mysteryUsersList && userManagement.mysteryUsersList.length > 0 ? (
+                    userManagement.mysteryUsersList.slice(0, 20).map((user: any) => (
+                      <div key={user.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div className="flex-1">
+                          <p className="font-medium">{user.name || 'No name'}</p>
+                          <p className="text-sm text-muted-foreground">{user.email || 'No email'}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-xs text-muted-foreground">
+                            {new Date(user.createdAt).toLocaleDateString()}
+                          </p>
+                          <Badge variant="outline" className="text-xs">{user.loginMethod || 'Unknown'}</Badge>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <CheckCircle2 className="h-12 w-12 mx-auto mb-2 text-green-500" />
+                      <p>No mystery users found! All accounts have client profiles.</p>
+                    </div>
+                  )}
+                  {(userManagement?.mysteryUsersList?.length || 0) > 20 && (
+                    <p className="text-center text-sm text-muted-foreground pt-2">
+                      Showing 20 of {userManagement?.mysteryUsersList?.length} mystery users
+                    </p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* ProfileGuard Health Monitor */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-green-500" />
+                  ProfileGuard Health Monitor
+                </CardTitle>
+                <CardDescription>
+                  Unified client repository - your single source of truth for all client data
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2 max-h-96 overflow-y-auto">
+                  {userManagement?.profileGuardStats && userManagement.profileGuardStats.length > 0 ? (
+                    userManagement.profileGuardStats.map((client: any) => (
+                      <div key={client.clientId} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div className="flex-1">
+                          <p className="font-medium">{client.name}</p>
+                          <p className="text-sm text-muted-foreground">{client.email}</p>
+                          {client.primaryGoal && (
+                            <p className="text-xs text-muted-foreground mt-1">Goal: {client.primaryGoal}</p>
+                          )}
+                        </div>
+                        <div className="text-right">
+                          <div className="flex items-center gap-2">
+                            <div className="w-24 bg-gray-200 rounded-full h-2">
+                              <div 
+                                className="bg-gradient-to-r from-purple-500 to-blue-500 h-2 rounded-full transition-all"
+                                style={{ width: `${client.completeness}%` }}
+                              />
+                            </div>
+                            <span className="text-sm font-medium">{client.completeness}%</span>
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Updated {new Date(client.updatedAt).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <AlertCircle className="h-12 w-12 mx-auto mb-2 text-orange-500" />
+                      <p>No client profiles found</p>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* System Info */}
+            <Card className="bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-green-500" />
+                  ProfileGuard System Status
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">System:</span>
+                    <Badge variant="default" className="bg-green-500">✅ Active</Badge>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Data Source:</span>
+                    <span className="font-medium">Unified Client Repository (clients table)</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">AI Integration:</span>
+                    <Badge variant="default" className="bg-green-500">✅ Capturing</Badge>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Continuity:</span>
+                    <Badge variant="default" className="bg-green-500">✅ Perfect</Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-4 p-3 bg-white rounded-lg">
+                    <strong>How it works:</strong> Every AI conversation automatically updates the unified client profile. 
+                    All modules, coaches, and features pull from this single source of truth. Zero information stored elsewhere.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>

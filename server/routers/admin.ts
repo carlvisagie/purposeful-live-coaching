@@ -1,7 +1,7 @@
 import { router, protectedProcedure } from "../_core/trpc";
 import { z } from "zod";
 import { db } from "../db";
-import { users, subscriptions, sessions, aiChatMessages, coachAvailability, coaches } from "../../drizzle/schema";
+import { users, clients, subscriptions, sessions, aiChatMessages, coachAvailability, coaches } from "../../drizzle/schema";
 import { eq, gte, sql, and, desc, isNotNull } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 
@@ -284,6 +284,86 @@ export const adminRouter = router({
    * - Weekdays (Mon-Fri): 19:45 - 21:45 (7:45 PM - 9:45 PM)
    * - Weekends (Sat-Sun): 09:00 - 16:30 (9:00 AM - 4:30 PM)
    */
+  /**
+   * Get user management overview
+   * Shows all users vs clients, mystery users, ProfileGuard status
+   */
+  getUserManagement: adminProcedure
+    .query(async () => {
+      // Get all users (auth accounts)
+      const allUsers = await db.select().from(users).orderBy(desc(users.createdAt));
+      
+      // Get all clients (coaching profiles)
+      const allClients = await db.select().from(clients);
+      
+      // Map client user IDs
+      const clientUserIds = new Set(allClients.map(c => c.userId));
+      
+      // Find users without client profiles (mystery users)
+      const usersWithoutProfiles = allUsers.filter(u => !clientUserIds.has(u.id));
+      
+      // Calculate ProfileGuard completeness
+      const profileCompletenessStats = allClients.map(c => ({
+        clientId: c.id,
+        name: c.name,
+        email: c.email,
+        completeness: c.profileCompleteness || 0,
+        primaryGoal: c.primaryGoal,
+        updatedAt: c.updatedAt,
+      }));
+      
+      return {
+        totalUsers: allUsers.length,
+        totalClients: allClients.length,
+        mysteryUsers: usersWithoutProfiles.length,
+        mysteryUsersList: usersWithoutProfiles.map(u => ({
+          id: u.id,
+          name: u.name,
+          email: u.email,
+          openId: u.openId,
+          createdAt: u.createdAt,
+          loginMethod: u.loginMethod,
+        })),
+        profileGuardStats: profileCompletenessStats,
+        avgProfileCompleteness: profileCompletenessStats.length > 0
+          ? Math.round(profileCompletenessStats.reduce((sum, c) => sum + c.completeness, 0) / profileCompletenessStats.length)
+          : 0,
+      };
+    }),
+
+  /**
+   * Clean up mystery users
+   * Removes users who don't have client profiles
+   */
+  cleanupMysteryUsers: adminProcedure
+    .mutation(async () => {
+      // Get all client user IDs (these are protected)
+      const allClients = await db.select({ userId: clients.userId }).from(clients);
+      const protectedUserIds = allClients.map(c => c.userId).filter(Boolean) as number[];
+      
+      if (protectedUserIds.length === 0) {
+        throw new TRPCError({
+          code: 'PRECONDITION_FAILED',
+          message: 'No protected users found. Aborting to prevent accidental deletion.',
+        });
+      }
+      
+      // Delete users who don't have client profiles
+      const deleted = await db.delete(users)
+        .where(sql`${users.id} NOT IN (${sql.join(protectedUserIds.map(id => sql`${id}`), sql`, `)})`)
+        .returning();
+      
+      return {
+        success: true,
+        deletedCount: deleted.length,
+        deletedUsers: deleted.map(u => ({
+          id: u.id,
+          name: u.name,
+          email: u.email,
+        })),
+      };
+    }),
+
   seedDefaultAvailability: adminProcedure
     .mutation(async () => {
       // First, ensure coach exists
