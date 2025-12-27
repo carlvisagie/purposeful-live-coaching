@@ -10,7 +10,7 @@
  * SAFETY CRITICAL: This module must be highly accurate and never miss true positives.
  */
 
-import { callLLM } from "../../_core/llm.js";
+import { invokeLLM } from "../../_core/llm.js";
 
 export type CrisisLevel = "none" | "low" | "medium" | "high" | "critical";
 
@@ -196,7 +196,7 @@ Respond in JSON format:
   "reasoning": "..."
 }`;
 
-    const response = await callLLM({
+    const response = await invokeLLM({
       messages: [{ role: "user", content: prompt }],
       temperature: 0.1, // Very low temperature for consistency
       maxTokens: 200,

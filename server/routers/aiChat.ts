@@ -463,14 +463,24 @@ export const aiChatRouter = router({
   sendMessage: publicProcedure
     .input(
       z.object({
-        conversationId: z.number(),
+        conversationId: z.number().nullable(),
         message: z.string().min(1).max(5000),
       })
     )
     .mutation(async ({ input, ctx }) => {
-      // Verify conversation ownership (demo mode: allow null userId)
-      const data = await getConversationWithMessages(input.conversationId);
       const userId = ctx.user?.id || null;
+      
+      // Auto-create conversation if conversationId is null (new conversation)
+      let conversationId = input.conversationId;
+      if (conversationId === null) {
+        conversationId = await createConversation({
+          userId: userId || null,
+          title: "New Conversation",
+        });
+      }
+      
+      // Verify conversation ownership (demo mode: allow null userId)
+      const data = await getConversationWithMessages(conversationId);
       if (!data || (data.conversation.userId !== userId && data.conversation.userId !== null)) {
         throw new TRPCError({
           code: "FORBIDDEN",
@@ -501,7 +511,7 @@ export const aiChatRouter = router({
 
       // Save user message
       await addMessage({
-        conversationId: input.conversationId,
+        conversationId: conversationId,
         role: "user",
         content: input.message,
       });
