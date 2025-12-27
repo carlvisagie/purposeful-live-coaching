@@ -286,7 +286,6 @@ export const wellnessModules = [
         title: "Cognitive Behavioral Techniques",
         duration: "15 min",
         videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/d6f8dd8b-d632-4916-a013-bbf1f080e105/transfers/rendered_video.mp4",
-        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/d6f8dd8b-d632-4916-a013-bbf1f080e105/transfers/rendered_video.mp4",
         description: "Master the core CBT technique of identifying and challenging unhelpful thought patterns to improve your mental health.",
         keyPoints: [
           "The cognitive model: thoughts, feelings, and behaviors",

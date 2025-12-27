@@ -3,7 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, BookOpen, ExternalLink } from "lucide-react";
-import { wellnessModulesData } from "@/data/wellnessModulesData";
+import { wellnessModules } from "@/data/wellnessModulesData";
+
+const wellnessModulesData = wellnessModules;
 
 // Curated reading lists for each module
 const readingLists: Record<string, Array<{title: string; author: string; type: string; description: string; link: string}>> = {

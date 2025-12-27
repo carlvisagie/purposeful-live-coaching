@@ -8,10 +8,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   ArrowLeft, CheckCircle2, PlayCircle, FileText, Headphones, Sparkles
 } from "lucide-react";
-import { wellnessModulesData } from "@/data/wellnessModulesData";
+import { wellnessModules } from "@/data/wellnessModulesData";
 import { exerciseMaterialsMap } from "@/data/exerciseMaterialsMap";
 
-const moduleData = wellnessModulesData;
+const moduleData = wellnessModules;
 
 // Generate default content for modules not explicitly defined
 const generateDefaultModule = (slug: string) => {

@@ -14,7 +14,9 @@ import {
   Download,
   BookOpen
 } from "lucide-react";
-import { wellnessModulesData } from "@/data/wellnessModulesData";
+import { wellnessModules } from "@/data/wellnessModulesData";
+
+const wellnessModulesData = wellnessModules;
 
 /**
  * Lesson Viewer
