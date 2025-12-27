@@ -7,6 +7,7 @@ import { getDb } from "../db";
 import { users, clients, coaches } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
+import { sendWelcomeSMS, isValidPhoneNumber } from "../services/smsService";
 
 export const trialSignupRouter = router({
   /**
@@ -18,6 +19,7 @@ export const trialSignupRouter = router({
         anonymousId: z.string(),
         name: z.string(),
         email: z.string().email(),
+        phone: z.string().optional(),
       })
     )
     .mutation(async ({ input }) => {
@@ -67,6 +69,11 @@ export const trialSignupRouter = router({
               goals: "AI Coaching Trial",
             });
           }
+        }
+
+        // Send welcome SMS if phone number provided
+        if (input.phone && isValidPhoneNumber(input.phone)) {
+          await sendWelcomeSMS(input.phone, input.name).catch(console.error);
         }
 
         return { success: true, userId: existingUser.id };

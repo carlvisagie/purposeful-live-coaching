@@ -24,6 +24,7 @@ import {
 import { getDb } from "../db";
 import { coaches, users } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
+import { sendSessionReminder } from "../services/smsService";
 
 export const schedulingRouter = router({
   /**
@@ -361,6 +362,44 @@ export const schedulingRouter = router({
 
       // Booking confirmation email can be added when email service is configured
       console.log("[Scheduling] Session created:", { sessionDate: input.scheduledDate });
+
+      // Schedule SMS reminders (24h and 1h before session)
+      const db = await getDb();
+      if (db) {
+        // Get client phone number
+        const [client] = await db
+          .select({ phone: users.phone, name: users.name })
+          .from(users)
+          .where(eq(users.id, input.client_id))
+          .limit(1);
+
+        // Get coach name
+        const [coach] = await db
+          .select({ name: coaches.name })
+          .from(coaches)
+          .where(eq(coaches.id, input.coachId))
+          .limit(1);
+
+        if (client?.phone && coach?.name) {
+          // Schedule 24h reminder
+          const reminder24h = new Date(input.scheduledDate);
+          reminder24h.setHours(reminder24h.getHours() - 24);
+          if (reminder24h > new Date()) {
+            setTimeout(() => {
+              sendSessionReminder(client.phone, input.scheduledDate, coach.name).catch(console.error);
+            }, reminder24h.getTime() - Date.now());
+          }
+
+          // Schedule 1h reminder
+          const reminder1h = new Date(input.scheduledDate);
+          reminder1h.setHours(reminder1h.getHours() - 1);
+          if (reminder1h > new Date()) {
+            setTimeout(() => {
+              sendSessionReminder(client.phone, input.scheduledDate, coach.name).catch(console.error);
+            }, reminder1h.getTime() - Date.now());
+          }
+        }
+      }
 
       return { success: true };
     }),
