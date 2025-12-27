@@ -85,6 +85,11 @@ import { youtubeRouter } from "./routers/youtube";
 import { evidenceRouter } from "./routers/evidence";
 import { simpleBookingRouter } from "./routers/simpleBooking";
 import { intelligentSystemsAdminRouter } from "./routers/intelligentSystemsAdmin.js";
+import { emotionalEngineRouter } from "./routers/emotionalEngine";
+import { mentalEngineRouter } from "./routers/mentalEngine";
+import { physicalEngineRouter } from "./routers/physicalEngine";
+import { nutritionEngineRouter } from "./routers/nutritionEngine";
+import { spiritualEngineRouter } from "./routers/spiritualEngine";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -197,6 +202,14 @@ export const appRouter = router({
   
   // Community - AI-moderated peer support with comprehensive compliance
   community: communityRouter,
+  
+  // 🔥 TRANSFORMATION ENGINES - Core value proposition
+  // Evidence-based transformation systems with ProfileGuard, SelfLearning, and SelfFixing
+  emotionalEngine: emotionalEngineRouter, // DBT/ACT-based emotional regulation
+  mentalEngine: mentalEngineRouter, // CBT-based cognitive enhancement
+  physicalEngine: physicalEngineRouter, // Fitness and movement tracking
+  nutritionEngine: nutritionEngineRouter, // Meal and supplement tracking
+  spiritualEngine: spiritualEngineRouter, // Meditation and spiritual practices
   
   // Vapi Phone Integration - Sage on the phone with ProfileGuard
   vapiWebhook: vapiWebhookRouter,
