@@ -31,6 +31,7 @@ import {
   detectCrisisLevel,
 } from "../db/aiChat";
 import SelfLearning from "../selfLearningIntegration";
+import { detectCrisis, quickCrisisCheck } from "../lib/ai/crisisDetection.js";
 import ProfileGuard from "../profileGuard";
 import { CONVERSION_SKILLS_PROMPT, detectConversionMoment, detectObjection, trackConversionAttempt } from "../services/conversionSkills";
 import { analyzeVoiceCharacteristics, generateRapportStrategy, getQuickRapportGuidance } from "../services/voiceAnalysis";
@@ -710,9 +711,24 @@ export const aiChatRouter = router({
         );
       }
 
+      // CRISIS DETECTION - Check both user message and AI response
+      const userCrisisCheck = await detectCrisis(input.message, true);
+      const aiCrisisCheck = quickCrisisCheck(aiResponse);
+      
+      // Use the higher severity level
+      const crisisLevel = userCrisisCheck.level !== "none" ? userCrisisCheck.level : aiCrisisCheck;
+      const crisisFlag = crisisLevel;
+      
+      // If crisis detected, prepend safety message to AI response
+      if (userCrisisCheck.level !== "none" && userCrisisCheck.shouldEscalate) {
+        aiResponse = `⚠️ **IMPORTANT SAFETY INFORMATION**\n\n${userCrisisCheck.recommendedResponse}\n\n---\n\n${aiResponse}`;
+        
+        console.warn(`[AI Chat] 🚨 Crisis detected: ${userCrisisCheck.level}`);
+        console.warn(`[AI Chat] Indicators: ${userCrisisCheck.indicators.join(", ")}`);
+        console.warn(`[AI Chat] Action: ${userCrisisCheck.immediateAction}`);
+      }
+      
       // Track interaction for self-learning
-      // Note: crisisFlag detection is handled separately - for now default to "none"
-      const crisisFlag = "none"; // TODO: Implement crisis detection from AI response
       
       SelfLearning.trackInteraction({
         moduleType: "ai_chat",

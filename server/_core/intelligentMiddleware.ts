@@ -10,7 +10,12 @@
  * Every endpoint, every interaction, every error contributes to platform intelligence.
  */
 
-import { middleware } from "./trpc.js";
+import { initTRPC } from "@trpc/server";
+import type { TrpcContext } from "./context.js";
+
+// Create middleware builder (avoid circular dependency with trpc.ts)
+const t = initTRPC.context<TrpcContext>().create();
+const middleware = t.middleware;
 import { SelfLearning } from "../selfLearningIntegration.js";
 import SelfFixing from "../selfFixing.js";
 import PlatformIntelligence from "../platformIntelligence.js";

@@ -153,10 +153,10 @@ export async function getUserSubscriptionStatus(userId: number): Promise<Subscri
     status: isTrialing ? "trialing" : subscription.status as any,
     limits,
     usage: {
-      aiMessagesUsed: usage?.aiSessionsUsed || 0,
-      sleepStoriesUsed: 0, // TODO: Track in usageTracking
-      focusSessionsUsed: 0, // TODO: Track in usageTracking
-      meditationSessionsUsed: 0, // TODO: Track in usageTracking
+      aiMessagesUsed: usage?.aiMessagesUsed || 0,
+      sleepStoriesUsed: usage?.sleepStoriesUsed || 0,
+      focusSessionsUsed: usage?.focusSessionsUsed || 0,
+      meditationSessionsUsed: usage?.meditationSessionsUsed || 0,
       humanSessionsUsed: usage?.humanSessionsUsed || 0,
     },
     isTrialing,
