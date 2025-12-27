@@ -117,11 +117,11 @@ export default function LessonViewer() {
                   <div className="aspect-video bg-gray-900 rounded-lg overflow-hidden">
                     <video
                       key={lesson.videoUrl}
+                      src={lesson.videoUrl}
                       controls
                       className="w-full h-full"
                       poster="/api/placeholder/1280/720"
                     >
-                      <source src={lesson.videoUrl} type="video/mp4" />
                       Your browser does not support the video tag.
                     </video>
                   </div>
