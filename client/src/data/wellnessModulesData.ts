@@ -28,7 +28,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Understanding Your Emotions", 
         duration: "15 min", 
         type: "video",
-        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/b5fe8344-6d4b-4081-806a-075ff07c7ca3/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Emotional%20Wellness%20-%20Lesson%201.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=WjXNc1pBBSMNjBaR%2FLGn5Ph0Lq8%3D&Expires=1766351243",
+        videoUrl: "/api/videos/PmXDQbPAggGvnltX",
         description: "Learn the fundamental nature of emotions, their purpose in human experience, and how to identify and name your emotional states accurately.",
         keyPoints: [
           "Emotions are information - they tell us what matters",
@@ -277,6 +277,20 @@ export const wellnessModulesData: Record<string, any> = {
           "Recognizing and preventing overtraining"
         ],
         content: "Here's a truth that surprises many people: you don't get stronger during workouts - you get stronger during recovery. Exercise creates micro-tears in muscle fibers and stresses your cardiovascular system. It's during rest that your body repairs this damage and adapts by building back stronger. This lesson teaches you to view recovery not as laziness, but as an essential component of your fitness program. You'll learn the difference between active recovery (light movement like walking or yoga that promotes blood flow and healing) and complete rest (days off from structured exercise). You'll discover why sleep is the most powerful recovery tool available - during deep sleep, your body releases growth hormone, repairs tissue, and consolidates motor learning. You'll understand the signs of overtraining: persistent fatigue, declining performance, increased injury risk, mood changes, and elevated resting heart rate. Most people don't train too hard - they recover too little. This lesson helps you optimize recovery so your hard work in the gym actually translates to results."
+      },
+      { 
+        title: "Mobility and Flexibility", 
+        duration: "15 min", 
+        type: "video",
+        videoUrl: "/api/videos/WGzcnDQNAOXvfcZr",
+        description: "Improve your range of motion, prevent injuries, and enhance performance through targeted mobility and flexibility training.",
+        keyPoints: [
+          "The difference between mobility and flexibility",
+          "Daily mobility routines for better movement quality",
+          "Stretching protocols: when and how to stretch",
+          "Addressing common mobility restrictions"
+        ],
+        content: "Mobility and flexibility are often overlooked components of fitness, but they're essential for injury prevention, performance, and quality of life. This lesson clarifies the difference: flexibility is the ability of a muscle to lengthen passively (like touching your toes), while mobility is the ability to move a joint through its full range of motion with control (like a deep squat). You need both. You'll learn daily mobility routines that take just 10-15 minutes but dramatically improve movement quality - hip openers, thoracic spine rotations, ankle mobility drills, and shoulder circles. You'll discover proper stretching protocols: dynamic stretching before workouts (active movements that warm up muscles), static stretching after workouts (holding stretches for 30-60 seconds when muscles are warm), and dedicated flexibility sessions on rest days. You'll address common mobility restrictions that limit performance and cause pain: tight hips from sitting, stiff shoulders from desk work, limited ankle mobility that affects squats. This lesson gives you the tools to move better, feel better, and perform better in all areas of life."
       }
     ],
     exercises: [
@@ -415,7 +429,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Exploring Your Values", 
         duration: "17 min", 
         type: "video",
-        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/241b76bf-0cc6-4e47-ab86-c7e6d568f7a5/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Spiritual%20Wellness%20-%20Lesson%201.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=1UcY7Rpi4a%2BOldOTTd3DwnZ0t14%3D&Expires=1766351242",
+        videoUrl: "/api/videos/OUunjteYnsZiTjfj",
         description: "Discover the core values that guide your decisions and define what truly matters to you.",
         keyPoints: [
           "Values vs. goals: understanding the difference",
@@ -455,7 +469,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Finding Your Purpose", 
         duration: "25 min", 
         type: "video",
-        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/d43f5303-eb57-4ba2-bbdf-bc2fba1f7db9/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Spiritual%20Wellness%20-%20Lesson%202.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=OXmfT5hkKEKD%2BB5XtJ8S%2FfpRV%2BQ%3D&Expires=1766351242",
+        videoUrl: "/api/videos/QuiZfCLkfIydESQK",
         description: "Discover your unique purpose through deep self-reflection and practical exercises.",
         keyPoints: [
           "Purpose is not one grand mission - it evolves",
@@ -469,7 +483,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Spiritual Rituals and Practices", 
         duration: "15 min", 
         type: "video",
-        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/b8939d25-810f-4bbf-a6f1-4daffbc589f8/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Spiritual%20Wellness%20-%20Lesson%203.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=bOPAmE6%2BoxQE2aKQwykaD%2FwRYKU%3D&Expires=1766351242",
+        videoUrl: "/api/videos/nGqWmjSHPPazoWTX",
         description: "Create personal rituals that connect you to something greater and infuse daily life with meaning.",
         keyPoints: [
           "Rituals vs. routines: intention makes the difference",
@@ -478,6 +492,20 @@ export const wellnessModulesData: Record<string, any> = {
           "Creating rituals around transitions and milestones"
         ],
         content: "Rituals are intentional practices that connect you to something beyond the mundane - whether that's your values, a sense of the sacred, nature, or a higher power. Unlike routines (which are functional), rituals are infused with meaning and presence. This lesson teaches you to create personal spiritual practices that resonate with you, regardless of religious background. Morning rituals: begin your day with intention. This might include meditation, journaling, reading inspirational text, stretching, or simply sitting with a cup of tea in silence. The key is presence and intention - you're not just going through motions, you're consciously setting the tone for your day. Evening rituals: close your day with reflection. Review your day with compassion, note what you're grateful for, release what didn't serve you, and set intentions for tomorrow. This practice prevents rumination and promotes restful sleep. Transition rituals: create practices around life transitions - changing seasons, birthdays, new jobs, endings and beginnings. These rituals help you process change and mark important moments. Nature connection: spend time in nature with intention - not exercising or socializing, but simply being present with the natural world. This cultivates awe and perspective. The beauty of personal spiritual practices is that they're entirely yours - you can draw from religious traditions, create your own, or blend practices that resonate. This lesson helps you design rituals that feel authentic and sustainable, infusing your daily life with meaning and connection."
+      },
+      { 
+        title: "Connection and Belonging", 
+        duration: "18 min", 
+        type: "video",
+        videoUrl: "/api/videos/orFjiybiGwUrFRgj",
+        description: "Explore the spiritual dimension of human connection and cultivate a sense of belonging in the world.",
+        keyPoints: [
+          "The universal human need for connection and belonging",
+          "Spiritual connection vs. social connection",
+          "Finding your community and tribe",
+          "Connection to nature, humanity, and the cosmos"
+        ],
+        content: "Humans are fundamentally social and spiritual beings - we're wired for connection not just to other people, but to something larger than ourselves. This lesson explores the spiritual dimension of belonging. Social connection is about relationships with specific people, but spiritual connection is about feeling part of a larger whole - whether that's nature, humanity, the universe, or the divine. You'll explore different dimensions of connection: connection to self (self-awareness and self-compassion), connection to others (authentic relationships and community), connection to nature (recognizing our place in the natural world), and connection to something transcendent (however you conceive it - God, the universe, collective consciousness, or simply the mystery of existence). You'll learn that loneliness isn't just about being alone - it's about feeling disconnected from meaning and belonging. Many people are surrounded by others yet feel spiritually isolated. This lesson teaches you to cultivate genuine belonging: find your tribe (people who share your values and see you authentically), engage in collective practices (group meditation, community service, shared rituals), spend time in nature with awareness (recognizing your interdependence with all life), and develop awe and wonder (practices that remind you of your small yet significant place in the cosmos). You'll discover that spiritual wellness isn't about withdrawing from the world - it's about engaging more deeply, feeling your connection to all of life, and recognizing that you belong here. This sense of connection and belonging is profoundly healing and provides resilience during difficult times."
       }
     ],
     exercises: [
