@@ -684,7 +684,7 @@ export const aiChatRouter = router({
 
       // Save AI response
       await addMessage({
-        conversationId: input.conversationId,
+        conversationId: conversationId,
         role: "assistant",
         content: aiResponse,
       });
@@ -707,7 +707,7 @@ export const aiChatRouter = router({
           });
           const title = titleResponse.choices[0]?.message?.content?.trim();
           if (title && title.length < 100) {
-            await updateConversationTitle(input.conversationId, title);
+            await updateConversationTitle(conversationId, title);
           }
         } catch (e) {
           console.error("[AI Chat] Title generation failed:", e);
@@ -743,7 +743,7 @@ export const aiChatRouter = router({
       SelfLearning.trackInteraction({
         moduleType: "ai_chat",
         userId: userId || undefined,
-        sessionId: input.conversationId.toString(),
+        sessionId: conversationId.toString(),
         action: "message_exchange",
         wasSuccessful: !crisisFlag || crisisFlag === "none",
         metadata: {
@@ -756,7 +756,7 @@ export const aiChatRouter = router({
 
       return {
         message: aiResponse,
-        conversationId: input.conversationId,
+        conversationId: conversationId,
       };
     }),
 
