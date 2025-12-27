@@ -50,16 +50,17 @@ export const simpleBookingRouter = router({
 
         // Generate time slots (24/7 in 30-minute intervals)
         const slots: string[] = [];
-        const now = new Date();
-        const minimumBookingTime = new Date(now.getTime() + 3 * 60000); // 3 minutes from now
+        // TESTING MODE: Allow all slots (no time restriction)
+        // const now = new Date();
+        // const minimumBookingTime = new Date(now.getTime() + 3 * 60000);
 
         for (let hour = 0; hour < 24; hour++) {
           for (let minute = 0; minute < 60; minute += 30) {
             const slotTime = new Date(date + `T${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:00Z`);
             const slotEnd = new Date(slotTime.getTime() + duration * 60000);
 
-            // Check if slot is in the future
-            if (slotTime < minimumBookingTime) continue;
+            // TESTING MODE: Skip time check
+            // if (slotTime < minimumBookingTime) continue;
 
             // Check if slot conflicts with existing booking
             const hasConflict = existingBookings.some(booking => {
