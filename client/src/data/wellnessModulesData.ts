@@ -213,7 +213,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Fitness Fundamentals", 
         duration: "16 min", 
         type: "video",
-        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/5f6671a1-66ae-4897-988f-865952c2f481/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Physical%20Fitness%20-%20Lesson%201.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=cRKGbHgawFV0njGpcpdP0NDiJb0%3D&Expires=1766351243",
+        videoUrl: "https://files.manuscdn.com/user_upload_by_module/session_file/310419663029732906/GhKfYYZNhJtGZHRn.mp4",
         description: "Build a strong foundation in fitness principles that will serve you for life, regardless of your current fitness level.",
         keyPoints: [
           "The four pillars of fitness: strength, cardio, flexibility, and recovery",
@@ -240,7 +240,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Strength Training Basics", 
         duration: "25 min", 
         type: "video",
-        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/a30aaa46-42a4-47fe-b28b-701f85fd2e3d/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Physical%20Fitness%20-%20Lesson%202.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=6pNvdyeJ2ThnKecOD2hV0awek0M%3D&Expires=1766351243",
+        videoUrl: "https://files.manuscdn.com/user_upload_by_module/session_file/310419663029732906/CUDyxMNjUyIgnnbh.mp4",
         description: "Master the fundamental movement patterns and principles of strength training for lifelong strength and health.",
         keyPoints: [
           "The six fundamental movement patterns",
@@ -254,7 +254,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Cardio for Health", 
         duration: "18 min", 
         type: "video",
-        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/82f24a0d-a2e6-4bb2-b1b1-fccef38cf946/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Physical%20Fitness%20-%20Lesson%203.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=1dyIbm6gz0lnZakgWbNgNHoX9aE%3D&Expires=1766351243",
+        videoUrl: "https://files.manuscdn.com/user_upload_by_module/session_file/310419663029732906/cYOFufoYSmWGAHYC.mp4",
         description: "Discover how to use cardiovascular exercise to build heart health, endurance, and metabolic fitness.",
         keyPoints: [
           "The difference between LISS, MISS, and HIIT cardio",
@@ -268,7 +268,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Recovery and Rest", 
         duration: "12 min", 
         type: "video",
-        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/13a2bdc2-0f35-4b48-b678-ff05ba6e542d/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Physical%20Fitness%20-%20Lesson%204.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=Kp0zo2q1v40gU1XNWXJNLHbKE6E%3D&Expires=1766351243",
+        videoUrl: "https://files.manuscdn.com/user_upload_by_module/session_file/310419663029732906/rDDtcomrMpDfjGBc.mp4",
         description: "Understand why recovery is when your body actually gets stronger, and learn to optimize rest for maximum results.",
         keyPoints: [
           "Muscle growth happens during rest, not during workouts",
@@ -307,7 +307,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Nutrition Fundamentals", 
         duration: "20 min", 
         type: "video",
-        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/57b2735d-f58a-494b-99a1-2dbc4395497d/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Nutrition%20-%20Lesson%201.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=lTvbgIs9KrwFWFgyz4oA6w5C9kw%3D&Expires=1766351243",
+        videoUrl: "https://files.manuscdn.com/user_upload_by_module/session_file/310419663029732906/vOGBdkrhUjrWnErP.mp4",
         description: "Master the foundational principles of nutrition science to make informed food choices that support your health and goals.",
         keyPoints: [
           "Macronutrients: protein, carbohydrates, and fats - what they do and how much you need",
@@ -334,7 +334,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Meal Planning Mastery", 
         duration: "18 min", 
         type: "video",
-        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/22ef3b7a-bde1-4f44-9e94-bafbf3ae7062/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Nutrition%20-%20Lesson%202.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=ES75GpJq3rtUCqxv6un4HUVC6jw%3D&Expires=1766351243",
+        videoUrl: "https://files.manuscdn.com/user_upload_by_module/session_file/310419663029732906/dFGsnwldMtxtxmCf.mp4",
         description: "Develop a sustainable meal planning system that saves time, reduces stress, and ensures you eat well consistently.",
         keyPoints: [
           "Weekly planning: the key to consistent nutrition",
@@ -348,7 +348,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Intuitive Eating Principles", 
         duration: "16 min", 
         type: "video",
-        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/7feea566-9c00-4aa1-9a2c-f77f815aa6a6/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Nutrition%20-%20Lesson%203.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=n6VKjYgGtw3iyB6mUG1VOAtwJuk%3D&Expires=1766351243",
+        videoUrl: "https://files.manuscdn.com/user_upload_by_module/session_file/310419663029732906/GXSHAjxVLdSEcinc.mp4",
         description: "Heal your relationship with food by learning to trust your body's hunger and fullness signals.",
         keyPoints: [
           "Rejecting diet mentality and food rules",
@@ -362,7 +362,7 @@ export const wellnessModulesData: Record<string, any> = {
         title: "Nutrition for Performance", 
         duration: "22 min", 
         type: "video",
-        videoUrl: "https://synthesia-ttv-data.s3.amazonaws.com/video_data/fa8fcf0b-f75d-408d-880c-7f23cc19ad47/transfers/rendered_video.mp4?response-content-disposition=attachment%3Bfilename%3D%22Nutrition%20-%20Lesson%204.mp4%22&AWSAccessKeyId=AKIA32NGJ5TSW5HNK25Z&Signature=hrU1I9nqTiQ7u0hl7LhrWWaWlmU%3D&Expires=1766351242",
+        videoUrl: "https://files.manuscdn.com/user_upload_by_module/session_file/310419663029732906/fCkclycvccaswGOr.mp4",
         description: "Optimize your nutrition to support athletic performance, recovery, and body composition goals.",
         keyPoints: [
           "Fueling before, during, and after exercise",
@@ -371,6 +371,20 @@ export const wellnessModulesData: Record<string, any> = {
           "Hydration and electrolyte balance"
         ],
         content: "If you're physically active - whether you're a competitive athlete or just someone who works out regularly - strategic nutrition can significantly enhance your performance and results. This advanced lesson teaches you to fuel your training intelligently. You'll learn pre-workout nutrition: eat a meal with carbs and protein 2-3 hours before training for sustained energy, or a small snack 30-60 minutes before for quick fuel. You'll discover intra-workout nutrition: for sessions longer than 90 minutes, consume easily digestible carbs to maintain performance. You'll master post-workout nutrition: the 'anabolic window' isn't as narrow as once believed, but eating protein and carbs within a few hours supports recovery. You'll understand protein timing: distribute protein intake across 3-5 meals (20-40g per meal) to maximize muscle protein synthesis. You'll learn carbohydrate cycling: eat more carbs on high-intensity training days, fewer on rest or low-intensity days. And you'll grasp hydration: drink enough that your urine is pale yellow, and replace electrolytes (sodium, potassium, magnesium) during long or intense sessions. Performance nutrition isn't about supplements and complicated protocols - it's about consistent fundamentals applied intelligently."
+      },
+      { 
+        title: "Supplements and Superfoods", 
+        duration: "19 min", 
+        type: "video",
+        videoUrl: "https://files.manuscdn.com/user_upload_by_module/session_file/310419663029732906/jvTDgdyyjkrKDxIk.mp4",
+        description: "Navigate the world of supplements and superfoods with evidence-based guidance on what works and what's worth your money.",
+        keyPoints: [
+          "Essential supplements: who needs them and why",
+          "Evaluating supplement claims and research quality",
+          "Superfoods: separating hype from reality",
+          "Building a cost-effective supplement protocol"
+        ],
+        content: "The supplement industry is worth billions, but most supplements are unnecessary if you eat a balanced diet. This lesson cuts through the marketing hype to give you evidence-based guidance. You'll learn which supplements are genuinely beneficial: vitamin D (if you don't get sun exposure), omega-3s (if you don't eat fatty fish), B12 (for vegans), iron (for some women), and creatine (for athletes). You'll discover how to evaluate supplement claims: look for peer-reviewed research, be skeptical of proprietary blends, and understand that 'natural' doesn't mean safe or effective. You'll explore superfoods - nutrient-dense foods like blueberries, salmon, kale, and quinoa - and learn that while they're healthy, they're not magical. You don't need expensive açai powder when local berries provide similar benefits. You'll understand when supplementation makes sense: nutrient deficiencies, specific health conditions, athletic performance goals, or dietary restrictions. And you'll learn to build a cost-effective protocol: focus on food first, supplement strategically, buy from reputable brands that third-party test, and don't waste money on unproven products. This lesson empowers you to make informed decisions in a confusing marketplace."
       }
     ],
     exercises: [
