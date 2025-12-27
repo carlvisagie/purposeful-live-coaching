@@ -634,13 +634,15 @@ export const communityRouter = router({
       };
     }),
 
-  getStats: protectedProcedure
+  getStats: publicProcedure
     .query(async ({ ctx }) => {
       const db = await getDb();
       if (!db) throw new Error("Database not available");
 
-      // ProfileGuard
-      await ProfileGuard.getClientContext(ctx.user.id, { moduleName: "community" });
+      // ProfileGuard - only if user is authenticated
+      if (ctx.user) {
+        await ProfileGuard.getClientContext(ctx.user.id, { moduleName: "community" });
+      }
 
       const today = new Date();
       today.setHours(0, 0, 0, 0);

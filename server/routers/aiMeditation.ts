@@ -455,7 +455,7 @@ Total length should be appropriate for ${config.duration} minutes when read slow
     }),
 
   // Get meditation statistics
-  getStats: protectedProcedure
+  getStats: publicProcedure
     .input(z.object({
       period: z.enum(["week", "month", "year"]).default("week"),
       userId: z.number().optional(),
@@ -463,11 +463,13 @@ Total length should be appropriate for ${config.duration} minutes when read slow
     .query(async ({ input, ctx }) => {
       const userId = input.userId || ctx.user?.id;
       
-      // PROFILE GUARD - Load client context
-      const clientContext = await ProfileGuard.getClientContext(userId, {
-        moduleName: "ai_meditation",
-        logAccess: true,
-      });
+      // PROFILE GUARD - Load client context only if authenticated
+      if (userId) {
+        const clientContext = await ProfileGuard.getClientContext(userId, {
+          moduleName: "ai_meditation",
+          logAccess: true,
+        });
+      }
       // In production, fetch from database
       return {
         period: input.period,
