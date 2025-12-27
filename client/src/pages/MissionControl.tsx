@@ -293,7 +293,7 @@ export default function MissionControl() {
                         </div>
                       </div>
                       <p className="text-sm text-muted-foreground mb-3">
-                        Empathetic AI companion ready to listen whenever you need to talk
+                        She is Your Empathetic Companion
                       </p>
                       <div className="flex items-center text-pink-600 text-sm font-medium group-hover:translate-x-1 transition-transform">
                         Start Talking <ArrowRight className="h-4 w-4 ml-1" />
